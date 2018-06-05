@@ -13,11 +13,9 @@ void DocumentModel::ParseStr(const QString &s)
 {
     QString line;
     for (QChar c : s) {
+        line.push_back(c);
         if (c == '\n') {
             lines_.push_back(std::move(line));
-        }
-        else {
-            line.push_back(c);
         }
     }
 }
@@ -58,6 +56,16 @@ int64_t DocumentModel::GetViewCharCntOfLine(int64_t viewLineIndex) const
 QChar DocumentModel::GetCharByViewPos(int64_t row, int64_t col) const
 {
     return lines_[row].at(col);
+}
+
+bool DocumentModel::IsSelectedByViewPos(int64_t row, int64_t col) const
+{
+    return true;
+    if (row == 0 && col >= 3 && col <= 6)
+    {
+        return true;
+    }
+    return false;
 }
 
 

@@ -5,11 +5,22 @@
 #include <QDebug>
 #include <QPainter>
 #include <QInputMethodEvent>
+#include <QShowEvent>
+#include <QResizeEvent>
 
 #include "DocumentModel.h"
 
+namespace
+{
+    const char *kFontFamilyTimes = "Times";
+    const char *kFontFamilyYaHei = "Microsoft YaHei";
+
+    const char *kFontFamily = kFontFamilyTimes;
+    const int kFontSize = 30;
+}
+
 TextPad::TextPad(DocumentModel &model, QWidget *parent)
-    : font_("Times", 20)
+    : font_(kFontFamily, kFontSize)
     , font_metrix_(font_)
     , model_(model)
     , QWidget(parent)
@@ -21,8 +32,8 @@ TextPad::TextPad(DocumentModel &model, QWidget *parent)
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocus();
 
+    lay_select_ = new QPixmap(size());
 }
-
 
 bool TextPad::IsFixWidthFont() const
 {
@@ -31,6 +42,8 @@ bool TextPad::IsFixWidthFont() const
 
 TextPad::~TextPad()
 {
+    delete lay_select_;
+    lay_select_ = nullptr;
 }
 
 void TextPad::paintBackground(QPainter &p)
@@ -43,7 +56,7 @@ void TextPad::paintBackground(QPainter &p)
     p.restore();
 }
 
-static int kFontMargin = 2;
+static int kFontMargin = 0;
 
 namespace
 {
@@ -51,32 +64,54 @@ namespace
     {
         return a > b ? a : b;
     }
+
+    template <typename T>
+    inline T &GrowBack(std::vector<T> &vec)
+    {
+        const auto size = vec.size();
+        vec.resize(size + 1);
+        return vec[size];
+    }
 }
 
-void TextPad::paintTextContent(QPainter &p)
+void TextPad::prepareTextContentDrawInfo(int areaWidth)
 {
+    prepared_draw_info_.Clear();
+
     const int64_t viewLineCnt = model_.GetViewLineCnt();
     if (viewLineCnt <= 0)
     {
         return;
     }
 
-    p.save();
-    p.setFont(font_);
-
     const int fontHeight = font_metrix_.height();
-    const int areaWidth = width();
+    const int lineHeight = fontHeight / 2 + fontHeight;
     
     const bool isFixWidthFont = IsFixWidthFont();
     const int widthForFix = font_metrix_.width('a');
 
     int leftX = 0;
-    int topY = 0;
+
+    const int fontAscent = font_metrix_.ascent();
+    const int fontDescent = font_metrix_.descent();
+
+    int baseLineY = font_metrix_.ascent();
 
     for (int64_t row = 0; row < viewLineCnt; ++row)
     {
         leftX = 0;
         const int64_t charCnt = model_.GetViewCharCntOfLine(row);
+
+        int lineTopY = baseLineY - fontAscent;
+        int lineBottomY = baseLineY + fontDescent;
+
+        LineDrawInfo *lineDrawInfo = &GrowBack(prepared_draw_info_._drawInfos);
+        lineDrawInfo->isWrapLine = false;
+        lineDrawInfo->rowIndex = row;
+        lineDrawInfo->baseLineY = baseLineY;
+        lineDrawInfo->drawTopY = lineTopY;
+        lineDrawInfo->drawBottomY = lineBottomY;
+
         for (int64_t col = 0; col < charCnt; ++col)
         {
             const QChar ch(model_.GetCharByViewPos(row, col));
@@ -116,7 +151,17 @@ void TextPad::paintTextContent(QPainter &p)
                 if (_wrapLine)
                 {
                     leftX = 0;
-                    topY += fontHeight;
+                    baseLineY += lineHeight;
+                    lineTopY = baseLineY - fontAscent;
+                    lineBottomY = baseLineY + fontDescent;
+
+                    
+                    lineDrawInfo = &GrowBack(prepared_draw_info_._drawInfos);
+                    lineDrawInfo->isWrapLine = true;
+                    lineDrawInfo->rowIndex = row;
+                    lineDrawInfo->baseLineY = baseLineY;
+                    lineDrawInfo->drawTopY = lineTopY;
+                    lineDrawInfo->drawBottomY = lineBottomY;
                 }
                 else
                 {
@@ -124,27 +169,42 @@ void TextPad::paintTextContent(QPainter &p)
                 }
             }
 
-            // 绘制字符
-            p.drawText(leftX + kFontMargin,
-                topY + fontHeight,
-                QString(ch));
-
-            // 绘制插入光标
-            if (row == insert_line_row_ && col == insert_line_col_)
-            {
-                p.drawLine(leftX + kFontMargin / 2, topY + fontHeight * 0.2, leftX + kFontMargin / 2, topY + fontHeight);
-            }
+            CharDrawInfo &charDrawInfo = GrowBack(lineDrawInfo->charInfos);
+            charDrawInfo.ch = ch;
+            charDrawInfo.leftX = leftX;
+            charDrawInfo.drawLeftX = leftX + kFontMargin;
+            charDrawInfo.drawTotalWidth = drawTotalCharWidth;
 
             leftX += drawTotalCharWidth;
         }
 
-        // 绘制行末的插入光标
-        if (row == insert_line_row_ && insert_line_col_ == charCnt)
-        {
-            p.drawLine(leftX + kFontMargin / 2, topY + fontHeight * 0.2, leftX + kFontMargin / 2, topY + fontHeight);
-        }
+        baseLineY += lineHeight;
+    }
+}
 
-        topY += fontHeight;
+void TextPad::paintInsertCursor(QPainter &p)
+{
+    p.save();
+    const LineDrawInfo &lineDrawInfo = prepared_draw_info_._drawInfos[insert_line_row_];
+    const CharDrawInfo &charDrawInfo = lineDrawInfo.charInfos[insert_line_col_];
+    const int insertCursorX = charDrawInfo.leftX + kFontMargin / 2;
+    p.drawLine(insertCursorX, lineDrawInfo.drawTopY, insertCursorX, lineDrawInfo.drawBottomY);
+    p.restore();
+}
+
+void TextPad::paintTextContent(QPainter &p)
+{
+    p.save();
+    p.setFont(font_);
+
+    for (const LineDrawInfo &lineDrawInfo : prepared_draw_info_._drawInfos)
+    {
+        for (const CharDrawInfo &charDrawInfo : lineDrawInfo.charInfos)
+        {
+            p.drawText(charDrawInfo.drawLeftX,
+                lineDrawInfo.baseLineY,
+                charDrawInfo.ch);
+        }
     }
 
     p.restore();
@@ -155,6 +215,7 @@ void TextPad::paintEvent(QPaintEvent* e)
     QPainter p(this);
     paintBackground(p);
     paintTextContent(p);
+    paintInsertCursor(p);
 }
 
 void TextPad::keyPressEvent(QKeyEvent *e)
@@ -196,7 +257,7 @@ void TextPad::keyPressEvent(QKeyEvent *e)
         break;
     case Qt::Key_Right:
         ++insert_line_col_;
-        if (insert_line_col_ > model_.GetViewCharCntOfLine(insert_line_row_))
+        if (insert_line_col_ >= model_.GetViewCharCntOfLine(insert_line_row_))
         {
             ++insert_line_row_;
             insert_line_col_ = 0;
@@ -223,4 +284,16 @@ void TextPad::inputMethodEvent(QInputMethodEvent *e)
     qDebug() << "length:" << e->replacementLength();
     qDebug() << "preedit:" << e->preeditString();
     qDebug() << "commit:" << e->commitString();
+}
+
+void TextPad::showEvent(QShowEvent * event)
+{
+    QWidget::showEvent(event);
+    prepareTextContentDrawInfo(width());
+}
+
+void TextPad::resizeEvent(QResizeEvent * event)
+{
+    QWidget::resizeEvent(event);
+    prepareTextContentDrawInfo(event->size().width());
 }

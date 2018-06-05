@@ -23,6 +23,8 @@ public:
 
     QChar GetCharByViewPos(int64_t row, int64_t col) const;
 
+    bool IsSelectedByViewPos(int64_t row, int64_t col) const;
+
 private:
     std::vector<QString> lines_;
     int64_t view_line_begin_ = 0;
