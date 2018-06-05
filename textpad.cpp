@@ -9,13 +9,13 @@
 #include "DocumentModel.h"
 
 TextPad::TextPad(DocumentModel &model, QWidget *parent)
-    : model_(model)
+    : font_("Times", 20)
+    , font_metrix_(font_)
+    , model_(model)
     , QWidget(parent)
 {
     // 等宽："Times"
     // 非等宽："Microsoft YaHei"
-    font_ = new QFont("Times", 26);
-    font_metrix_ = new QFontMetrics(*font_);
 
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
@@ -23,29 +23,14 @@ TextPad::TextPad(DocumentModel &model, QWidget *parent)
 
 }
 
-void TextPad::test()
-{
-    qDebug() << font_->family();
-    qDebug() << font_metrix_->width('z');
-}
-
-void TextPad::SetContent(const QString &s)
-{
-    content_ = s;
-}
 
 bool TextPad::IsFixWidthFont() const
 {
-    return font_metrix_->width('i') == font_metrix_->width('w');
+    return font_metrix_.width('i') == font_metrix_.width('w');
 }
 
 TextPad::~TextPad()
 {
-    delete font_metrix_;
-    font_metrix_ = nullptr;
-
-    delete font_;
-    font_ = nullptr;
 }
 
 void TextPad::paintBackground(QPainter &p)
@@ -58,49 +43,7 @@ void TextPad::paintBackground(QPainter &p)
     p.restore();
 }
 
-void TextPad::paintTextContent(QPainter &p)
-{
-    p.save();
-    p.setFont(*font_);
-    const int fh = font_metrix_->height();
-    const int area_width = width();
-    int y = fh;
-    int left = 0;
-    const bool isFixWidth = IsFixWidthFont();
-    const int fixwidth = font_metrix_->width('a');
-    int row = 0;
-    int col = 0;
-    for (int i = 0; i < content_.size(); ++i) {
-        const QChar ch(content_.at(i));
-        int fw = font_metrix_->width(ch);
-        const bool isWideChar = fw > fixwidth;
-        const bool asTwoChar = isFixWidth && isWideChar;
-        if (asTwoChar) {
-            fw = 2 * fixwidth;
-        }
-        const bool isNewLineChar = ch == '\n';
-        if (isNewLineChar || left + fw > area_width) {
-            left = 0;
-            y += fh;
-        }
-        if (isNewLineChar) {
-            ++row;
-            col = 0;
-            continue;
-        }
-        const int dynHGap = (asTwoChar ? 2 * hgap_ : hgap_);
-        if (row == insert_line_row_ && col == insert_line_col_) {
-            p.drawLine(left, row*fh+fh*0.2, left, row*fh+fh);
-        }
-        p.drawText(left, y, QString(ch));
-        left += fw;
-        left += dynHGap;
-        ++col;
-    }
-    p.restore();
-}
-
-static int kFontMargin = 5;
+static int kFontMargin = 2;
 
 namespace
 {
@@ -110,7 +53,7 @@ namespace
     }
 }
 
-void TextPad::paintTextContentES(QPainter &p)
+void TextPad::paintTextContent(QPainter &p)
 {
     const int64_t viewLineCnt = model_.GetViewLineCnt();
     if (viewLineCnt <= 0)
@@ -119,13 +62,13 @@ void TextPad::paintTextContentES(QPainter &p)
     }
 
     p.save();
-    p.setFont(*font_);
+    p.setFont(font_);
 
-    const int fontHeight = font_metrix_->height();
+    const int fontHeight = font_metrix_.height();
     const int areaWidth = width();
     
     const bool isFixWidthFont = IsFixWidthFont();
-    const int widthForFix = font_metrix_->width('a');
+    const int widthForFix = font_metrix_.width('a');
 
     int leftX = 0;
     int topY = 0;
@@ -139,7 +82,7 @@ void TextPad::paintTextContentES(QPainter &p)
             const QChar ch(model_.GetCharByViewPos(row, col));
 
             // 从字体引擎获得的原始字符宽度
-            const int rawFontWidth = font_metrix_->width(ch);
+            const int rawFontWidth = font_metrix_.width(ch);
             
             // 判断这个字符是否是宽字符
             const bool isWideChar = rawFontWidth > widthForFix;
@@ -211,7 +154,7 @@ void TextPad::paintEvent(QPaintEvent* e)
 {
     QPainter p(this);
     paintBackground(p);
-    paintTextContentES(p);
+    paintTextContent(p);
 }
 
 void TextPad::keyPressEvent(QKeyEvent *e)

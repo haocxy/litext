@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
     TextPad w(model);
     w.show();
 
-    w.SetContent(s);
 
     w.resize(1200,600);
 
