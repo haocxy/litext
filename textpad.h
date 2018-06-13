@@ -3,16 +3,18 @@
 
 #include <QWidget>
 
+#include "DocumentModel.h"
+
 class QFont;
 class QFontMetrics;
-class DocumentModel;
+class DocModel;
 
 class TextPad : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextPad(DocumentModel &model, QWidget *parent = 0);
+    TextPad(DocModel &model, QWidget *parent = 0);
     ~TextPad();
 
     virtual void keyPressEvent(QKeyEvent *e) override;
@@ -20,21 +22,24 @@ public:
     virtual void inputMethodEvent(QInputMethodEvent *e) override;
     virtual void showEvent(QShowEvent *event) override;
     virtual void resizeEvent(QResizeEvent *event) override;
+    virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
     bool IsFixWidthFont() const;
     void paintBackground(QPainter &p);
+    void paintRowBackground(QPainter &p);
     void paintTextContent(QPainter &p);
     void paintInsertCursor(QPainter &p);
+    
 
 private:
 
     struct CharDrawInfo
     {
         QChar ch = 0;
-        int leftX = 0;
         int drawLeftX = 0; // 这一字符的绘制区域的最左侧x坐标
         int drawTotalWidth = 0; // 这一字符的绘制区域的宽度
+        int rawFontWidth = 0; // 从字体引擎得到的原始字符宽度
     };
 
     struct LineDrawInfo
@@ -44,6 +49,7 @@ private:
         int baseLineY = 0; // 基线y坐标
         int drawTopY = 0; // 这一行的绘制区域上限y坐标
         int drawBottomY = 0; // 这一行的绘制区域下限y坐标
+        int lineHeight = 0;
         std::vector<CharDrawInfo> charInfos;
     };
 
@@ -63,8 +69,10 @@ private:
 
     void prepareTextContentDrawInfo(int areaWidth);
 
+    DocSel GetCursorByPoint(int x, int y) const;
+
 private:
-    DocumentModel & model_;
+    DocModel & model_;
     QFont font_;
     QFontMetrics font_metrix_;
 
@@ -72,8 +80,6 @@ private:
     QPixmap *lay_select_ = nullptr;
 
 private:
-    int64_t insert_line_row_ = 0;
-    int64_t insert_line_col_ = 0;
     bool _wrapLine = true;
 };
 

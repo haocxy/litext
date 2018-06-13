@@ -5,11 +5,11 @@
 
 static const char* s = ""
 "Hello, whats your name? My name is HanMeiMei.\n"
-"你好你好nihaohaha你好吗abcabcabcabcHanMeiMei.\n";
+"你好你好nihaohaha你好吗abcabcypabcabcHanMeiMei.\n";
 
 int main(int argc, char *argv[])
 {
-    DocumentModel model;
+    DocModel model;
     model.ParseStr(s);
 
     QApplication a(argc, argv);

@@ -1,15 +1,15 @@
 #include "DocumentModel.h"
 
-DocumentModel::DocumentModel()
+DocModel::DocModel()
 {
 }
 
 
-DocumentModel::~DocumentModel()
+DocModel::~DocModel()
 {
 }
 
-void DocumentModel::ParseStr(const QString &s)
+void DocModel::ParseStr(const QString &s)
 {
     QString line;
     for (QChar c : s) {
@@ -20,52 +20,33 @@ void DocumentModel::ParseStr(const QString &s)
     }
 }
 
-int64_t DocumentModel::GetLineCnt() const
+RowCnt DocModel::GetRowCnt() const
 {
-    return static_cast<int64_t>(lines_.size());
+    return static_cast<RowCnt>(lines_.size());
 }
 
-int64_t DocumentModel::GetCharCntOfLine(int64_t lineIndex) const
+ColCnt DocModel::GetColCntOfLine(RowIndex lineIndex) const
 {
     return static_cast<int64_t>(lines_[lineIndex].size());
 }
 
-int64_t DocumentModel::GetViewLineBegin() const
+const QString &DocModel::operator[](RowIndex rowIndex) const
 {
-    return view_line_begin_;
+    return lines_[rowIndex];
 }
 
-int64_t DocumentModel::GetViewLineCnt() const
+void DocModel::SetCursor(RowIndex row, ColIndex col)
 {
-    const int64_t lineCnt = GetLineCnt();
-    if (view_line_begin_ < lineCnt)
-    {
-        return static_cast<int64_t>(lineCnt - view_line_begin_);
-    }
-    else
-    {
-        return 0;
-    }
+    cursor_.SetRow(row);
+    cursor_.SetCol(col);
 }
 
-int64_t DocumentModel::GetViewCharCntOfLine(int64_t viewLineIndex) const
+void DocModel::SetCursor(const DocSel & cursor)
 {
-    return static_cast<int64_t>(lines_[view_line_begin_ + viewLineIndex].size());
+    cursor_ = cursor;
 }
 
-QChar DocumentModel::GetCharByViewPos(int64_t row, int64_t col) const
-{
-    return lines_[row].at(col);
-}
 
-bool DocumentModel::IsSelectedByViewPos(int64_t row, int64_t col) const
-{
-    return true;
-    if (row == 0 && col >= 3 && col <= 6)
-    {
-        return true;
-    }
-    return false;
-}
+
 
 

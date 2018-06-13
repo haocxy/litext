@@ -3,30 +3,112 @@
 #include <vector>
 #include <QString>
 
-class DocumentModel
+#include "global.h"
+
+typedef i64 RowIndex;
+typedef i64 RowCnt;
+typedef i32 ColIndex;
+typedef i32 ColCnt;
+typedef i64 CharCnt;
+
+class DocSel
 {
 public:
-    DocumentModel();
-    ~DocumentModel();
+    DocSel() = default;
+    DocSel(RowIndex row, ColIndex col, CharCnt cnt = 0)
+        : m_row(row), m_col(col), m_cnt(cnt)
+    {}
+
+    DocSel(const DocSel &obj)
+        : m_row(obj.m_row), m_col(obj.m_col), m_cnt(obj.m_cnt)
+    {}
+
+    void Move(Dir dir)
+    {
+        switch (dir)
+        {
+        case Dir::Up:
+            --m_row;
+            return;
+        case Dir::Down:
+            ++m_row;
+            return;
+        case Dir::Left:
+            --m_col;
+            return;
+        case Dir::Right:
+            ++m_col;
+            return;
+        default:
+            return;
+        }
+    }
+
+    DocSel Next(Dir dir) const
+    {
+        switch (dir)
+        {
+        case Dir::Up:
+            return DocSel(m_row - 1, m_col, m_cnt);
+        case Dir::Down:
+            return DocSel(m_row + 1, m_col, m_cnt);
+        case Dir::Left:
+            return DocSel(m_row, m_col - 1, m_cnt);
+        case Dir::Right:
+            return DocSel(m_row, m_col + 1, m_cnt);
+        default:
+            return *this;
+        }
+    }
+
+    void SetRow(RowIndex row) { m_row = row; }
+    void SetCol(ColIndex col) { m_col = col; }
+
+    RowIndex GetRow() const { return m_row; }
+    ColIndex GetCol() const { return m_col; }
+
+    bool operator==(const DocSel &obj) const
+    {
+        return m_row == obj.m_row
+            && m_col == obj.m_col
+            && m_cnt == obj.m_cnt
+            ;
+    }
+
+    bool operator!=(const DocSel &obj) const
+    {
+        return !(*this == obj);
+    }
+
+private:
+    RowIndex m_row = 0;
+    ColIndex m_col = 0;
+    CharCnt m_cnt = 0;
+};
+
+class DocModel
+{
+public:
+    DocModel();
+    ~DocModel();
 
     void ParseStr(const QString &s);
 
-    int64_t GetLineCnt() const;
+    RowCnt GetRowCnt() const;
 
-    int64_t GetCharCntOfLine(int64_t lineIndex) const;
+    ColCnt GetColCntOfLine(RowIndex lineIndex) const;
 
-    int64_t GetViewLineBegin() const;
+    const QString &operator[](RowIndex rowIndex) const;
 
-    int64_t GetViewLineCnt() const;
+    void SetCursor(RowIndex row, ColIndex col);
 
-    int64_t GetViewCharCntOfLine(int64_t viewLineIndex) const;
+    void SetCursor(const DocSel &cursor);
 
-    QChar GetCharByViewPos(int64_t row, int64_t col) const;
-
-    bool IsSelectedByViewPos(int64_t row, int64_t col) const;
+    const DocSel &GetCursor() const { return cursor_; }
 
 private:
     std::vector<QString> lines_;
-    int64_t view_line_begin_ = 0;
+    DocSel cursor_;
 };
+
 
