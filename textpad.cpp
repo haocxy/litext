@@ -92,7 +92,7 @@ void TextPad::paintRowBackground(QPainter &p)
     }
 }
 
-static int kFontMargin = 2;
+static int kFontMargin = 1;
 static int kLeftGap = 2;
 
 namespace
@@ -223,7 +223,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
             for (ColIndex col = 0; col < last; ++col)
             {
                 const CharDrawInfo &ci = lineInfo.charInfos[col];
-                if (ci.drawLeftX <= x && x <= ci.drawLeftX + ci.rawFontWidth)
+                if (x < ci.drawLeftX + ci.rawFontWidth)
                 {
                     if (x <= ci.drawLeftX + ci.rawFontWidth / 2)
                     {
