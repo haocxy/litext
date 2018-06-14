@@ -15,35 +15,35 @@ void DocModel::ParseStr(const QString &s)
     for (QChar c : s) {
         line.push_back(c);
         if (c == '\n') {
-            lines_.push_back(std::move(line));
+            m_lines.push_back(std::move(line));
         }
     }
 }
 
 RowCnt DocModel::GetRowCnt() const
 {
-    return static_cast<RowCnt>(lines_.size());
+    return static_cast<RowCnt>(m_lines.size());
 }
 
 ColCnt DocModel::GetColCntOfLine(RowIndex lineIndex) const
 {
-    return static_cast<int64_t>(lines_[lineIndex].size());
+    return static_cast<int64_t>(m_lines[lineIndex].size());
 }
 
 const QString &DocModel::operator[](RowIndex rowIndex) const
 {
-    return lines_[rowIndex];
+    return m_lines[rowIndex];
 }
 
 void DocModel::SetCursor(RowIndex row, ColIndex col)
 {
-    cursor_.SetRow(row);
-    cursor_.SetCol(col);
+    m_cursor.SetRow(row);
+    m_cursor.SetCol(col);
 }
 
 void DocModel::SetCursor(const DocSel & cursor)
 {
-    cursor_ = cursor;
+    m_cursor = cursor;
 }
 
 

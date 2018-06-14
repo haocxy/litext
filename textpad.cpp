@@ -37,9 +37,9 @@ namespace
 }
 
 TextPad::TextPad(DocModel &model, QWidget *parent)
-    : font_(kFontFamily, kFontSize)
-    , font_metrix_(font_)
-    , model_(model)
+    : m_font(kFontFamily, kFontSize)
+    , m_fontMetrix(m_font)
+    , m_model(model)
     , QWidget(parent)
 {
     // 等宽："Times"
@@ -48,19 +48,16 @@ TextPad::TextPad(DocModel &model, QWidget *parent)
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocus();
-
-    lay_select_ = new QPixmap(size());
 }
 
 bool TextPad::IsFixWidthFont() const
 {
-    return font_metrix_.width('i') == font_metrix_.width('w');
+    return m_fontMetrix.width('i') == m_fontMetrix.width('w');
 }
 
 TextPad::~TextPad()
 {
-    delete lay_select_;
-    lay_select_ = nullptr;
+
 }
 
 void TextPad::paintBackground(QPainter &p)
@@ -77,7 +74,7 @@ void TextPad::paintRowBackground(QPainter &p)
 {
     PainterAutoSaver painterAutoSaver(p);
 
-    const DocSel &cursor = model_.GetCursor();
+    const DocSel &cursor = m_model.GetCursor();
 
     const int width = rect().width();
 
@@ -120,25 +117,25 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 {
     prepared_draw_info_.Clear();
 
-    const int fontHeight = font_metrix_.height();
+    const int fontHeight = m_fontMetrix.height();
     const int lineHeight = GetLineHeight();//fontHeight / 2 + fontHeight;
     
     const bool isFixWidthFont = IsFixWidthFont();
-    const int widthForFix = font_metrix_.width('a');
+    const int widthForFix = m_fontMetrix.width('a');
 
     int leftX = 0;
 
-    const int fontAscent = font_metrix_.ascent();
-    const int fontDescent = font_metrix_.descent();
+    const int fontAscent = m_fontMetrix.ascent();
+    const int fontDescent = m_fontMetrix.descent();
 
-    int baseLineY = font_metrix_.ascent();
+    int baseLineY = m_fontMetrix.ascent();
 
-    const RowCnt rowCnt = model_.GetRowCnt();
+    const RowCnt rowCnt = m_model.GetRowCnt();
 
     for (RowIndex row = 0; row < rowCnt; ++row)
     {
         leftX = kLeftGap;
-        const ColCnt charCnt = model_.GetColCntOfLine(row);
+        const ColCnt charCnt = m_model.GetColCntOfLine(row);
 
         int lineTopY = baseLineY - fontAscent;
         int lineBottomY = baseLineY + fontDescent;
@@ -151,10 +148,10 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
         for (ColIndex col = 0; col < charCnt; ++col)
         {
-            const QChar ch(model_[row][col]);
+            const QChar ch(m_model[row][col]);
 
             // 从字体引擎获得的原始字符宽度
-            const int rawFontWidth = font_metrix_.width(ch);
+            const int rawFontWidth = m_fontMetrix.width(ch);
             
             // 判断这个字符是否是宽字符
             const bool isWideChar = rawFontWidth > widthForFix;
@@ -185,7 +182,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
             {
                 // 如果开启了自动换行则把绘制位置定位到下一行开头
                 // 如果未开启自动换行，则跳过改行后面的绘制，开始绘制下一行
-                if (_wrapLine)
+                if (m_wrapLine)
                 {
                     leftX = kLeftGap;
                     baseLineY += lineHeight;
@@ -260,7 +257,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
 
 int TextPad::GetLineHeight() const
 {
-    const int fontHeight = font_metrix_.height();
+    const int fontHeight = m_fontMetrix.height();
     return fontHeight * 1.2;
 }
 
@@ -268,7 +265,7 @@ void TextPad::paintInsertCursor(QPainter &p)
 {
     PainterAutoSaver painterAutoSaver(p);
 
-    const DocSel &cursor = model_.GetCursor();
+    const DocSel &cursor = m_model.GetCursor();
 
     const int lineHeight = GetLineHeight();
 
@@ -303,7 +300,7 @@ void TextPad::paintTextContent(QPainter &p)
 {
     PainterAutoSaver painterAutoSaver(p);
 
-    p.setFont(font_);
+    p.setFont(m_font);
 
     for (const LineDrawInfo &lineDrawInfo : prepared_draw_info_._drawInfos)
     {
@@ -367,9 +364,9 @@ void TextPad::mousePressEvent(QMouseEvent *e)
     if (e->button() == Qt::LeftButton)
     {
         const DocSel newCursor(GetCursorByPoint(e->x(), e->y()));
-        if (newCursor != model_.GetCursor())
+        if (newCursor != m_model.GetCursor())
         {
-            model_.SetCursor(newCursor);
+            m_model.SetCursor(newCursor);
             repaint();
         }
     }

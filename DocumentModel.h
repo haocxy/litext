@@ -104,11 +104,11 @@ public:
 
     void SetCursor(const DocSel &cursor);
 
-    const DocSel &GetCursor() const { return cursor_; }
+    const DocSel &GetCursor() const { return m_cursor; }
 
 private:
-    std::vector<QString> lines_;
-    DocSel cursor_;
+    std::vector<QString> m_lines;
+    DocSel m_cursor;
 };
 
 

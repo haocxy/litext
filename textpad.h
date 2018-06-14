@@ -77,14 +77,11 @@ private:
     int GetLineHeight() const;
 
 private:
-    DocModel & model_;
-    QFont font_;
-    QFontMetrics font_metrix_;
+    DocModel & m_model;
+    QFont m_font;
+    QFontMetrics m_fontMetrix;
 
 private:
-    QPixmap *lay_select_ = nullptr;
-
-private:
-    bool _wrapLine = true;
+    bool m_wrapLine = true;
 };
 

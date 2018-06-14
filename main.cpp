@@ -3,9 +3,9 @@
 
 #include "DocumentModel.h"
 
-static const char* s = "";
-//"Hello, whats your name? My name is HanMeiMei.\n"
-//"你好你好nihaohaha你好吗abcabcypabcabcHanMeiMei.\n";
+static const char* s = ""
+"Hello, whats your name? My name is HanMeiMei.\n"
+"你好你好nihaohaha你好吗abcabcypabcabcHanMeiMei.\n";
 
 int main(int argc, char *argv[])
 {
