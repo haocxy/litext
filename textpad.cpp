@@ -209,6 +209,8 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         }
 
         baseLineY += lineHeight;
+
+        lineDrawInfo->rowEnd = true;
     }
 }
 
@@ -223,19 +225,19 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
             for (ColIndex col = 0; col < colCnt; ++col)
             {
                 const CharDrawInfo &ci = lineInfo.charInfos[col];
-                if (x < ci.drawLeftX + ci.rawFontWidth)
+                if (x < ci.drawLeftX + ci.rawFontWidth / 2)
                 {
-                    if (x <= ci.drawLeftX + ci.rawFontWidth / 2)
-                    {
-                        return DocSel(lineInfo.rowIndex, lineInfo.colOffset + col);
-                    }
-                    else
-                    {
-                        return DocSel(lineInfo.rowIndex, lineInfo.colOffset + col + 1);
-                    }
+                    return DocSel(lineInfo.rowIndex, lineInfo.colOffset + col);
                 }
             }
-            return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
+            if (lineInfo.rowEnd)
+            {
+                return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
+            }
+            else
+            {
+                return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt);
+            }
         }
     }
     const RowCnt rowCnt(prepared_draw_info_._drawInfos.size());

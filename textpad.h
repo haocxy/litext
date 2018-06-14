@@ -53,6 +53,7 @@ private:
         int drawTopY = 0; // 这一行的绘制区域上限y坐标
         int drawBottomY = 0; // 这一行的绘制区域下限y坐标
         int lineHeight = 0;
+        bool rowEnd = false;
         std::vector<CharDrawInfo> charInfos;
     };
 
