@@ -18,6 +18,12 @@ void DocModel::ParseStr(const QString &s)
             m_lines.push_back(std::move(line));
         }
     }
+    if (!line.isEmpty())
+    {
+        // 如果最后一行没有换行，则插入一个0字符作为哨兵字符
+        line.push_back(QChar(0));
+        m_lines.push_back(std::move(line));
+    }
 }
 
 RowCnt DocModel::GetRowCnt() const

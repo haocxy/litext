@@ -5,7 +5,8 @@
 
 static const char* s = ""
 "Hello, whats your name? My name is HanMeiMei.\n"
-"你好你好nihaohaha你好吗abcabcypabcabcHanMeiMei.\n";
+"你好你好nihaohaha你好吗abcabcypabcabcHanMeiMei.\n"
+"我的名字叫韩梅梅";
 
 int main(int argc, char *argv[])
 {

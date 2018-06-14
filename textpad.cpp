@@ -82,13 +82,20 @@ void TextPad::paintRowBackground(QPainter &p)
 
     const QColor color = QColor(Qt::blue).lighter(190);
 
+    bool cursorLineDrawed = false;
+
     for (const LineDrawInfo &row : prepared_draw_info_._drawInfos)
     {
         if (row.rowIndex == cursor.GetRow())
         {
             p.fillRect(0, row.drawBottomY - lineHeight, width, lineHeight, color);
-            return;
+            cursorLineDrawed = true;
         }
+    }
+
+    if (cursorLineDrawed)
+    {
+        return;
     }
 
     p.fillRect(0, 0, width, lineHeight, color);
