@@ -81,15 +81,20 @@ void TextPad::paintRowBackground(QPainter &p)
 
     const int width = rect().width();
 
+    const int lineHeight = GetLineHeight();
+
     const QColor color = QColor(Qt::blue).lighter(190);
 
     for (const LineDrawInfo &row : prepared_draw_info_._drawInfos)
     {
         if (row.rowIndex == cursor.GetRow())
         {
-            p.fillRect(0, row.drawBottomY - row.lineHeight, width, row.lineHeight, color);
+            p.fillRect(0, row.drawBottomY - lineHeight, width, lineHeight, color);
+            return;
         }
     }
+
+    p.fillRect(0, 0, width, lineHeight, color);
 }
 
 static int kFontMargin = 1;
@@ -116,7 +121,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
     prepared_draw_info_.Clear();
 
     const int fontHeight = font_metrix_.height();
-    const int lineHeight = fontHeight * 1.2;//fontHeight / 2 + fontHeight;
+    const int lineHeight = GetLineHeight();//fontHeight / 2 + fontHeight;
     
     const bool isFixWidthFont = IsFixWidthFont();
     const int widthForFix = font_metrix_.width('a');
@@ -143,7 +148,6 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         lineDrawInfo->baseLineY = baseLineY;
         lineDrawInfo->drawTopY = lineTopY;
         lineDrawInfo->drawBottomY = lineBottomY;
-        lineDrawInfo->lineHeight = lineHeight;
 
         for (ColIndex col = 0; col < charCnt; ++col)
         {
@@ -195,7 +199,6 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
                     lineDrawInfo->baseLineY = baseLineY;
                     lineDrawInfo->drawTopY = lineTopY;
                     lineDrawInfo->drawBottomY = lineBottomY;
-                    lineDrawInfo->lineHeight = lineHeight;
                 }
             }
 
@@ -216,9 +219,11 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
 DocSel TextPad::GetCursorByPoint(int x, int y) const
 {
+    const int lineHeight = GetLineHeight();
+
     for (const LineDrawInfo &lineInfo : prepared_draw_info_._drawInfos)
     {
-        if (lineInfo.drawBottomY - lineInfo.lineHeight <= y && y < lineInfo.drawBottomY)
+        if (lineInfo.drawBottomY - lineHeight <= y && y < lineInfo.drawBottomY)
         {
             const ColCnt colCnt = ColCnt(lineInfo.charInfos.size());
             // 循环到换行符之前就结束
@@ -253,11 +258,19 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
     return DocSel();
 }
 
+int TextPad::GetLineHeight() const
+{
+    const int fontHeight = font_metrix_.height();
+    return fontHeight * 1.2;
+}
+
 void TextPad::paintInsertCursor(QPainter &p)
 {
     PainterAutoSaver painterAutoSaver(p);
 
     const DocSel &cursor = model_.GetCursor();
+
+    const int lineHeight = GetLineHeight();
 
     for (const LineDrawInfo &row : prepared_draw_info_._drawInfos)
     {
@@ -272,16 +285,18 @@ void TextPad::paintInsertCursor(QPainter &p)
 
                     p.drawLine(
                         charInfo.drawLeftX,
-                        row.drawBottomY - row.lineHeight,
+                        row.drawBottomY - lineHeight,
                         charInfo.drawLeftX,
                         row.drawBottomY - 1
                     );
 
-                    break;
+                    return;
                 }
             }
         }
     }
+
+    p.drawLine(kLeftGap, 0, kLeftGap, lineHeight - 1);
 }
 
 void TextPad::paintTextContent(QPainter &p)

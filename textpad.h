@@ -52,7 +52,6 @@ private:
         int baseLineY = 0; // 基线y坐标
         int drawTopY = 0; // 这一行的绘制区域上限y坐标
         int drawBottomY = 0; // 这一行的绘制区域下限y坐标
-        int lineHeight = 0;
         bool rowEnd = false;
         std::vector<CharDrawInfo> charInfos;
     };
@@ -74,6 +73,8 @@ private:
     void prepareTextContentDrawInfo(int areaWidth);
 
     DocSel GetCursorByPoint(int x, int y) const;
+
+    int GetLineHeight() const;
 
 private:
     DocModel & model_;
