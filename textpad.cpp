@@ -218,9 +218,9 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
     {
         if (lineInfo.drawBottomY - lineInfo.lineHeight <= y && y < lineInfo.drawBottomY)
         {
-            const ColCnt last = ColCnt(lineInfo.charInfos.size()) - 1;
+            const ColCnt colCnt = ColCnt(lineInfo.charInfos.size());
             // 循环到换行符之前就结束
-            for (ColIndex col = 0; col < last; ++col)
+            for (ColIndex col = 0; col < colCnt; ++col)
             {
                 const CharDrawInfo &ci = lineInfo.charInfos[col];
                 if (x < ci.drawLeftX + ci.rawFontWidth)
@@ -235,7 +235,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
                     }
                 }
             }
-            return DocSel(lineInfo.rowIndex, lineInfo.colOffset + last);
+            return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
         }
     }
     const RowCnt rowCnt(prepared_draw_info_._drawInfos.size());
