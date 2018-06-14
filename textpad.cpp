@@ -87,10 +87,7 @@ void TextPad::paintRowBackground(QPainter &p)
     {
         if (row.rowIndex == cursor.GetRow())
         {
-
             p.fillRect(0, row.drawBottomY - row.lineHeight, width, row.lineHeight, color);
-
-            break;
         }
     }
 }
@@ -142,7 +139,6 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         int lineBottomY = baseLineY + fontDescent;
 
         LineDrawInfo *lineDrawInfo = &GrowBack(prepared_draw_info_._drawInfos);
-        lineDrawInfo->isWrapLine = false;
         lineDrawInfo->rowIndex = row;
         lineDrawInfo->baseLineY = baseLineY;
         lineDrawInfo->drawTopY = lineTopY;
@@ -194,7 +190,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
                     
                     lineDrawInfo = &GrowBack(prepared_draw_info_._drawInfos);
-                    lineDrawInfo->isWrapLine = true;
+                    lineDrawInfo->colOffset = col;
                     lineDrawInfo->rowIndex = row;
                     lineDrawInfo->baseLineY = baseLineY;
                     lineDrawInfo->drawTopY = lineTopY;
@@ -231,15 +227,15 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
                 {
                     if (x <= ci.drawLeftX + ci.rawFontWidth / 2)
                     {
-                        return DocSel(lineInfo.rowIndex, col);
+                        return DocSel(lineInfo.rowIndex, lineInfo.colOffset + col);
                     }
                     else
                     {
-                        return DocSel(lineInfo.rowIndex, col + 1);
+                        return DocSel(lineInfo.rowIndex, lineInfo.colOffset + col + 1);
                     }
                 }
             }
-            return DocSel(lineInfo.rowIndex, last);
+            return DocSel(lineInfo.rowIndex, lineInfo.colOffset + last);
         }
     }
     const RowCnt rowCnt(prepared_draw_info_._drawInfos.size());
@@ -249,7 +245,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
         const ColCnt colCnt(lineInfo.charInfos.size());
         if (colCnt > 0)
         {
-            return DocSel(rowCnt - 1, colCnt - 1);
+            return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
         }
     }
     return DocSel();
@@ -268,7 +264,7 @@ void TextPad::paintInsertCursor(QPainter &p)
             const ColCnt colCnt = ColCnt(row.charInfos.size());
             for (ColIndex col = 0; col < colCnt; ++col)
             {
-                if (col == cursor.GetCol())
+                if (row.colOffset + col == cursor.GetCol())
                 {
                     const CharDrawInfo &charInfo = row.charInfos[col];
 
@@ -282,8 +278,6 @@ void TextPad::paintInsertCursor(QPainter &p)
                     break;
                 }
             }
-
-            break;
         }
     }
 }

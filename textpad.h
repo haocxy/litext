@@ -44,8 +44,11 @@ private:
 
     struct LineDrawInfo
     {
-        bool isWrapLine = false;
-        int rowIndex = 0;
+        // 这一绘制行的列偏移
+        // 如果开启了自动折行，则这个字段表示前面几行的字符总数量
+        // 如果没有开启自动折行，则这个值始终为0
+        ColCnt colOffset = 0;
+        RowIndex rowIndex = 0;
         int baseLineY = 0; // 基线y坐标
         int drawTopY = 0; // 这一行的绘制区域上限y坐标
         int drawBottomY = 0; // 这一行的绘制区域下限y坐标
