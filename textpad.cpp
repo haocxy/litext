@@ -128,19 +128,11 @@ namespace
 void TextPad::prepareTextContentDrawInfo(int areaWidth)
 {
     m_drawInfo.lineInfos.clear();
-
-    const int fontHeight = m_fontMetrix.height();
-    const int lineHeight = GetLineHeight();
     
     const bool isFixWidthFont = IsFixWidthFont();
     const int widthForFix = m_fontMetrix.width('a');
 
     int leftX = 0;
-
-    const int fontAscent = m_fontMetrix.ascent();
-    const int fontDescent = m_fontMetrix.descent();
-
-    int baseLineY = m_fontMetrix.ascent();
 
     const RowCnt rowCnt = m_model.GetRowCnt();
 
@@ -148,9 +140,6 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
     {
         leftX = kLeftGap;
         const ColCnt charCnt = m_model.GetColCntOfLine(row);
-
-        int lineTopY = baseLineY - fontAscent;
-        int lineBottomY = baseLineY + fontDescent;
 
         LineDrawInfo *lineDrawInfo = &GrowBack(m_drawInfo.lineInfos);
         lineDrawInfo->rowModelIndex = row;
@@ -194,11 +183,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
                 if (m_wrapLine)
                 {
                     leftX = kLeftGap;
-                    baseLineY += lineHeight;
-                    lineTopY = baseLineY - fontAscent;
-                    lineBottomY = baseLineY + fontDescent;
 
-                    
                     lineDrawInfo = &GrowBack(m_drawInfo.lineInfos);
                     lineDrawInfo->colOffset = col;
                     lineDrawInfo->rowModelIndex = row;
@@ -213,8 +198,6 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
             leftX += drawTotalCharWidth;
         }
-
-        baseLineY += lineHeight;
 
         lineDrawInfo->flag |= NSDrawInfo::LineFlag::RowEnd;
     }
