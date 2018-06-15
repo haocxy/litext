@@ -1,4 +1,4 @@
-#include "DocumentModel.h"
+#include "docmodel.h"
 
 DocModel::DocModel()
 {

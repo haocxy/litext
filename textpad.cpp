@@ -9,30 +9,28 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 
-#include "DocumentModel.h"
-
 namespace
 {
     const char *kFontFamilyTimes = "Times";
     const char *kFontFamilyYaHei = "Microsoft YaHei";
 
     const char *kFontFamily = kFontFamilyTimes;
-    const int kFontSize = 30;
+    const int kFontSize = 16;
 
     class PainterAutoSaver
     {
     public:
-        PainterAutoSaver(QPainter &painter) :painter_(painter)
+        PainterAutoSaver(QPainter &painter) :m_painterRef(painter)
         {
-            painter_.save();
+            m_painterRef.save();
         }
         ~PainterAutoSaver()
         {
-            painter_.restore();
+            m_painterRef.restore();
         }
 
     private:
-        QPainter & painter_;
+        QPainter & m_painterRef;
     };
 }
 
@@ -84,7 +82,7 @@ void TextPad::paintRowBackground(QPainter &p)
 
     bool cursorLineDrawed = false;
 
-    for (const LineDrawInfo &row : prepared_draw_info_._drawInfos)
+    for (const RowDrawInfo &row : m_drawInfo._drawInfos)
     {
         if (row.rowIndex == cursor.GetRow())
         {
@@ -122,10 +120,10 @@ namespace
 
 void TextPad::prepareTextContentDrawInfo(int areaWidth)
 {
-    prepared_draw_info_.Clear();
+    m_drawInfo.Clear();
 
     const int fontHeight = m_fontMetrix.height();
-    const int lineHeight = GetLineHeight();//fontHeight / 2 + fontHeight;
+    const int lineHeight = GetLineHeight();
     
     const bool isFixWidthFont = IsFixWidthFont();
     const int widthForFix = m_fontMetrix.width('a');
@@ -147,7 +145,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         int lineTopY = baseLineY - fontAscent;
         int lineBottomY = baseLineY + fontDescent;
 
-        LineDrawInfo *lineDrawInfo = &GrowBack(prepared_draw_info_._drawInfos);
+        RowDrawInfo *lineDrawInfo = &GrowBack(m_drawInfo._drawInfos);
         lineDrawInfo->rowIndex = row;
         lineDrawInfo->baseLineY = baseLineY;
         lineDrawInfo->drawTopY = lineTopY;
@@ -197,7 +195,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
                     lineBottomY = baseLineY + fontDescent;
 
                     
-                    lineDrawInfo = &GrowBack(prepared_draw_info_._drawInfos);
+                    lineDrawInfo = &GrowBack(m_drawInfo._drawInfos);
                     lineDrawInfo->colOffset = col;
                     lineDrawInfo->rowIndex = row;
                     lineDrawInfo->baseLineY = baseLineY;
@@ -225,7 +223,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
 {
     const int lineHeight = GetLineHeight();
 
-    for (const LineDrawInfo &lineInfo : prepared_draw_info_._drawInfos)
+    for (const RowDrawInfo &lineInfo : m_drawInfo._drawInfos)
     {
         if (lineInfo.drawBottomY - lineHeight <= y && y < lineInfo.drawBottomY)
         {
@@ -249,11 +247,11 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
             }
         }
     }
-    const RowCnt rowCnt(prepared_draw_info_._drawInfos.size());
+    const RowCnt rowCnt(m_drawInfo._drawInfos.size());
     if (rowCnt > 0)
     {
-        const LineDrawInfo &lineInfo = prepared_draw_info_._drawInfos[rowCnt - 1];
-        const ColCnt colCnt(lineInfo.charInfos.size());
+        const RowDrawInfo &lineInfo = m_drawInfo._drawInfos[rowCnt - 1];
+        const ColCnt colCnt = static_cast<ColCnt>(lineInfo.charInfos.size());
         if (colCnt > 0)
         {
             return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
@@ -276,7 +274,7 @@ void TextPad::paintInsertCursor(QPainter &p)
 
     const int lineHeight = GetLineHeight();
 
-    for (const LineDrawInfo &row : prepared_draw_info_._drawInfos)
+    for (const RowDrawInfo &row : m_drawInfo._drawInfos)
     {
         if (row.rowIndex == cursor.GetRow())
         {
@@ -309,7 +307,7 @@ void TextPad::paintTextContent(QPainter &p)
 
     p.setFont(m_font);
 
-    for (const LineDrawInfo &lineDrawInfo : prepared_draw_info_._drawInfos)
+    for (const RowDrawInfo &lineDrawInfo : m_drawInfo._drawInfos)
     {
         for (const CharDrawInfo &charDrawInfo : lineDrawInfo.charInfos)
         {
@@ -374,7 +372,7 @@ void TextPad::mousePressEvent(QMouseEvent *e)
         if (newCursor != m_model.GetCursor())
         {
             m_model.SetCursor(newCursor);
-            repaint();
+            update();
         }
     }
 }

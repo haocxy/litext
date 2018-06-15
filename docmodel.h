@@ -3,16 +3,20 @@
 #include <vector>
 #include <QString>
 
-#include "global.h"
-
-typedef i64 RowIndex;
-typedef i64 RowCnt;
-typedef i32 ColIndex;
-typedef i32 ColCnt;
-typedef i64 CharCnt;
+typedef int64_t RowIndex;
+typedef int64_t RowCnt;
+typedef int32_t ColIndex;
+typedef int32_t ColCnt;
+typedef int64_t CharCnt;
 
 class DocSel
 {
+public:
+    enum class Dir
+    {
+        Up, Down, Left, Right
+    };
+
 public:
     DocSel() = default;
     DocSel(RowIndex row, ColIndex col, CharCnt cnt = 0)

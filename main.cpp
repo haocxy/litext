@@ -1,7 +1,7 @@
 #include "textpad.h"
 #include <QApplication>
 
-#include "DocumentModel.h"
+#include "docmodel.h"
 
 static const char* s = ""
 "Hello, whats your name? My name is HanMeiMei.\n"

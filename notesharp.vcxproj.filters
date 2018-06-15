@@ -33,7 +33,7 @@
     <ClCompile Include="textpad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DocumentModel.cpp">
+    <ClCompile Include="docmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -51,10 +51,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DocumentModel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="global.h">
+    <ClInclude Include="docmodel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

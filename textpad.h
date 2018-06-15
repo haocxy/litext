@@ -1,13 +1,11 @@
 #pragma once
 
-
 #include <QWidget>
 
-#include "DocumentModel.h"
+#include "docmodel.h"
 
 class QFont;
 class QFontMetrics;
-class DocModel;
 
 class TextPad : public QWidget
 {
@@ -42,7 +40,7 @@ private:
         int rawFontWidth = 0; // 从字体引擎得到的原始字符宽度
     };
 
-    struct LineDrawInfo
+    struct RowDrawInfo
     {
         // 这一绘制行的列偏移
         // 如果开启了自动折行，则这个字段表示前面几行的字符总数量
@@ -56,7 +54,7 @@ private:
         std::vector<CharDrawInfo> charInfos;
     };
 
-    class PreparedDrawInfo
+    class DrawInfo
     {
     public:
 
@@ -65,10 +63,10 @@ private:
             _drawInfos.clear();
         }
 
-        std::vector<LineDrawInfo> _drawInfos;
+        std::vector<RowDrawInfo> _drawInfos;
     };
 
-    PreparedDrawInfo prepared_draw_info_;
+    DrawInfo m_drawInfo;
 
     void prepareTextContentDrawInfo(int areaWidth);
 
