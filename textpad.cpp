@@ -82,9 +82,9 @@ void TextPad::paintRowBackground(QPainter &p)
 
     bool cursorLineDrawed = false;
 
-    for (const RowDrawInfo &row : m_drawInfo._drawInfos)
+    for (const LineDrawInfo &row : m_drawInfo.lineInfos)
     {
-        if (row.rowIndex == cursor.GetRow())
+        if (row.rowModelIndex == cursor.GetRow())
         {
             p.fillRect(0, row.drawBottomY - lineHeight, width, lineHeight, color);
             cursorLineDrawed = true;
@@ -120,7 +120,7 @@ namespace
 
 void TextPad::prepareTextContentDrawInfo(int areaWidth)
 {
-    m_drawInfo.Clear();
+    m_drawInfo.lineInfos.clear();
 
     const int fontHeight = m_fontMetrix.height();
     const int lineHeight = GetLineHeight();
@@ -145,8 +145,8 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         int lineTopY = baseLineY - fontAscent;
         int lineBottomY = baseLineY + fontDescent;
 
-        RowDrawInfo *lineDrawInfo = &GrowBack(m_drawInfo._drawInfos);
-        lineDrawInfo->rowIndex = row;
+        LineDrawInfo *lineDrawInfo = &GrowBack(m_drawInfo.lineInfos);
+        lineDrawInfo->rowModelIndex = row;
         lineDrawInfo->baseLineY = baseLineY;
         lineDrawInfo->drawTopY = lineTopY;
         lineDrawInfo->drawBottomY = lineBottomY;
@@ -195,9 +195,9 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
                     lineBottomY = baseLineY + fontDescent;
 
                     
-                    lineDrawInfo = &GrowBack(m_drawInfo._drawInfos);
+                    lineDrawInfo = &GrowBack(m_drawInfo.lineInfos);
                     lineDrawInfo->colOffset = col;
-                    lineDrawInfo->rowIndex = row;
+                    lineDrawInfo->rowModelIndex = row;
                     lineDrawInfo->baseLineY = baseLineY;
                     lineDrawInfo->drawTopY = lineTopY;
                     lineDrawInfo->drawBottomY = lineBottomY;
@@ -205,7 +205,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
             }
 
             CharDrawInfo &charDrawInfo = GrowBack(lineDrawInfo->charInfos);
-            charDrawInfo.ch = ch;
+            charDrawInfo.ch = ch.unicode();
             charDrawInfo.drawLeftX = leftX + kFontMargin;
             charDrawInfo.drawTotalWidth = drawTotalCharWidth;
             charDrawInfo.rawFontWidth = rawFontWidth;
@@ -223,7 +223,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
 {
     const int lineHeight = GetLineHeight();
 
-    for (const RowDrawInfo &lineInfo : m_drawInfo._drawInfos)
+    for (const LineDrawInfo &lineInfo : m_drawInfo.lineInfos)
     {
         if (lineInfo.drawBottomY - lineHeight <= y && y < lineInfo.drawBottomY)
         {
@@ -234,27 +234,27 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
                 const CharDrawInfo &ci = lineInfo.charInfos[col];
                 if (x < ci.drawLeftX + ci.rawFontWidth / 2)
                 {
-                    return DocSel(lineInfo.rowIndex, lineInfo.colOffset + col);
+                    return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + col);
                 }
             }
             if (lineInfo.rowEnd)
             {
-                return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
+                return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + colCnt - 1);
             }
             else
             {
-                return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt);
+                return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + colCnt);
             }
         }
     }
-    const RowCnt rowCnt(m_drawInfo._drawInfos.size());
+    const RowCnt rowCnt(m_drawInfo.lineInfos.size());
     if (rowCnt > 0)
     {
-        const RowDrawInfo &lineInfo = m_drawInfo._drawInfos[rowCnt - 1];
+        const LineDrawInfo &lineInfo = m_drawInfo.lineInfos[rowCnt - 1];
         const ColCnt colCnt = static_cast<ColCnt>(lineInfo.charInfos.size());
         if (colCnt > 0)
         {
-            return DocSel(lineInfo.rowIndex, lineInfo.colOffset + colCnt - 1);
+            return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + colCnt - 1);
         }
     }
     return DocSel();
@@ -274,9 +274,9 @@ void TextPad::paintInsertCursor(QPainter &p)
 
     const int lineHeight = GetLineHeight();
 
-    for (const RowDrawInfo &row : m_drawInfo._drawInfos)
+    for (const LineDrawInfo &row : m_drawInfo.lineInfos)
     {
-        if (row.rowIndex == cursor.GetRow())
+        if (row.rowModelIndex == cursor.GetRow())
         {
             const ColCnt colCnt = ColCnt(row.charInfos.size());
             for (ColIndex col = 0; col < colCnt; ++col)
@@ -307,13 +307,13 @@ void TextPad::paintTextContent(QPainter &p)
 
     p.setFont(m_font);
 
-    for (const RowDrawInfo &lineDrawInfo : m_drawInfo._drawInfos)
+    for (const LineDrawInfo &lineDrawInfo : m_drawInfo.lineInfos)
     {
         for (const CharDrawInfo &charDrawInfo : lineDrawInfo.charInfos)
         {
             p.drawText(charDrawInfo.drawLeftX,
                 lineDrawInfo.baseLineY,
-                charDrawInfo.ch);
+                QChar(charDrawInfo.ch));
         }
     }
 }

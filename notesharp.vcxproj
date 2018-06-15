@@ -173,6 +173,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="docmodel.cpp" />
+    <ClCompile Include="drawinfo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="textpad.cpp" />
   </ItemGroup>
@@ -200,6 +201,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="docmodel.h" />
+    <ClInclude Include="doc_model_define.h" />
+    <ClInclude Include="drawinfo.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

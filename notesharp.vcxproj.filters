@@ -36,6 +36,9 @@
     <ClCompile Include="docmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="drawinfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="textpad.h">
@@ -52,6 +55,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="docmodel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drawinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="doc_model_define.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
