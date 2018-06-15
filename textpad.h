@@ -40,6 +40,8 @@ private:
 
     int GetLineHeight() const;
 
+    int GetBaseLineByLineInfoIndex(int lineInfoIndex) const;
+
 private:
     DocModel & m_model;
     QFont m_font;
