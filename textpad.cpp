@@ -394,8 +394,16 @@ void TextPad::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Down:
         break;
     case Qt::Key_Left:
+        if (m_model.CursorMovePrevChar())
+        {
+            update();
+        }
         break;
     case Qt::Key_Right:
+        if (m_model.CursorMoveNextChar())
+        {
+            update();
+        }
         break;
     case Qt::Key_Escape:
         std::exit(0);
