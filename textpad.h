@@ -38,6 +38,8 @@ private:
 
     int GetDrawLineIndexByY(int y) const;
 
+    const LineDrawInfo *GetLineDrawInfo(int lineDrawIndex) const;
+
     RowIndex GetLineModelIndexByDrawIndex(int lineDrawIndex) const;
 
     ColIndex GetColModelIndexBylineDrawIndexAndX(int lineDrawIndex, int x) const;

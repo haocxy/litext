@@ -108,7 +108,7 @@ void TextPad::paintRowBackground(QPainter &p)
     p.fillRect(0, 0, width, lineHeight, color);
 }
 
-static int kFontMargin = 10;
+static int kFontMargin = 1;
 static int kLeftGap = 2;
 static int kTabSize = 2;
 
@@ -208,7 +208,7 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
             charDrawInfo.ch = ch.unicode();
             charDrawInfo.drawLeftX = leftX + kFontMargin;
             charDrawInfo.drawTotalWidth = drawTotalCharWidth;
-            charDrawInfo.charWidth = isTab ? tabDrawTotal - kFontMargin : rawFontWidth;
+            charDrawInfo.charWidth = isTab ? tabDrawTotal - 4 * kFontMargin : rawFontWidth;
 
             leftX += drawTotalCharWidth;
         }
@@ -237,75 +237,68 @@ int TextPad::GetDrawLineIndexByY(int y) const
     return -1;
 }
 
-RowIndex TextPad::GetLineModelIndexByDrawIndex(int lineDrawIndex) const
+const LineDrawInfo * TextPad::GetLineDrawInfo(int lineDrawIndex) const
 {
-    assert(lineDrawIndex < m_drawInfo.lineInfos.size());
+    assert(lineDrawIndex < static_cast<int>(m_drawInfo.lineInfos.size()));
 
-    if (lineDrawIndex > 0)
+    if (lineDrawIndex >= 0)
     {
-        return m_drawInfo.lineInfos[lineDrawIndex].rowModelIndex;
+        return &(m_drawInfo.lineInfos[lineDrawIndex]);
     }
-    
+
     const RowCnt rowCnt = static_cast<RowCnt>(m_drawInfo.lineInfos.size());
     if (rowCnt > 0)
     {
-        m_drawInfo.lineInfos[rowCnt - 1].rowModelIndex;
+        return &(m_drawInfo.lineInfos[rowCnt - 1]);
+    }
+    return nullptr;
+}
+
+RowIndex TextPad::GetLineModelIndexByDrawIndex(int lineDrawIndex) const
+{
+    const LineDrawInfo *lineDrawInfo = GetLineDrawInfo(lineDrawIndex);
+    if (lineDrawIndex)
+    {
+        return lineDrawInfo->rowModelIndex;
     }
     return 0;
 }
 
 ColIndex TextPad::GetColModelIndexBylineDrawIndexAndX(int lineDrawIndex, int x) const
 {
-    assert(lineDrawIndex < m_drawInfo.lineInfos.size());
+    const LineDrawInfo *lineInfo = GetLineDrawInfo(lineDrawIndex);
+    if (!lineInfo)
+    {
+        return 0;
+    }
 
-    return 0;
+    const ColCnt colCnt = ColCnt(lineInfo->charInfos.size());
+    // 循环到换行符之前就结束
+    for (ColIndex col = 0; col < colCnt; ++col)
+    {
+        const CharDrawInfo &ci = lineInfo->charInfos[col];
+        if (x < ci.drawLeftX + ci.charWidth / 2)
+        {
+            return lineInfo->colOffset + col;
+        }
+    }
+
+    if ((lineInfo->flag & NSDrawInfo::LineFlag::RowEnd) != 0)
+    {
+        return lineInfo->colOffset + colCnt - 1;
+    }
+    else
+    {
+        return lineInfo->colOffset + colCnt;
+    }
 }
 
 DocSel TextPad::GetCursorByPoint(int x, int y) const
 {
-    const int lineHeight = GetLineHeight();
-    const int fontDes = m_fontMetrix.descent();
-    const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
-
-    for (int i = 0; i < lineInfoCnt; ++i)
-    {
-        const LineDrawInfo &lineInfo = m_drawInfo.lineInfos[i];
-        const int baseline = GetBaseLineByLineInfoIndex(i);
-        const int bottom = baseline + fontDes;
-        const int top = bottom - lineHeight;
-        if (top <= y && y < bottom)
-        {
-            const ColCnt colCnt = ColCnt(lineInfo.charInfos.size());
-            // 循环到换行符之前就结束
-            for (ColIndex col = 0; col < colCnt; ++col)
-            {
-                const CharDrawInfo &ci = lineInfo.charInfos[col];
-                if (x < ci.drawLeftX + ci.charWidth / 2)
-                {
-                    return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + col);
-                }
-            }
-            if ((lineInfo.flag & NSDrawInfo::LineFlag::RowEnd) != 0)
-            {
-                return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + colCnt - 1);
-            }
-            else
-            {
-                return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + colCnt);
-            }
-        }
-    }
-    const RowCnt rowCnt(m_drawInfo.lineInfos.size());
-    if (rowCnt > 0)
-    {
-        const LineDrawInfo &lineInfo = m_drawInfo.lineInfos[rowCnt - 1];
-        const ColCnt colCnt = static_cast<ColCnt>(lineInfo.charInfos.size());
-        if (colCnt > 0)
-        {
-            return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + colCnt - 1);
-        }
-    }
-    return DocSel();
+    const int drawLineIndex = GetDrawLineIndexByY(y);
+    const RowIndex rowModelIndex = GetLineModelIndexByDrawIndex(drawLineIndex);
+    const ColIndex colModelIndex = GetColModelIndexBylineDrawIndexAndX(drawLineIndex, x);
+    return DocSel(rowModelIndex, colModelIndex);
 }
 
 int TextPad::GetLineHeight() const
