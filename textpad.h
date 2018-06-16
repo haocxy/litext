@@ -36,6 +36,12 @@ private:
 
     void prepareTextContentDrawInfo(int areaWidth);
 
+    int GetDrawLineIndexByY(int y) const;
+
+    RowIndex GetLineModelIndexByDrawIndex(int lineDrawIndex) const;
+
+    ColIndex GetColModelIndexBylineDrawIndexAndX(int lineDrawIndex, int x) const;
+
     DocSel GetCursorByPoint(int x, int y) const;
 
     int GetLineHeight() const;

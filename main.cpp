@@ -4,8 +4,8 @@
 #include "docmodel.h"
 
 static const char* s = ""
-"Hello, whats your name? My name is HanMeiMei.\n"
-"你好你好nihaohaha你好吗abcabcypabcabcHanMeiMei.\n"
+"\tHello, w\thats your name? My name is HanMeiMei.\n"
+"    ab好你好anihaohaha你好吗abcabcypabcabcHanMeiMei.\n"
 "我的名字叫韩梅梅";
 
 int main(int argc, char *argv[])

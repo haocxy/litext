@@ -8,7 +8,7 @@ struct CharDrawInfo
 {
     wchar_t ch = 0;
     int drawLeftX = 0;
-    int rawFontWidth = 0;
+    int charWidth = 0;
     int drawTotalWidth = 0;
 };
 

@@ -1,5 +1,7 @@
 #include "textpad.h"
 
+#include <cassert>
+
 #include <QFont>
 #include <QFontMetrics>
 #include <QDebug>
@@ -14,7 +16,7 @@ namespace
     const char *kFontFamilyTimes = "Times";
     const char *kFontFamilyYaHei = "Microsoft YaHei";
 
-    const char *kFontFamily = kFontFamilyYaHei;
+    const char *kFontFamily = kFontFamilyTimes;
     const int kFontSize = 30;
 
     class PainterAutoSaver
@@ -106,8 +108,9 @@ void TextPad::paintRowBackground(QPainter &p)
     p.fillRect(0, 0, width, lineHeight, color);
 }
 
-static int kFontMargin = 1;
+static int kFontMargin = 10;
 static int kLeftGap = 2;
+static int kTabSize = 2;
 
 namespace
 {
@@ -132,6 +135,8 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
     const bool isFixWidthFont = IsFixWidthFont();
     const int widthForFix = m_fontMetrix.width('a');
 
+    const int tabDrawTotal = ((isFixWidthFont ? widthForFix : m_fontMetrix.width(' ')) + kFontMargin) * kTabSize;
+
     int leftX = 0;
 
     const RowCnt rowCnt = m_model.GetRowCnt();
@@ -148,6 +153,8 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         {
             const QChar ch(m_model[row][col]);
 
+            const bool isTab = ch == '\t';
+
             // 从字体引擎获得的原始字符宽度
             const int rawFontWidth = m_fontMetrix.width(ch);
             
@@ -159,20 +166,27 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
             // 绘制这个字符总共占的宽度，包括两侧空白
             int drawTotalCharWidth = 0;
-            if (isWideChar)
+            if (isTab)
             {
-                if (isFixWidthFont)
+                drawTotalCharWidth = tabDrawTotal;
+            }
+            else
+            {
+                if (isWideChar)
                 {
-                    drawTotalCharWidth = widthForFix * 2 + kFontMargin * 2;
+                    if (isFixWidthFont)
+                    {
+                        drawTotalCharWidth = widthForFix * 2 + kFontMargin * 2;
+                    }
+                    else
+                    {
+                        drawTotalCharWidth = rawFontWidth + kFontMargin;
+                    }
                 }
                 else
                 {
                     drawTotalCharWidth = rawFontWidth + kFontMargin;
                 }
-            }
-            else
-            {
-                drawTotalCharWidth = rawFontWidth + kFontMargin;
             }
 
             // 如果超出最大宽度
@@ -194,13 +208,57 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
             charDrawInfo.ch = ch.unicode();
             charDrawInfo.drawLeftX = leftX + kFontMargin;
             charDrawInfo.drawTotalWidth = drawTotalCharWidth;
-            charDrawInfo.rawFontWidth = rawFontWidth;
+            charDrawInfo.charWidth = isTab ? tabDrawTotal - kFontMargin : rawFontWidth;
 
             leftX += drawTotalCharWidth;
         }
 
         lineDrawInfo->flag |= NSDrawInfo::LineFlag::RowEnd;
     }
+}
+
+int TextPad::GetDrawLineIndexByY(int y) const
+{
+    const int lineHeight = GetLineHeight();
+    const int fontDes = m_fontMetrix.descent();
+    const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
+
+    for (int i = 0; i < lineInfoCnt; ++i)
+    {
+        const LineDrawInfo &lineInfo = m_drawInfo.lineInfos[i];
+        const int baseline = GetBaseLineByLineInfoIndex(i);
+        const int bottom = baseline + fontDes;
+        const int top = bottom - lineHeight;
+        if (top <= y && y < bottom)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+RowIndex TextPad::GetLineModelIndexByDrawIndex(int lineDrawIndex) const
+{
+    assert(lineDrawIndex < m_drawInfo.lineInfos.size());
+
+    if (lineDrawIndex > 0)
+    {
+        return m_drawInfo.lineInfos[lineDrawIndex].rowModelIndex;
+    }
+    
+    const RowCnt rowCnt = static_cast<RowCnt>(m_drawInfo.lineInfos.size());
+    if (rowCnt > 0)
+    {
+        m_drawInfo.lineInfos[rowCnt - 1].rowModelIndex;
+    }
+    return 0;
+}
+
+ColIndex TextPad::GetColModelIndexBylineDrawIndexAndX(int lineDrawIndex, int x) const
+{
+    assert(lineDrawIndex < m_drawInfo.lineInfos.size());
+
+    return 0;
 }
 
 DocSel TextPad::GetCursorByPoint(int x, int y) const
@@ -222,7 +280,7 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
             for (ColIndex col = 0; col < colCnt; ++col)
             {
                 const CharDrawInfo &ci = lineInfo.charInfos[col];
-                if (x < ci.drawLeftX + ci.rawFontWidth / 2)
+                if (x < ci.drawLeftX + ci.charWidth / 2)
                 {
                     return DocSel(lineInfo.rowModelIndex, lineInfo.colOffset + col);
                 }
