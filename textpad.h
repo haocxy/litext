@@ -2,19 +2,20 @@
 
 #include <QWidget>
 
-#include "drawinfo.h"
 #include "docmodel.h"
 #include "font_info.h"
 
 class QFont;
 class QFontMetrics;
+class SubLineComp;
+class Composer;
 
 class TextPad : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextPad(DocModel &model, const FontInfo &fontInfo, QWidget *parent = 0);
+    TextPad(DocModel &model, const FontInfoProvider &fontInfo, QWidget *parent = 0);
     ~TextPad();
 
     virtual void keyPressEvent(QKeyEvent *e) override;
@@ -32,17 +33,9 @@ private:
     
 
 private:
-    DrawInfo m_drawInfo;
+    const SubLineComp *GetSubLineByY(int y) const;
 
-    void prepareTextContentDrawInfo(int areaWidth);
-
-    int GetDrawLineIndexByY(int y) const;
-
-    const LineDrawInfo *GetLineDrawInfo(int lineDrawIndex) const;
-
-    RowIndex GetLineModelIndexByDrawIndex(int lineDrawIndex) const;
-
-    ColIndex GetColModelIndexBylineDrawIndexAndX(int lineDrawIndex, int x) const;
+    ColIndex GetColModelIndexBySubLineAndX(const SubLineComp & subLine, int x) const;
 
     DocSel GetCursorByPoint(int x, int y) const;
 
@@ -50,9 +43,7 @@ private:
 
 private:
     DocModel & m_model;
-    const FontInfo &m_fontInfo;
-
-private:
-    bool m_wrapLine = true;
+    const FontInfoProvider &m_fontInfo;
+    Composer *m_composer = nullptr;
 };
 

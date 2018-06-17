@@ -36,10 +36,10 @@
     <ClCompile Include="docmodel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="drawinfo.cpp">
+    <ClCompile Include="font_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="font_info.cpp">
+    <ClCompile Include="composer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,13 +60,13 @@
     <ClInclude Include="docmodel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="drawinfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="doc_model_define.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="font_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="composer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

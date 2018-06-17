@@ -172,8 +172,8 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="composer.cpp" />
     <ClCompile Include="docmodel.cpp" />
-    <ClCompile Include="drawinfo.cpp" />
     <ClCompile Include="font_info.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="textpad.cpp" />
@@ -201,9 +201,9 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="composer.h" />
     <ClInclude Include="docmodel.h" />
     <ClInclude Include="doc_model_define.h" />
-    <ClInclude Include="drawinfo.h" />
     <ClInclude Include="font_info.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

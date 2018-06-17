@@ -54,20 +54,42 @@ public:
         m_tabSize = tabSize;
     }
 
+    void SetWrapLineForShow(bool wrapLineForShow)
+    {
+        m_wrapLineForShow = wrapLineForShow;
+    }
+
+    bool IsWrapLineForShow() const
+    {
+        return m_wrapLineForShow;
+    }
+
+    int GetLeftGap() const
+    {
+        return m_leftGap;
+    }
+
+    void SetLeftGap(int leftGap)
+    {
+        m_leftGap = leftGap;
+    }
+
 private:
     QFont m_font;
     int m_charMargin = 1;
     int m_tabSize = 4;
+    bool m_wrapLineForShow = false;
+    int m_leftGap = 2;
 
     typedef std::function<void(const QFont &newFont)> FontChangeListener;
     typedef std::vector<FontChangeListener> FontChangeListeners;
     FontChangeListeners m_fontChangeListeners;
 };
 
-class FontInfo
+class FontInfoProvider
 {
 public:
-    FontInfo(FontConfig &drawConfig)
+    FontInfoProvider(FontConfig &drawConfig)
         : m_drawConfig(drawConfig)
         , m_metrics(drawConfig.GetFont())
     {

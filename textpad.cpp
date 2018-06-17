@@ -11,6 +11,8 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 
+#include "composer.h"
+
 namespace
 {
 
@@ -31,62 +33,58 @@ namespace
     };
 }
 
-
-TextPad::TextPad(DocModel &model, const FontInfo &fontInfo, QWidget *parent)
-    : m_model(model)
+TextPad::TextPad(DocModel &model, const FontInfoProvider &fontInfo, QWidget *parent)
+    : QWidget(parent)
+    , m_model(model)
     , m_fontInfo(fontInfo)
-    , QWidget(parent)
 {
-    // 等宽："Times"
-    // 非等宽："Microsoft YaHei"
-
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocus();
+
+    m_composer = new Composer(&m_model, &m_fontInfo);
 }
 
 TextPad::~TextPad()
 {
-
+    delete m_composer;
+    m_composer = nullptr;
 }
 
 void TextPad::paintBackground(QPainter &p)
 {
     PainterAutoSaver painterAutoSaver(p);
 
-    if (hasFocus()) {
-        p.setBrush(Qt::white);
-    }
-    p.drawRect(rect());
+    p.fillRect(rect(), QColor(Qt::white));
 }
 
-void TextPad::paintRowBackground(QPainter &p)
+void TextPad::paintRowBackground(QPainter & p)
 {
+    static const QColor color = QColor(Qt::blue).lighter(190);
+
     PainterAutoSaver painterAutoSaver(p);
 
     const DocSel &cursor = m_model.GetCursor();
-
-    const int width = rect().width();
-
+    const int width = size().width();
     const int lineHeight = m_fontInfo.GetLineHeight();
-
-    const QColor color = QColor(Qt::blue).lighter(190);
-
+    
     bool cursorLineDrawed = false;
-
-    const int fontDes = m_fontInfo.GetFontDescent();
-
-    const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
-
-    for (int i = 0; i < lineInfoCnt; ++i)
+    const Composer::LineComps &lineComps = m_composer->GetLineComps();
+    for (const LineComp &line : lineComps)
     {
-        const LineDrawInfo &lineDrawInfo = m_drawInfo.lineInfos[i];
-        if (lineDrawInfo.rowModelIndex == cursor.GetRow())
+        if (line.GetModelIndex() == cursor.GetRow())
         {
-            const int y = GetBaseLineByLineInfoIndex(i) + fontDes - lineHeight;
+            for (const SubLineComp &subLine : line)
+            {
+                p.fillRect(
+                    0,
+                    lineHeight * subLine.GetLineIndex(),
+                    width,
+                    lineHeight,
+                    color);
 
-            p.fillRect(0, y, width, lineHeight, color);
-            cursorLineDrawed = true;
+                cursorLineDrawed = true;
+            }
         }
     }
 
@@ -97,8 +95,6 @@ void TextPad::paintRowBackground(QPainter &p)
 
     p.fillRect(0, 0, width, lineHeight, color);
 }
-
-static int kLeftGap = 2;
 
 namespace
 {
@@ -116,187 +112,111 @@ namespace
     }
 }
 
-void TextPad::prepareTextContentDrawInfo(int areaWidth)
-{
-    m_drawInfo.lineInfos.clear();
-    
-    int leftX = 0;
-
-    const RowCnt rowCnt = m_model.GetRowCnt();
-
-    const int margin = m_fontInfo.GetDrawConfig().GetCharMargin();
-
-    for (RowIndex row = 0; row < rowCnt; ++row)
-    {
-        leftX = kLeftGap;
-        const ColCnt charCnt = m_model.GetColCntOfLine(row);
-
-        LineDrawInfo *lineDrawInfo = &GrowBack(m_drawInfo.lineInfos);
-        lineDrawInfo->rowModelIndex = row;
-
-        for (ColIndex col = 0; col < charCnt; ++col)
-        {
-            const QChar ch(m_model[row][col]);
-
-            const int charWidth = m_fontInfo.GetCharWidth(ch.unicode());
-
-            // 如果超出最大宽度
-            if (leftX + charWidth > areaWidth)
-            {
-                // 如果开启了自动换行则把绘制位置定位到下一行开头
-                // 如果未开启自动换行，则跳过改行后面的绘制，开始绘制下一行
-                if (m_wrapLine)
-                {
-                    leftX = kLeftGap;
-
-                    lineDrawInfo = &GrowBack(m_drawInfo.lineInfos);
-                    lineDrawInfo->colOffset = col;
-                    lineDrawInfo->rowModelIndex = row;
-                }
-            }
-
-            CharDrawInfo &charDrawInfo = GrowBack(lineDrawInfo->charInfos);
-            charDrawInfo.ch = ch.unicode();
-            charDrawInfo.drawLeftX = leftX;
-            charDrawInfo.charWidth = charWidth;
-
-            leftX += charWidth;
-            leftX += margin;
-        }
-
-        lineDrawInfo->flag |= NSDrawInfo::LineFlag::RowEnd;
-    }
-}
-
-int TextPad::GetDrawLineIndexByY(int y) const
+const SubLineComp *TextPad::GetSubLineByY(int y) const
 {
     const int lineHeight = m_fontInfo.GetLineHeight();
     const int fontDes = m_fontInfo.GetFontDescent();
-    const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
 
-    for (int i = 0; i < lineInfoCnt; ++i)
+    const Composer::LineComps &lines = m_composer->GetLineComps();
+
+    for (const LineComp &line : lines)
     {
-        const LineDrawInfo &lineInfo = m_drawInfo.lineInfos[i];
-        const int baseline = GetBaseLineByLineInfoIndex(i);
-        const int bottom = baseline + fontDes;
-        const int top = bottom - lineHeight;
-        if (top <= y && y < bottom)
+        for (const SubLineComp &subLine : line)
         {
-            return i;
+            const int baseline = GetBaseLineByLineInfoIndex(subLine.GetLineIndex());
+            const int bottom = baseline + fontDes;
+            const int top = bottom - lineHeight;
+            if (top <= y && y < bottom)
+            {
+                return &subLine;
+            }
         }
     }
-    return -1;
-}
 
-const LineDrawInfo * TextPad::GetLineDrawInfo(int lineDrawIndex) const
-{
-    assert(lineDrawIndex < static_cast<int>(m_drawInfo.lineInfos.size()));
-
-    if (lineDrawIndex >= 0)
+    if (!lines.empty())
     {
-        return &(m_drawInfo.lineInfos[lineDrawIndex]);
+        const LineComp &lastLine = lines.back();
+        const LineComp::SubLineComps &subLines = lastLine.GetSubLines();
+
+        if (!subLines.empty())
+        {
+            return &(subLines.back());
+        }
     }
 
-    const RowCnt rowCnt = static_cast<RowCnt>(m_drawInfo.lineInfos.size());
-    if (rowCnt > 0)
-    {
-        return &(m_drawInfo.lineInfos[rowCnt - 1]);
-    }
     return nullptr;
 }
 
-RowIndex TextPad::GetLineModelIndexByDrawIndex(int lineDrawIndex) const
+ColIndex TextPad::GetColModelIndexBySubLineAndX(const SubLineComp &subLine, int x) const
 {
-    const LineDrawInfo *lineDrawInfo = GetLineDrawInfo(lineDrawIndex);
-    if (lineDrawInfo)
+    for (const CharComp &ch : subLine)
     {
-        return lineDrawInfo->rowModelIndex;
-    }
-    return 0;
-}
-
-ColIndex TextPad::GetColModelIndexBylineDrawIndexAndX(int lineDrawIndex, int x) const
-{
-    const LineDrawInfo *lineInfo = GetLineDrawInfo(lineDrawIndex);
-    if (!lineInfo)
-    {
-        return 0;
-    }
-
-    const ColCnt colCnt = ColCnt(lineInfo->charInfos.size());
-    // 循环到换行符之前就结束
-    for (ColIndex col = 0; col < colCnt; ++col)
-    {
-        const CharDrawInfo &ci = lineInfo->charInfos[col];
-        if (x < ci.drawLeftX + ci.charWidth / 2)
+        if (x < ch.GetLeftX() + m_fontInfo.GetCharWidth(ch.GetChar()) / 2)
         {
-            return lineInfo->colOffset + col;
+            return subLine.GetColOffset() + ch.GetColIndex();
         }
     }
 
-    if ((lineInfo->flag & NSDrawInfo::LineFlag::RowEnd) != 0)
+    if (subLine.IsLineEnd())
     {
-        return lineInfo->colOffset + colCnt - 1;
+        return subLine.GetColOffset() + subLine.GetColCnt() - 1;
     }
     else
     {
-        return lineInfo->colOffset + colCnt;
+        return subLine.GetColOffset() + subLine.GetColCnt();
     }
 }
 
 DocSel TextPad::GetCursorByPoint(int x, int y) const
 {
-    const int drawLineIndex = GetDrawLineIndexByY(y);
-    const RowIndex rowModelIndex = GetLineModelIndexByDrawIndex(drawLineIndex);
-    const ColIndex colModelIndex = GetColModelIndexBylineDrawIndexAndX(drawLineIndex, x);
-    return DocSel(rowModelIndex, colModelIndex);
+    const SubLineComp *subLine = GetSubLineByY(y);
+    if (!subLine)
+    {
+        return DocSel(0, 0);
+    }
+
+    const ColIndex colModelIndex = GetColModelIndexBySubLineAndX(*subLine, x);
+    return DocSel(subLine->GetLineModelIndex(), colModelIndex);
 }
 
 int TextPad::GetBaseLineByLineInfoIndex(int lineInfoIndex) const
 {
-    return m_fontInfo.GetFontAscent() + lineInfoIndex * m_fontInfo.GetLineHeight();
+    return (1 + lineInfoIndex) * m_fontInfo.GetLineHeight() - m_fontInfo.GetFontDescent();
 }
 
 void TextPad::paintInsertCursor(QPainter &p)
 {
+    static const int kBottomShrink = 2;
+
     PainterAutoSaver painterAutoSaver(p);
 
     const DocSel &cursor = m_model.GetCursor();
 
     const int lineHeight = m_fontInfo.GetLineHeight();
 
-    const int fontDes = m_fontInfo.GetFontDescent();
+    const Composer::LineComps &lineComps = m_composer->GetLineComps();
 
-    const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
-
-    for (int i = 0; i < lineInfoCnt; ++i)
+    for (const LineComp &lineComp : lineComps)
     {
-        const LineDrawInfo &row = m_drawInfo.lineInfos[i];
-        if (row.rowModelIndex == cursor.GetRow())
+        int colIndex = 0;
+        for (const SubLineComp &subLine : lineComp)
         {
-            const ColCnt colCnt = ColCnt(row.charInfos.size());
-            for (ColIndex col = 0; col < colCnt; ++col)
+            for (const CharComp &ch : subLine)
             {
-                if (row.colOffset + col == cursor.GetCol())
+                if (lineComp.GetModelIndex() == cursor.GetRow() && (colIndex++) == cursor.GetCol())
                 {
-                    const CharDrawInfo &charInfo = row.charInfos[col];
-                    const int baseline = GetBaseLineByLineInfoIndex(i);
-                    const int bottom = baseline + fontDes;
-
-                    p.drawLine(
-                        charInfo.drawLeftX,
-                        bottom - lineHeight,
-                        charInfo.drawLeftX,
-                        bottom - 1
-                    );
-
+                    const int x = ch.GetLeftX();
+                    const int y1 = lineHeight * subLine.GetLineIndex();
+                    p.drawLine(x, y1, x, y1 + lineHeight - kBottomShrink);
                     return;
                 }
             }
         }
     }
 
-    p.drawLine(kLeftGap, 0, kLeftGap, lineHeight - 1);
+    const int leftGap = m_fontInfo.GetDrawConfig().GetLeftGap();
+
+    p.drawLine(leftGap, 0, leftGap, lineHeight - kBottomShrink);
 }
 
 void TextPad::paintTextContent(QPainter &p)
@@ -305,18 +225,18 @@ void TextPad::paintTextContent(QPainter &p)
 
     p.setFont(m_fontInfo.GetDrawConfig().GetFont());
 
-    const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
+    const Composer::LineComps &lineComps = m_composer->GetLineComps();
 
-    for (int i = 0; i < lineInfoCnt; ++i)
+    for (const LineComp &lineComp : lineComps)
     {
-        const LineDrawInfo &lineDrawInfo = m_drawInfo.lineInfos[i];
-        const int baseline = GetBaseLineByLineInfoIndex(i);
-
-        for (const CharDrawInfo &charDrawInfo : lineDrawInfo.charInfos)
+        for (const SubLineComp &subLine : lineComp)
         {
-            p.drawText(charDrawInfo.drawLeftX,
-                baseline,
-                QChar(charDrawInfo.ch));
+            const int baseline = GetBaseLineByLineInfoIndex(subLine.GetLineIndex());
+            for (const CharComp &ch : subLine)
+            {
+                p.drawText(ch.GetLeftX(),
+                    baseline, QChar(ch.GetChar()));
+            }
         }
     }
 }
@@ -365,7 +285,8 @@ void TextPad::inputMethodEvent(QInputMethodEvent *e)
 
 void TextPad::showEvent(QShowEvent * event)
 {
-    prepareTextContentDrawInfo(size().width());
+    QSize sz(size());
+    m_composer->Init(sz.width(), sz.height(), 0);
     QWidget::showEvent(event);
     update();
     //prepareTextContentDrawInfo(width());
@@ -373,7 +294,8 @@ void TextPad::showEvent(QShowEvent * event)
 
 void TextPad::resizeEvent(QResizeEvent * event)
 {
-    prepareTextContentDrawInfo(size().width());
+    QSize sz(size());
+    m_composer->UpdateAreaSize(sz.width(), sz.height());
     QWidget::resizeEvent(event);
     update();
     //prepareTextContentDrawInfo(event->size().width());

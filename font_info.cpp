@@ -1,9 +1,16 @@
 #include "font_info.h"
 
-int FontInfo::GetCharWidth(wchar_t c) const
+#include <cwctype>
+
+int FontInfoProvider::GetCharWidth(wchar_t c) const
 {
     const int margin = m_drawConfig.GetCharMargin();
     const int tabSize = m_drawConfig.GetTabSize();
+
+    if (c == '\n' || c == '\r')
+    {
+        return 0;
+    }
 
     if (c == '\t')
     {

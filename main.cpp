@@ -11,8 +11,8 @@ static const char* s = ""
 int main(int argc, char *argv[])
 {
     DocModel model;
-    //model.LoadFromFile("F:\\a.cpp");
-    model.ParseStr(s);
+    model.LoadFromFile("F:\\a.cpp");
+    //model.ParseStr(s);
 
     QApplication a(argc, argv);
 
@@ -20,21 +20,23 @@ int main(int argc, char *argv[])
     const char *kFontFamilyYaHei = "Microsoft YaHei";
 
     const char *kFontFamily = kFontFamilyTimes;
-    const int kFontSz = 30;
+    const int kFontSz = 12;
 
     FontConfig c;
     c.SetFont(QFont(kFontFamily, kFontSz));
     c.SetCharMargin(2);
     c.SetTabSize(2);
+    c.SetWrapLineForShow(true);
 
-    FontInfo fontInfo(c);
+    FontInfoProvider fontInfo(c);
 
 
     TextPad w(model, fontInfo);
+    w.resize(800, 600);
     w.show();
 
 
-    w.resize(1200,600);
+    
 
     return a.exec();
 }
