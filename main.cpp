@@ -11,7 +11,7 @@ static const char* s = ""
 int main(int argc, char *argv[])
 {
     DocModel model;
-    model.ParseStr(s);
+    model.LoadFromFile("F:\\a.cpp");
 
     QApplication a(argc, argv);
     TextPad w(model);

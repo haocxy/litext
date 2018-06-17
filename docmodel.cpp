@@ -1,5 +1,8 @@
 #include "docmodel.h"
 
+#include <QFile>
+#include <QTextStream>
+
 DocModel::DocModel()
 {
 }
@@ -7,6 +10,18 @@ DocModel::DocModel()
 
 DocModel::~DocModel()
 {
+}
+
+void DocModel::LoadFromFile(const QString & path)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadWrite | QIODevice::Text))
+    {
+        return;
+    }
+
+    QTextStream in(&file);
+    ParseStr(in.readAll());
 }
 
 void DocModel::ParseStr(const QString &s)

@@ -53,6 +53,8 @@ public:
     DocModel();
     ~DocModel();
 
+    void LoadFromFile(const QString &path);
+
     void ParseStr(const QString &s);
 
     RowCnt GetRowCnt() const;

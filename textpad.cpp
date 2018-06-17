@@ -17,7 +17,7 @@ namespace
     const char *kFontFamilyYaHei = "Microsoft YaHei";
 
     const char *kFontFamily = kFontFamilyTimes;
-    const int kFontSize = 30;
+    const int kFontSize = 14;
 
     class PainterAutoSaver
     {
@@ -257,7 +257,7 @@ const LineDrawInfo * TextPad::GetLineDrawInfo(int lineDrawIndex) const
 RowIndex TextPad::GetLineModelIndexByDrawIndex(int lineDrawIndex) const
 {
     const LineDrawInfo *lineDrawInfo = GetLineDrawInfo(lineDrawIndex);
-    if (lineDrawIndex)
+    if (lineDrawInfo)
     {
         return lineDrawInfo->rowModelIndex;
     }
@@ -420,14 +420,18 @@ void TextPad::inputMethodEvent(QInputMethodEvent *e)
 
 void TextPad::showEvent(QShowEvent * event)
 {
+    prepareTextContentDrawInfo(size().width());
     QWidget::showEvent(event);
-    prepareTextContentDrawInfo(width());
+    update();
+    //prepareTextContentDrawInfo(width());
 }
 
 void TextPad::resizeEvent(QResizeEvent * event)
 {
+    prepareTextContentDrawInfo(size().width());
     QWidget::resizeEvent(event);
-    prepareTextContentDrawInfo(event->size().width());
+    update();
+    //prepareTextContentDrawInfo(event->size().width());
 }
 
 void TextPad::mousePressEvent(QMouseEvent *e)
