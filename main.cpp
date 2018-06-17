@@ -11,10 +11,26 @@ static const char* s = ""
 int main(int argc, char *argv[])
 {
     DocModel model;
-    model.LoadFromFile("F:\\a.cpp");
+    //model.LoadFromFile("F:\\a.cpp");
+    model.ParseStr(s);
 
     QApplication a(argc, argv);
-    TextPad w(model);
+
+    const char *kFontFamilyTimes = "Times";
+    const char *kFontFamilyYaHei = "Microsoft YaHei";
+
+    const char *kFontFamily = kFontFamilyTimes;
+    const int kFontSz = 30;
+
+    FontConfig c;
+    c.SetFont(QFont(kFontFamily, kFontSz));
+    c.SetCharMargin(2);
+    c.SetTabSize(2);
+
+    FontInfo fontInfo(c);
+
+
+    TextPad w(model, fontInfo);
     w.show();
 
 

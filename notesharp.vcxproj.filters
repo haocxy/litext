@@ -39,6 +39,9 @@
     <ClCompile Include="drawinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="font_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="textpad.h">
@@ -61,6 +64,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="doc_model_define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="font_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

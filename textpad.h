@@ -4,6 +4,7 @@
 
 #include "drawinfo.h"
 #include "docmodel.h"
+#include "font_info.h"
 
 class QFont;
 class QFontMetrics;
@@ -13,7 +14,7 @@ class TextPad : public QWidget
     Q_OBJECT
 
 public:
-    TextPad(DocModel &model, QWidget *parent = 0);
+    TextPad(DocModel &model, const FontInfo &fontInfo, QWidget *parent = 0);
     ~TextPad();
 
     virtual void keyPressEvent(QKeyEvent *e) override;
@@ -24,7 +25,6 @@ public:
     virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
-    bool IsFixWidthFont() const;
     void paintBackground(QPainter &p);
     void paintRowBackground(QPainter &p);
     void paintTextContent(QPainter &p);
@@ -46,14 +46,11 @@ private:
 
     DocSel GetCursorByPoint(int x, int y) const;
 
-    int GetLineHeight() const;
-
     int GetBaseLineByLineInfoIndex(int lineInfoIndex) const;
 
 private:
     DocModel & m_model;
-    QFont m_font;
-    QFontMetrics m_fontMetrix;
+    const FontInfo &m_fontInfo;
 
 private:
     bool m_wrapLine = true;

@@ -13,11 +13,6 @@
 
 namespace
 {
-    const char *kFontFamilyTimes = "Times";
-    const char *kFontFamilyYaHei = "Microsoft YaHei";
-
-    const char *kFontFamily = kFontFamilyTimes;
-    const int kFontSize = 14;
 
     class PainterAutoSaver
     {
@@ -36,10 +31,10 @@ namespace
     };
 }
 
-TextPad::TextPad(DocModel &model, QWidget *parent)
-    : m_font(kFontFamily, kFontSize)
-    , m_fontMetrix(m_font)
-    , m_model(model)
+
+TextPad::TextPad(DocModel &model, const FontInfo &fontInfo, QWidget *parent)
+    : m_model(model)
+    , m_fontInfo(fontInfo)
     , QWidget(parent)
 {
     // 等宽："Times"
@@ -48,11 +43,6 @@ TextPad::TextPad(DocModel &model, QWidget *parent)
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocus();
-}
-
-bool TextPad::IsFixWidthFont() const
-{
-    return m_fontMetrix.width('i') == m_fontMetrix.width('w');
 }
 
 TextPad::~TextPad()
@@ -78,13 +68,13 @@ void TextPad::paintRowBackground(QPainter &p)
 
     const int width = rect().width();
 
-    const int lineHeight = GetLineHeight();
+    const int lineHeight = m_fontInfo.GetLineHeight();
 
     const QColor color = QColor(Qt::blue).lighter(190);
 
     bool cursorLineDrawed = false;
 
-    const int fontDes = m_fontMetrix.descent();
+    const int fontDes = m_fontInfo.GetFontDescent();
 
     const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
 
@@ -108,9 +98,7 @@ void TextPad::paintRowBackground(QPainter &p)
     p.fillRect(0, 0, width, lineHeight, color);
 }
 
-static int kFontMargin = 1;
 static int kLeftGap = 2;
-static int kTabSize = 2;
 
 namespace
 {
@@ -132,14 +120,11 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 {
     m_drawInfo.lineInfos.clear();
     
-    const bool isFixWidthFont = IsFixWidthFont();
-    const int widthForFix = m_fontMetrix.width('a');
-
-    const int tabDrawTotal = ((isFixWidthFont ? widthForFix : m_fontMetrix.width(' ')) + kFontMargin) * kTabSize;
-
     int leftX = 0;
 
     const RowCnt rowCnt = m_model.GetRowCnt();
+
+    const int margin = m_fontInfo.GetDrawConfig().GetCharMargin();
 
     for (RowIndex row = 0; row < rowCnt; ++row)
     {
@@ -153,44 +138,10 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
         {
             const QChar ch(m_model[row][col]);
 
-            const bool isTab = ch == '\t';
-
-            // 从字体引擎获得的原始字符宽度
-            const int rawFontWidth = m_fontMetrix.width(ch);
-            
-            // 判断这个字符是否是宽字符
-            const bool isWideChar = rawFontWidth > widthForFix;
-            
-            // 如果当前字体是等宽字体且这个字符是宽字符，则绘制时作为两个字符处理
-            const bool asTwoChar = isWideChar && isFixWidthFont;
-
-            // 绘制这个字符总共占的宽度，包括两侧空白
-            int drawTotalCharWidth = 0;
-            if (isTab)
-            {
-                drawTotalCharWidth = tabDrawTotal;
-            }
-            else
-            {
-                if (isWideChar)
-                {
-                    if (isFixWidthFont)
-                    {
-                        drawTotalCharWidth = widthForFix * 2 + kFontMargin * 2;
-                    }
-                    else
-                    {
-                        drawTotalCharWidth = rawFontWidth + kFontMargin;
-                    }
-                }
-                else
-                {
-                    drawTotalCharWidth = rawFontWidth + kFontMargin;
-                }
-            }
+            const int charWidth = m_fontInfo.GetCharWidth(ch.unicode());
 
             // 如果超出最大宽度
-            if (leftX + drawTotalCharWidth > areaWidth)
+            if (leftX + charWidth > areaWidth)
             {
                 // 如果开启了自动换行则把绘制位置定位到下一行开头
                 // 如果未开启自动换行，则跳过改行后面的绘制，开始绘制下一行
@@ -206,11 +157,11 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
             CharDrawInfo &charDrawInfo = GrowBack(lineDrawInfo->charInfos);
             charDrawInfo.ch = ch.unicode();
-            charDrawInfo.drawLeftX = leftX + kFontMargin;
-            charDrawInfo.drawTotalWidth = drawTotalCharWidth;
-            charDrawInfo.charWidth = isTab ? tabDrawTotal - 4 * kFontMargin : rawFontWidth;
+            charDrawInfo.drawLeftX = leftX;
+            charDrawInfo.charWidth = charWidth;
 
-            leftX += drawTotalCharWidth;
+            leftX += charWidth;
+            leftX += margin;
         }
 
         lineDrawInfo->flag |= NSDrawInfo::LineFlag::RowEnd;
@@ -219,8 +170,8 @@ void TextPad::prepareTextContentDrawInfo(int areaWidth)
 
 int TextPad::GetDrawLineIndexByY(int y) const
 {
-    const int lineHeight = GetLineHeight();
-    const int fontDes = m_fontMetrix.descent();
+    const int lineHeight = m_fontInfo.GetLineHeight();
+    const int fontDes = m_fontInfo.GetFontDescent();
     const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
 
     for (int i = 0; i < lineInfoCnt; ++i)
@@ -301,15 +252,9 @@ DocSel TextPad::GetCursorByPoint(int x, int y) const
     return DocSel(rowModelIndex, colModelIndex);
 }
 
-int TextPad::GetLineHeight() const
-{
-    const int fontHeight = m_fontMetrix.height();
-    return fontHeight * 1.2;
-}
-
 int TextPad::GetBaseLineByLineInfoIndex(int lineInfoIndex) const
 {
-    return m_fontMetrix.ascent() + lineInfoIndex * GetLineHeight();
+    return m_fontInfo.GetFontAscent() + lineInfoIndex * m_fontInfo.GetLineHeight();
 }
 
 void TextPad::paintInsertCursor(QPainter &p)
@@ -318,9 +263,9 @@ void TextPad::paintInsertCursor(QPainter &p)
 
     const DocSel &cursor = m_model.GetCursor();
 
-    const int lineHeight = GetLineHeight();
+    const int lineHeight = m_fontInfo.GetLineHeight();
 
-    const int fontDes = m_fontMetrix.descent();
+    const int fontDes = m_fontInfo.GetFontDescent();
 
     const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
 
@@ -358,7 +303,7 @@ void TextPad::paintTextContent(QPainter &p)
 {
     PainterAutoSaver painterAutoSaver(p);
 
-    p.setFont(m_font);
+    p.setFont(m_fontInfo.GetDrawConfig().GetFont());
 
     const int lineInfoCnt = static_cast<int>(m_drawInfo.lineInfos.size());
 
