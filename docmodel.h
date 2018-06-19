@@ -57,6 +57,8 @@ public:
 
     void ParseStr(const QString &s);
 
+    bool IsEmpty() const;
+
     RowCnt GetRowCnt() const;
 
     ColCnt GetColCntOfLine(RowIndex lineIndex) const;

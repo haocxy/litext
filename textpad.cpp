@@ -67,8 +67,7 @@ void TextPad::paintRowBackground(QPainter & p)
     const DocSel &cursor = m_model.GetCursor();
     const int width = size().width();
     const int lineHeight = m_fontInfo.GetLineHeight();
-    
-    bool cursorLineDrawed = false;
+
     const Composer::LineComps &lineComps = m_composer->GetLineComps();
     for (const LineComp &line : lineComps)
     {
@@ -82,18 +81,14 @@ void TextPad::paintRowBackground(QPainter & p)
                     width,
                     lineHeight,
                     color);
-
-                cursorLineDrawed = true;
             }
         }
     }
 
-    if (cursorLineDrawed)
+    if (m_model.IsEmpty())
     {
-        return;
+        p.fillRect(0, 0, width, lineHeight, color);
     }
-
-    p.fillRect(0, 0, width, lineHeight, color);
 }
 
 namespace
@@ -214,9 +209,11 @@ void TextPad::paintInsertCursor(QPainter &p)
         }
     }
 
-    const int leftGap = m_fontInfo.GetDrawConfig().GetLeftGap();
-
-    p.drawLine(leftGap, 0, leftGap, lineHeight - kBottomShrink);
+    if (m_model.IsEmpty())
+    {
+        const int leftGap = m_fontInfo.GetDrawConfig().GetLeftGap();
+        p.drawLine(leftGap, 0, leftGap, lineHeight - kBottomShrink);
+    }
 }
 
 void TextPad::paintTextContent(QPainter &p)

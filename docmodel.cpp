@@ -41,6 +41,11 @@ void DocModel::ParseStr(const QString &s)
     }
 }
 
+bool DocModel::IsEmpty() const
+{
+    return m_lines.empty();
+}
+
 RowCnt DocModel::GetRowCnt() const
 {
     return static_cast<RowCnt>(m_lines.size());
