@@ -25,6 +25,18 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{37e533fa-1829-48f9-a522-1679638ec442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module">
+      <UniqueIdentifier>{e92b4398-bca9-4fdc-ad59-c14ff470d4b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\text">
+      <UniqueIdentifier>{83c937b3-997e-451d-a0fa-c18eaaea2b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\text\impl">
+      <UniqueIdentifier>{b2c0d442-d822-48d8-b0c3-5b20b51c0c28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,6 +80,12 @@
     </ClInclude>
     <ClInclude Include="composer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\qchar_instream.h">
+      <Filter>src\module\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\qchar_instream_impl_load_once.h">
+      <Filter>src\module\text\impl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

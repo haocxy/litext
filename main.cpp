@@ -3,6 +3,9 @@
 
 #include "docmodel.h"
 
+#include "module/text/impl/qchar_instream_impl_load_once.h"
+
+
 static const char* s = ""
 "\tHello, w\thats your name? My name is HanMeiMei.\n"
 "    ab好你好anihaohaha你好吗abcabcypabcabcHanMeiMei.\n"
