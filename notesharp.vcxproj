@@ -180,6 +180,7 @@
     <ClCompile Include="docmodel.cpp" />
     <ClCompile Include="font_info.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\module\text\impl\txt_word_stream.cpp" />
     <ClCompile Include="textpad.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -209,8 +210,11 @@
     <ClInclude Include="docmodel.h" />
     <ClInclude Include="doc_model_define.h" />
     <ClInclude Include="font_info.h" />
-    <ClInclude Include="src\module\text\impl\qchar_instream_impl_load_once.h" />
-    <ClInclude Include="src\module\text\qchar_instream.h" />
+    <ClInclude Include="src\module\text\impl\ref_content_char_instream.h" />
+    <ClInclude Include="src\module\text\impl\save_content_char_instream.h" />
+    <ClInclude Include="src\module\text\impl\txt_word_stream.h" />
+    <ClInclude Include="src\module\text\char_instream.h" />
+    <ClInclude Include="src\module\text\word_instream.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

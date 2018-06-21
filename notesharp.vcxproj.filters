@@ -54,6 +54,9 @@
     <ClCompile Include="composer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\module\text\impl\txt_word_stream.cpp">
+      <Filter>src\module\text\impl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="textpad.h">
@@ -81,11 +84,20 @@
     <ClInclude Include="composer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\text\qchar_instream.h">
+    <ClInclude Include="src\module\text\impl\txt_word_stream.h">
       <Filter>src\module\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\text\impl\qchar_instream_impl_load_once.h">
+    <ClInclude Include="src\module\text\char_instream.h">
+      <Filter>src\module\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\ref_content_char_instream.h">
       <Filter>src\module\text\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\save_content_char_instream.h">
+      <Filter>src\module\text\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\word_instream.h">
+      <Filter>src\module\text</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

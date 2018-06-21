@@ -3,7 +3,7 @@
 
 #include "docmodel.h"
 
-#include "module/text/impl/qchar_instream_impl_load_once.h"
+#include "module/text/impl/ref_content_char_instream.h"
 
 
 static const char* s = ""
