@@ -181,6 +181,7 @@
     <ClCompile Include="font_info.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\module\text\impl\txt_word_stream.cpp" />
+    <ClCompile Include="src\util\fileutil.cpp" />
     <ClCompile Include="textpad.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +216,8 @@
     <ClInclude Include="src\module\text\impl\txt_word_stream.h" />
     <ClInclude Include="src\module\text\char_instream.h" />
     <ClInclude Include="src\module\text\word_instream.h" />
+    <ClInclude Include="src\util\fileutil.h" />
+    <ClInclude Include="src\util\delete_helper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

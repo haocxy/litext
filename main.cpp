@@ -1,10 +1,12 @@
 #include "textpad.h"
 #include <QApplication>
+#include <QDebug>
 
 #include "docmodel.h"
 
 #include "module/text/impl/ref_content_char_instream.h"
-
+#include "module/text/impl/txt_word_stream.h"
+#include "util/fileutil.h"
 
 static const char* s = ""
 "\tHello, w\thats your name? My name is HanMeiMei.\n"
@@ -13,6 +15,20 @@ static const char* s = ""
 
 int main(int argc, char *argv[])
 {
+    const QString content = FileUtil::ReadFile("F:/a.cpp");
+    RefContentQCharInStream charStream(content);
+    WordInStream *wordStream = new TxtWordStream(charStream);
+    while (true)
+    {
+        QString word = wordStream->Next();
+        if (word.isNull())
+        {
+            return 0;
+        }
+        qDebug() << word;
+    }
+    return 0;
+
     DocModel model;
     model.LoadFromFile("F:\\a.cpp");
     //model.ParseStr(s);

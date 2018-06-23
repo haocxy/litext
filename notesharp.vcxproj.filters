@@ -37,6 +37,9 @@
     <Filter Include="src\module\text\impl">
       <UniqueIdentifier>{b2c0d442-d822-48d8-b0c3-5b20b51c0c28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{6b3c24e9-8f8a-4636-bae9-d83f26864982}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -56,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="src\module\text\impl\txt_word_stream.cpp">
       <Filter>src\module\text\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\fileutil.cpp">
+      <Filter>src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,9 +90,6 @@
     <ClInclude Include="composer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\text\impl\txt_word_stream.h">
-      <Filter>src\module\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\module\text\char_instream.h">
       <Filter>src\module\text</Filter>
     </ClInclude>
@@ -98,6 +101,15 @@
     </ClInclude>
     <ClInclude Include="src\module\text\word_instream.h">
       <Filter>src\module\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\txt_word_stream.h">
+      <Filter>src\module\text\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\fileutil.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\delete_helper.h">
+      <Filter>src\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

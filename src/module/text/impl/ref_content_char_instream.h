@@ -14,15 +14,13 @@ public:
 
     virtual ~RefContentQCharInStream() {}
 
-    virtual bool HasNext() override
-    {
-        return m_index < m_content.size();
-    }
-
     virtual QChar Next() override
     {
-        assert(m_index < m_content.size());
-        return m_content[m_index++];
+        if (m_index < m_content.size())
+        {
+            return m_content[m_index++];
+        }
+        return QChar();
     }
 
 private:
