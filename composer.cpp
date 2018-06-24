@@ -109,16 +109,6 @@ void Composer::DoInit()
 
                 const int charWidth = m_fip.GetCharWidth(ch);
 
-                if (leftX + charWidth > m_areaWidth)
-                {
-                    if (wrapLine)
-                    {
-                        leftX = leftGap;
-
-                        subLineComp = lineComp.Grow(lineIndex++);
-                    }
-                }
-
                 CharComp &charComp = subLineComp->Grow();
                 charComp.SetChar(ch);
                 charComp.SetLeftX(leftX);
