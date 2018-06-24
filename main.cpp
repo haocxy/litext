@@ -15,22 +15,9 @@ static const char* s = ""
 
 int main(int argc, char *argv[])
 {
-    const QString content = FileUtil::ReadFile("F:/a.cpp");
-    RefContentQCharInStream charStream(content);
-    WordInStream *wordStream = new TxtWordStream(charStream);
-    while (true)
-    {
-        QString word = wordStream->Next();
-        if (word.isNull())
-        {
-            return 0;
-        }
-        qDebug() << word;
-    }
-    return 0;
 
     DocModel model;
-    model.LoadFromFile("F:\\a.cpp");
+    model.LoadFromFile("F:\\a.txt");
     //model.ParseStr(s);
 
     QApplication a(argc, argv);

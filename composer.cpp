@@ -3,7 +3,8 @@
 #include "font_info.h"
 #include "docmodel.h"
 
-
+#include "module/text/impl/ref_content_char_instream.h"
+#include "module/text/impl/txt_word_stream.h"
 
 void Composer::DoInit()
 {
@@ -30,29 +31,102 @@ void Composer::DoInit()
 
         SubLineComp *subLineComp = lineComp.Grow(lineIndex++);
 
-        for (ColIndex col = 0; col < charCnt; ++col)
+        const QString &line = m_model[row];
+
+        RefContentQCharInStream charStream(line);
+        TxtWordStream wordStream(charStream);
+
+        if (wrapLine)
         {
-            const wchar_t ch(m_model[row][col].unicode());
-
-            const int charWidth = m_fip.GetCharWidth(ch);
-
-            if (leftX + charWidth > m_areaWidth)
+            while (true)
             {
-                if (wrapLine)
+                const QString word = wordStream.Next();
+                if (word.isNull())
                 {
-                    leftX = leftGap;
+                    break;
+                }
 
-                    subLineComp = lineComp.Grow(lineIndex++);
+                if (subLineComp->GetColCnt() == 0)
+                {
+                    for (const QChar c : word)
+                    {
+                        const int charWidth = m_fip.GetCharWidth(c.unicode());
+
+                        if (leftX + charWidth > m_areaWidth)
+                        {
+                            leftX = leftGap;
+                            subLineComp = lineComp.Grow(lineIndex++);
+                        }
+
+                        CharComp &charComp = subLineComp->Grow();
+                        charComp.SetChar(c.unicode());
+                        charComp.SetLeftX(leftX);
+                        charComp.SetCharWidth(charWidth);
+
+                        leftX += charWidth;
+                        leftX += margin;
+                    }
+                }
+                else
+                {
+                    int wordWidth = 0;
+                    for (const QChar c : word)
+                    {
+                        wordWidth += m_fip.GetCharWidth(c.unicode());
+                        wordWidth += margin;
+                    }
+                    if (leftX + wordWidth > m_areaWidth)
+                    {
+                        leftX = leftGap;
+                        subLineComp = lineComp.Grow(lineIndex++);
+                    }
+                    for (const QChar c : word)
+                    {
+                        const int charWidth = m_fip.GetCharWidth(c.unicode());
+
+                        if (leftX + charWidth > m_areaWidth)
+                        {
+                            leftX = leftGap;
+                            subLineComp = lineComp.Grow(lineIndex++);
+                        }
+
+                        CharComp &charComp = subLineComp->Grow();
+                        charComp.SetChar(c.unicode());
+                        charComp.SetLeftX(leftX);
+                        charComp.SetCharWidth(charWidth);
+
+                        leftX += charWidth;
+                        leftX += margin;
+                    }
                 }
             }
+        }
+        else
+        {
+            for (ColIndex col = 0; col < charCnt; ++col)
+            {
+                const wchar_t ch(m_model[row][col].unicode());
 
-            CharComp &charComp = subLineComp->Grow();
-            charComp.SetChar(ch);
-            charComp.SetLeftX(leftX);
-            charComp.SetCharWidth(charWidth);
+                const int charWidth = m_fip.GetCharWidth(ch);
 
-            leftX += charWidth;
-            leftX += margin;
+                if (leftX + charWidth > m_areaWidth)
+                {
+                    if (wrapLine)
+                    {
+                        leftX = leftGap;
+
+                        subLineComp = lineComp.Grow(lineIndex++);
+                    }
+                }
+
+                CharComp &charComp = subLineComp->Grow();
+                charComp.SetChar(ch);
+                charComp.SetLeftX(leftX);
+                charComp.SetCharWidth(charWidth);
+
+                leftX += charWidth;
+                leftX += margin;
+            }
         }
 
         subLineComp->SetLineEnd();
