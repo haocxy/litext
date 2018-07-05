@@ -180,7 +180,10 @@
     <ClCompile Include="docmodel.cpp" />
     <ClCompile Include="font_info.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="panel.cpp" />
     <ClCompile Include="src\module\text\impl\txt_word_stream.cpp" />
+    <ClCompile Include="src\module\view\font.cpp" />
+    <ClCompile Include="src\module\view\view.cpp" />
     <ClCompile Include="src\util\fileutil.cpp" />
     <ClCompile Include="textpad.cpp" />
   </ItemGroup>
@@ -211,11 +214,19 @@
     <ClInclude Include="docmodel.h" />
     <ClInclude Include="doc_model_define.h" />
     <ClInclude Include="font_info.h" />
+    <ClInclude Include="panel.h" />
+    <ClInclude Include="src\module\control\control.h" />
+    <ClInclude Include="src\module\model\model.h" />
+    <ClInclude Include="src\module\model\model_define.h" />
     <ClInclude Include="src\module\text\impl\ref_content_char_instream.h" />
     <ClInclude Include="src\module\text\impl\save_content_char_instream.h" />
     <ClInclude Include="src\module\text\impl\txt_word_stream.h" />
     <ClInclude Include="src\module\text\char_instream.h" />
     <ClInclude Include="src\module\text\word_instream.h" />
+    <ClInclude Include="src\module\view\char_draw_info.h" />
+    <ClInclude Include="src\module\view\compose.h" />
+    <ClInclude Include="src\module\view\font.h" />
+    <ClInclude Include="src\module\view\view.h" />
     <ClInclude Include="src\util\fileutil.h" />
     <ClInclude Include="src\util\delete_helper.h" />
   </ItemGroup>

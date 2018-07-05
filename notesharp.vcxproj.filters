@@ -40,6 +40,24 @@
     <Filter Include="src\util">
       <UniqueIdentifier>{6b3c24e9-8f8a-4636-bae9-d83f26864982}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\module\control">
+      <UniqueIdentifier>{fe3ad152-c445-4347-b712-c10d6f78c107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\control\impl">
+      <UniqueIdentifier>{8be2a032-a87a-411c-bf2a-a199ec73c7f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\view">
+      <UniqueIdentifier>{c7d76c00-4864-49c0-82bf-ddcb567050fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\view\impl">
+      <UniqueIdentifier>{87ba22b7-89b9-4a95-b3c6-ccccb94907dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\model">
+      <UniqueIdentifier>{79a35c7a-1853-4de8-a903-df1656234020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\module\model\impl">
+      <UniqueIdentifier>{1ee81177-97e1-4526-8339-1ef206adeb53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,6 +80,15 @@
     </ClCompile>
     <ClCompile Include="src\util\fileutil.cpp">
       <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\module\view\view.cpp">
+      <Filter>src\module\view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\module\view\font.cpp">
+      <Filter>src\module\view</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +137,30 @@
     </ClInclude>
     <ClInclude Include="src\util\delete_helper.h">
       <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="panel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\control\control.h">
+      <Filter>src\module\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\view.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\model\model.h">
+      <Filter>src\module\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\compose.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\model\model_define.h">
+      <Filter>src\module\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\char_draw_info.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\font.h">
+      <Filter>src\module\view</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
