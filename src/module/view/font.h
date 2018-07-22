@@ -5,42 +5,43 @@
 
 #include "module/model/model_define.h"
 
-class Font
+namespace view
 {
-public:
-    static const int kDefaultMargin = 0;
-    static const int kDefaultTabSize = 4;
 
-public:
-    Font() :m_metrics(m_font) {}
+    struct FontInfo
+    {
+        std::string family;
+        int size = 0;
+        bool bold = false;
+    };
 
-    std::string family() const { return m_font.family().toStdString(); }
-    void setFamily(const std::string &family) { m_font.setFamily(family.c_str()); }
+    class Font
+    {
+    public:
+        static const int kDefaultTabSize = 4;
 
-    int size() const { return m_font.pointSize(); }
-    void setSize(int size) { m_font.setPointSize(size); }
+    public:
+        Font() :m_metrics(m_font) {}
 
-    bool bold() const { return m_font.bold(); }
-    void setBold(bool bold) { m_font.setBold(bold); }
+        void setFont(const FontInfo &fi);
 
-    int margin() const { return m_margin; }
-    void setMargin(int margin) { m_margin = margin; }
+        std::string family() const { return m_font.family().toStdString(); }
 
-    int tabSize() const { return m_tabSize; }
-    void setTabSize(int tabSize) { m_tabSize = tabSize; }
+        int size() const { return m_font.pointSize(); }
 
-    int height() const { return m_metrics.height(); }
-    int ascent() const { return m_metrics.ascent(); }
-    int descent() const { return m_metrics.descent(); }
+        bool bold() const { return m_font.bold(); }
 
-    int width(UChar c);
+        int height() const { return m_metrics.height(); }
+        int ascent() const { return m_metrics.ascent(); }
+        int descent() const { return m_metrics.descent(); }
 
-private:
-    bool isFixWidth() const { return m_metrics.width('i') == m_metrics.width('x'); }
+        int charWidth(UChar c) const;
 
-private:
-    QFont m_font;
-    QFontMetrics m_metrics;
-    int m_margin = 0;
-    int m_tabSize = kDefaultTabSize;
-};
+        bool isFixWidth() const { return m_metrics.width('i') == m_metrics.width('x'); }
+
+    private:
+        QFont m_font;
+        QFontMetrics m_metrics;
+    };
+
+}

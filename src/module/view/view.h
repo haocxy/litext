@@ -1,9 +1,11 @@
 #pragma once
 
+#include <assert.h>
 #include <vector>
 #include <deque>
 
 #include "module/model/model_define.h"
+#include "util/stl_container_util.h"
 
 namespace view
 {
@@ -17,9 +19,13 @@ namespace view
         void setUnicode(UChar unicode) { m_unicode = unicode; }
         void setX(int x) { m_x = x; }
 
+        int width() const { return m_width; }
+        void setWidth(int width) { m_width = width; }
+
     private:
         UChar m_unicode = 0;
         int m_x = 0;
+        int m_width = 0;
     };
 
     typedef std::deque<Char> Chars;
@@ -40,6 +46,11 @@ namespace view
         iterator begin() { return m_chars.begin(); }
         iterator end() { return m_chars.end(); }
 
+        Char &grow()
+        {
+            return StlContainerUtil::grow(m_chars);
+        }
+
     private:
         Chars m_chars;
     };
@@ -57,6 +68,9 @@ namespace view
         typedef Lines::const_iterator const_iterator;
         typedef Lines::iterator iterator;
 
+        Phase() = default;
+        Phase(Phase&& phase) : m_lines(std::move(phase.m_lines)) {}
+        Phase &operator=(Phase &&phase) { m_lines = std::move(phase.m_lines); return *this; }
         LineN size() const { return static_cast<LineN>(m_lines.size()); }
         const Line &operator[](LineN line) const { return m_lines[line]; }
         Line &operator[](LineN line) { return m_lines[line]; }
@@ -64,7 +78,10 @@ namespace view
         const_iterator end() const { return m_lines.end(); }
         iterator begin() { return m_lines.begin(); }
         iterator end() { return m_lines.end(); }
-
+        Line &grow()
+        {
+            return StlContainerUtil::grow(m_lines);
+        }
     private:
         Lines m_lines;
     };
@@ -86,7 +103,10 @@ namespace view
         const_iterator end() const { return m_phases.end(); }
         iterator begin() { return m_phases.begin(); }
         iterator end() { return m_phases.end(); }
-
+        Phase &grow()
+        {
+            return StlContainerUtil::grow(m_phases);
+        }
     private:
         Phases m_phases;
     };
@@ -95,40 +115,23 @@ namespace view
     {
     public:
         Size() {}
-        Size(int x, int y) :m_x(x), m_y(y) {}
-        int x() const { return m_x; }
-        int y() const { return m_y; }
-        void setX(int x) { m_x = x; }
-        void setY(int y) { m_y = y; }
-        void set(int x, int y) { m_x = x; m_y = y; }
+        Size(int width, int height) : m_width(width), m_height(height) {}
+        int width() const { return m_width; }
+        int height() const { return m_height; }
+        void setWidth(int width) { m_width = width; }
+        void setHeight(int height) { m_height = height; }
     private:
-        int m_x = 0;
-        int m_y = 0;
+        int m_width = 0;
+        int m_height = 0;
     };
 
-    class Config
-    {
-    public:
-        const float kDefaultLineHeightFactor = 1.2f; // 默认行高系数
-        static const int kDefaultHGap = 2; // 默认水平字符间距
-        static const int kDefaultTabSize = 4; // 默认TAB尺寸
-    public:
-        float lineHeightFactor() const { return m_lineHeightFactor; }
-        void setLineHeightFactor(float f) { m_lineHeightFactor = f; }
-
-        int hGap() const { return m_hGap; }
-        void setHGap(int hGap) { m_hGap = hGap; }
-
-        int tabSize() const { return m_tabSize; }
-        void setTabSize(int tabSize) { m_tabSize = tabSize; }
-
-    private:
-        float m_lineHeightFactor = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 x 字体高度，结果四舍五入
-        int m_hGap = kDefaultHGap; // 水平方向字符间距
-        int m_tabSize = kDefaultTabSize; // 一个TAB的宽度为若干个空格
-    };
+    class Config;
 
 } // namespace view
+
+
+class Model;
+class Line;
 
 /*
 视图
@@ -138,20 +141,36 @@ namespace view
 class View
 {
 public:
-    View(view::Config *config) :m_config(config) {}
+    View(Model *model, view::Config *config) :m_model(model),m_config(config) {
+        assert(model != nullptr);
+        assert(config != nullptr);
+    }
 
     ~View() {}
 
-    void Init(DocPhaseN viewStart, const view::Size &size);
+    void Init(LineN viewStart, const view::Size &size);
 
     const view::Page &page() const;
+
+    const view::Config &config() const
+    {
+        return *m_config;
+    }
+
+    int getBaseLineByLineOffset(int off) const;
+
 private:
     void remakePage();
 
+    void DocLineToViewPhase(const Line &line, view::Phase &phase);
+    void DocLineToViewPhaseWithWrapLine(const Line &line, view::Phase &phase);
+    void DocLineToViewPhaseNoWrapLine(const Line &line, view::Phase &phase);
+
 private:
     bool m_dirty = true;
-    view::Config *const m_config;
+    Model * const m_model;
+    view::Config * const m_config;
     view::Page m_page;
     view::Size m_size;
-    DocPhaseN m_viewStart = 0;
+    LineN m_viewStart = 0;
 };

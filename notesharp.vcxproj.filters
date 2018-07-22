@@ -90,9 +90,21 @@
     <ClCompile Include="src\module\view\font.cpp">
       <Filter>src\module\view</Filter>
     </ClCompile>
+    <ClCompile Include="textpad2.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\module\model\impl\simple_model.cpp">
+      <Filter>src\module\model\impl</Filter>
+    </ClCompile>
+    <ClCompile Include="src\module\view\view_config.cpp">
+      <Filter>src\module\view</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="textpad.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="textpad2.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -161,6 +173,21 @@
     </ClInclude>
     <ClInclude Include="src\module\view\font.h">
       <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\view_config.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\model\line.h">
+      <Filter>src\module\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\stl_container_util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\model\impl\simple_model.h">
+      <Filter>src\module\model\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\model\impl\simple_line.h">
+      <Filter>src\module\model\impl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

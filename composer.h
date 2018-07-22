@@ -222,28 +222,28 @@ public:
         DoInit();
     }
 
-    void UpdateAreaSize(int width, int height)
+    void UpdateAreaSize(int charWidth, int height)
     {
         const int oldWidth = m_areaWidth;
         const int oldHeight = m_areaHeight;
 
-        if (m_areaWidth != width && m_areaWidth != height)
+        if (m_areaWidth != charWidth && m_areaWidth != height)
         {
-            m_areaWidth = width;
+            m_areaWidth = charWidth;
             m_areaHeight = height;
-            BothWithAndHeightChange(oldWidth, oldHeight, width, height);
+            BothWithAndHeightChange(oldWidth, oldHeight, charWidth, height);
             return;
         }
 
-        if (m_areaWidth == width && m_areaHeight == height)
+        if (m_areaWidth == charWidth && m_areaHeight == height)
         {
             return;
         }
 
-        if (m_areaWidth != width)
+        if (m_areaWidth != charWidth)
         {
-            m_areaWidth = width;
-            OnlyWidthChange(oldWidth, width);
+            m_areaWidth = charWidth;
+            OnlyWidthChange(oldWidth, charWidth);
         }
         else
         {

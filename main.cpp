@@ -1,48 +1,52 @@
-#include "textpad.h"
+//#include "textpad.h"
 #include <QApplication>
 #include <QDebug>
 
-#include "docmodel.h"
+//#include "docmodel.h"
+//
+//#include "module/text/impl/ref_content_char_instream.h"
+//#include "module/text/impl/txt_word_stream.h"
+//#include "util/fileutil.h"
 
-#include "module/text/impl/ref_content_char_instream.h"
-#include "module/text/impl/txt_word_stream.h"
-#include "util/fileutil.h"
+#include "textpad2.h"
+#include "module/model/impl/simple_model.h"
+#include "module/view/view_config.h"
+#include "module/view/view.h"
 
-static const char* s = ""
-"\tHello, w\thats your name? My name is HanMeiMei.\n"
-"    ab好你好anihaohaha你好吗abcabcypabcabcHanMeiMei.\n"
-"我的名字叫韩梅梅";
+const char *kFontFamilyTimes = "Times";
+const char *kFontFamilyYaHei = "Microsoft YaHei";
+
+static void setupConfig(view::Config &c)
+{
+    c.setLineHeightFactor(1.5f);
+    c.setHGap(2);
+    c.setHMargin(2);
+    c.setTabSize(4);
+    c.setWrapLine(false);
+
+    view::Font &f = c.rfont();
+    view::FontInfo fi;
+    fi.family = kFontFamilyYaHei;
+    fi.size = 18;
+    fi.bold = true;
+
+    f.setFont(fi);
+}
 
 int main(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
 
-    DocModel model;
-    model.LoadFromFile("F:\\a.txt");
-    //model.ParseStr(s);
+    SimpleModel model;
+    model.LoadFromFile(R"(F:\a.txt)");
 
-    QApplication a(argc, argv);
+    view::Config config;
+    setupConfig(config);
 
-    const char *kFontFamilyTimes = "Times";
-    const char *kFontFamilyYaHei = "Microsoft YaHei";
+    View v(&model, &config);
 
-    const char *kFontFamily = kFontFamilyTimes;
-    const int kFontSz = 12;
+    TextPad2 tp2(&v);
+    tp2.show();
 
-    FontConfig c;
-    c.SetFont(QFont(kFontFamily, kFontSz));
-    c.SetCharMargin(2);
-    c.SetTabSize(2);
-    c.SetWrapLineForShow(true);
-
-    FontInfoProvider fontInfo(c);
-
-
-    TextPad w(model, fontInfo);
-    w.resize(800, 600);
-    w.show();
-
-
-    
-
-    return a.exec();
+    return app.exec();
 }

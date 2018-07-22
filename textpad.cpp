@@ -65,7 +65,7 @@ void TextPad::paintRowBackground(QPainter & p)
     PainterAutoSaver painterAutoSaver(p);
 
     const DocSel &cursor = m_model.GetCursor();
-    const int width = size().width();
+    const int charWidth = size().width();
     const int lineHeight = m_fontInfo.GetLineHeight();
 
     const Composer::LineComps &lineComps = m_composer->GetLineComps();
@@ -78,7 +78,7 @@ void TextPad::paintRowBackground(QPainter & p)
                 p.fillRect(
                     0,
                     lineHeight * subLine.GetLineIndex(),
-                    width,
+                    charWidth,
                     lineHeight,
                     color);
             }
@@ -87,7 +87,7 @@ void TextPad::paintRowBackground(QPainter & p)
 
     if (m_model.IsEmpty())
     {
-        p.fillRect(0, 0, width, lineHeight, color);
+        p.fillRect(0, 0, charWidth, lineHeight, color);
     }
 }
 
