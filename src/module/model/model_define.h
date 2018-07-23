@@ -3,9 +3,7 @@
 #include <stdint.h>
 #include <string>
 
-// uchar = unicode character
-typedef int32_t UChar;
-typedef std::basic_string<UChar> UString;
+#include "module/common/common_define.h"
 
 typedef int64_t LineN;
 typedef int32_t CharN;

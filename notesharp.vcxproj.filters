@@ -58,6 +58,9 @@
     <Filter Include="src\module\model\impl">
       <UniqueIdentifier>{1ee81177-97e1-4526-8339-1ef206adeb53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\module\common">
+      <UniqueIdentifier>{5ac63b8a-4773-406e-b464-dde084745854}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,21 +93,27 @@
     <ClCompile Include="src\module\view\font.cpp">
       <Filter>src\module\view</Filter>
     </ClCompile>
-    <ClCompile Include="textpad2.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\module\model\impl\simple_model.cpp">
       <Filter>src\module\model\impl</Filter>
     </ClCompile>
     <ClCompile Include="src\module\view\view_config.cpp">
       <Filter>src\module\view</Filter>
     </ClCompile>
+    <ClCompile Include="src\module\control\doc_controller.cpp">
+      <Filter>src\module\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\module\model\doc_addr.h">
+      <Filter>src\module\model</Filter>
+    </ClCompile>
+    <ClCompile Include="textpad2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\module\text\impl\txt_word_stream2.cpp">
+      <Filter>src\module\text\impl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="textpad.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="textpad2.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -153,17 +162,11 @@
     <ClInclude Include="panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\control\control.h">
-      <Filter>src\module\control</Filter>
-    </ClInclude>
     <ClInclude Include="src\module\view\view.h">
       <Filter>src\module\view</Filter>
     </ClInclude>
     <ClInclude Include="src\module\model\model.h">
       <Filter>src\module\model</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\view\compose.h">
-      <Filter>src\module\view</Filter>
     </ClInclude>
     <ClInclude Include="src\module\model\model_define.h">
       <Filter>src\module\model</Filter>
@@ -188,6 +191,33 @@
     </ClInclude>
     <ClInclude Include="src\module\model\impl\simple_line.h">
       <Filter>src\module\model\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\control\doc_controller.h">
+      <Filter>src\module\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\control\doc_cursor.h">
+      <Filter>src\module\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\char_instream2.h">
+      <Filter>src\module\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\common\common_define.h">
+      <Filter>src\module\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\word_instream2.h">
+      <Filter>src\module\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\ref_content_char_instream2.h">
+      <Filter>src\module\text\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\doc_line_char_instream.h">
+      <Filter>src\module\text\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\text\impl\txt_word_stream2.h">
+      <Filter>src\module\text\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="textpad2.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

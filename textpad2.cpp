@@ -55,13 +55,13 @@ void TextPad2::paintEvent(QPaintEvent * e)
 void TextPad2::showEvent(QShowEvent * e)
 {
     QSize sz(size());
-    m_view.Init(0, { sz.width(), sz.height() });
+    m_view.Init(2, { sz.width(), sz.height() });
 }
 
 void TextPad2::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
-    m_view.Init(0, { sz.width(), sz.height() });
+    m_view.Init(2, { sz.width(), sz.height() });
 }
 
 void TextPad2::paintBackground(QPainter & p)

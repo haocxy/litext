@@ -3,6 +3,8 @@
 #include "view_config.h"
 #include "module/model/model.h"
 #include "module/model/line.h"
+#include "module/text/impl/doc_line_char_instream.h"
+#include "module/text/impl/txt_word_stream2.h"
 
 void View::Init(LineN viewStart, const view::Size & size)
 {
@@ -60,6 +62,81 @@ void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
 
 void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
 {
+    assert(m_config != nullptr);
+    assert(phase.size() == 0);
+
+    const int hGap = m_config->hGap();
+    const int hMargin = m_config->hMargin();
+
+    view::Line *vline = &phase.grow();
+
+    DocLineCharInStream charStream(line);
+    TxtWordStream2 wordStream(charStream);
+
+    int leftX = hGap;
+
+    while (true)
+    {
+        const UString word = wordStream.Next();
+        if (check::isNull(word))
+        {
+            return;
+        }
+
+        if (vline->size() == 0)
+        {
+            for (const UChar c : word)
+            {
+                const int charWidth = m_config->charWidth(c);
+
+                if (leftX + charWidth > m_size.width())
+                {
+                    leftX = hGap;
+                    vline = &phase.grow();
+                }
+
+                view::Char &vc = vline->grow();
+                vc.setUnicode(c);
+                vc.setX(leftX);
+                vc.setWidth(charWidth);
+
+                leftX += charWidth;
+                leftX += hMargin;
+            }
+        }
+        else
+        {
+            int wordWidth = 0;
+            for (const UChar c : word)
+            {
+                wordWidth += m_config->charWidth(c);
+                wordWidth += hMargin;
+            }
+            if (leftX + wordWidth > m_size.width())
+            {
+                leftX = hGap;
+                vline = &phase.grow();
+            }
+            for (const UChar c : word)
+            {
+                const int charWidth = m_config->charWidth(c);
+
+                if (leftX + charWidth > m_size.width())
+                {
+                    leftX = hGap;
+                    vline = &phase.grow();
+                }
+
+                view::Char &vc = vline->grow();
+                vc.setUnicode(c);
+                vc.setX(leftX);
+                vc.setWidth(charWidth);
+
+                leftX += charWidth;
+                leftX += hMargin;
+            }
+        }
+    }
 }
 
 void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)

@@ -6,7 +6,7 @@ class View;
 
 class TextPad2 : public QWidget
 {
-    Q_OBJECT
+    //Q_OBJECT
 
 public:
     TextPad2(View *view, QWidget *parent = nullptr);

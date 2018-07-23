@@ -22,7 +22,7 @@ static void setupConfig(view::Config &c)
     c.setHGap(2);
     c.setHMargin(2);
     c.setTabSize(4);
-    c.setWrapLine(false);
+    c.setWrapLine(true);
 
     view::Font &f = c.rfont();
     view::FontInfo fi;

@@ -63,23 +63,23 @@ const QString &DocModel::operator[](RowIndex rowIndex) const
 
 void DocModel::SetCursor(RowIndex row, ColIndex col)
 {
-    m_cursor.SetRow(row);
-    m_cursor.SetCol(col);
+    m_normalCursor.SetRow(row);
+    m_normalCursor.SetCol(col);
 }
 
 void DocModel::SetCursor(const DocSel & cursor)
 {
-    m_cursor = cursor;
+    m_normalCursor = cursor;
 }
 
 bool DocModel::CursorMovePrevChar()
 {
-    const RowIndex row = m_cursor.GetRow();
-    const ColIndex col = m_cursor.GetCol();
+    const RowIndex row = m_normalCursor.GetRow();
+    const ColIndex col = m_normalCursor.GetCol();
 
     if (col > 0)
     {
-        m_cursor.SetCol(col - 1);
+        m_normalCursor.SetCol(col - 1);
         return true;
     }
 
@@ -89,11 +89,11 @@ bool DocModel::CursorMovePrevChar()
         const QString &line = m_lines[newRow];
         if (!line.isEmpty())
         {
-            m_cursor.SetRowCol(newRow, line.size() - 1);
+            m_normalCursor.SetRowCol(newRow, line.size() - 1);
         }
         else
         {
-            m_cursor.SetRowCol(newRow, 0);
+            m_normalCursor.SetRowCol(newRow, 0);
         }
         return true;
     }
@@ -103,8 +103,8 @@ bool DocModel::CursorMovePrevChar()
 
 bool DocModel::CursorMoveNextChar()
 {
-    const RowIndex row = m_cursor.GetRow();
-    const ColIndex col = m_cursor.GetCol();
+    const RowIndex row = m_normalCursor.GetRow();
+    const ColIndex col = m_normalCursor.GetCol();
 
     const RowCnt rowCnt = static_cast<RowCnt>(m_lines.size());
     if (row >= rowCnt)
@@ -116,13 +116,13 @@ bool DocModel::CursorMoveNextChar()
 
     if (col < curLine.size() - 1)
     {
-        m_cursor.SetCol(col + 1);
+        m_normalCursor.SetCol(col + 1);
         return true;
     }
 
     if (row < rowCnt - 1)
     {
-        m_cursor.SetRowCol(row + 1, 0);
+        m_normalCursor.SetRowCol(row + 1, 0);
         return true;
     }
 

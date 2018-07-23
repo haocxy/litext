@@ -69,14 +69,14 @@ public:
 
     void SetCursor(const DocSel &cursor);
 
-    const DocSel &GetCursor() const { return m_cursor; }
+    const DocSel &GetCursor() const { return m_normalCursor; }
 
     bool CursorMovePrevChar();
     bool CursorMoveNextChar();
 
 private:
     std::vector<QString> m_lines;
-    DocSel m_cursor;
+    DocSel m_normalCursor;
 };
 
 

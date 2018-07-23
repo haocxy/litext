@@ -28,6 +28,11 @@ public:
         m_content = std::move(content);
     }
 
+    void Add(UChar c)
+    {
+        m_content.push_back(c);
+    }
+
 private:
     UString m_content;
 };
