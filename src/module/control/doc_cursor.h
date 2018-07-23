@@ -12,6 +12,13 @@ public:
 public:
     DocCursor() = default;
 
+    const DocAddr & addr() const { return m_from; }
+    void setAddr(const DocAddr &addr)
+    {
+        m_from = addr;
+        m_to = addr;
+    }
+
     const DocAddr & from() const { return m_from; }
     void setFrom(const DocAddr &from) { m_from = from; }
 
@@ -31,6 +38,11 @@ public:
     bool isNull() const
     {
         return hasFlag(flgNull);
+    }
+
+    bool isInsert() const
+    {
+        return m_from == m_to;
     }
 
 private:

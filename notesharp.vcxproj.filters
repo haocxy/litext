@@ -111,6 +111,9 @@
     <ClCompile Include="src\module\text\impl\txt_word_stream2.cpp">
       <Filter>src\module\text\impl</Filter>
     </ClCompile>
+    <ClCompile Include="src\module\view\view_page.cpp">
+      <Filter>src\module\view</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="textpad.h">
@@ -218,6 +221,12 @@
     </ClInclude>
     <ClInclude Include="textpad2.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\view_page.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\module\view\view_addr.h">
+      <Filter>src\module\view</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

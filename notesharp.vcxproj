@@ -191,6 +191,7 @@
     <ClCompile Include="src\module\view\font.cpp" />
     <ClCompile Include="src\module\view\view.cpp" />
     <ClCompile Include="src\module\view\view_config.cpp" />
+    <ClCompile Include="src\module\view\view_page.cpp" />
     <ClCompile Include="src\util\fileutil.cpp" />
     <ClCompile Include="textpad.cpp" />
     <ClCompile Include="textpad2.cpp" />
@@ -244,7 +245,9 @@
     <ClInclude Include="src\module\view\char_draw_info.h" />
     <ClInclude Include="src\module\view\font.h" />
     <ClInclude Include="src\module\view\view.h" />
+    <ClInclude Include="src\module\view\view_addr.h" />
     <ClInclude Include="src\module\view\view_config.h" />
+    <ClInclude Include="src\module\view\view_page.h" />
     <ClInclude Include="src\util\fileutil.h" />
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\stl_container_util.h" />

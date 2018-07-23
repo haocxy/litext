@@ -5,6 +5,7 @@
 
 #include "module/view/view.h"
 #include "module/view/view_config.h"
+#include "module/control/doc_controller.h"
 
 namespace
 {
@@ -29,11 +30,13 @@ namespace
     }
 }
 
-TextPad2::TextPad2(View *view, QWidget *parent)
+TextPad2::TextPad2(View *view, DocController *controller, QWidget *parent)
     : m_view(*view)
+    , m_controller(*controller)
     , QWidget(parent)
 {
-    assert(view != nullptr);
+    assert(view);
+    assert(controller);
 
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
@@ -50,18 +53,19 @@ void TextPad2::paintEvent(QPaintEvent * e)
     QPainter p(this);
     paintBackground(p);
     paintTextContent(p);
+    paintCursor(p);
 }
 
 void TextPad2::showEvent(QShowEvent * e)
 {
     QSize sz(size());
-    m_view.Init(2, { sz.width(), sz.height() });
+    m_view.Init(0, { sz.width(), sz.height() });
 }
 
 void TextPad2::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
-    m_view.Init(2, { sz.width(), sz.height() });
+    m_view.Init(0, { sz.width(), sz.height() });
 }
 
 void TextPad2::paintBackground(QPainter & p)
@@ -97,6 +101,33 @@ void TextPad2::paintTextContent(QPainter & p)
             }
 
             ++lineOffset;
+        }
+    }
+}
+
+void TextPad2::paintCursor(QPainter & p)
+{
+    enum { kBottomShrink = 2 };
+
+    const DocCursor & cursor = m_controller.normalCursor();
+
+    if (cursor.isNull())
+    {
+        return;
+    }
+
+    if (cursor.isInsert())
+    {
+        const DocAddr & docAddr = cursor.addr();
+        const view::CharAddr &vcAddr = m_view.convertToCharAddr(docAddr);
+        if (!vcAddr.isNull())
+        {
+            const view::Char &vc = m_view.getChar(vcAddr);
+            const int lineHeight = m_view.config().lineHeight();
+            const int lineOffset = m_view.getLineOffsetByLineAddr(vcAddr);
+            const int x = vc.x();
+            const int y1 = lineHeight * lineOffset;
+            p.drawLine(x, y1, x, y1 + lineHeight - kBottomShrink);
         }
     }
 }

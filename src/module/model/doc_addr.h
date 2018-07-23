@@ -29,7 +29,11 @@ public:
     }
     bool operator==(const DocAddr &b) const
     {
-        return !((*this) < b) && !(b < (*this));
+        return m_line == b.m_line && m_col == b.m_col;
+    }
+    bool operator!=(const DocAddr &b) const
+    {
+        return !((*this) == b);
     }
 private:
     LineN m_line = 0;

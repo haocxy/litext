@@ -26,10 +26,79 @@ int View::getBaseLineByLineOffset(int off) const
     return (1 + off) * m_config->lineHeight() - m_config->font().descent();
 }
 
+int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
+{
+    int sum = lineAddr.line();
+
+    const int phaseCnt = m_page.size();
+    const int phase = lineAddr.phase();
+
+    for (int i = 0; i < phaseCnt && i < phase; ++i)
+    {
+        sum += m_page[i].size();
+    }
+
+    return sum;
+}
+
+view::CharAddr View::getCharAddrByPoint(int x, int y) const
+{
+    assert(m_config);
+
+    const int lineOffset = y / m_config->lineHeight();
+    const view::LineAddr lineAddr = m_page.getLineAddrByLineOffset(lineOffset);
+    return m_page.getCharAddrByLineAddrAndX(lineAddr, x);
+}
+
+view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
+{
+    const int phase = docAddr.line() - m_viewStart;
+
+    if (phase < 0)
+    {
+        return view::CharAddr();
+    }
+
+    const int phaseCnt = m_page.size();
+    if (phase > phaseCnt)
+    {
+        return view::CharAddr();
+    }
+
+    const view::Phase &vphase = m_page[phase];
+
+    int lineIndex = 0;
+    int charIndex = 0;
+
+    const CharN col = docAddr.col();
+
+    for (const view::Line &vline : vphase)
+    {
+        for (const view::Char &vc : vline)
+        {
+            if (charIndex == col)
+            {
+                return view::CharAddr(phase, lineIndex, charIndex);
+            }
+
+            ++charIndex;
+        }
+
+        ++lineIndex;
+    }
+
+    return view::CharAddr();
+}
+
+const view::Char & View::getChar(const view::CharAddr & charAddr) const
+{
+    return m_page[charAddr.phase()][charAddr.line()][charAddr.col()];
+}
+
 void View::remakePage()
 {
-    assert(m_config != nullptr);
-    assert(m_model != nullptr);
+    assert(m_config);
+    assert(m_model);
 
     m_page.clear();
 
