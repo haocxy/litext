@@ -71,9 +71,9 @@ class DocAddr;
 class View
 {
 public:
-    View(Model *model, view::Config *config) :m_model(model),m_config(config) {
-        assert(model != nullptr);
-        assert(config != nullptr);
+    View(Model *model, view::Config *config) :m_model(*model),m_config(*config) {
+        assert(model);
+        assert(config);
     }
 
     ~View() {}
@@ -84,7 +84,7 @@ public:
 
     const view::Config &config() const
     {
-        return *m_config;
+        return m_config;
     }
 
     int getBaseLineByLineOffset(int off) const;
@@ -121,8 +121,8 @@ private:
 
 private:
     bool m_dirty = true;
-    Model * const m_model;
-    view::Config * const m_config;
+    const Model & m_model;
+    const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
     LineN m_viewStart = 0;

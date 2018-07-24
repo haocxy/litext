@@ -21,9 +21,7 @@ const view::Page & View::page() const
 
 int View::getBaseLineByLineOffset(int off) const
 {
-    assert(m_config != nullptr);
-
-    return (1 + off) * m_config->lineHeight() - m_config->font().descent();
+    return (1 + off) * m_config.lineHeight() - m_config.font().descent();
 }
 
 int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
@@ -48,8 +46,6 @@ view::LineAddr View::getLineAddrByY(int y) const
 
 view::CharAddr View::getCharAddrByPoint(int x, int y) const
 {
-    assert(m_config);
-
     const int lineOffset = getLineOffsetByY(y);
     const view::LineAddr lineAddr = m_page.getLineAddrByLineOffset(lineOffset);
     return m_page.getCharAddrByLineAddrAndX(lineAddr, x);
@@ -137,8 +133,6 @@ const view::Char & View::getChar(const view::CharAddr & charAddr) const
 
 int View::getXByAddr(const view::CharAddr & charAddr) const
 {
-    assert(m_config);
-
     if (charAddr.isNull())
     {
         return 0;
@@ -146,7 +140,7 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
 
     if (charAddr.isAfterLastLine())
     {
-        return m_config->hGap();
+        return m_config.hGap();
     }
 
     if (charAddr.isAfterLastChar())
@@ -160,9 +154,7 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
 
 view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
 {
-    assert(m_config);
-
-    const int lineHeight = m_config->lineHeight();
+    const int lineHeight = m_config.lineHeight();
     const int top = lineHeight * lineOffset;
     const int bottom = top + lineHeight;
 
@@ -181,34 +173,29 @@ view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
 
 int View::getLineOffsetByY(int y) const
 {
-    return y / m_config->lineHeight();
+    return y / m_config.lineHeight();
 }
 
 void View::remakePage()
 {
-    assert(m_config);
-    assert(m_model);
-
     m_page.clear();
 
-    const LineN maxShowLine = m_viewStart + m_size.height() / m_config->lineHeight() + 1;
+    const LineN maxShowLine = m_viewStart + m_size.height() / m_config.lineHeight() + 1;
 
-    const LineN rowCnt = std::min(maxShowLine, m_model->lineCnt());
+    const LineN rowCnt = std::min(maxShowLine, m_model.lineCnt());
 
     for (LineN i = m_viewStart; i < rowCnt; ++i)
     {
         view::Phase &vphase = m_page.grow();
 
-        DocLineToViewPhase(m_model->lineAt(i), vphase);
+        DocLineToViewPhase(m_model.lineAt(i), vphase);
     }
 
 }
 
 void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
 {
-    assert(m_config != nullptr);
-
-    if (m_config->wrapLine())
+    if (m_config.wrapLine())
     {
         DocLineToViewPhaseWithWrapLine(line, phase);
     }
@@ -220,11 +207,10 @@ void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
 
 void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
 {
-    assert(m_config != nullptr);
     assert(phase.size() == 0);
 
-    const int hGap = m_config->hGap();
-    const int hMargin = m_config->hMargin();
+    const int hGap = m_config.hGap();
+    const int hMargin = m_config.hMargin();
 
     view::Line *vline = &phase.grow();
 
@@ -245,7 +231,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
         {
             for (const UChar c : word)
             {
-                const int charWidth = m_config->charWidth(c);
+                const int charWidth = m_config.charWidth(c);
 
                 if (leftX + charWidth > m_size.width())
                 {
@@ -267,7 +253,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
             int wordWidth = 0;
             for (const UChar c : word)
             {
-                wordWidth += m_config->charWidth(c);
+                wordWidth += m_config.charWidth(c);
                 wordWidth += hMargin;
             }
             if (leftX + wordWidth > m_size.width())
@@ -277,7 +263,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
             }
             for (const UChar c : word)
             {
-                const int charWidth = m_config->charWidth(c);
+                const int charWidth = m_config.charWidth(c);
 
                 if (leftX + charWidth > m_size.width())
                 {
@@ -299,11 +285,10 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
 
 void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)
 {
-    assert(m_config != nullptr);
     assert(phase.size() == 0);
 
-    const int hGap = m_config->hGap();
-    const int hMargin = m_config->hMargin();
+    const int hGap = m_config.hGap();
+    const int hMargin = m_config.hMargin();
 
     view::Line &vline = phase.grow();
 
@@ -313,7 +298,7 @@ void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)
     for (CharN i = 0; i < cnt; ++i)
     {
         const UChar c = line.charAt(i);
-        const int charWidth = m_config->charWidth(c);
+        const int charWidth = m_config.charWidth(c);
 
         view::Char &vchar = vline.grow();
         vchar.setUnicode(c);
