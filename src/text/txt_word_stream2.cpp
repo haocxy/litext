@@ -1,7 +1,7 @@
 #include "txt_word_stream2.h"
 
 #include <cassert>
-#include "module/text/char_instream2.h"
+#include "text/char_instream2.h"
 
 
 namespace

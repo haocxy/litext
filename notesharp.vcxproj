@@ -181,7 +181,7 @@
     <ClCompile Include="src\control\doc_controller.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model\simple_model.cpp" />
-    <ClCompile Include="src\module\text\impl\txt_word_stream2.cpp" />
+    <ClCompile Include="src\text\txt_word_stream2.cpp" />
     <ClCompile Include="src\util\fileutil.cpp" />
     <ClCompile Include="src\view\font.cpp" />
     <ClCompile Include="src\view\view.cpp" />
@@ -217,10 +217,10 @@
     <ClInclude Include="src\model\model_define.h" />
     <ClInclude Include="src\model\simple_line.h" />
     <ClInclude Include="src\model\simple_model.h" />
-    <ClInclude Include="src\module\text\char_instream2.h" />
-    <ClInclude Include="src\module\text\impl\doc_line_char_instream.h" />
-    <ClInclude Include="src\module\text\impl\txt_word_stream2.h" />
-    <ClInclude Include="src\module\text\word_instream2.h" />
+    <ClInclude Include="src\text\char_instream2.h" />
+    <ClInclude Include="src\text\doc_line_char_instream.h" />
+    <ClInclude Include="src\text\txt_word_stream2.h" />
+    <ClInclude Include="src\text\word_instream2.h" />
     <ClInclude Include="src\util\fileutil.h" />
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\stl_container_util.h" />

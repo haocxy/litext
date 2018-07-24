@@ -1,7 +1,7 @@
 #pragma once
 
 #include <deque>
-#include "module/text/word_instream2.h"
+#include "text/word_instream2.h"
 
 class CharInStream2;
 

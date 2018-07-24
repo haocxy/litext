@@ -3,8 +3,8 @@
 #include "view_config.h"
 #include "model/model.h"
 #include "model/line.h"
-#include "module/text/impl/doc_line_char_instream.h"
-#include "module/text/impl/txt_word_stream2.h"
+#include "text/doc_line_char_instream.h"
+#include "text/txt_word_stream2.h"
 
 void View::Init(LineN viewStart, const view::Size & size)
 {
