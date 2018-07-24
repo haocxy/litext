@@ -228,5 +228,11 @@
     <ClInclude Include="src\module\view\view_addr.h">
       <Filter>src\module\view</Filter>
     </ClInclude>
+    <ClInclude Include="style_config.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
+    <ClInclude Include="view_define.h">
+      <Filter>src\module\view</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

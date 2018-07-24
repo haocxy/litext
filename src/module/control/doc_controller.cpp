@@ -10,6 +10,12 @@ DocController::DocController(Model * model)
     assert(model);
 }
 
+void DocController::onPrimaryKeyPress(const DocAddr & addr)
+{
+    m_normalCursor.setAddr(addr);
+    m_lastActLine = addr.line();
+}
+
 
 
 

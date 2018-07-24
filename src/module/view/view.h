@@ -28,7 +28,19 @@ namespace view
 
     class Config;
 
-
+    class LineBound
+    {
+    public:
+        LineBound() = default;
+        LineBound(int top, int bottom) :m_top(top), m_bottom(bottom) {}
+        int top() const { return m_top; }
+        void setTop(int top) { m_top = top; }
+        int bottom() const { return m_bottom; }
+        void setBottom(int bottom) { m_bottom = bottom; }
+    private:
+        int m_top = 0;
+        int m_bottom = 0;
+    };
 
 } // namespace view
 
@@ -65,13 +77,24 @@ public:
 
     int getLineOffsetByLineAddr(const view::LineAddr &lineAddr) const;
 
+    view::LineAddr getLineAddrByY(int y) const;
+
     view::CharAddr getCharAddrByPoint(int x, int y) const;
+
+    DocAddr getDocAddrByPoint(int x, int y) const;
 
     view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
 
+    DocAddr convertToDocAddr(const view::CharAddr &charAddr) const;
+
     const view::Char & getChar(const view::CharAddr & charAddr) const;
 
+    view::LineBound getLineBoundByLineOffset(int lineOffset) const;
+
+    view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
+
 private:
+    int getLineOffsetByY(int y) const;
 
 private:
     void remakePage();

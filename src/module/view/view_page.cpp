@@ -36,6 +36,5 @@ view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, 
         }
     }
 
-    throw std::logic_error("view::Page::getCharAddrByLineAddrAndX");
-
+    return CharAddr();
 }

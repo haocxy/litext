@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <QPainter>
+#include <QMouseEvent>
 
 #include "module/view/view.h"
 #include "module/view/view_config.h"
@@ -68,6 +69,21 @@ void TextPad2::resizeEvent(QResizeEvent * e)
     m_view.Init(0, { sz.width(), sz.height() });
 }
 
+void TextPad2::keyPressEvent(QKeyEvent * e)
+{
+
+}
+
+void TextPad2::mousePressEvent(QMouseEvent * e)
+{
+    if (e->button() == Qt::LeftButton)
+    {
+        const DocAddr da = m_view.getDocAddrByPoint(e->x(), e->y());
+        m_controller.onPrimaryKeyPress(da);
+        update();
+    }
+}
+
 void TextPad2::paintBackground(QPainter & p)
 {
     AutoSaver as(p);
@@ -123,11 +139,10 @@ void TextPad2::paintCursor(QPainter & p)
         if (!vcAddr.isNull())
         {
             const view::Char &vc = m_view.getChar(vcAddr);
-            const int lineHeight = m_view.config().lineHeight();
-            const int lineOffset = m_view.getLineOffsetByLineAddr(vcAddr);
-            const int x = vc.x();
-            const int y1 = lineHeight * lineOffset;
-            p.drawLine(x, y1, x, y1 + lineHeight - kBottomShrink);
+            const view::LineBound bound = m_view.getLineBound(vcAddr);
+            const int x = vc.x() - 1;
+            p.drawLine(x, bound.top() + kBottomShrink,
+                       x, bound.bottom() - kBottomShrink);
         }
     }
 }

@@ -21,7 +21,7 @@ static void setupConfig(view::Config &c)
 {
     c.setLineHeightFactor(1.5f);
     c.setHGap(2);
-    c.setHMargin(2);
+    c.setHMargin(0);
     c.setTabSize(4);
     c.setWrapLine(true);
 

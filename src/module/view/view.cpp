@@ -41,17 +41,32 @@ int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
     return sum;
 }
 
+view::LineAddr View::getLineAddrByY(int y) const
+{
+    return m_page.getLineAddrByLineOffset(getLineOffsetByY(y));
+}
+
 view::CharAddr View::getCharAddrByPoint(int x, int y) const
 {
     assert(m_config);
 
-    const int lineOffset = y / m_config->lineHeight();
+    const int lineOffset = getLineOffsetByY(y);
     const view::LineAddr lineAddr = m_page.getLineAddrByLineOffset(lineOffset);
     return m_page.getCharAddrByLineAddrAndX(lineAddr, x);
 }
 
+DocAddr View::getDocAddrByPoint(int x, int y) const
+{
+    return convertToDocAddr(getCharAddrByPoint(x, y));
+}
+
 view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
 {
+    if (docAddr.isNull())
+    {
+        return view::CharAddr();
+    }
+
     const int phase = docAddr.line() - m_viewStart;
 
     if (phase < 0)
@@ -90,9 +105,41 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
     return view::CharAddr();
 }
 
+DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
+{
+    if (charAddr.isNull())
+    {
+        return DocAddr();
+    }
+
+    return DocAddr(m_viewStart + charAddr.phase(), charAddr.col());
+}
+
 const view::Char & View::getChar(const view::CharAddr & charAddr) const
 {
     return m_page[charAddr.phase()][charAddr.line()][charAddr.col()];
+}
+
+view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
+{
+    assert(m_config);
+
+    const int lineHeight = m_config->lineHeight();
+    const int top = lineHeight * lineOffset;
+    const int bottom = top + lineHeight;
+
+    return view::LineBound(top, bottom);
+}
+
+view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
+{
+    const int lineOffset = getLineOffsetByLineAddr(lineAddr);
+    return getLineBoundByLineOffset(lineOffset);
+}
+
+int View::getLineOffsetByY(int y) const
+{
+    return y / m_config->lineHeight();
 }
 
 void View::remakePage()

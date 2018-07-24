@@ -5,12 +5,13 @@
 class DocAddr
 {
 public:
-    DocAddr() = default;
+    DocAddr() :m_isNull(true), m_line(0), m_col(0) {}
     DocAddr(LineN line, CharN col) : m_line(line), m_col(col) {}
     LineN line() const { return m_line; }
     void setLine(LineN line) { m_line = line; }
     CharN col() const { return m_col; }
     void setCol(CharN col) { m_col = col; }
+    bool isNull() const { return m_isNull; }
     bool operator<(const DocAddr &b) const
     {
         if (m_line < b.m_line)
@@ -36,6 +37,7 @@ public:
         return !((*this) == b);
     }
 private:
+    bool m_isNull = false;
     LineN m_line = 0;
     CharN m_col = 0;
 };
