@@ -1,4 +1,4 @@
-#include "textpad2.h"
+#include "textpad.h"
 
 #include <assert.h>
 #include <QPainter>
@@ -31,7 +31,7 @@ namespace
     }
 }
 
-TextPad2::TextPad2(View *view, DocController *controller, QWidget *parent)
+TextPad::TextPad(View *view, DocController *controller, QWidget *parent)
     : m_view(*view)
     , m_controller(*controller)
     , QWidget(parent)
@@ -44,12 +44,12 @@ TextPad2::TextPad2(View *view, DocController *controller, QWidget *parent)
     setFocus();
 }
 
-TextPad2::~TextPad2()
+TextPad::~TextPad()
 {
 
 }
 
-void TextPad2::paintEvent(QPaintEvent * e)
+void TextPad::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
     paintBackground(p);
@@ -57,24 +57,24 @@ void TextPad2::paintEvent(QPaintEvent * e)
     paintCursor(p);
 }
 
-void TextPad2::showEvent(QShowEvent * e)
+void TextPad::showEvent(QShowEvent * e)
 {
     QSize sz(size());
     m_view.Init(0, { sz.width(), sz.height() });
 }
 
-void TextPad2::resizeEvent(QResizeEvent * e)
+void TextPad::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
     m_view.Init(0, { sz.width(), sz.height() });
 }
 
-void TextPad2::keyPressEvent(QKeyEvent * e)
+void TextPad::keyPressEvent(QKeyEvent * e)
 {
 
 }
 
-void TextPad2::mousePressEvent(QMouseEvent * e)
+void TextPad::mousePressEvent(QMouseEvent * e)
 {
     if (e->button() == Qt::LeftButton)
     {
@@ -84,14 +84,14 @@ void TextPad2::mousePressEvent(QMouseEvent * e)
     }
 }
 
-void TextPad2::paintBackground(QPainter & p)
+void TextPad::paintBackground(QPainter & p)
 {
     AutoSaver as(p);
 
     p.fillRect(rect(), QColor(Qt::white));
 }
 
-void TextPad2::paintTextContent(QPainter & p)
+void TextPad::paintTextContent(QPainter & p)
 {
     namespace v = view;
 
@@ -121,7 +121,7 @@ void TextPad2::paintTextContent(QPainter & p)
     }
 }
 
-void TextPad2::paintCursor(QPainter & p)
+void TextPad::paintCursor(QPainter & p)
 {
     enum { kBottomShrink = 2 };
 

@@ -2,10 +2,10 @@
 
 #include "common/common_define.h"
 
-class CharInStream2
+class CharInStream
 {
 public:
-    virtual ~CharInStream2() {}
+    virtual ~CharInStream() {}
 
     virtual UChar Next() = 0;
 };

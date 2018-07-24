@@ -2,10 +2,10 @@
 
 #include "common/common_define.h"
 
-class WordInStream2
+class WordInStream
 {
 public:
-    virtual ~WordInStream2() {}
+    virtual ~WordInStream() {}
 
     virtual UString Next() = 0;
 };

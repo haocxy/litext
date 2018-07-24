@@ -1,7 +1,7 @@
 #include <QApplication>
 #include <QDebug>
 
-#include "widget/textpad2.h"
+#include "widget/textpad.h"
 #include "model/simple_model.h"
 #include "view/view_config.h"
 #include "view/view.h"
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     DocController c(&model);
     c.normalCursor().setAddr(DocAddr(1, 2));
 
-    TextPad2 tp2(&v, &c);
+    TextPad tp2(&v, &c);
     tp2.show();
 
     return app.exec();

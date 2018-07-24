@@ -1,7 +1,7 @@
-#include "txt_word_stream2.h"
+#include "txt_word_stream.h"
 
 #include <cassert>
-#include "text/char_instream2.h"
+#include "text/char_instream.h"
 
 
 namespace
@@ -20,7 +20,7 @@ namespace
     }
 }
 
-UString TxtWordStream2::Next()
+UString TxtWordStream::Next()
 {
     UChar next = PopNextChar();
     if (next == 0)
@@ -75,7 +75,7 @@ UString TxtWordStream2::Next()
     return result;
 }
 
-UChar TxtWordStream2::PopNextChar()
+UChar TxtWordStream::PopNextChar()
 {
     if (!m_buff.empty())
     {

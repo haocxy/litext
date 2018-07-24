@@ -1,20 +1,20 @@
 #pragma once
 
 #include <deque>
-#include "text/word_instream2.h"
+#include "text/word_instream.h"
 
-class CharInStream2;
+class CharInStream;
 
-class TxtWordStream2 : public WordInStream2
+class TxtWordStream : public WordInStream
 {
 public:
-    TxtWordStream2(CharInStream2 & charInStream)
+    TxtWordStream(CharInStream & charInStream)
         : m_charInStream(charInStream)
     {
 
     }
 
-    virtual ~TxtWordStream2() {}
+    virtual ~TxtWordStream() {}
 
     virtual UString Next() override;
 private:
@@ -25,6 +25,6 @@ private:
     }
 
 private:
-    CharInStream2 & m_charInStream;
+    CharInStream & m_charInStream;
     std::deque<UChar> m_buff;
 };

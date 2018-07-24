@@ -114,9 +114,9 @@
     <QtMoc>
       <QTDIR>$(QTDIR)</QTDIR>
       <InputFile>%(FullPath)</InputFile>
-      <OutputFile>GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath>$(ProjectDir)src\;GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;release;$(QTDIR)\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
+      <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <IncludePath>$(ProjectDir)src;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
+      <Define>_WINDOWS;UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
@@ -168,9 +168,9 @@
     <QtMoc>
       <QTDIR>$(QTDIR)</QTDIR>
       <InputFile>%(FullPath)</InputFile>
-      <OutputFile>GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath>$(ProjectDir)src;GeneratedFiles\$(ConfigurationName);GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;debug;$(QTDIR)\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
+      <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <IncludePath>$(ProjectDir)src;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
+      <Define>_WINDOWS;UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
       <Include>$(Configuration)/moc_predefs.h</Include>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
@@ -181,12 +181,12 @@
     <ClCompile Include="src\control\doc_controller.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model\simple_model.cpp" />
-    <ClCompile Include="src\text\txt_word_stream2.cpp" />
+    <ClCompile Include="src\text\txt_word_stream.cpp" />
     <ClCompile Include="src\view\font.cpp" />
     <ClCompile Include="src\view\view.cpp" />
     <ClCompile Include="src\view\view_config.cpp" />
     <ClCompile Include="src\view\view_page.cpp" />
-    <ClCompile Include="src\widget\textpad2.cpp" />
+    <ClCompile Include="src\widget\textpad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -216,10 +216,10 @@
     <ClInclude Include="src\model\model_define.h" />
     <ClInclude Include="src\model\simple_line.h" />
     <ClInclude Include="src\model\simple_model.h" />
-    <ClInclude Include="src\text\char_instream2.h" />
+    <ClInclude Include="src\text\char_instream.h" />
     <ClInclude Include="src\text\doc_line_char_instream.h" />
-    <ClInclude Include="src\text\txt_word_stream2.h" />
-    <ClInclude Include="src\text\word_instream2.h" />
+    <ClInclude Include="src\text\txt_word_stream.h" />
+    <ClInclude Include="src\text\word_instream.h" />
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\stl_container_util.h" />
     <ClInclude Include="src\view\char_draw_info.h" />
@@ -228,7 +228,7 @@
     <ClInclude Include="src\view\view_addr.h" />
     <ClInclude Include="src\view\view_config.h" />
     <ClInclude Include="src\view\view_page.h" />
-    <ClInclude Include="src\widget\textpad2.h" />
+    <ClInclude Include="src\widget\textpad.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt" />

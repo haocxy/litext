@@ -5,13 +5,13 @@
 class View;
 class DocController;
 
-class TextPad2 : public QWidget
+class TextPad : public QWidget
 {
-    //Q_OBJECT
+    // Q_OBJECT
 
 public:
-    TextPad2(View *view, DocController *controller, QWidget *parent = nullptr);
-    ~TextPad2();
+    TextPad(View *view, DocController *controller, QWidget *parent = nullptr);
+    ~TextPad();
 
     virtual void paintEvent(QPaintEvent *e) override;
     virtual void showEvent(QShowEvent *e) override;

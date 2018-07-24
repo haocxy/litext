@@ -4,7 +4,7 @@
 #include "model/model.h"
 #include "model/line.h"
 #include "text/doc_line_char_instream.h"
-#include "text/txt_word_stream2.h"
+#include "text/txt_word_stream.h"
 
 void View::Init(LineN viewStart, const view::Size & size)
 {
@@ -187,7 +187,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
     view::Line *vline = &phase.grow();
 
     DocLineCharInStream charStream(line);
-    TxtWordStream2 wordStream(charStream);
+    TxtWordStream wordStream(charStream);
 
     int leftX = hGap;
 

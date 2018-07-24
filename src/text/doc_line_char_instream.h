@@ -1,9 +1,9 @@
 #pragma once
 
-#include "text/char_instream2.h"
+#include "text/char_instream.h"
 #include "model/line.h"
 
-class DocLineCharInStream : public CharInStream2
+class DocLineCharInStream : public CharInStream
 {
 public:
     DocLineCharInStream(const Line & line) : m_line(line) {}
