@@ -63,9 +63,9 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
         return view::CharAddr();
     }
 
-    if (docAddr.isAfterLastLine())
+    if (docAddr.isAfterLastPhase())
     {
-        return view::CharAddr::newAfterLastLine();
+        return view::CharAddr::newCharAddrAfterLastPhase();
     }
 
     const int phase = docAddr.line() - m_viewStart;
@@ -80,7 +80,7 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
     if (docAddr.isAfterLastChar())
     {
         view::LineAddr lineAddr(phase, vphase.size() - 1);
-        return view::CharAddr::newAfterLastChar(lineAddr);
+        return view::CharAddr::newCharAddrAfterLastChar(lineAddr);
     }
     
     int lineIndex = 0;
@@ -113,14 +113,14 @@ DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
         return DocAddr();
     }
 
-    if (charAddr.isAfterLastLine())
+    if (charAddr.isAfterLastPhase())
     {
-        return DocAddr::newAfterLastLine();
+        return DocAddr::newCharAddrAfterLastPhase();
     }
 
     if (charAddr.isAfterLastChar())
     {
-        return DocAddr::newAfterLastChar(m_viewStart + charAddr.phase());
+        return DocAddr::newCharAddrAfterLastChar(m_viewStart + charAddr.phase());
     }
 
     return DocAddr(m_viewStart + charAddr.phase(), charAddr.col());
@@ -138,7 +138,7 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
         return 0;
     }
 
-    if (charAddr.isAfterLastLine())
+    if (charAddr.isAfterLastPhase())
     {
         return m_config.hGap();
     }
@@ -163,7 +163,7 @@ view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
 
 view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
 {
-    if (lineAddr.isAfterLastLine())
+    if (lineAddr.isAfterLastPhase())
     {
         return getLineBoundByLineOffset(m_page.lineCnt());
     }

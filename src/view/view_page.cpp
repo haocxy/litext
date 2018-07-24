@@ -19,14 +19,14 @@ view::LineAddr view::Page::getLineAddrByLineOffset(int offset) const
         sum += lineCnt;
     }
 
-    return view::LineAddr::newLineAddrAfterLastLine();
+    return view::LineAddr::newLineAddrAfterLastPhase();
 }
 
 view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, int x) const
 {
-    if (lineAddr.isNull() || lineAddr.isAfterLastLine())
+    if (lineAddr.isNull() || lineAddr.isAfterLastPhase())
     {
-        return view::CharAddr::newAfterLastChar(lineAddr);
+        return view::CharAddr::newCharAddrAfterLastChar(lineAddr);
     }
 
     const Line & line = getLine(lineAddr);
@@ -41,5 +41,5 @@ view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, 
         }
     }
 
-    return CharAddr::newAfterLastChar(lineAddr);
+    return CharAddr::newCharAddrAfterLastChar(lineAddr);
 }

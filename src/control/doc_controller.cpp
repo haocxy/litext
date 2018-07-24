@@ -14,7 +14,7 @@ void DocController::onPrimaryKeyPress(const DocAddr & addr)
 {
     m_normalCursor.setAddr(addr);
 
-    if (!addr.isAfterLastLine())
+    if (!addr.isAfterLastPhase())
     {
         m_lastActLine = addr.line();
     }

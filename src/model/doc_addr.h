@@ -5,14 +5,14 @@
 class DocAddr
 {
 public:
-    static DocAddr newAfterLastLine()
+    static DocAddr newCharAddrAfterLastPhase()
     {
         DocAddr docAddr(0, 0);
-        docAddr.setFlag(kAfterLastLine);
+        docAddr.setFlag(kAfterLastPhase);
         docAddr.setFlag(kAfterLastChar);
         return docAddr;
     }
-    static DocAddr newAfterLastChar(LineN line)
+    static DocAddr newCharAddrAfterLastChar(LineN line)
     {
         DocAddr docAddr(line, 0);
         docAddr.setFlag(kAfterLastChar);
@@ -26,7 +26,7 @@ public:
     CharN col() const { return m_col; }
     void setCol(CharN col) { m_col = col; }
     bool isNull() const { return hasFlag(kIsNull); }
-    bool isAfterLastLine() const { return hasFlag(kAfterLastLine); }
+    bool isAfterLastPhase() const { return hasFlag(kAfterLastPhase); }
     bool isAfterLastChar() const { return hasFlag(kAfterLastChar); }
     bool operator<(const DocAddr &b) const
     {
@@ -57,7 +57,7 @@ private:
     enum : flag_t
     {
         kIsNull = 1,
-        kAfterLastLine = 1 << 1,
+        kAfterLastPhase = 1 << 1,
         kAfterLastChar = 1 << 2,
     };
     bool hasFlag(flag_t f) const { return (m_flag & f) != 0; }
