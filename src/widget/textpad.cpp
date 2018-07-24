@@ -53,6 +53,7 @@ void TextPad::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
     paintBackground(p);
+    paintLastActLine(p);
     paintTextContent(p);
     paintCursor(p);
 }
@@ -89,6 +90,22 @@ void TextPad::paintBackground(QPainter & p)
     AutoSaver as(p);
 
     p.fillRect(rect(), QColor(Qt::white));
+}
+
+void TextPad::paintLastActLine(QPainter & p)
+{
+    const LineN phase = m_controller.lastActLine();
+    const view::PhaseAddr addr = m_view.convertToPhaseAddr(phase);
+    if (addr.isNull())
+    {
+        return;
+    }
+
+    AutoSaver as(p);
+
+    const view::PhaseBound bound = m_view.getPhaseBound(addr);
+    
+    p.fillRect(0, bound.top(), width(), bound.height(), QColor(Qt::green).lighter(192));
 }
 
 void TextPad::paintTextContent(QPainter & p)

@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
     View v(&model, &config);
 
     DocController c(&model);
-    c.normalCursor().setAddr(DocAddr(1, 2));
 
     TextPad tp2(&v, &c);
     tp2.show();

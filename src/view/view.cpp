@@ -39,6 +39,20 @@ int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
     return sum;
 }
 
+int View::getLineOffsetByPhaseIndex(int phase) const
+{
+    int sum = 0;
+
+    const int phaseCnt = m_page.size();
+
+    for (int i = 0; i < phaseCnt && i < phase; ++i)
+    {
+        sum += m_page[i].size();
+    }
+
+    return sum;
+}
+
 view::LineAddr View::getLineAddrByY(int y) const
 {
     return m_page.getLineAddrByLineOffset(getLineOffsetByY(y));
@@ -54,6 +68,23 @@ view::CharAddr View::getCharAddrByPoint(int x, int y) const
 DocAddr View::getDocAddrByPoint(int x, int y) const
 {
     return convertToDocAddr(getCharAddrByPoint(x, y));
+}
+
+view::PhaseAddr View::convertToPhaseAddr(LineN line) const
+{
+    const int phase = line - m_viewStart;
+    const int phaseCnt = m_page.size();
+    if (phase < 0)
+    {
+        return view::PhaseAddr();
+    }
+
+    if (line >= m_model.lineCnt())
+    {
+        return view::PhaseAddr::newPhaseAddrAfterLastPhase();
+    }
+
+    return view::PhaseAddr(phase);
 }
 
 view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
@@ -169,6 +200,28 @@ view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
     }
     const int lineOffset = getLineOffsetByLineAddr(lineAddr);
     return getLineBoundByLineOffset(lineOffset);
+}
+
+view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
+{
+    if (phaseAddr.isNull())
+    {
+        return view::PhaseBound();
+    }
+
+    if (phaseAddr.isAfterLastPhase())
+    {
+        const int lineOffset = m_page.lineCnt();
+        const int lineHeight = m_config.lineHeight();
+        const int top = lineHeight * lineOffset;
+        return view::PhaseBound(top, lineHeight);
+    }
+
+    const int lineOffset = getLineOffsetByPhaseIndex(phaseAddr.phase());
+    const int lineHeight = m_config.lineHeight();
+    const int top = lineHeight * lineOffset;
+    const int height = lineHeight * m_page[phaseAddr.phase()].size();
+    return view::PhaseBound(top, height);
 }
 
 int View::getLineOffsetByY(int y) const

@@ -56,6 +56,20 @@ namespace view
         int m_bottom = 0;
     };
 
+    class PhaseBound
+    {
+    public:
+        PhaseBound() = default;
+        PhaseBound(int top, int height) :m_top(top), m_height(height) {}
+        int top() const { return m_top; }
+        void setTop(int top) { m_top = top; }
+        int height() const { return m_height; }
+        void setHeight(int height) { m_height = height; }
+    private:
+        int m_top = 0;
+        int m_height = 0;
+    };
+
 } // namespace view
 
 
@@ -91,11 +105,15 @@ public:
 
     int getLineOffsetByLineAddr(const view::LineAddr &lineAddr) const;
 
+    int getLineOffsetByPhaseIndex(int phase) const;
+
     view::LineAddr getLineAddrByY(int y) const;
 
     view::CharAddr getCharAddrByPoint(int x, int y) const;
 
     DocAddr getDocAddrByPoint(int x, int y) const;
+
+    view::PhaseAddr convertToPhaseAddr(LineN line) const;
 
     view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
 
@@ -108,6 +126,8 @@ public:
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
 
     view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
+
+    view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
 private:
     int getLineOffsetByY(int y) const;
