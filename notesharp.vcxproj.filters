@@ -61,6 +61,9 @@
     <Filter Include="src\module\common">
       <UniqueIdentifier>{5ac63b8a-4773-406e-b464-dde084745854}</UniqueIdentifier>
     </Filter>
+    <Filter Include="nocode">
+      <UniqueIdentifier>{227a43a1-c249-4b1e-9e43-887ea45a80e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -234,5 +237,10 @@
     <ClInclude Include="view_define.h">
       <Filter>src\module\view</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="nocode\开发中的思路记录.txt">
+      <Filter>nocode</Filter>
+    </Text>
   </ItemGroup>
 </Project>
