@@ -8,4 +8,3 @@
 typedef int64_t LineN;
 typedef int32_t CharN;
 
-const UChar kDocEnd = 0;
