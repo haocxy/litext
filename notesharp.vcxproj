@@ -14,7 +14,7 @@
     <ProjectGuid>{4AE50A75-8716-3BF8-A946-9A8606D72E3E}</ProjectGuid>
     <RootNamespace>notesharp</RootNamespace>
     <Keyword>Qt4VSv1.0</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -178,11 +178,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="composer.cpp" />
-    <ClCompile Include="docmodel.cpp" />
-    <ClCompile Include="font_info.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="panel.cpp" />
     <ClCompile Include="src\module\control\doc_controller.cpp" />
     <ClCompile Include="src\module\model\doc_addr.h" />
     <ClCompile Include="src\module\model\impl\simple_model.cpp" />
@@ -193,12 +189,7 @@
     <ClCompile Include="src\module\view\view_config.cpp" />
     <ClCompile Include="src\module\view\view_page.cpp" />
     <ClCompile Include="src\util\fileutil.cpp" />
-    <ClCompile Include="textpad.cpp" />
     <ClCompile Include="textpad2.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="textpad.h">
-    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -219,11 +210,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="composer.h" />
-    <ClInclude Include="docmodel.h" />
-    <ClInclude Include="doc_model_define.h" />
-    <ClInclude Include="font_info.h" />
-    <ClInclude Include="panel.h" />
     <ClInclude Include="src\module\common\common_define.h" />
     <ClInclude Include="src\module\control\doc_controller.h" />
     <ClInclude Include="src\module\control\doc_cursor.h" />

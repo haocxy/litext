@@ -69,26 +69,11 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textpad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="docmodel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="font_info.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="composer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\module\text\impl\txt_word_stream.cpp">
       <Filter>src\module\text\impl</Filter>
     </ClCompile>
     <ClCompile Include="src\util\fileutil.cpp">
       <Filter>src\util</Filter>
-    </ClCompile>
-    <ClCompile Include="panel.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\module\view\view.cpp">
       <Filter>src\module\view</Filter>
@@ -119,11 +104,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="textpad.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
       <Filter>Generated Files</Filter>
     </CustomBuild>
@@ -132,18 +112,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="docmodel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="doc_model_define.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="font_info.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="composer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\module\text\char_instream.h">
       <Filter>src\module\text</Filter>
     </ClInclude>
@@ -164,9 +132,6 @@
     </ClInclude>
     <ClInclude Include="src\util\delete_helper.h">
       <Filter>src\util</Filter>
-    </ClInclude>
-    <ClInclude Include="panel.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\module\view\view.h">
       <Filter>src\module\view</Filter>
