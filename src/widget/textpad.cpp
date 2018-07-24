@@ -138,11 +138,10 @@ void TextPad::paintCursor(QPainter & p)
         const view::CharAddr &vcAddr = m_view.convertToCharAddr(docAddr);
         if (!vcAddr.isNull())
         {
-            const view::Char &vc = m_view.getChar(vcAddr);
             const view::LineBound bound = m_view.getLineBound(vcAddr);
-            const int x = vc.x() - 1;
+            const int x = m_view.getXByAddr(vcAddr) - 1;
             p.drawLine(x, bound.top() + kBottomShrink,
-                       x, bound.bottom() - kBottomShrink);
+                x, bound.bottom() - kBottomShrink);
         }
     }
 }

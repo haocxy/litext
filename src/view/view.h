@@ -12,6 +12,20 @@
 
 namespace view
 {
+    class Point
+    {
+    public:
+        Point() = default;
+        Point(int x, int y) :m_x(x), m_y(y) {}
+        int x() const { return m_x; }
+        void setX(int x) { m_x = x; }
+        int y() const { return m_y; }
+        void setY(int y) { m_y = y; }
+    private:
+        int m_x = 0;
+        int m_y = 0;
+    };
+
     class Size
     {
     public:
@@ -88,6 +102,8 @@ public:
     DocAddr convertToDocAddr(const view::CharAddr &charAddr) const;
 
     const view::Char & getChar(const view::CharAddr & charAddr) const;
+
+    int getXByAddr(const view::CharAddr & charAddr) const;
 
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
 

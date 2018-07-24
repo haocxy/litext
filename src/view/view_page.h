@@ -49,7 +49,8 @@ namespace view
             return StlContainerUtil::grow(m_chars);
         }
 
-
+        const Char &last() const { return m_chars.back(); }
+        Char &last() { return m_chars.back(); }
 
     private:
         Chars m_chars;
