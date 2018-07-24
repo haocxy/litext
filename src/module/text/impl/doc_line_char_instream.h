@@ -1,7 +1,7 @@
 #pragma once
 
 #include "module/text/char_instream2.h"
-#include "module/model/line.h"
+#include "model/line.h"
 
 class DocLineCharInStream : public CharInStream2
 {

@@ -4,9 +4,9 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-#include "module/view/view.h"
-#include "module/view/view_config.h"
-#include "module/control/doc_controller.h"
+#include "view/view.h"
+#include "view/view_config.h"
+#include "control/doc_controller.h"
 
 namespace
 {

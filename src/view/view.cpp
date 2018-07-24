@@ -1,8 +1,8 @@
 #include <cassert>
 #include "view.h"
 #include "view_config.h"
-#include "module/model/model.h"
-#include "module/model/line.h"
+#include "model/model.h"
+#include "model/line.h"
 #include "module/text/impl/doc_line_char_instream.h"
 #include "module/text/impl/txt_word_stream2.h"
 

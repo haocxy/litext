@@ -1,6 +1,6 @@
 #pragma once
 
-#include "module/model/line.h"
+#include "model/line.h"
 
 class SimpleLine : public Line
 {

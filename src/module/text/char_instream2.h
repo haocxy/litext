@@ -1,6 +1,6 @@
 #pragma once
 
-#include "module/common/common_define.h"
+#include "common/common_define.h"
 
 class CharInStream2
 {

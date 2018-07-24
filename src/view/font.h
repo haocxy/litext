@@ -3,7 +3,7 @@
 #include <QFont>
 #include <QFontMetrics>
 
-#include "module/model/model_define.h"
+#include "model/model_define.h"
 
 namespace view
 {

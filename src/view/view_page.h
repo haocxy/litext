@@ -1,9 +1,9 @@
 #pragma once
 
 #include <deque>
-#include "module/common/common_define.h"
+#include "common/common_define.h"
 #include "util/stl_container_util.h"
-#include "module/view/view_addr.h"
+#include "view/view_addr.h"
 
 namespace view
 {

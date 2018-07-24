@@ -178,18 +178,17 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\module\control\doc_controller.cpp" />
-    <ClCompile Include="src\module\model\doc_addr.h" />
-    <ClCompile Include="src\module\model\impl\simple_model.cpp" />
+    <ClCompile Include="src\control\doc_controller.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\model\simple_model.cpp" />
     <ClCompile Include="src\module\text\impl\txt_word_stream.cpp" />
     <ClCompile Include="src\module\text\impl\txt_word_stream2.cpp" />
-    <ClCompile Include="src\module\view\font.cpp" />
-    <ClCompile Include="src\module\view\view.cpp" />
-    <ClCompile Include="src\module\view\view_config.cpp" />
-    <ClCompile Include="src\module\view\view_page.cpp" />
     <ClCompile Include="src\util\fileutil.cpp" />
-    <ClCompile Include="textpad2.cpp" />
+    <ClCompile Include="src\view\font.cpp" />
+    <ClCompile Include="src\view\view.cpp" />
+    <ClCompile Include="src\view\view_config.cpp" />
+    <ClCompile Include="src\view\view_page.cpp" />
+    <ClCompile Include="src\widget\textpad2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -210,14 +209,15 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\module\common\common_define.h" />
-    <ClInclude Include="src\module\control\doc_controller.h" />
-    <ClInclude Include="src\module\control\doc_cursor.h" />
-    <ClInclude Include="src\module\model\impl\simple_line.h" />
-    <ClInclude Include="src\module\model\impl\simple_model.h" />
-    <ClInclude Include="src\module\model\line.h" />
-    <ClInclude Include="src\module\model\model.h" />
-    <ClInclude Include="src\module\model\model_define.h" />
+    <ClInclude Include="src\common\common_define.h" />
+    <ClInclude Include="src\control\doc_controller.h" />
+    <ClInclude Include="src\control\doc_cursor.h" />
+    <ClInclude Include="src\model\doc_addr.h" />
+    <ClInclude Include="src\model\line.h" />
+    <ClInclude Include="src\model\model.h" />
+    <ClInclude Include="src\model\model_define.h" />
+    <ClInclude Include="src\model\simple_line.h" />
+    <ClInclude Include="src\model\simple_model.h" />
     <ClInclude Include="src\module\text\char_instream2.h" />
     <ClInclude Include="src\module\text\impl\doc_line_char_instream.h" />
     <ClInclude Include="src\module\text\impl\ref_content_char_instream.h" />
@@ -228,25 +228,16 @@
     <ClInclude Include="src\module\text\impl\txt_word_stream2.h" />
     <ClInclude Include="src\module\text\word_instream.h" />
     <ClInclude Include="src\module\text\word_instream2.h" />
-    <ClInclude Include="src\module\view\char_draw_info.h" />
-    <ClInclude Include="src\module\view\font.h" />
-    <ClInclude Include="src\module\view\view.h" />
-    <ClInclude Include="src\module\view\view_addr.h" />
-    <ClInclude Include="src\module\view\view_config.h" />
-    <ClInclude Include="src\module\view\view_page.h" />
     <ClInclude Include="src\util\fileutil.h" />
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\stl_container_util.h" />
-    <ClInclude Include="style_config.h" />
-    <ClInclude Include="textpad2.h">
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)src;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)src;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;.\release;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|x64'">_WINDOWS;UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG</Define>
-    </ClInclude>
-    <ClInclude Include="view_define.h" />
+    <ClInclude Include="src\view\char_draw_info.h" />
+    <ClInclude Include="src\view\font.h" />
+    <ClInclude Include="src\view\view.h" />
+    <ClInclude Include="src\view\view_addr.h" />
+    <ClInclude Include="src\view\view_config.h" />
+    <ClInclude Include="src\view\view_page.h" />
+    <ClInclude Include="src\widget\textpad2.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt" />

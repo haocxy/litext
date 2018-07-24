@@ -4,11 +4,11 @@
 #include <vector>
 #include <deque>
 
-#include "module/model/model_define.h"
+#include "model/model_define.h"
 #include "util/stl_container_util.h"
-#include "module/model/doc_addr.h"
-#include "module/view/view_page.h"
-#include "module/view/view_addr.h"
+#include "model/doc_addr.h"
+#include "view/view_page.h"
+#include "view/view_addr.h"
 
 namespace view
 {

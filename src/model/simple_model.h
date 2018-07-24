@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #include "simple_line.h"
-#include "module/model/model.h"
+#include "model/model.h"
 
 class SimpleModel : public Model
 {

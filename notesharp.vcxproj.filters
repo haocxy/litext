@@ -24,14 +24,8 @@
     <Filter Include="src\control">
       <UniqueIdentifier>{fe3ad152-c445-4347-b712-c10d6f78c107}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\control\impl">
-      <UniqueIdentifier>{8be2a032-a87a-411c-bf2a-a199ec73c7f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\model">
       <UniqueIdentifier>{79a35c7a-1853-4de8-a903-df1656234020}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\model\impl">
-      <UniqueIdentifier>{1ee81177-97e1-4526-8339-1ef206adeb53}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\text">
       <UniqueIdentifier>{83c937b3-997e-451d-a0fa-c18eaaea2b24}</UniqueIdentifier>
@@ -41,9 +35,6 @@
     </Filter>
     <Filter Include="src\view">
       <UniqueIdentifier>{c7d76c00-4864-49c0-82bf-ddcb567050fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\view\impl">
-      <UniqueIdentifier>{87ba22b7-89b9-4a95-b3c6-ccccb94907dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\widget">
       <UniqueIdentifier>{7122ce3b-99a8-48ed-8281-da1dc480a169}</UniqueIdentifier>
@@ -56,34 +47,31 @@
     <ClCompile Include="src\util\fileutil.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
-    <ClCompile Include="src\module\view\view.cpp">
-      <Filter>src\view</Filter>
-    </ClCompile>
-    <ClCompile Include="src\module\view\font.cpp">
-      <Filter>src\view</Filter>
-    </ClCompile>
-    <ClCompile Include="src\module\model\impl\simple_model.cpp">
-      <Filter>src\model\impl</Filter>
-    </ClCompile>
-    <ClCompile Include="src\module\view\view_config.cpp">
-      <Filter>src\view</Filter>
-    </ClCompile>
-    <ClCompile Include="src\module\control\doc_controller.cpp">
-      <Filter>src\control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\module\model\doc_addr.h">
-      <Filter>src\model</Filter>
-    </ClCompile>
     <ClCompile Include="src\module\text\impl\txt_word_stream2.cpp">
       <Filter>src\text\impl</Filter>
     </ClCompile>
-    <ClCompile Include="src\module\view\view_page.cpp">
+    <ClCompile Include="src\control\doc_controller.cpp">
+      <Filter>src\control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\simple_model.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\font.cpp">
       <Filter>src\view</Filter>
     </ClCompile>
-    <ClCompile Include="textpad2.cpp">
+    <ClCompile Include="src\view\view.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\view_config.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\view\view_page.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="src\widget\textpad2.cpp">
       <Filter>src\widget</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -117,47 +105,11 @@
     <ClInclude Include="src\util\delete_helper.h">
       <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\view\view.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\model\model.h">
-      <Filter>src\model</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\model\model_define.h">
-      <Filter>src\model</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\view\char_draw_info.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\view\font.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\view\view_config.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\model\line.h">
-      <Filter>src\model</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\stl_container_util.h">
       <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\model\impl\simple_model.h">
-      <Filter>src\model\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\model\impl\simple_line.h">
-      <Filter>src\model\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\control\doc_controller.h">
-      <Filter>src\control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\control\doc_cursor.h">
-      <Filter>src\control</Filter>
-    </ClInclude>
     <ClInclude Include="src\module\text\char_instream2.h">
       <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\common\common_define.h">
-      <Filter>src\common</Filter>
     </ClInclude>
     <ClInclude Include="src\module\text\word_instream2.h">
       <Filter>src\text</Filter>
@@ -171,19 +123,52 @@
     <ClInclude Include="src\module\text\impl\txt_word_stream2.h">
       <Filter>src\text\impl</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\view\view_page.h">
+    <ClInclude Include="src\common\common_define.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\doc_controller.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\doc_cursor.h">
+      <Filter>src\control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\doc_addr.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\line.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\model.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\model_define.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\simple_line.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\simple_model.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\char_draw_info.h">
       <Filter>src\view</Filter>
     </ClInclude>
-    <ClInclude Include="src\module\view\view_addr.h">
+    <ClInclude Include="src\view\font.h">
       <Filter>src\view</Filter>
     </ClInclude>
-    <ClInclude Include="style_config.h">
+    <ClInclude Include="src\view\view.h">
       <Filter>src\view</Filter>
     </ClInclude>
-    <ClInclude Include="view_define.h">
+    <ClInclude Include="src\view\view_addr.h">
       <Filter>src\view</Filter>
     </ClInclude>
-    <ClInclude Include="textpad2.h">
+    <ClInclude Include="src\view\view_config.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\view_page.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\widget\textpad2.h">
       <Filter>src\widget</Filter>
     </ClInclude>
   </ItemGroup>

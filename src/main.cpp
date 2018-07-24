@@ -1,18 +1,11 @@
-//#include "textpad.h"
 #include <QApplication>
 #include <QDebug>
 
-//#include "docmodel.h"
-//
-//#include "module/text/impl/ref_content_char_instream.h"
-//#include "module/text/impl/txt_word_stream.h"
-//#include "util/fileutil.h"
-
-#include "textpad2.h"
-#include "module/model/impl/simple_model.h"
-#include "module/view/view_config.h"
-#include "module/view/view.h"
-#include "module/control/doc_controller.h"
+#include "widget/textpad2.h"
+#include "model/simple_model.h"
+#include "view/view_config.h"
+#include "view/view.h"
+#include "control/doc_controller.h"
 
 const char *kFontFamilyTimes = "Times";
 const char *kFontFamilyYaHei = "Microsoft YaHei";
