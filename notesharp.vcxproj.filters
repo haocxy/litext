@@ -38,9 +38,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\util\fileutil.cpp">
-      <Filter>src\util</Filter>
-    </ClCompile>
     <ClCompile Include="src\control\doc_controller.cpp">
       <Filter>src\control</Filter>
     </ClCompile>
@@ -78,9 +75,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\util\fileutil.h">
-      <Filter>src\util</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\delete_helper.h">
       <Filter>src\util</Filter>
     </ClInclude>
