@@ -36,5 +36,5 @@ view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, 
         }
     }
 
-    return CharAddr();
+    return CharAddr(lineAddr, charCnt - 1);
 }
