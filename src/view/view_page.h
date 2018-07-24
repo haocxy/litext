@@ -117,6 +117,15 @@ namespace view
         {
             return m_phases[addr.phase()][addr.line()];
         }
+        int lineCnt() const
+        {
+            int sum = 0;
+            for (const Phase &phase : m_phases)
+            {
+                sum += phase.size();
+            }
+            return sum;
+        }
     private:
         Phases m_phases;
     };

@@ -137,6 +137,8 @@ const view::Char & View::getChar(const view::CharAddr & charAddr) const
 
 int View::getXByAddr(const view::CharAddr & charAddr) const
 {
+    assert(m_config);
+
     if (charAddr.isNull())
     {
         return 0;
@@ -144,7 +146,7 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
 
     if (charAddr.isAfterLastLine())
     {
-        return 0;
+        return m_config->hGap();
     }
 
     if (charAddr.isAfterLastChar())
@@ -169,6 +171,10 @@ view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
 
 view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
 {
+    if (lineAddr.isAfterLastLine())
+    {
+        return getLineBoundByLineOffset(m_page.lineCnt());
+    }
     const int lineOffset = getLineOffsetByLineAddr(lineAddr);
     return getLineBoundByLineOffset(lineOffset);
 }

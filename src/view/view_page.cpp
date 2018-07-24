@@ -19,11 +19,16 @@ view::LineAddr view::Page::getLineAddrByLineOffset(int offset) const
         sum += lineCnt;
     }
 
-    throw std::logic_error("view::Page::getLineAddrByLineOffset");
+    return view::LineAddr::newLineAddrAfterLastLine();
 }
 
 view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, int x) const
 {
+    if (lineAddr.isNull() || lineAddr.isAfterLastLine())
+    {
+        return view::CharAddr::newAfterLastChar(lineAddr);
+    }
+
     const Line & line = getLine(lineAddr);
 
     const int charCnt = line.size();

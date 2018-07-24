@@ -7,6 +7,14 @@ namespace view
     class LineAddr
     {
     public:
+        static LineAddr newLineAddrAfterLastLine()
+        {
+            LineAddr lineAddr(0, 0);
+            lineAddr.setFlag(kAfterLastLine);
+            lineAddr.setFlag(kAfterLastChar);
+            return lineAddr;
+        }
+    public:
         LineAddr() :m_flag(kIsNull), m_phase(0), m_line(0) {}
         LineAddr(int phase, int line) :m_flag(0), m_phase(phase), m_line(line) {}
         int phase() const { return m_phase; }
