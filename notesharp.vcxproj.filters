@@ -13,14 +13,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
@@ -61,11 +53,11 @@
     <Filter Include="src\view\impl">
       <UniqueIdentifier>{87ba22b7-89b9-4a95-b3c6-ccccb94907dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\widget">
+      <UniqueIdentifier>{7122ce3b-99a8-48ed-8281-da1dc480a169}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\module\text\impl\txt_word_stream.cpp">
       <Filter>src\text\impl</Filter>
     </ClCompile>
@@ -90,14 +82,17 @@
     <ClCompile Include="src\module\model\doc_addr.h">
       <Filter>src\model</Filter>
     </ClCompile>
-    <ClCompile Include="textpad2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\module\text\impl\txt_word_stream2.cpp">
       <Filter>src\text\impl</Filter>
     </ClCompile>
     <ClCompile Include="src\module\view\view_page.cpp">
       <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="textpad2.cpp">
+      <Filter>src\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +179,6 @@
     <ClInclude Include="src\module\text\impl\txt_word_stream2.h">
       <Filter>src\text\impl</Filter>
     </ClInclude>
-    <ClInclude Include="textpad2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\module\view\view_page.h">
       <Filter>src\view</Filter>
     </ClInclude>
@@ -198,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="view_define.h">
       <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="textpad2.h">
+      <Filter>src\widget</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
