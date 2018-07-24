@@ -1,4 +1,4 @@
-#include "txt_word_stream.h"
+#include "txt_word_instream.h"
 
 #include <cassert>
 #include "text/char_instream.h"

@@ -62,7 +62,7 @@
     <ClCompile Include="src\widget\textpad.cpp">
       <Filter>src\widget</Filter>
     </ClCompile>
-    <ClCompile Include="src\text\txt_word_stream.cpp">
+    <ClCompile Include="src\text\txt_word_instream.cpp">
       <Filter>src\text</Filter>
     </ClCompile>
   </ItemGroup>
@@ -108,9 +108,6 @@
     <ClInclude Include="src\model\simple_model.h">
       <Filter>src\model</Filter>
     </ClInclude>
-    <ClInclude Include="src\view\char_draw_info.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
     <ClInclude Include="src\view\font.h">
       <Filter>src\view</Filter>
     </ClInclude>
@@ -135,11 +132,11 @@
     <ClInclude Include="src\text\char_instream.h">
       <Filter>src\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\text\txt_word_stream.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\widget\textpad.h">
       <Filter>src\widget</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\txt_word_instream.h">
+      <Filter>src\text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 #include "model/model.h"
 #include "model/line.h"
 #include "text/doc_line_char_instream.h"
-#include "text/txt_word_stream.h"
+#include "text/txt_word_instream.h"
 
 void View::Init(LineN viewStart, const view::Size & size)
 {

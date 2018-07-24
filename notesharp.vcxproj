@@ -181,7 +181,7 @@
     <ClCompile Include="src\control\doc_controller.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model\simple_model.cpp" />
-    <ClCompile Include="src\text\txt_word_stream.cpp" />
+    <ClCompile Include="src\text\txt_word_instream.cpp" />
     <ClCompile Include="src\view\font.cpp" />
     <ClCompile Include="src\view\view.cpp" />
     <ClCompile Include="src\view\view_config.cpp" />
@@ -218,11 +218,10 @@
     <ClInclude Include="src\model\simple_model.h" />
     <ClInclude Include="src\text\char_instream.h" />
     <ClInclude Include="src\text\doc_line_char_instream.h" />
-    <ClInclude Include="src\text\txt_word_stream.h" />
+    <ClInclude Include="src\text\txt_word_instream.h" />
     <ClInclude Include="src\text\word_instream.h" />
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\stl_container_util.h" />
-    <ClInclude Include="src\view\char_draw_info.h" />
     <ClInclude Include="src\view\font.h" />
     <ClInclude Include="src\view\view.h" />
     <ClInclude Include="src\view\view_addr.h" />
