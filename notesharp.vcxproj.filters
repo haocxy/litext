@@ -41,9 +41,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\module\text\impl\txt_word_stream.cpp">
-      <Filter>src\text\impl</Filter>
-    </ClCompile>
     <ClCompile Include="src\util\fileutil.cpp">
       <Filter>src\util</Filter>
     </ClCompile>
@@ -84,21 +81,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\module\text\char_instream.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\text\impl\ref_content_char_instream.h">
-      <Filter>src\text\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\text\impl\save_content_char_instream.h">
-      <Filter>src\text\impl</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\text\word_instream.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\text\impl\txt_word_stream.h">
-      <Filter>src\text\impl</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\fileutil.h">
       <Filter>src\util</Filter>
     </ClInclude>
@@ -113,9 +95,6 @@
     </ClInclude>
     <ClInclude Include="src\module\text\word_instream2.h">
       <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\module\text\impl\ref_content_char_instream2.h">
-      <Filter>src\text\impl</Filter>
     </ClInclude>
     <ClInclude Include="src\module\text\impl\doc_line_char_instream.h">
       <Filter>src\text\impl</Filter>
