@@ -178,9 +178,9 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\control\doc_controller.cpp" />
+    <ClCompile Include="src\doc\simple_doc.cpp" />
+    <ClCompile Include="src\editor\editor.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\model\simple_model.cpp" />
     <ClCompile Include="src\text\txt_word_instream.cpp" />
     <ClCompile Include="src\view\font.cpp" />
     <ClCompile Include="src\view\view.cpp" />
@@ -208,14 +208,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common\common_define.h" />
-    <ClInclude Include="src\control\doc_controller.h" />
-    <ClInclude Include="src\control\doc_cursor.h" />
-    <ClInclude Include="src\model\doc_addr.h" />
-    <ClInclude Include="src\model\line.h" />
-    <ClInclude Include="src\model\model.h" />
-    <ClInclude Include="src\model\model_define.h" />
-    <ClInclude Include="src\model\simple_line.h" />
-    <ClInclude Include="src\model\simple_model.h" />
+    <ClInclude Include="src\doc\doc_addr.h" />
+    <ClInclude Include="src\doc\doc_define.h" />
+    <ClInclude Include="src\doc\doc_line.h" />
+    <ClInclude Include="src\doc\doc.h" />
+    <ClInclude Include="src\doc\simple_doc_line.h" />
+    <ClInclude Include="src\doc\simple_doc.h" />
+    <ClInclude Include="src\editor\cursor.h" />
+    <ClInclude Include="src\editor\editor.h" />
     <ClInclude Include="src\text\char_instream.h" />
     <ClInclude Include="src\text\doc_line_char_instream.h" />
     <ClInclude Include="src\text\txt_word_instream.h" />

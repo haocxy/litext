@@ -3,20 +3,20 @@
 #include <vector>
 #include <filesystem>
 
-#include "simple_line.h"
-#include "model/model.h"
+#include "simple_doc_line.h"
+#include "doc.h"
 
-class SimpleModel : public Model
+class SimpleDoc : public Doc
 {
 public:
-    virtual ~SimpleModel() {}
+    virtual ~SimpleDoc() {}
 
     virtual LineN lineCnt() const override
     {
         return static_cast<LineN>(m_lines.size());
     }
 
-    virtual const Line &lineAt(LineN line) const override
+    virtual const DocLine &lineAt(LineN line) const override
     {
         return m_lines[line];
     }
@@ -25,5 +25,5 @@ public:
     void LoadFromFile(const std::string &path);
 
 private:
-    std::vector<SimpleLine> m_lines;
+    std::vector<SimpleDocLine> m_lines;
 };

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "model/line.h"
+#include "doc_line.h"
 
-class SimpleLine : public Line
+class SimpleDocLine : public DocLine
 {
 public:
 
-    virtual ~SimpleLine() {}
+    virtual ~SimpleDocLine() {}
 
     virtual CharN charCnt() const override
     {

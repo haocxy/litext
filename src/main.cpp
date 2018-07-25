@@ -2,10 +2,10 @@
 #include <QDebug>
 
 #include "widget/textpad.h"
-#include "model/simple_model.h"
+#include "doc/simple_doc.h"
 #include "view/view_config.h"
 #include "view/view.h"
-#include "control/doc_controller.h"
+#include "editor/editor.h"
 
 const char *kFontFamilyTimes = "Times";
 const char *kFontFamilyYaHei = "Microsoft YaHei";
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    SimpleModel model;
+    SimpleDoc model;
     model.LoadFromFile(R"(F:\a.txt)");
 
     view::Config config;
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     View v(&model, &config);
 
-    DocController c(&model);
+    Editor c(&model);
 
     TextPad tp2(&v, &c);
     tp2.show();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/model_define.h"
+#include "doc_define.h"
 
 class DocAddr
 {

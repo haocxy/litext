@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/model_define.h"
+#include "doc/doc_define.h"
 
 namespace view
 {

@@ -1,8 +1,8 @@
 #include <cassert>
 #include "view.h"
 #include "view_config.h"
-#include "model/model.h"
-#include "model/line.h"
+#include "doc/doc.h"
+#include "doc/doc_line.h"
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
 
@@ -119,7 +119,7 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
 
     const CharN col = docAddr.col();
 
-    for (const view::Line &vline : vphase)
+    for (const view::DocLine &vline : vphase)
     {
         for (const view::Char &vc : vline)
         {
@@ -246,7 +246,7 @@ void View::remakePage()
 
 }
 
-void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
+void View::DocLineToViewPhase(const DocLine& line, view::Phase & phase)
 {
     if (m_config.wrapLine())
     {
@@ -258,14 +258,14 @@ void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
     }
 }
 
-void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
+void View::DocLineToViewPhaseWithWrapLine(const DocLine& line, view::Phase & phase)
 {
     assert(phase.size() == 0);
 
     const int hGap = m_config.hGap();
     const int hMargin = m_config.hMargin();
 
-    view::Line *vline = &phase.grow();
+    view::DocLine *vline = &phase.grow();
 
     DocLineCharInStream charStream(line);
     TxtWordStream wordStream(charStream);
@@ -336,14 +336,14 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
     }
 }
 
-void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)
+void View::DocLineToViewPhaseNoWrapLine(const DocLine& line, view::Phase & phase)
 {
     assert(phase.size() == 0);
 
     const int hGap = m_config.hGap();
     const int hMargin = m_config.hMargin();
 
-    view::Line &vline = phase.grow();
+    view::DocLine &vline = phase.grow();
 
     int leftX = hGap;
 

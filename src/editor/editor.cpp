@@ -1,16 +1,16 @@
-#include "doc_controller.h"
+#include "editor.h"
 
 #include <assert.h>
-#include "model/model.h"
-#include "model/line.h"
+#include "doc/doc.h"
+#include "doc/doc_line.h"
 
-DocController::DocController(Model * model)
+Editor::Editor(Doc * model)
     : m_model(*model)
 {
     assert(model);
 }
 
-void DocController::onPrimaryKeyPress(const DocAddr & addr)
+void Editor::onPrimaryKeyPress(const DocAddr & addr)
 {
     m_normalCursor.setAddr(addr);
 

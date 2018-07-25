@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "model_define.h"
+#include "doc_define.h"
 
-class Line
+class DocLine
 {
 public:
-    virtual ~Line() {}
+    virtual ~DocLine() {}
 
     virtual CharN charCnt() const = 0;
 

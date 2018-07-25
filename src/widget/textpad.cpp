@@ -6,7 +6,7 @@
 
 #include "view/view.h"
 #include "view/view_config.h"
-#include "control/doc_controller.h"
+#include "editor/editor.h"
 
 namespace
 {
@@ -31,7 +31,7 @@ namespace
     }
 }
 
-TextPad::TextPad(View *view, DocController *controller, QWidget *parent)
+TextPad::TextPad(View *view, Editor *controller, QWidget *parent)
     : m_view(*view)
     , m_controller(*controller)
     , QWidget(parent)
@@ -124,7 +124,7 @@ void TextPad::paintTextContent(QPainter & p)
 
     for (const v::Phase &phase : page)
     {
-        for (const v::Line &line : phase)
+        for (const v::DocLine &line : phase)
         {
             const int baseline = m_view.getBaseLineByLineOffset(lineOffset);
 

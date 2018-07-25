@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model/doc_addr.h"
+#include "doc/doc_addr.h"
 
 class DocCursor
 {

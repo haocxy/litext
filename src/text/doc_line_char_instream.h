@@ -1,12 +1,12 @@
 #pragma once
 
 #include "text/char_instream.h"
-#include "model/line.h"
+#include "doc/doc_line.h"
 
 class DocLineCharInStream : public CharInStream
 {
 public:
-    DocLineCharInStream(const Line & line) : m_line(line) {}
+    DocLineCharInStream(const DocLine & line) : m_line(line) {}
     virtual ~DocLineCharInStream() {}
 
     virtual UChar Next() override
@@ -19,6 +19,6 @@ public:
     }
 
 private:
-    const Line & m_line;
+    const DocLine & m_line;
     CharN m_index = 0;
 };

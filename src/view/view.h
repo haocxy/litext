@@ -4,9 +4,9 @@
 #include <vector>
 #include <deque>
 
-#include "model/model_define.h"
+#include "doc/doc_define.h"
 #include "util/stl_container_util.h"
-#include "model/doc_addr.h"
+#include "doc/doc_addr.h"
 #include "view/view_page.h"
 #include "view/view_addr.h"
 
@@ -73,8 +73,8 @@ namespace view
 } // namespace view
 
 
-class Model;
-class Line;
+class Doc;
+class DocLine;
 class DocAddr;
 
 /*
@@ -85,7 +85,7 @@ class DocAddr;
 class View
 {
 public:
-    View(Model *model, view::Config *config) :m_model(*model),m_config(*config) {
+    View(Doc *model, view::Config *config) :m_model(*model),m_config(*config) {
         assert(model);
         assert(config);
     }
@@ -135,13 +135,13 @@ private:
 private:
     void remakePage();
 
-    void DocLineToViewPhase(const Line &line, view::Phase &phase);
-    void DocLineToViewPhaseWithWrapLine(const Line &line, view::Phase &phase);
-    void DocLineToViewPhaseNoWrapLine(const Line &line, view::Phase &phase);
+    void DocLineToViewPhase(const DocLine &line, view::Phase &phase);
+    void DocLineToViewPhaseWithWrapLine(const DocLine &line, view::Phase &phase);
+    void DocLineToViewPhaseNoWrapLine(const DocLine &line, view::Phase &phase);
 
 private:
     bool m_dirty = true;
-    const Model & m_model;
+    const Doc & m_model;
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;

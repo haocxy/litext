@@ -21,28 +21,37 @@
     <Filter Include="src\common">
       <UniqueIdentifier>{5ac63b8a-4773-406e-b464-dde084745854}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\control">
-      <UniqueIdentifier>{fe3ad152-c445-4347-b712-c10d6f78c107}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\model">
-      <UniqueIdentifier>{79a35c7a-1853-4de8-a903-df1656234020}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\view">
-      <UniqueIdentifier>{c7d76c00-4864-49c0-82bf-ddcb567050fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\widget">
       <UniqueIdentifier>{7122ce3b-99a8-48ed-8281-da1dc480a169}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\text">
       <UniqueIdentifier>{2491a6e7-0608-4d4b-aa72-22739be0914c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\editor">
+      <UniqueIdentifier>{fe3ad152-c445-4347-b712-c10d6f78c107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\doc">
+      <UniqueIdentifier>{79a35c7a-1853-4de8-a903-df1656234020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\view">
+      <UniqueIdentifier>{4f440441-7b16-4b11-a813-3f728b5066d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\control\doc_controller.cpp">
-      <Filter>src\control</Filter>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\simple_model.cpp">
-      <Filter>src\model</Filter>
+    <ClCompile Include="src\widget\textpad.cpp">
+      <Filter>src\widget</Filter>
+    </ClCompile>
+    <ClCompile Include="src\text\txt_word_instream.cpp">
+      <Filter>src\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\editor.cpp">
+      <Filter>src\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\doc\simple_doc.cpp">
+      <Filter>src\doc</Filter>
     </ClCompile>
     <ClCompile Include="src\view\font.cpp">
       <Filter>src\view</Filter>
@@ -55,15 +64,6 @@
     </ClCompile>
     <ClCompile Include="src\view\view_page.cpp">
       <Filter>src\view</Filter>
-    </ClCompile>
-    <ClCompile Include="src\main.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\widget\textpad.cpp">
-      <Filter>src\widget</Filter>
-    </ClCompile>
-    <ClCompile Include="src\text\txt_word_instream.cpp">
-      <Filter>src\text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -84,29 +84,44 @@
     <ClInclude Include="src\common\common_define.h">
       <Filter>src\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\control\doc_controller.h">
-      <Filter>src\control</Filter>
+    <ClInclude Include="src\text\doc_line_char_instream.h">
+      <Filter>src\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\control\doc_cursor.h">
-      <Filter>src\control</Filter>
+    <ClInclude Include="src\text\word_instream.h">
+      <Filter>src\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\doc_addr.h">
-      <Filter>src\model</Filter>
+    <ClInclude Include="src\text\char_instream.h">
+      <Filter>src\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\line.h">
-      <Filter>src\model</Filter>
+    <ClInclude Include="src\widget\textpad.h">
+      <Filter>src\widget</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\model.h">
-      <Filter>src\model</Filter>
+    <ClInclude Include="src\text\txt_word_instream.h">
+      <Filter>src\text</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\model_define.h">
-      <Filter>src\model</Filter>
+    <ClInclude Include="src\editor\cursor.h">
+      <Filter>src\editor</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\simple_line.h">
-      <Filter>src\model</Filter>
+    <ClInclude Include="src\editor\editor.h">
+      <Filter>src\editor</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\simple_model.h">
-      <Filter>src\model</Filter>
+    <ClInclude Include="src\doc\doc_addr.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\doc_define.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\doc_line.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\simple_doc_line.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\doc.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\simple_doc.h">
+      <Filter>src\doc</Filter>
     </ClInclude>
     <ClInclude Include="src\view\font.h">
       <Filter>src\view</Filter>
@@ -122,21 +137,6 @@
     </ClInclude>
     <ClInclude Include="src\view\view_page.h">
       <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\text\doc_line_char_instream.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\text\word_instream.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\text\char_instream.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\widget\textpad.h">
-      <Filter>src\widget</Filter>
-    </ClInclude>
-    <ClInclude Include="src\text\txt_word_instream.h">
-      <Filter>src\text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

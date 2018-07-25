@@ -1,10 +1,10 @@
-#include "simple_model.h"
+#include "simple_doc.h"
 
 #include <fstream>
 
 #include "util/stl_container_util.h"
 
-void SimpleModel::LoadFromFile(const std::string &path)
+void SimpleDoc::LoadFromFile(const std::string &path)
 {
     std::ifstream ifs(path);
 
@@ -18,14 +18,14 @@ void SimpleModel::LoadFromFile(const std::string &path)
 
         if (c == '\n')
         {
-            SimpleLine &sl = StlContainerUtil::grow(m_lines);
+            SimpleDocLine &sl = StlContainerUtil::grow(m_lines);
             sl.setContent(std::move(line));
         }
     }
 
     if (!line.empty())
     {
-        SimpleLine & sl = StlContainerUtil::grow(m_lines);
+        SimpleDocLine & sl = StlContainerUtil::grow(m_lines);
         sl.setContent(std::move(line));
     }
 }

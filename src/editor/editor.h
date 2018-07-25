@@ -1,19 +1,19 @@
 #pragma once
 
 #include <vector>
-#include "doc_cursor.h"
+#include "cursor.h"
 
-class Model;
+class Doc;
 
 /*
-控制器
+逻辑上操作文档
 用于提供操作文档数据的接口
 如，选择文档中某些字符由这个接口支持
 */
-class DocController
+class Editor
 {
 public:
-    DocController(Model * model);
+    Editor(Doc * model);
 
     DocCursor &normalCursor() { return m_normalCursor; }
 
@@ -24,7 +24,7 @@ public:
 
 private:
 
-    Model & m_model;
+    Doc & m_model;
 
     // 普通模式光标
     DocCursor m_normalCursor;
