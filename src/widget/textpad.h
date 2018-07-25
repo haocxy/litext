@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QWidget>
-#include <QPixmap>
 
 class View;
 class DocController;
@@ -30,6 +29,5 @@ private:
 private:
     View &m_view;
     DocController & m_controller;
-    QPixmap m_paintBuff;
 };
 

@@ -51,27 +51,22 @@ TextPad::~TextPad()
 
 void TextPad::paintEvent(QPaintEvent * e)
 {
-    QPainter p(&m_paintBuff);
+    QPainter p(this);
     paintBackground(p);
     paintLastActLine(p);
     paintTextContent(p);
     paintCursor(p);
-
-    QPainter painterToWidget(this);
-    painterToWidget.drawPixmap(rect(), m_paintBuff);
 }
 
 void TextPad::showEvent(QShowEvent * e)
 {
     QSize sz(size());
-    m_paintBuff = std::move(QPixmap(sz));
     m_view.Init(0, { sz.width(), sz.height() });
 }
 
 void TextPad::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
-    m_paintBuff = std::move(QPixmap(sz));
     m_view.Init(0, { sz.width(), sz.height() });
 }
 
