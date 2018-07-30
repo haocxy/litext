@@ -168,7 +168,7 @@
     <QtMoc>
       <QTDIR>$(QTDIR)</QTDIR>
       <InputFile>%(FullPath)</InputFile>
-      <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <OutputFile>GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <IncludePath>$(ProjectDir)src;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define>_WINDOWS;UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
@@ -186,6 +186,7 @@
     <ClCompile Include="src\view\view.cpp" />
     <ClCompile Include="src\view\view_config.cpp" />
     <ClCompile Include="src\view\view_page.cpp" />
+    <ClCompile Include="src\widget\mainwindow.cpp" />
     <ClCompile Include="src\widget\textpad.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +228,7 @@
     <ClInclude Include="src\view\view_addr.h" />
     <ClInclude Include="src\view\view_config.h" />
     <ClInclude Include="src\view\view_page.h" />
+    <QtMoc Include="src\widget\mainwindow.h" />
     <ClInclude Include="src\widget\textpad.h" />
   </ItemGroup>
   <ItemGroup>
