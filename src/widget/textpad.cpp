@@ -31,13 +31,11 @@ namespace
     }
 }
 
-TextPad::TextPad(View *view, Editor *controller, QWidget *parent)
+TextPad::TextPad(View *view, QWidget *parent)
     : m_view(*view)
-    , m_controller(*controller)
     , QWidget(parent)
 {
     assert(view);
-    assert(controller);
 
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
@@ -134,26 +132,11 @@ void TextPad::paintTextContent(QPainter & p)
 
 void TextPad::paintCursor(QPainter & p)
 {
-    enum { kBottomShrink = 2 };
+    const draw::VerticalLine vl = m_view.getNormalCursorDrawData();
 
-    const DocCursor & cursor = m_controller.normalCursor();
-
-    if (cursor.isNull())
+    if (!vl.isNull())
     {
-        return;
-    }
-
-    if (cursor.isInsert())
-    {
-        const DocAddr & docAddr = cursor.addr();
-        const view::CharAddr &vcAddr = m_view.convertToCharAddr(docAddr);
-        if (!vcAddr.isNull())
-        {
-            const view::LineBound bound = m_view.getLineBound(vcAddr);
-            const int x = m_view.getXByAddr(vcAddr) - 1;
-            p.drawLine(x, bound.top() + kBottomShrink,
-                x, bound.bottom() - kBottomShrink);
-        }
+        p.drawLine(vl.x(), vl.top(), vl.x(), vl.bottom());
     }
 }
 

@@ -3,14 +3,13 @@
 #include <QWidget>
 
 class View;
-class Editor;
 
 class TextPad : public QWidget
 {
     // Q_OBJECT
 
 public:
-    TextPad(View *view, Editor *controller, QWidget *parent = nullptr);
+    TextPad(View *view, QWidget *parent = nullptr);
     ~TextPad();
 
     virtual void paintEvent(QPaintEvent *e) override;
@@ -28,6 +27,5 @@ private:
 
 private:
     View &m_view;
-    Editor & m_controller;
 };
 

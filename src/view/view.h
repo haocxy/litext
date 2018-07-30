@@ -10,6 +10,7 @@
 #include "view/view_page.h"
 #include "view/view_addr.h"
 #include "view/view_rect.h"
+#include "view/view_line.h"
 
 namespace view
 {
@@ -131,6 +132,8 @@ public:
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
     view::Rect getLastActLineDrawRect() const;
+
+    draw::VerticalLine getNormalCursorDrawData() const;
 
 public:
     void onPrimaryButtomPress(int x, int y);

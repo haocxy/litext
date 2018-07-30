@@ -249,6 +249,44 @@ view::Rect View::getLastActLineDrawRect() const
     return rect;
 }
 
+draw::VerticalLine View::getNormalCursorDrawData() const
+{
+    enum { kHorizontalDelta = -1 };
+    enum { kVerticalShrink = 2 };
+
+    const DocCursor & cursor = m_editor.normalCursor();
+
+    if (cursor.isNull())
+    {
+        return draw::VerticalLine();
+    }
+
+    if (!cursor.isInsert())
+    {
+        return draw::VerticalLine();
+    }
+
+    const DocAddr & docAddr = cursor.addr();
+
+    const view::CharAddr & charAddr = convertToCharAddr(docAddr);
+
+    if (charAddr.isNull())
+    {
+        return draw::VerticalLine();
+    }
+
+    const view::LineBound bound = getLineBound(charAddr);
+
+    const int x = getXByAddr(charAddr) + kHorizontalDelta;
+
+    draw::VerticalLine vl;
+    vl.setNull(false);
+    vl.setX(x);
+    vl.setTop(bound.top() + kVerticalShrink);
+    vl.setBottom(bound.bottom() - kVerticalShrink);
+    return vl;
+}
+
 void View::onPrimaryButtomPress(int x, int y)
 {
     const DocAddr da = getDocAddrByPoint(x, y);

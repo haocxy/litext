@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget * parent)
     
     m_editor = new Editor(m_doc);
     m_view = new View(m_editor, m_viewConfig);
-    m_textPad = new TextPad(m_view, m_editor);
+    m_textPad = new TextPad(m_view);
 
 
     this->setCentralWidget(m_textPad);

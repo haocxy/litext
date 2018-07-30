@@ -147,6 +147,12 @@
     <ClInclude Include="src\common\nullable_class.h">
       <Filter>src\common</Filter>
     </ClInclude>
+    <ClInclude Include="src\doc\doc_line_num.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\view_line.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt">
