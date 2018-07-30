@@ -32,5 +32,5 @@ private:
     DocCursor m_normalCursor;
 
     // 最后一次活跃的行
-    LineN m_lastActLine;
+    LineN m_lastActLine = -1;
 };
