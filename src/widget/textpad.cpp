@@ -79,8 +79,7 @@ void TextPad::mousePressEvent(QMouseEvent * e)
 {
     if (e->button() == Qt::LeftButton)
     {
-        const DocAddr da = m_view.getDocAddrByPoint(e->x(), e->y());
-        m_controller.onPrimaryKeyPress(da);
+        m_view.onPrimaryButtomPress(e->x(), e->y());
         update();
     }
 }
@@ -94,18 +93,13 @@ void TextPad::paintBackground(QPainter & p)
 
 void TextPad::paintLastActLine(QPainter & p)
 {
-    const LineN phase = m_controller.lastActLine();
-    const view::PhaseAddr addr = m_view.convertToPhaseAddr(phase);
-    if (addr.isNull())
+    view::Rect r = m_view.getLastActLineDrawRect();
+    if (r.isNull())
     {
         return;
     }
 
-    AutoSaver as(p);
-
-    const view::PhaseBound bound = m_view.getPhaseBound(addr);
-    
-    p.fillRect(0, bound.top(), width(), bound.height(), QColor(Qt::green).lighter(192));
+    p.fillRect(r.left(), r.top(), r.width(), r.height(), QColor(Qt::green).lighter(192));
 }
 
 void TextPad::paintTextContent(QPainter & p)

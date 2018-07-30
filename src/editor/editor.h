@@ -15,6 +15,8 @@ class Editor
 public:
     Editor(Doc * model);
 
+    const Doc & doc() const { return m_model; }
+
     DocCursor &normalCursor() { return m_normalCursor; }
 
     LineN lastActLine() { return m_lastActLine; }

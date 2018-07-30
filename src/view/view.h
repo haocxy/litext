@@ -9,6 +9,7 @@
 #include "doc/doc_addr.h"
 #include "view/view_page.h"
 #include "view/view_addr.h"
+#include "view/view_rect.h"
 
 namespace view
 {
@@ -73,9 +74,9 @@ namespace view
 } // namespace view
 
 
-class Doc;
 class DocLine;
 class DocAddr;
+class Editor;
 
 /*
 йсм╪
@@ -85,8 +86,8 @@ class DocAddr;
 class View
 {
 public:
-    View(Doc *model, view::Config *config) :m_model(*model),m_config(*config) {
-        assert(model);
+    View(Editor * editor, view::Config *config) :m_editor(*editor),m_config(*config) {
+        assert(editor);
         assert(config);
     }
 
@@ -129,6 +130,11 @@ public:
 
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
+    view::Rect getLastActLineDrawRect() const;
+
+public:
+    void onPrimaryButtomPress(int x, int y);
+
 private:
     int getLineOffsetByY(int y) const;
 
@@ -141,7 +147,7 @@ private:
 
 private:
     bool m_dirty = true;
-    const Doc & m_model;
+    Editor & m_editor;
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;

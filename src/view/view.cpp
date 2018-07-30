@@ -5,6 +5,7 @@
 #include "doc/doc_line.h"
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
+#include "editor/editor.h"
 
 void View::Init(LineN viewStart, const view::Size & size)
 {
@@ -76,14 +77,14 @@ view::PhaseAddr View::convertToPhaseAddr(LineN line) const
     const int phaseCnt = m_page.size();
     if (phase < 0 || phase >= phaseCnt)
     {
-        if (line >= m_model.lineCnt())
+        if (line >= m_editor.doc().lineCnt())
         {
             return view::PhaseAddr::newPhaseAddrAfterLastPhase();
         }
         return view::PhaseAddr();
     }
 
-    if (line >= m_model.lineCnt())
+    if (line >= m_editor.doc().lineCnt())
     {
         return view::PhaseAddr::newPhaseAddrAfterLastPhase();
     }
@@ -228,6 +229,32 @@ view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
     return view::PhaseBound(top, height);
 }
 
+view::Rect View::getLastActLineDrawRect() const
+{
+    const LineN phase = m_editor.lastActLine();
+    const view::PhaseAddr addr = convertToPhaseAddr(phase);
+    if (addr.isNull())
+    {
+        return view::Rect();
+    }
+
+    const view::PhaseBound bound = getPhaseBound(addr);
+
+    view::Rect rect;
+    rect.setNull(false);
+    rect.setLeft(0);
+    rect.setTop(bound.top());
+    rect.setWidth(m_size.width());
+    rect.setHeight(bound.height());
+    return rect;
+}
+
+void View::onPrimaryButtomPress(int x, int y)
+{
+    const DocAddr da = getDocAddrByPoint(x, y);
+    m_editor.onPrimaryKeyPress(da);
+}
+
 int View::getLineOffsetByY(int y) const
 {
     return y / m_config.lineHeight();
@@ -239,13 +266,13 @@ void View::remakePage()
 
     const LineN maxShowLine = m_viewStart + m_size.height() / m_config.lineHeight() + 1;
 
-    const LineN rowCnt = std::min(maxShowLine, m_model.lineCnt());
+    const LineN rowCnt = std::min(maxShowLine, m_editor.doc().lineCnt());
 
     for (LineN i = m_viewStart; i < rowCnt; ++i)
     {
         view::Phase &vphase = m_page.grow();
 
-        DocLineToViewPhase(m_model.lineAt(i), vphase);
+        DocLineToViewPhase(m_editor.doc().lineAt(i), vphase);
     }
 
 }

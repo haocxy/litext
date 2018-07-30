@@ -209,6 +209,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common\common_define.h" />
+    <ClInclude Include="src\common\nullable_class.h" />
     <ClInclude Include="src\doc\doc_addr.h" />
     <ClInclude Include="src\doc\doc_define.h" />
     <ClInclude Include="src\doc\doc_line.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="src\view\view_config.h" />
     <ClInclude Include="src\view\view_page.h" />
     <QtMoc Include="src\widget\mainwindow.h" />
+    <ClInclude Include="src\view\view_rect.h" />
     <ClInclude Include="src\widget\textpad.h" />
   </ItemGroup>
   <ItemGroup>

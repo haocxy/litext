@@ -33,8 +33,9 @@ MainWindow::MainWindow(QWidget * parent)
     setupConfig(*m_viewConfig);
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(R"(F:\a.txt)");
-    m_view = new View(m_doc, m_viewConfig);
+    
     m_editor = new Editor(m_doc);
+    m_view = new View(m_editor, m_viewConfig);
     m_textPad = new TextPad(m_view, m_editor);
 
 
