@@ -12,15 +12,36 @@ Editor::Editor(Doc * model)
 
 void Editor::onPrimaryKeyPress(const DocAddr & addr)
 {
-    m_normalCursor.setAddr(addr);
-
     if (addr.isAfterLastPhase())
     {
-        m_lastActLine = m_model.lineCnt();
+        const LineN lineCnt = m_model.lineCnt();
+        if (lineCnt > 0)
+        {
+            const DocLine & lastLine = m_model.lineAt(lineCnt - 1);
+            const CharN charCnt = lastLine.charCnt();
+            assert(charCnt > 0);
+            const UChar lastChar = lastLine.charAt(charCnt - 1);
+            if (lastChar == '\r' || lastChar == '\n')
+            {
+                m_lastActLine = m_model.lineCnt();
+                m_normalCursor.setAddr(DocAddr::newCharAddrAfterLastPhase());
+            }
+            else
+            {
+                m_lastActLine = m_model.lineCnt() - 1;
+                m_normalCursor.setAddr(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
+            }
+        }
+        else
+        {
+            m_lastActLine = 0;
+            m_normalCursor.setAddr(DocAddr::newCharAddrAfterLastPhase());
+        }
     }
     else
     {
         m_lastActLine = addr.line();
+        m_normalCursor.setAddr(addr);
     }
 }
 
