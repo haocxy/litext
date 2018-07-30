@@ -76,6 +76,10 @@ view::PhaseAddr View::convertToPhaseAddr(LineN line) const
     const int phaseCnt = m_page.size();
     if (phase < 0 || phase >= phaseCnt)
     {
+        if (line >= m_model.lineCnt())
+        {
+            return view::PhaseAddr::newPhaseAddrAfterLastPhase();
+        }
         return view::PhaseAddr();
     }
 
