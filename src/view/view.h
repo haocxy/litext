@@ -137,7 +137,6 @@ private:
     void DocLineToViewPhaseNoWrapLine(const DocLine &line, view::Phase &phase);
 
 private:
-    bool m_dirty = true;
     Editor & m_editor;
     const view::Config & m_config;
     view::Page m_page;
