@@ -186,6 +186,8 @@
     <ClCompile Include="src\view\view.cpp" />
     <ClCompile Include="src\view\view_config.cpp" />
     <ClCompile Include="src\view\view_page.cpp" />
+    <ClCompile Include="src\widget\editor_view_widget.cpp" />
+    <ClCompile Include="src\widget\line_num_bar.cpp" />
     <ClCompile Include="src\widget\mainwindow.cpp" />
     <ClCompile Include="src\widget\textpad.cpp" />
   </ItemGroup>
@@ -208,6 +210,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="number_class.h" />
     <ClInclude Include="src\common\common_define.h" />
     <ClInclude Include="src\common\nullable_class.h" />
     <ClInclude Include="src\doc\doc_addr.h" />
@@ -233,6 +236,12 @@
     <ClInclude Include="src\view\view_page.h" />
     <QtMoc Include="src\widget\mainwindow.h" />
     <ClInclude Include="src\view\view_rect.h" />
+    <QtMoc Include="src\widget\line_num_bar.h">
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+    </QtMoc>
+    <QtMoc Include="src\widget\editor_view_widget.h">
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+    </QtMoc>
     <ClInclude Include="src\widget\textpad.h" />
   </ItemGroup>
   <ItemGroup>

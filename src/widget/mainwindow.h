@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 
-class TextPad;
+class EditorViewWidget;
 class View;
 class Editor;
 class SimpleDoc;
@@ -27,5 +27,5 @@ private:
     SimpleDoc * m_doc = nullptr;
     View * m_view = nullptr;
     Editor * m_editor = nullptr;
-    TextPad * m_textPad = nullptr;
+    EditorViewWidget * m_editorViewWidget = nullptr;
 };

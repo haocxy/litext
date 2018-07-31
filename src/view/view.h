@@ -112,6 +112,7 @@ public:
 
     draw::VerticalLine getNormalCursorDrawData() const;
 
+    int getLineNumBarWidth() const;
 
 private:
     int getLineOffsetByPhaseIndex(int phase) const;

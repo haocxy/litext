@@ -4,7 +4,7 @@
 #include "view/view_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
-#include "widget/textpad.h"
+#include "editor_view_widget.h"
 
 const char *kFontFamilyTimes = "Times";
 const char *kFontFamilyYaHei = "Microsoft YaHei";
@@ -16,6 +16,7 @@ static void setupConfig(view::Config &c)
     c.setHMargin(0);
     c.setTabSize(4);
     c.setWrapLine(true);
+    c.setShowLineNum(true);
 
     view::Font &f = c.rfont();
     view::FontInfo fi;
@@ -36,10 +37,10 @@ MainWindow::MainWindow(QWidget * parent)
     
     m_editor = new Editor(m_doc);
     m_view = new View(m_editor, m_viewConfig);
-    m_textPad = new TextPad(m_view);
+    m_editorViewWidget = new EditorViewWidget(m_view);
 
 
-    this->setCentralWidget(m_textPad);
+    this->setCentralWidget(m_editorViewWidget);
 }
 
 
@@ -57,8 +58,8 @@ MainWindow::~MainWindow()
     delete m_editor;
     m_editor = nullptr;
 
-    delete m_textPad;
-    m_textPad = nullptr;
+    delete m_editorViewWidget;
+    m_editorViewWidget = nullptr;
 }
 
 void MainWindow::initMenuBar()

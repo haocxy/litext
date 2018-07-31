@@ -35,12 +35,15 @@ namespace view
 
         int charWidth(UChar c) const;
 
+        bool showLineNum() const { return m_showLineNum; }
+        void setShowLineNum(bool showLineNum) { m_showLineNum = showLineNum; }
     private:
         float m_lineHeightFactor = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 x 字体高度，结果四舍五入
         int m_hGap = kDefaultHGap; // 水平方向最左侧字符左边的空白
         int m_hMargin = kDefaultHMargin; // 水平字符间距
         int m_tabSize = kDefaultTabSize; // 一个TAB的宽度为若干个空格
         bool m_wrapLine = false;
+        bool m_showLineNum = false; // 是否显示行号
         
         Font m_font;
     };

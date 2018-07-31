@@ -287,6 +287,11 @@ draw::VerticalLine View::getNormalCursorDrawData() const
     return vl;
 }
 
+int View::getLineNumBarWidth() const
+{
+    return 100;
+}
+
 void View::onPrimaryButtomPress(int x, int y)
 {
     const DocAddr da = getDocAddrByPoint(x, y);

@@ -23,7 +23,6 @@ private:
     void paintLastActLine(QPainter &p);
     void paintCursor(QPainter &p);
     void paintTextContent(QPainter &p);
-    
 
 private:
     View &m_view;
