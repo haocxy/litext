@@ -94,27 +94,32 @@ public:
 
     ~View() {}
 
+public:
+
     void Init(LineN viewStart, const view::Size &size);
+
+    void onPrimaryButtomPress(int x, int y);
+
+public:
 
     const view::Page &page() const;
 
-    const view::Config &config() const
-    {
-        return m_config;
-    }
+    const view::Config &config() const { return m_config; }
 
     int getBaseLineByLineOffset(int off) const;
 
-    int getLineOffsetByLineAddr(const view::LineAddr &lineAddr) const;
+    view::Rect getLastActLineDrawRect() const;
 
+    draw::VerticalLine getNormalCursorDrawData() const;
+
+
+private:
     int getLineOffsetByPhaseIndex(int phase) const;
-
+    int getLineOffsetByLineAddr(const view::LineAddr &lineAddr) const;
+    int getLineOffsetByY(int y) const;
     view::LineAddr getLineAddrByY(int y) const;
-
     view::CharAddr getCharAddrByPoint(int x, int y) const;
-
     DocAddr getDocAddrByPoint(int x, int y) const;
-
     view::PhaseAddr convertToPhaseAddr(LineN line) const;
 
     view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
@@ -130,16 +135,6 @@ public:
     view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
 
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
-
-    view::Rect getLastActLineDrawRect() const;
-
-    draw::VerticalLine getNormalCursorDrawData() const;
-
-public:
-    void onPrimaryButtomPress(int x, int y);
-
-private:
-    int getLineOffsetByY(int y) const;
 
 private:
     void remakePage();
