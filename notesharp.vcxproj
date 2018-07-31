@@ -227,8 +227,10 @@
     <ClInclude Include="src\text\txt_word_instream.h" />
     <ClInclude Include="src\text\word_instream.h" />
     <ClInclude Include="src\util\delete_helper.h" />
+    <ClInclude Include="src\util\listeners.h" />
     <ClInclude Include="src\util\stl_container_util.h" />
     <ClInclude Include="src\view\font.h" />
+    <ClInclude Include="src\view\font_to_qfont.h" />
     <ClInclude Include="src\view\view.h" />
     <ClInclude Include="src\view\view_addr.h" />
     <ClInclude Include="src\view\view_config.h" />

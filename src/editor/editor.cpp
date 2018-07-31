@@ -43,6 +43,18 @@ void Editor::onPrimaryKeyPress(const DocAddr & addr)
         m_lastActLine = addr.line();
         m_normalCursor.setAddr(addr);
     }
+
+    m_onLastActLineUpdateListeners.call();
+}
+
+ListenerID Editor::addOnLastActLineUpdateListener(std::function<void()>&& action)
+{
+    return m_onLastActLineUpdateListeners.add(std::move(action));
+}
+
+void Editor::removeOnLastActLineUpdateListener(ListenerID id)
+{
+    m_onLastActLineUpdateListeners.remove(id);
 }
 
 

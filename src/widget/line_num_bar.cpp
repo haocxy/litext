@@ -2,9 +2,15 @@
 
 #include <QPainter>
 
+#include "view/view.h"
+#include "view/font_to_qfont.h"
+#include "view/view_config.h"
+
 namespace
 {
     const QColor kBgColor = QColor(Qt::blue).lighter(190);
+    const QColor kNormalColor = QColor(Qt::gray);
+    const QColor kLastActColor = QColor(Qt::black);
 }
 
 LineNumBar::LineNumBar(View * view, QWidget * parent)
@@ -17,16 +23,50 @@ LineNumBar::LineNumBar(View * view, QWidget * parent)
 
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
+
+    m_listenerIdForUpdate = m_view.addOnUpdateListener([this] {
+        update();
+    });
 }
 
 LineNumBar::~LineNumBar()
 {
+    m_view.removeOnUpdateListener(m_listenerIdForUpdate);
 }
 
 void LineNumBar::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
+    paintBackground(p);
+    paintLineNum(p);
+}
+
+void LineNumBar::paintBackground(QPainter & p)
+{
     p.fillRect(rect(), kBgColor);
+}
+
+void LineNumBar::paintLineNum(QPainter & p)
+{
+    const QFont font = view::fontToQFont(m_view.config().font());
+    p.setFont(font);
+    p.setPen(kNormalColor);
+
+    m_view.drawEachLineNum([&p, this](LineN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct) {
+        const QString s = QString::number(lineNum);
+
+        if (isLastAct)
+        {
+            p.setPen(kLastActColor);
+        }
+
+        p.drawText(10, baseline, s);
+
+        if (isLastAct)
+        {
+            p.setPen(kNormalColor);
+        }
+    });
 }
 
 

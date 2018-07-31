@@ -7,12 +7,31 @@
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
 
+View::View(Editor * editor, view::Config *config)
+    : m_editor(*editor)
+    , m_config(*config)
+{
+    assert(editor);
+    assert(config);
+   
+    m_listenerIdForLastActLineUpdate = m_editor.addOnLastActLineUpdateListener([this] {
+        m_onUpdateListeners.call();
+    });
+}
+
+View::~View()
+{
+    m_editor.removeOnLastActLineUpdateListener(m_listenerIdForLastActLineUpdate);
+}
+
 void View::onShow(LineN viewStart, const view::Size & size)
 {
     m_viewStart = viewStart;
     m_size = size;
 
     remakePage();
+
+    m_onUpdateListeners.call();
 }
 
 const view::Page & View::page() const
@@ -292,6 +311,37 @@ int View::getLineNumBarWidth() const
     return 100;
 }
 
+void View::drawEachLineNum(std::function<void(LineN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const
+{
+    const int phaseCnt = m_page.size();
+
+    int offset = 0;
+
+    for (int phase = 0; phase < phaseCnt; ++phase)
+    {
+        const view::PhaseAddr addr(phase);
+        const view::PhaseBound bound = getPhaseBound(addr);
+        const LineN lineNum = m_viewStart + phase;
+        const LineN lastAct = m_editor.lastActLine();
+        const bool isLastAct = lineNum == lastAct;
+        const int baseline = getBaseLineByLineOffset(offset);
+
+        action(lineNum, baseline, bound, isLastAct);
+
+        offset += m_page[phase].size();
+    }
+}
+
+ListenerID View::addOnUpdateListener(std::function<void()>&& action)
+{
+    return m_onUpdateListeners.add(std::move(action));
+}
+
+void View::removeOnUpdateListener(ListenerID id)
+{
+    m_onUpdateListeners.remove(id);
+}
+
 void View::onPrimaryButtomPress(int x, int y)
 {
     const DocAddr da = getDocAddrByPoint(x, y);
@@ -436,3 +486,4 @@ void View::DocLineToViewPhaseNoWrapLine(const DocLine& line, view::Phase & phase
         leftX += hMargin;
     }
 }
+

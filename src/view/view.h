@@ -12,6 +12,8 @@
 #include "view/view_rect.h"
 #include "view/view_line.h"
 
+#include "util/listeners.h"
+
 namespace view
 {
     class Point
@@ -87,12 +89,9 @@ class Editor;
 class View
 {
 public:
-    View(Editor * editor, view::Config *config) :m_editor(*editor),m_config(*config) {
-        assert(editor);
-        assert(config);
-    }
+    View(Editor * editor, view::Config *config);
 
-    ~View() {}
+    ~View();
 
 public:
 
@@ -113,6 +112,12 @@ public:
     draw::VerticalLine getNormalCursorDrawData() const;
 
     int getLineNumBarWidth() const;
+
+    void drawEachLineNum(std::function<void(LineN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const;
+
+public:
+    ListenerID addOnUpdateListener(std::function<void()> && action);
+    void removeOnUpdateListener(ListenerID id);
 
 private:
     int getLineOffsetByPhaseIndex(int phase) const;
@@ -143,4 +148,10 @@ private:
     view::Page m_page;
     view::Size m_size;
     LineN m_viewStart = 0;
+
+private:
+    Listeners<void()> m_onUpdateListeners;
+
+private:
+    ListenerID m_listenerIdForLastActLineUpdate = 0;
 };

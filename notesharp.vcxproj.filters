@@ -162,6 +162,12 @@
     <ClInclude Include="number_class.h">
       <Filter>src\common</Filter>
     </ClInclude>
+    <ClInclude Include="src\view\font_to_qfont.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\listeners.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt">

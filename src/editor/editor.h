@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "cursor.h"
+#include "util/listeners.h"
 
 class Doc;
 
@@ -24,6 +25,10 @@ public:
 
     void onPrimaryKeyPress(const DocAddr &addr);
 
+public:
+    ListenerID addOnLastActLineUpdateListener(std::function<void()> && action);
+    void removeOnLastActLineUpdateListener(ListenerID id);
+
 private:
 
     Doc & m_model;
@@ -33,4 +38,9 @@ private:
 
     // 最后一次活跃的行
     LineN m_lastActLine = -1;
+
+private:
+    Listeners<void()> m_onLastActLineUpdateListeners;
+
+
 };
