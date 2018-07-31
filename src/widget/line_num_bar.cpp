@@ -2,6 +2,11 @@
 
 #include <QPainter>
 
+namespace
+{
+    const QColor kBgColor = QColor(Qt::blue).lighter(190);
+}
+
 LineNumBar::LineNumBar(View * view, QWidget * parent)
     : QWidget(parent)
     , m_view(*view)
@@ -21,7 +26,7 @@ LineNumBar::~LineNumBar()
 void LineNumBar::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
-    p.fillRect(rect(), QColor(Qt::blue).lighter(180));
+    p.fillRect(rect(), kBgColor);
 }
 
 
