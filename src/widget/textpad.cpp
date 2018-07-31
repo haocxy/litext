@@ -59,13 +59,13 @@ void TextPad::paintEvent(QPaintEvent * e)
 void TextPad::showEvent(QShowEvent * e)
 {
     QSize sz(size());
-    m_view.Init(0, { sz.width(), sz.height() });
+    m_view.onShow(0, { sz.width(), sz.height() });
 }
 
 void TextPad::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
-    m_view.Init(0, { sz.width(), sz.height() });
+    m_view.onShow(0, { sz.width(), sz.height() });
 }
 
 void TextPad::keyPressEvent(QKeyEvent * e)

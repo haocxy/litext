@@ -7,7 +7,7 @@
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
 
-void View::Init(LineN viewStart, const view::Size & size)
+void View::onShow(LineN viewStart, const view::Size & size)
 {
     m_viewStart = viewStart;
     m_size = size;

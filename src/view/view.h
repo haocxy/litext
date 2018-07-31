@@ -96,7 +96,7 @@ public:
 
 public:
 
-    void Init(LineN viewStart, const view::Size &size);
+    void onShow(LineN viewStart, const view::Size &size);
 
     void onPrimaryButtomPress(int x, int y);
 
@@ -121,19 +121,12 @@ private:
     view::CharAddr getCharAddrByPoint(int x, int y) const;
     DocAddr getDocAddrByPoint(int x, int y) const;
     view::PhaseAddr convertToPhaseAddr(LineN line) const;
-
     view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
-
     DocAddr convertToDocAddr(const view::CharAddr &charAddr) const;
-
     const view::Char & getChar(const view::CharAddr & charAddr) const;
-
     int getXByAddr(const view::CharAddr & charAddr) const;
-
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
-
     view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
-
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
 private:
