@@ -39,7 +39,7 @@ TextPad::TextPad(View *view, QWidget *parent)
 
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
-    setFocus();
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 TextPad::~TextPad()
@@ -70,7 +70,17 @@ void TextPad::resizeEvent(QResizeEvent * e)
 
 void TextPad::keyPressEvent(QKeyEvent * e)
 {
+    const int key = e->key();
 
+    switch (key)
+    {
+    case Qt::Key_Down:
+        m_view.onDirectionKeyPress(Dir::Down);
+        update();
+        break;
+    default:
+        break;
+    }
 }
 
 void TextPad::mousePressEvent(QMouseEvent * e)

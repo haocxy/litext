@@ -20,9 +20,9 @@ static void setupConfig(view::Config &c)
 
     view::Font &f = c.rfont();
     view::FontInfo fi;
-    fi.family = kFontFamilyTimes;
-    fi.size = 18;
-    fi.bold = true;
+    fi.family = kFontFamilyYaHei;
+    fi.size = 12;
+    fi.bold = false;
 
     f.setFont(fi);
 }

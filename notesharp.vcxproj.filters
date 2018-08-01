@@ -183,6 +183,12 @@
     <ClInclude Include="src\text\encoding_converter.h">
       <Filter>src\text</Filter>
     </ClInclude>
+    <ClInclude Include="src\common\dir_enum.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\str_util.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt">

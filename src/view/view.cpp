@@ -371,6 +371,14 @@ void View::onPrimaryButtomPress(int x, int y)
     m_editor.onPrimaryKeyPress(da);
 }
 
+void View::onDirectionKeyPress(Dir dir)
+{
+    const LineN oldAct = m_editor.lastActLine();
+    m_editor.onDirectionKeyPress(dir);
+    const LineN newAct = m_editor.lastActLine();
+    m_onUpdateListeners.call();
+}
+
 int View::getLineOffsetByY(int y) const
 {
     return y / m_config.lineHeight();

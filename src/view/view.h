@@ -13,6 +13,7 @@
 #include "view/view_line.h"
 
 #include "util/listeners.h"
+#include "common/dir_enum.h"
 
 namespace view
 {
@@ -98,6 +99,8 @@ public:
     void onShow(LineN viewStart, const view::Size &size);
 
     void onPrimaryButtomPress(int x, int y);
+
+    void onDirectionKeyPress(Dir dir);
 
 public:
 

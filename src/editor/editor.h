@@ -3,6 +3,7 @@
 #include <vector>
 #include "cursor.h"
 #include "util/listeners.h"
+#include "common/dir_enum.h"
 
 class Doc;
 
@@ -24,6 +25,8 @@ public:
     void setLastActLine(LineN line) { m_lastActLine = line; }
 
     void onPrimaryKeyPress(const DocAddr &addr);
+
+    void onDirectionKeyPress(Dir dir);
 
 public:
     ListenerID addOnLastActLineUpdateListener(std::function<void()> && action);

@@ -47,6 +47,32 @@ void Editor::onPrimaryKeyPress(const DocAddr & addr)
     m_onLastActLineUpdateListeners.call();
 }
 
+void Editor::onDirectionKeyPress(Dir dir)
+{
+    switch (dir)
+    {
+    case Dir::Up:
+
+        break;
+    case Dir::Down:
+    {
+        const LineN line = m_normalCursor.addr().line() + 1;
+        const CharN col = 0;
+        m_normalCursor.setAddr(DocAddr(line, col));
+        m_lastActLine = line;
+    }
+    break;
+    case Dir::Left:
+
+        break;
+    case Dir::Right:
+
+        break;
+    default:
+        throw std::logic_error("unknown dir type");
+    }
+}
+
 ListenerID Editor::addOnLastActLineUpdateListener(std::function<void()>&& action)
 {
     return m_onLastActLineUpdateListeners.add(std::move(action));
