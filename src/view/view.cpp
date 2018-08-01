@@ -181,7 +181,15 @@ DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
 
     if (charAddr.isAfterLastChar())
     {
-        return DocAddr::newCharAddrAfterLastChar(m_viewStart + charAddr.phase());
+        if (charAddr.line() < m_page[charAddr.phase()].size() - 1)
+        {
+            // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
+            return convertToDocAddr(view::CharAddr(charAddr.phase(), charAddr.line() + 1, 0));
+        }
+        else
+        {
+            return DocAddr::newCharAddrAfterLastChar(m_viewStart + charAddr.phase());
+        }
     }
 
     
