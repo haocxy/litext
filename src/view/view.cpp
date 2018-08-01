@@ -87,7 +87,9 @@ view::CharAddr View::getCharAddrByPoint(int x, int y) const
 
 DocAddr View::getDocAddrByPoint(int x, int y) const
 {
-    return convertToDocAddr(getCharAddrByPoint(x, y));
+    const view::CharAddr charAddr = getCharAddrByPoint(x, y);
+    const DocAddr docAddr = convertToDocAddr(charAddr);
+    return docAddr;
 }
 
 view::PhaseAddr View::convertToPhaseAddr(LineN line) const
@@ -141,6 +143,8 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
     int lineIndex = 0;
     int charIndex = 0;
 
+    int prevLineCharCnt = 0;
+
     const CharN col = docAddr.col();
 
     for (const view::DocLine &vline : vphase)
@@ -149,13 +153,15 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
         {
             if (charIndex == col)
             {
-                return view::CharAddr(phase, lineIndex, charIndex);
+                return view::CharAddr(phase, lineIndex, col - prevLineCharCnt);
             }
 
             ++charIndex;
         }
 
         ++lineIndex;
+
+        prevLineCharCnt += vline.size();
     }
 
     return view::CharAddr();
@@ -178,7 +184,16 @@ DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
         return DocAddr::newCharAddrAfterLastChar(m_viewStart + charAddr.phase());
     }
 
-    return DocAddr(m_viewStart + charAddr.phase(), charAddr.col());
+    
+    const view::Phase & phase = m_page[charAddr.phase()];
+    const int lineIndex = charAddr.line();
+    CharN col = charAddr.col();
+    for (int i = 0; i < lineIndex; ++i)
+    {
+        col += phase[i].size();
+    }
+
+    return DocAddr(m_viewStart + charAddr.phase(), col);
 }
 
 const view::Char & View::getChar(const view::CharAddr & charAddr) const
