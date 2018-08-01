@@ -21,6 +21,7 @@ void SimpleDoc::LoadFromFile(const std::string &path)
         if (c == '\n')
         {
             UString s = encoding_converter::gbkToUnicode(line);
+            line.clear();
 
             SimpleDocLine &sl = StlContainerUtil::grow(m_lines);
             sl.setContent(std::move(s));
@@ -31,6 +32,7 @@ void SimpleDoc::LoadFromFile(const std::string &path)
     {
         SimpleDocLine & sl = StlContainerUtil::grow(m_lines);
         UString s = encoding_converter::gbkToUnicode(line);
+        line.clear();
         sl.setContent(std::move(s));
     }
 }
