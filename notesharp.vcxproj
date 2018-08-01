@@ -255,7 +255,7 @@
     <Text Include="nocode\开发中的思路记录.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="third_party\libiconv-win-build-master\build-VS2017\libiconv-static\libiconv-static.vcxproj">
+    <ProjectReference Include="third_party\libiconv-win-build-master\build-VS2015\libiconv-static\libiconv-static.vcxproj">
       <Project>{46cafe4a-b5bd-4422-acc6-117d4ad041e2}</Project>
     </ProjectReference>
   </ItemGroup>
