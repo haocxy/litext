@@ -1,6 +1,7 @@
 #pragma once
 
 #include "doc_define.h"
+#include "common/dir_enum.h"
 
 class DocAddr
 {
@@ -52,6 +53,10 @@ public:
     {
         return !((*this) == b);
     }
+    DocAddr nextUp() const { return DocAddr(m_line - 1, m_col); }
+    DocAddr nextDown() const { return DocAddr(m_line + 1, m_col); }
+    DocAddr nextLeft() const { return DocAddr(m_line, m_col - 1); }
+    DocAddr nextRight() const { return DocAddr(m_line, m_col + 1); }
 private:
     typedef uint_least8_t flag_t;
     enum : flag_t

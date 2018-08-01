@@ -10,7 +10,8 @@ public:
         flgNull = 1 << 0, // 有此标志时，这个DocCursor对象为无效对象，类似NULL或者false语义
     };
 public:
-    DocCursor() = default;
+    DocCursor() : m_flags(flgNull) {}
+    DocCursor(const DocAddr & addr) : m_from(addr), m_to(addr) {}
 
     const DocAddr & addr() const { return m_from; }
     void setAddr(const DocAddr &addr)

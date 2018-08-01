@@ -100,7 +100,7 @@ public:
 
     void onPrimaryButtomPress(int x, int y);
 
-    void onDirectionKeyPress(Dir dir);
+    void onDirKeyPress(Dir dir);
 
 public:
 
@@ -139,6 +139,13 @@ private:
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
 private:
+    DocAddr getNextLeftAddr(const DocAddr & curAddr) const;
+    void onDirUpKeyPress();
+    void onDirDownKeyPress();
+    void onDirLeftKeyPress();
+    void onDirRightKeyPress();
+
+private:
     void remakePage();
 
     void DocLineToViewPhase(const DocLine &line, view::Phase &phase);
@@ -151,6 +158,10 @@ private:
     view::Page m_page;
     view::Size m_size;
     LineN m_viewStart = 0;
+    
+    // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
+    // 在某些操作后更新，如左右移动光标等操作
+    int m_stable_x = 0;
 
 private:
     Listeners<void()> m_onUpdateListeners;

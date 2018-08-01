@@ -23,55 +23,33 @@ void Editor::onPrimaryKeyPress(const DocAddr & addr)
             const UChar lastChar = lastLine.charAt(charCnt - 1);
             if (lastChar == '\r' || lastChar == '\n')
             {
-                m_lastActLine = m_model.lineCnt();
-                m_normalCursor.setAddr(DocAddr::newCharAddrAfterLastPhase());
+                setNormalCursor(DocAddr::newCharAddrAfterLastPhase());
             }
             else
             {
-                m_lastActLine = m_model.lineCnt() - 1;
-                m_normalCursor.setAddr(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
+                setNormalCursor(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
             }
         }
         else
         {
-            m_lastActLine = 0;
-            m_normalCursor.setAddr(DocAddr::newCharAddrAfterLastPhase());
+            setNormalCursor(DocAddr::newCharAddrAfterLastPhase());
         }
     }
     else
     {
-        m_lastActLine = addr.line();
-        m_normalCursor.setAddr(addr);
+        setNormalCursor(addr);
     }
-
-    m_onLastActLineUpdateListeners.call();
 }
 
-void Editor::onDirectionKeyPress(Dir dir)
+void Editor::setNormalCursor(const DocCursor & cursor)
 {
-    switch (dir)
+    m_normalCursor = cursor;
+    if (!cursor.to().isNull())
     {
-    case Dir::Up:
-
-        break;
-    case Dir::Down:
-    {
-        const LineN line = m_normalCursor.addr().line() + 1;
-        const CharN col = 0;
-        m_normalCursor.setAddr(DocAddr(line, col));
-        m_lastActLine = line;
-    }
-    break;
-    case Dir::Left:
-
-        break;
-    case Dir::Right:
-
-        break;
-    default:
-        throw std::logic_error("unknown dir type");
+        setLastActLine(cursor.to().line());
     }
 }
+
 
 ListenerID Editor::addOnLastActLineUpdateListener(std::function<void()>&& action)
 {
@@ -81,6 +59,17 @@ ListenerID Editor::addOnLastActLineUpdateListener(std::function<void()>&& action
 void Editor::removeOnLastActLineUpdateListener(ListenerID id)
 {
     m_onLastActLineUpdateListeners.remove(id);
+}
+
+void Editor::setLastActLine(LineN line)
+{
+    const LineN old = m_lastActLine;
+    m_lastActLine = line;
+
+    if (old != m_lastActLine)
+    {
+        m_onLastActLineUpdateListeners.call();
+    }
 }
 
 

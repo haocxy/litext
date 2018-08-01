@@ -19,18 +19,20 @@ public:
 
     const Doc & doc() const { return m_model; }
 
-    DocCursor &normalCursor() { return m_normalCursor; }
+    const DocCursor &normalCursor() { return m_normalCursor; }
 
     LineN lastActLine() { return m_lastActLine; }
-    void setLastActLine(LineN line) { m_lastActLine = line; }
 
     void onPrimaryKeyPress(const DocAddr &addr);
 
-    void onDirectionKeyPress(Dir dir);
+    void setNormalCursor(const DocCursor & cursor);
 
 public:
     ListenerID addOnLastActLineUpdateListener(std::function<void()> && action);
     void removeOnLastActLineUpdateListener(ListenerID id);
+
+private:
+    void setLastActLine(LineN line);
 
 private:
 

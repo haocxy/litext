@@ -271,6 +271,71 @@ view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
     return view::PhaseBound(top, height);
 }
 
+DocAddr View::getNextLeftAddr(const DocAddr & curAddr) const
+{
+    if (curAddr.isNull())
+    {
+        return DocAddr();
+    }
+
+    if (curAddr.isAfterLastPhase())
+    {
+        const LineN lineCnt = m_editor.doc().lineCnt();
+        if (lineCnt <= 0)
+        {
+            return DocAddr();
+        }
+
+        return DocAddr::newCharAddrAfterLastChar(lineCnt - 1);
+    }
+
+    if (curAddr.isAfterLastChar())
+    {
+        const CharN charCnt = m_editor.doc().lineAt(curAddr.line()).charCnt();
+        if (charCnt <= 0)
+        {
+            if (curAddr.line() > 0)
+            {
+                return DocAddr::newCharAddrAfterLastChar(curAddr.line() - 1);
+            }
+            return DocAddr();
+        }
+        return DocAddr(curAddr.line(), charCnt - 1);
+    }
+
+    if (curAddr.col() <= 0)
+    {
+        if (curAddr.line() > 0)
+        {
+            return DocAddr::newCharAddrAfterLastChar(curAddr.line() - 1);
+        }
+        return DocAddr();
+    }
+
+    return curAddr.nextLeft();
+}
+
+void View::onDirUpKeyPress()
+{
+}
+
+void View::onDirDownKeyPress()
+{
+}
+
+void View::onDirLeftKeyPress()
+{
+    const DocAddr & newAddr = getNextLeftAddr(m_editor.normalCursor().to());
+    if (!newAddr.isNull())
+    {
+        m_editor.setNormalCursor(newAddr);
+    }
+}
+
+void View::onDirRightKeyPress()
+{
+}
+
 view::Rect View::getLastActLineDrawRect() const
 {
     const LineN phase = m_editor.lastActLine();
@@ -371,12 +436,16 @@ void View::onPrimaryButtomPress(int x, int y)
     m_editor.onPrimaryKeyPress(da);
 }
 
-void View::onDirectionKeyPress(Dir dir)
+void View::onDirKeyPress(Dir dir)
 {
-    const LineN oldAct = m_editor.lastActLine();
-    m_editor.onDirectionKeyPress(dir);
-    const LineN newAct = m_editor.lastActLine();
-    m_onUpdateListeners.call();
+    switch (dir)
+    {
+    case Dir::Up: onDirUpKeyPress(); break;
+    case Dir::Down: onDirDownKeyPress(); break;
+    case Dir::Left: onDirLeftKeyPress(); break;
+    case Dir::Right: onDirRightKeyPress(); break;
+    default: break;
+    }
 }
 
 int View::getLineOffsetByY(int y) const
