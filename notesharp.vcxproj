@@ -181,6 +181,7 @@
     <ClCompile Include="src\doc\simple_doc.cpp" />
     <ClCompile Include="src\editor\editor.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\text\encoding_detector.cpp" />
     <ClCompile Include="src\text\txt_word_instream.cpp" />
     <ClCompile Include="src\view\font.cpp" />
     <ClCompile Include="src\view\view.cpp" />
@@ -224,6 +225,9 @@
     <ClInclude Include="src\editor\editor.h" />
     <ClInclude Include="src\text\char_instream.h" />
     <ClInclude Include="src\text\doc_line_char_instream.h" />
+    <ClInclude Include="src\text\encoding_converter.h" />
+    <ClInclude Include="src\text\encoding_detector.h" />
+    <ClInclude Include="src\text\supported_encoding.h" />
     <ClInclude Include="src\text\txt_word_instream.h" />
     <ClInclude Include="src\text\word_instream.h" />
     <ClInclude Include="src\util\delete_helper.h" />

@@ -74,6 +74,9 @@
     <ClCompile Include="src\widget\editor_view_widget.cpp">
       <Filter>src\widget</Filter>
     </ClCompile>
+    <ClCompile Include="src\text\encoding_detector.cpp">
+      <Filter>src\text</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -167,6 +170,15 @@
     </ClInclude>
     <ClInclude Include="src\util\listeners.h">
       <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\encoding_detector.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\supported_encoding.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="src\text\encoding_converter.h">
+      <Filter>src\text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
