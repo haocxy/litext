@@ -181,6 +181,7 @@
     <ClCompile Include="src\doc\simple_doc.cpp" />
     <ClCompile Include="src\editor\editor.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\text\encoding_converter.cpp" />
     <ClCompile Include="src\text\encoding_detector.cpp" />
     <ClCompile Include="src\text\txt_word_instream.cpp" />
     <ClCompile Include="src\view\font.cpp" />
@@ -252,6 +253,11 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="third_party\libiconv-win-build-master\build-VS2017\libiconv-static\libiconv-static.vcxproj">
+      <Project>{46cafe4a-b5bd-4422-acc6-117d4ad041e2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
