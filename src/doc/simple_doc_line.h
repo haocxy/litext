@@ -18,6 +18,11 @@ public:
         return m_content[i];
     }
 
+    virtual LineEnd lineEnd() const override
+    {
+        return m_lineEnd;
+    }
+
     void setContent(const UString &content)
     {
         m_content = content;
@@ -33,6 +38,12 @@ public:
         m_content.push_back(c);
     }
 
+    void setLineEnd(LineEnd lineEnd)
+    {
+        m_lineEnd = lineEnd;
+    }
+
 private:
     UString m_content;
+    LineEnd m_lineEnd = LineEnd::NO;
 };

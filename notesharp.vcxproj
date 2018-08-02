@@ -219,6 +219,7 @@
     <ClInclude Include="src\doc\doc_define.h" />
     <ClInclude Include="src\doc\doc_line.h" />
     <ClInclude Include="src\doc\doc.h" />
+    <ClInclude Include="src\doc\line_end_enum.h" />
     <ClInclude Include="src\doc\simple_doc_line.h" />
     <ClInclude Include="src\doc\simple_doc.h" />
     <ClInclude Include="src\editor\cursor.h" />
@@ -231,7 +232,6 @@
     <ClInclude Include="src\text\doc_line_char_instream.h" />
     <ClInclude Include="src\text\encoding_converter.h" />
     <ClInclude Include="src\text\encoding_detector.h" />
-    <ClInclude Include="src\text\linesep_enum.h" />
     <ClInclude Include="src\text\supported_encoding.h" />
     <ClInclude Include="src\text\txt_word_instream.h" />
     <ClInclude Include="src\text\word_instream.h" />

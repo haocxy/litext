@@ -15,31 +15,8 @@ void Editor::onPrimaryKeyPress(const DocAddr & addr)
     if (addr.isAfterLastPhase())
     {
         const LineN lineCnt = m_model.lineCnt();
-        if (lineCnt > 0)
-        {
-            const Line & lastLine = m_model.lineAt(lineCnt - 1);
-            const CharN charCnt = lastLine.charCnt();
-            if (charCnt > 0)
-            {
-                const UChar lastChar = lastLine.charAt(charCnt - 1);
-                if (lastChar == '\r' || lastChar == '\n')
-                {
-                    setNormalCursor(DocAddr::newCharAddrAfterLastPhase());
-                }
-                else
-                {
-                    setNormalCursor(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
-                }
-            }
-            else
-            {
-                setNormalCursor(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
-            }
-        }
-        else
-        {
-            setNormalCursor(DocAddr::newCharAddrAfterLastPhase());
-        }
+        assert(lineCnt > 0);
+        setNormalCursor(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
     }
     else
     {

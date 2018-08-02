@@ -180,11 +180,11 @@
     <ClInclude Include="src\util\str_util.h">
       <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\text\linesep_enum.h">
-      <Filter>src\text</Filter>
-    </ClInclude>
     <ClInclude Include="src\qt\textpad.h">
       <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\line_end_enum.h">
+      <Filter>src\doc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

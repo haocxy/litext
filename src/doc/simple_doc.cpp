@@ -10,6 +10,10 @@ void SimpleDoc::LoadFromFile(const std::string &path)
 {
     namespace scu = StlContainerUtil;
 
+    enum State { ST_Normal, ST_CR };
+
+    int state = ST_Normal;
+
     std::ifstream ifs(path);
 
     std::string buff;
@@ -18,39 +22,95 @@ void SimpleDoc::LoadFromFile(const std::string &path)
 
     while (ifs.read(&c, sizeof(c)))
     {
-        buff.push_back(c);
-
-        if (c == '\n')
+        switch (state)
         {
-            UString s = encoding_converter::gbkToUnicode(buff);
-            buff.clear();
+        case ST_Normal:
+            if (c == '\r')
+            {
+                state = ST_CR;
+            }
+            else if (c == '\n')
+            {
+                SimpleDocLine & sl = scu::grow(m_lines);
+                UString s = encoding_converter::gbkToUnicode(buff);
+                buff.clear();
+                sl.setContent(std::move(s));
+                sl.setLineEnd(LineEnd::LF);
+            }
+            else
+            {
+                buff.push_back(c);
+            }
+            break;
+        case ST_CR:
+            if (c == '\r')
+            {
+                SimpleDocLine & sl = scu::grow(m_lines);
+                UString s = encoding_converter::gbkToUnicode(buff);
+                buff.clear();
+                sl.setContent(std::move(s));
+                sl.setLineEnd(LineEnd::CR);
+            }
+            else if (c == '\n')
+            {
+                SimpleDocLine & sl = scu::grow(m_lines);
+                UString s = encoding_converter::gbkToUnicode(buff);
+                buff.clear();
+                sl.setContent(std::move(s));
+                sl.setLineEnd(LineEnd::CRLF);
 
-            SimpleDocLine &sl = scu::grow(m_lines);
-            sl.setContent(std::move(s));
+                state = ST_Normal;
+            }
+            else
+            {
+                SimpleDocLine & sl = scu::grow(m_lines);
+                UString s = encoding_converter::gbkToUnicode(buff);
+                buff.clear();
+                sl.setContent(std::move(s));
+                sl.setLineEnd(LineEnd::CR);
+
+                state = ST_Normal;
+            }
+            break;
+        default:
+            break;
         }
-    }
+    } // while end
 
-    // 把buff中的残留字节解析并添加进去
-    if (!buff.empty())
+    if (state == ST_CR)
     {
         SimpleDocLine & sl = scu::grow(m_lines);
         UString s = encoding_converter::gbkToUnicode(buff);
         buff.clear();
         sl.setContent(std::move(s));
+        sl.setLineEnd(LineEnd::CR);
+    }
+    else
+    {
+        // 把buff中的残留字节解析并添加进去
+        if (!buff.empty())
+        {
+            SimpleDocLine & sl = scu::grow(m_lines);
+            UString s = encoding_converter::gbkToUnicode(buff);
+            buff.clear();
+            sl.setContent(std::move(s));
+        }
     }
 
     // 如果最后一行以换行结束，则添加一个空行
-    if (!m_lines.empty())
+    if (m_lines.empty())
+    {
+        SimpleDocLine & b = scu::grow(m_lines);
+        b.setLineEnd(LineEnd::NO);
+    }
+    else
     {
         const SimpleDocLine & lastLine = m_lines.back();
-        const CharN charCnt = lastLine.charCnt();
-        if (charCnt > 0)
+
+        if (lastLine.lineEnd() != LineEnd::NO)
         {
-            const UChar lastChar = lastLine.charAt(charCnt - 1);
-            if (lastChar == UChar('\n') || lastChar == UChar('\r'))
-            {
-                scu::grow(m_lines);
-            }
+            SimpleDocLine & b = scu::grow(m_lines);
+            b.setLineEnd(LineEnd::NO);
         }
     }
 }
