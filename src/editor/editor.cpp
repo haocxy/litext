@@ -19,11 +19,17 @@ void Editor::onPrimaryKeyPress(const DocAddr & addr)
         {
             const DocLine & lastLine = m_model.lineAt(lineCnt - 1);
             const CharN charCnt = lastLine.charCnt();
-            assert(charCnt > 0);
-            const UChar lastChar = lastLine.charAt(charCnt - 1);
-            if (lastChar == '\r' || lastChar == '\n')
+            if (charCnt > 0)
             {
-                setNormalCursor(DocAddr::newCharAddrAfterLastPhase());
+                const UChar lastChar = lastLine.charAt(charCnt - 1);
+                if (lastChar == '\r' || lastChar == '\n')
+                {
+                    setNormalCursor(DocAddr::newCharAddrAfterLastPhase());
+                }
+                else
+                {
+                    setNormalCursor(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
+                }
             }
             else
             {

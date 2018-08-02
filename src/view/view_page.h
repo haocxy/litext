@@ -36,6 +36,7 @@ namespace view
         typedef Chars::const_iterator const_iterator;
         typedef Chars::iterator iterator;
 
+        bool empty() const { return m_chars.empty(); }
         CharN size() const { return static_cast<CharN>(m_chars.size()); }
         const Char &operator[](CharN line) const { return m_chars[line]; }
         Char &operator[](CharN line) { return m_chars[line]; }

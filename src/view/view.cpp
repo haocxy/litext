@@ -223,6 +223,11 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
 
     if (charAddr.isAfterLastChar())
     {
+        const view::DocLine & line = m_page[charAddr.phase()][charAddr.line()];
+        if (line.empty())
+        {
+            return m_config.hGap();
+        }
         const view::Char &vc = m_page[charAddr.phase()][charAddr.line()].last();
         return vc.x() + vc.width();
     }
