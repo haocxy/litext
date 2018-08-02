@@ -212,7 +212,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="number_class.h" />
     <ClInclude Include="src\common\common_define.h" />
     <ClInclude Include="src\common\dir_enum.h" />
     <ClInclude Include="src\common\nullable_class.h" />
