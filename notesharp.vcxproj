@@ -168,7 +168,7 @@
     <QtMoc>
       <QTDIR>$(QTDIR)</QTDIR>
       <InputFile>%(FullPath)</InputFile>
-      <OutputFile>GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
+      <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <IncludePath>$(ProjectDir)src;.\GeneratedFiles\$(ConfigurationName)\.;.\GeneratedFiles;.;$(QTDIR)\include;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtCore;.\debug;$(QTDIR)\mkspecs\win32-msvc2015</IncludePath>
       <Define>_WINDOWS;UNICODE;WIN32;WIN64;QT_DEPRECATED_WARNINGS;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB</Define>
       <CompilerFlavor>msvc</CompilerFlavor>
@@ -181,6 +181,10 @@
     <ClCompile Include="src\doc\simple_doc.cpp" />
     <ClCompile Include="src\editor\editor.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\qt\editor_view_widget.cpp" />
+    <ClCompile Include="src\qt\line_num_bar.cpp" />
+    <ClCompile Include="src\qt\mainwindow.cpp" />
+    <ClCompile Include="src\qt\textpad.cpp" />
     <ClCompile Include="src\text\encoding_converter.cpp" />
     <ClCompile Include="src\text\encoding_detector.cpp" />
     <ClCompile Include="src\text\txt_word_instream.cpp" />
@@ -188,10 +192,6 @@
     <ClCompile Include="src\view\view.cpp" />
     <ClCompile Include="src\view\view_config.cpp" />
     <ClCompile Include="src\view\view_page.cpp" />
-    <ClCompile Include="src\widget\editor_view_widget.cpp" />
-    <ClCompile Include="src\widget\line_num_bar.cpp" />
-    <ClCompile Include="src\widget\mainwindow.cpp" />
-    <ClCompile Include="src\widget\textpad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -224,6 +224,10 @@
     <ClInclude Include="src\doc\simple_doc.h" />
     <ClInclude Include="src\editor\cursor.h" />
     <ClInclude Include="src\editor\editor.h" />
+    <QtMoc Include="src\qt\editor_view_widget.h" />
+    <QtMoc Include="src\qt\line_num_bar.h" />
+    <QtMoc Include="src\qt\mainwindow.h" />
+    <ClInclude Include="src\qt\textpad.h" />
     <ClInclude Include="src\text\char_instream.h" />
     <ClInclude Include="src\text\doc_line_char_instream.h" />
     <ClInclude Include="src\text\encoding_converter.h" />
@@ -243,15 +247,7 @@
     <ClInclude Include="src\view\view_config.h" />
     <ClInclude Include="src\view\view_line.h" />
     <ClInclude Include="src\view\view_page.h" />
-    <QtMoc Include="src\widget\mainwindow.h" />
     <ClInclude Include="src\view\view_rect.h" />
-    <QtMoc Include="src\widget\line_num_bar.h">
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-    </QtMoc>
-    <QtMoc Include="src\widget\editor_view_widget.h">
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
-    </QtMoc>
-    <ClInclude Include="src\widget\textpad.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt" />

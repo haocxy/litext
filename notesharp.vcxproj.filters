@@ -21,9 +21,6 @@
     <Filter Include="src\common">
       <UniqueIdentifier>{5ac63b8a-4773-406e-b464-dde084745854}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\widget">
-      <UniqueIdentifier>{7122ce3b-99a8-48ed-8281-da1dc480a169}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\text">
       <UniqueIdentifier>{2491a6e7-0608-4d4b-aa72-22739be0914c}</UniqueIdentifier>
     </Filter>
@@ -36,13 +33,13 @@
     <Filter Include="src\view">
       <UniqueIdentifier>{4f440441-7b16-4b11-a813-3f728b5066d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\qt">
+      <UniqueIdentifier>{5116a3d9-9f95-4786-840a-56febc435c4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\widget\textpad.cpp">
-      <Filter>src\widget</Filter>
     </ClCompile>
     <ClCompile Include="src\text\txt_word_instream.cpp">
       <Filter>src\text</Filter>
@@ -65,20 +62,23 @@
     <ClCompile Include="src\view\view_page.cpp">
       <Filter>src\view</Filter>
     </ClCompile>
-    <ClCompile Include="src\widget\mainwindow.cpp">
-      <Filter>src\widget</Filter>
-    </ClCompile>
-    <ClCompile Include="src\widget\line_num_bar.cpp">
-      <Filter>src\widget</Filter>
-    </ClCompile>
-    <ClCompile Include="src\widget\editor_view_widget.cpp">
-      <Filter>src\widget</Filter>
-    </ClCompile>
     <ClCompile Include="src\text\encoding_detector.cpp">
       <Filter>src\text</Filter>
     </ClCompile>
     <ClCompile Include="src\text\encoding_converter.cpp">
       <Filter>src\text</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qt\editor_view_widget.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qt\line_num_bar.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qt\mainwindow.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qt\textpad.cpp">
+      <Filter>src\qt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,9 +107,6 @@
     </ClInclude>
     <ClInclude Include="src\text\char_instream.h">
       <Filter>src\text</Filter>
-    </ClInclude>
-    <ClInclude Include="src\widget\textpad.h">
-      <Filter>src\widget</Filter>
     </ClInclude>
     <ClInclude Include="src\text\txt_word_instream.h">
       <Filter>src\text</Filter>
@@ -189,6 +186,9 @@
     <ClInclude Include="src\text\linesep_enum.h">
       <Filter>src\text</Filter>
     </ClInclude>
+    <ClInclude Include="src\qt\textpad.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt">
@@ -196,14 +196,14 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="src\widget\mainwindow.h">
-      <Filter>src\widget</Filter>
+    <QtMoc Include="src\qt\editor_view_widget.h">
+      <Filter>src\qt</Filter>
     </QtMoc>
-    <QtMoc Include="src\widget\line_num_bar.h">
-      <Filter>src\widget</Filter>
+    <QtMoc Include="src\qt\line_num_bar.h">
+      <Filter>src\qt</Filter>
     </QtMoc>
-    <QtMoc Include="src\widget\editor_view_widget.h">
-      <Filter>src\widget</Filter>
+    <QtMoc Include="src\qt\mainwindow.h">
+      <Filter>src\qt</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
