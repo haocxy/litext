@@ -7,16 +7,17 @@ namespace view
     class Config
     {
     public:
-        const float kDefaultLineHeightFactor = 1.2f; // 默认行高系数
+        static const int kLineHeightScale = 1000;
+        static const int kDefaultLineHeightFactor = static_cast<int>(1.2 * kLineHeightScale); // 默认行高系数
         static const int kDefaultHGap = 2; // 默认水平字符间距
         static const int kDefaultHMargin = 2; // 默认水平间距
         static const int kDefaultTabSize = 4; // 默认TAB尺寸
 
     public:
-        float lineHeightFactor() const { return m_lineHeightFactor; }
-        void setLineHeightFactor(float f) { m_lineHeightFactor = f; }
+        float lineHeightFactor() const { return m_lineHeightFactor / 1000.0; }
+        void setLineHeightFactor(float f) { m_lineHeightFactor = static_cast<int>(f * 1000); }
 
-        int lineHeight() const { return m_lineHeightFactor * m_font.height(); }
+        int lineHeight() const { return m_lineHeightFactor * m_font.height() / 1000; }
 
         int hGap() const { return m_hGap; }
         void setHGap(int hGap) { m_hGap = hGap; }
@@ -42,7 +43,7 @@ namespace view
         void setLineNumOffset(int32_t lineNumOffset) { m_lineNumOffset = lineNumOffset; }
 
     private:
-        float m_lineHeightFactor = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 x 字体高度，结果四舍五入
+        int m_lineHeightFactor = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
         int m_hGap = kDefaultHGap; // 水平方向最左侧字符左边的空白
         int m_hMargin = kDefaultHMargin; // 水平字符间距
         int m_tabSize = kDefaultTabSize; // 一个TAB的宽度为若干个空格
