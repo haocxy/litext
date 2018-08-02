@@ -147,7 +147,7 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
 
     const CharN col = docAddr.col();
 
-    for (const view::DocLine &vline : vphase)
+    for (const view::Line &vline : vphase)
     {
         for (const view::Char &vc : vline)
         {
@@ -223,7 +223,7 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
 
     if (charAddr.isAfterLastChar())
     {
-        const view::DocLine & line = m_page[charAddr.phase()][charAddr.line()];
+        const view::Line & line = m_page[charAddr.phase()][charAddr.line()];
         if (line.empty())
         {
             return m_config.hGap();
@@ -475,7 +475,7 @@ void View::remakePage()
 
 }
 
-void View::DocLineToViewPhase(const DocLine& line, view::Phase & phase)
+void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
 {
     if (m_config.wrapLine())
     {
@@ -487,14 +487,14 @@ void View::DocLineToViewPhase(const DocLine& line, view::Phase & phase)
     }
 }
 
-void View::DocLineToViewPhaseWithWrapLine(const DocLine& line, view::Phase & phase)
+void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
 {
     assert(phase.size() == 0);
 
     const int hGap = m_config.hGap();
     const int hMargin = m_config.hMargin();
 
-    view::DocLine *vline = &phase.grow();
+    view::Line *vline = &phase.grow();
 
     DocLineCharInStream charStream(line);
     TxtWordStream wordStream(charStream);
@@ -565,14 +565,14 @@ void View::DocLineToViewPhaseWithWrapLine(const DocLine& line, view::Phase & pha
     }
 }
 
-void View::DocLineToViewPhaseNoWrapLine(const DocLine& line, view::Phase & phase)
+void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)
 {
     assert(phase.size() == 0);
 
     const int hGap = m_config.hGap();
     const int hMargin = m_config.hMargin();
 
-    view::DocLine &vline = phase.grow();
+    view::Line &vline = phase.grow();
 
     int leftX = hGap;
 

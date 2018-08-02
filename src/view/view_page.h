@@ -29,7 +29,7 @@ namespace view
     typedef std::deque<Char> Chars;
 
     /*行，行的划分取决于显示区域的大小以及是否开启折行显示*/
-    class DocLine
+    class Line
     {
     public:
         typedef int CharN;
@@ -57,7 +57,7 @@ namespace view
         Chars m_chars;
     };
 
-    typedef std::deque<DocLine> Lines;
+    typedef std::deque<Line> Lines;
 
     /*
     段落，段落以换行结束
@@ -73,13 +73,13 @@ namespace view
         Phase(Phase&& phase) : m_lines(std::move(phase.m_lines)) {}
         Phase &operator=(Phase &&phase) { m_lines = std::move(phase.m_lines); return *this; }
         int size() const { return static_cast<int>(m_lines.size()); }
-        const DocLine &operator[](int line) const { return m_lines[line]; }
-        DocLine &operator[](int line) { return m_lines[line]; }
+        const Line &operator[](int line) const { return m_lines[line]; }
+        Line &operator[](int line) { return m_lines[line]; }
         const_iterator begin() const { return m_lines.begin(); }
         const_iterator end() const { return m_lines.end(); }
         iterator begin() { return m_lines.begin(); }
         iterator end() { return m_lines.end(); }
-        DocLine &grow()
+        Line &grow()
         {
             return StlContainerUtil::grow(m_lines);
         }
@@ -110,11 +110,11 @@ namespace view
         }
         LineAddr getLineAddrByLineOffset(int offset) const;
         CharAddr getCharAddrByLineAddrAndX(const LineAddr &lineAddr, int x) const;
-        const DocLine & getLine(const view::LineAddr & addr) const
+        const Line & getLine(const view::LineAddr & addr) const
         {
             return m_phases[addr.phase()][addr.line()];
         }
-        view::DocLine & getLine(const view::LineAddr & addr)
+        view::Line & getLine(const view::LineAddr & addr)
         {
             return m_phases[addr.phase()][addr.line()];
         }

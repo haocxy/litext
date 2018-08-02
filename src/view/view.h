@@ -78,7 +78,7 @@ namespace view
 } // namespace view
 
 
-class DocLine;
+class Line;
 class DocAddr;
 class Editor;
 
@@ -148,9 +148,9 @@ private:
 private:
     void remakePage();
 
-    void DocLineToViewPhase(const DocLine &line, view::Phase &phase);
-    void DocLineToViewPhaseWithWrapLine(const DocLine &line, view::Phase &phase);
-    void DocLineToViewPhaseNoWrapLine(const DocLine &line, view::Phase &phase);
+    void DocLineToViewPhase(const Line &line, view::Phase &phase);
+    void DocLineToViewPhaseWithWrapLine(const Line &line, view::Phase &phase);
+    void DocLineToViewPhaseNoWrapLine(const Line &line, view::Phase &phase);
 
 private:
     Editor & m_editor;

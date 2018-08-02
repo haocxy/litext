@@ -2,7 +2,7 @@
 
 #include "doc_line.h"
 
-class SimpleDocLine : public DocLine
+class SimpleDocLine : public Line
 {
 public:
 

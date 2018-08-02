@@ -29,7 +29,7 @@ view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, 
         return view::CharAddr::newCharAddrAfterLastChar(lineAddr);
     }
 
-    const DocLine & line = getLine(lineAddr);
+    const Line & line = getLine(lineAddr);
 
     const int charCnt = line.size();
     for (int i = 0; i < charCnt; ++i)

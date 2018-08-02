@@ -17,7 +17,7 @@ void Editor::onPrimaryKeyPress(const DocAddr & addr)
         const LineN lineCnt = m_model.lineCnt();
         if (lineCnt > 0)
         {
-            const DocLine & lastLine = m_model.lineAt(lineCnt - 1);
+            const Line & lastLine = m_model.lineAt(lineCnt - 1);
             const CharN charCnt = lastLine.charCnt();
             if (charCnt > 0)
             {

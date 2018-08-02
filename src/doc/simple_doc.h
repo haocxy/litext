@@ -16,7 +16,7 @@ public:
         return static_cast<LineN>(m_lines.size());
     }
 
-    virtual const DocLine &lineAt(LineN line) const override
+    virtual const Line &lineAt(LineN line) const override
     {
         return m_lines[line];
     }

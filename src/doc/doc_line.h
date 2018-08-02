@@ -4,10 +4,10 @@
 
 #include "doc_define.h"
 
-class DocLine
+class Line
 {
 public:
-    virtual ~DocLine() {}
+    virtual ~Line() {}
 
     virtual CharN charCnt() const = 0;
 

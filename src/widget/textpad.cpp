@@ -138,7 +138,7 @@ void TextPad::paintTextContent(QPainter & p)
 
     for (const v::Phase &phase : page)
     {
-        for (const v::DocLine &line : phase)
+        for (const v::Line &line : phase)
         {
             const int baseline = m_view.getBaseLineByLineOffset(lineOffset);
 
