@@ -17,6 +17,7 @@ static void setupConfig(view::Config &c)
     c.setTabSize(4);
     c.setWrapLine(true);
     c.setShowLineNum(true);
+    c.setLineNumOffset(1);
 
     view::Font &f = c.rfont();
     view::FontInfo fi;

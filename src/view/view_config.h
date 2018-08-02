@@ -37,6 +37,10 @@ namespace view
 
         bool showLineNum() const { return m_showLineNum; }
         void setShowLineNum(bool showLineNum) { m_showLineNum = showLineNum; }
+
+        int32_t lineNumOffset() const { return m_lineNumOffset; }
+        void setLineNumOffset(int32_t lineNumOffset) { m_lineNumOffset = lineNumOffset; }
+
     private:
         float m_lineHeightFactor = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 x 字体高度，结果四舍五入
         int m_hGap = kDefaultHGap; // 水平方向最左侧字符左边的空白
@@ -44,6 +48,7 @@ namespace view
         int m_tabSize = kDefaultTabSize; // 一个TAB的宽度为若干个空格
         bool m_wrapLine = false;
         bool m_showLineNum = false; // 是否显示行号
+        int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
         
         Font m_font;
     };
