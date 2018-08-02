@@ -82,6 +82,8 @@ void TextPad::resizeEvent(QResizeEvent * e)
     }
 
     m_view.onResize({ sz.width(), sz.height() });
+
+    refresh();
 }
 
 void TextPad::keyPressEvent(QKeyEvent * e)
