@@ -26,7 +26,7 @@ namespace view
         int m_width = 0;
     };
 
-    typedef std::deque<Char> Chars;
+    typedef std::vector<Char> Chars;
 
     /*行，行的划分取决于显示区域的大小以及是否开启折行显示*/
     class Line
@@ -57,7 +57,7 @@ namespace view
         Chars m_chars;
     };
 
-    typedef std::deque<Line> Lines;
+    typedef std::vector<Line> Lines;
 
     /*
     段落，段落以换行结束
