@@ -219,7 +219,6 @@
     <ClInclude Include="src\doc\doc_define.h" />
     <ClInclude Include="src\doc\doc_line.h" />
     <ClInclude Include="src\doc\doc.h" />
-    <ClInclude Include="src\doc\doc_line_num.h" />
     <ClInclude Include="src\doc\simple_doc_line.h" />
     <ClInclude Include="src\doc\simple_doc.h" />
     <ClInclude Include="src\editor\cursor.h" />
