@@ -24,9 +24,22 @@ View::~View()
     m_editor.removeOnLastActLineUpdateListener(m_listenerIdForLastActLineUpdate);
 }
 
-void View::onShow(LineN viewStart, const view::Size & size)
+void View::initSize(const view::Size & size)
 {
-    m_viewStart = viewStart;
+    m_size = size;
+
+    remakePage();
+
+    m_onUpdateListeners.call();
+}
+
+void View::onResize(const view::Size & size)
+{
+    if (m_size == size)
+    {
+        return;
+    }
+
     m_size = size;
 
     remakePage();
@@ -434,6 +447,8 @@ void View::removeOnUpdateListener(ListenerID id)
 {
     m_onUpdateListeners.remove(id);
 }
+
+
 
 void View::onPrimaryButtomPress(int x, int y)
 {

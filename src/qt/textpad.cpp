@@ -29,17 +29,26 @@ namespace
         qfont.setPointSize(font.size());
         qfont.setBold(font.bold());
     }
+
+    static int kWidthHint = 800;
+    static int kHeightHint = 600;
+    static QSize kSizeHint(kWidthHint, kHeightHint);
 }
 
 TextPad::TextPad(View *view, QWidget *parent)
-    : m_view(*view)
-    , QWidget(parent)
+    : QWidget(parent)
+    , m_view(*view)
+    , m_buff(kWidthHint, kHeightHint)
 {
     assert(view);
 
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
+
+    m_view.initSize({kWidthHint,kHeightHint});
+
+    paintOnPixmap();
 }
 
 TextPad::~TextPad()
@@ -47,25 +56,32 @@ TextPad::~TextPad()
 
 }
 
+QSize TextPad::sizeHint() const
+{
+    return kSizeHint;
+}
+
 void TextPad::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
-    paintBackground(p);
-    paintLastActLine(p);
-    paintTextContent(p);
-    paintCursor(p);
+    p.drawPixmap(rect(), m_buff);
 }
 
 void TextPad::showEvent(QShowEvent * e)
 {
-    QSize sz(size());
-    m_view.onShow(0, { sz.width(), sz.height() });
+
 }
 
 void TextPad::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
-    m_view.onShow(0, { sz.width(), sz.height() });
+
+    if (e->oldSize().isValid() && sz != e->oldSize())
+    {
+        m_buff = std::move(QPixmap(sz));
+    }
+
+    m_view.onResize({ sz.width(), sz.height() });
 }
 
 void TextPad::keyPressEvent(QKeyEvent * e)
@@ -76,19 +92,19 @@ void TextPad::keyPressEvent(QKeyEvent * e)
     {
     case Qt::Key_Up:
         m_view.onDirKeyPress(Dir::Up);
-        update();
+        refresh();
         break;
     case Qt::Key_Down:
         m_view.onDirKeyPress(Dir::Down);
-        update();
+        refresh();
         break;
     case Qt::Key_Left:
         m_view.onDirKeyPress(Dir::Left);
-        update();
+        refresh();
         break;
     case Qt::Key_Right:
         m_view.onDirKeyPress(Dir::Left);
-        update();
+        refresh();
         break;
     default:
         break;
@@ -100,15 +116,13 @@ void TextPad::mousePressEvent(QMouseEvent * e)
     if (e->button() == Qt::LeftButton)
     {
         m_view.onPrimaryButtomPress(e->x(), e->y());
-        update();
+        refresh();
     }
 }
 
 void TextPad::paintBackground(QPainter & p)
 {
-    AutoSaver as(p);
-
-    p.fillRect(rect(), QColor(Qt::white));
+    p.fillRect(m_buff.rect(), QColor(Qt::white));
 }
 
 void TextPad::paintLastActLine(QPainter & p)
@@ -125,8 +139,6 @@ void TextPad::paintLastActLine(QPainter & p)
 void TextPad::paintTextContent(QPainter & p)
 {
     namespace v = view;
-
-    AutoSaver as(p);
 
     QFont qfont;
     fillQFont(m_view.config().font(), qfont);
@@ -150,6 +162,21 @@ void TextPad::paintTextContent(QPainter & p)
             ++lineOffset;
         }
     }
+}
+
+void TextPad::paintOnPixmap()
+{
+    QPainter p(&m_buff);
+    paintBackground(p);
+    paintLastActLine(p);
+    paintTextContent(p);
+    paintCursor(p);
+}
+
+void TextPad::refresh()
+{
+    paintOnPixmap();
+    update();
 }
 
 void TextPad::paintCursor(QPainter & p)
