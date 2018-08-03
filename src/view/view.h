@@ -143,7 +143,9 @@ private:
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
 private:
+    // 返回按一次左方向键应该的下一个位置，如果下一个位置无效或者下一个位置和当前位置相同，返回空对象
     DocAddr getNextLeftAddr(const DocAddr & curAddr) const;
+    DocAddr getNextRightAddr(const DocAddr & addr) const;
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
