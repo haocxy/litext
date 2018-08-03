@@ -105,7 +105,7 @@ void TextPad::keyPressEvent(QKeyEvent * e)
         refresh();
         break;
     case Qt::Key_Right:
-        m_view.onDirKeyPress(Dir::Left);
+        m_view.onDirKeyPress(Dir::Right);
         refresh();
         break;
     default:
