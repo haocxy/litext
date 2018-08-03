@@ -1,6 +1,6 @@
 #pragma once
 
-enum class LineEnd
+enum class RowEnd
 {
     NO   = 0, // 没有结束符，只存在于最后一行
     CR   = 1, // 以 \r 结束

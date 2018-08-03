@@ -2,7 +2,7 @@
 
 #include "doc_define.h"
 
-class Line;
+class Row;
 
 ////*
 // 
@@ -43,7 +43,7 @@ class Doc
 public:
     virtual ~Doc() {}
 
-    virtual LineN lineCnt() const = 0;
+    virtual RowN rowCnt() const = 0;
 
-    virtual const Line &lineAt(LineN line) const = 0;
+    virtual const Row & rowAt(RowN line) const = 0;
 };

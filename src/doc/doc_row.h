@@ -1,16 +1,16 @@
 #pragma once
 
 #include "doc_define.h"
-#include "line_end_enum.h"
+#include "row_end_enum.h"
 
-class Line
+class Row
 {
 public:
-    virtual ~Line() {}
+    virtual ~Row() {}
 
     virtual CharN charCnt() const = 0;
 
     virtual UChar charAt(CharN i) const = 0;
 
-    virtual LineEnd lineEnd() const = 0;
+    virtual RowEnd rowEnd() const = 0;
 };

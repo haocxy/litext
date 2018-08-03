@@ -3,7 +3,7 @@
 #include <vector>
 #include <filesystem>
 
-#include "simple_doc_line.h"
+#include "simple_doc_row.h"
 #include "doc.h"
 
 class SimpleDoc : public Doc
@@ -11,12 +11,12 @@ class SimpleDoc : public Doc
 public:
     virtual ~SimpleDoc() {}
 
-    virtual LineN lineCnt() const override
+    virtual RowN rowCnt() const override
     {
-        return static_cast<LineN>(m_lines.size());
+        return static_cast<RowN>(m_lines.size());
     }
 
-    virtual const Line &lineAt(LineN line) const override
+    virtual const Row &rowAt(RowN line) const override
     {
         return m_lines[line];
     }
@@ -25,5 +25,5 @@ public:
     void LoadFromFile(const std::string &path);
 
 private:
-    std::vector<SimpleDocLine> m_lines;
+    std::vector<SimpleRow> m_lines;
 };

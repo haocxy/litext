@@ -31,11 +31,11 @@ void SimpleDoc::LoadFromFile(const std::string &path)
             }
             else if (c == '\n')
             {
-                SimpleDocLine & sl = scu::grow(m_lines);
+                SimpleRow & row = scu::grow(m_lines);
                 UString s = encoding_converter::gbkToUnicode(buff);
                 buff.clear();
-                sl.setContent(std::move(s));
-                sl.setLineEnd(LineEnd::LF);
+                row.setContent(std::move(s));
+                row.setRowEnd(RowEnd::LF);
             }
             else
             {
@@ -45,29 +45,29 @@ void SimpleDoc::LoadFromFile(const std::string &path)
         case ST_CR:
             if (c == '\r')
             {
-                SimpleDocLine & sl = scu::grow(m_lines);
+                SimpleRow & row = scu::grow(m_lines);
                 UString s = encoding_converter::gbkToUnicode(buff);
                 buff.clear();
-                sl.setContent(std::move(s));
-                sl.setLineEnd(LineEnd::CR);
+                row.setContent(std::move(s));
+                row.setRowEnd(RowEnd::CR);
             }
             else if (c == '\n')
             {
-                SimpleDocLine & sl = scu::grow(m_lines);
+                SimpleRow & row = scu::grow(m_lines);
                 UString s = encoding_converter::gbkToUnicode(buff);
                 buff.clear();
-                sl.setContent(std::move(s));
-                sl.setLineEnd(LineEnd::CRLF);
+                row.setContent(std::move(s));
+                row.setRowEnd(RowEnd::CRLF);
 
                 state = ST_Normal;
             }
             else
             {
-                SimpleDocLine & sl = scu::grow(m_lines);
+                SimpleRow & row = scu::grow(m_lines);
                 UString s = encoding_converter::gbkToUnicode(buff);
                 buff.clear();
-                sl.setContent(std::move(s));
-                sl.setLineEnd(LineEnd::CR);
+                row.setContent(std::move(s));
+                row.setRowEnd(RowEnd::CR);
 
                 state = ST_Normal;
             }
@@ -79,38 +79,38 @@ void SimpleDoc::LoadFromFile(const std::string &path)
 
     if (state == ST_CR)
     {
-        SimpleDocLine & sl = scu::grow(m_lines);
+        SimpleRow & row = scu::grow(m_lines);
         UString s = encoding_converter::gbkToUnicode(buff);
         buff.clear();
-        sl.setContent(std::move(s));
-        sl.setLineEnd(LineEnd::CR);
+        row.setContent(std::move(s));
+        row.setRowEnd(RowEnd::CR);
     }
     else
     {
         // 把buff中的残留字节解析并添加进去
         if (!buff.empty())
         {
-            SimpleDocLine & sl = scu::grow(m_lines);
+            SimpleRow & row = scu::grow(m_lines);
             UString s = encoding_converter::gbkToUnicode(buff);
             buff.clear();
-            sl.setContent(std::move(s));
+            row.setContent(std::move(s));
         }
     }
 
     // 如果最后一行以换行结束，则添加一个空行
     if (m_lines.empty())
     {
-        SimpleDocLine & b = scu::grow(m_lines);
-        b.setLineEnd(LineEnd::NO);
+        SimpleRow & row = scu::grow(m_lines);
+        row.setRowEnd(RowEnd::NO);
     }
     else
     {
-        const SimpleDocLine & lastLine = m_lines.back();
+        const SimpleRow & lastRow = m_lines.back();
 
-        if (lastLine.lineEnd() != LineEnd::NO)
+        if (lastRow.rowEnd() != RowEnd::NO)
         {
-            SimpleDocLine & b = scu::grow(m_lines);
-            b.setLineEnd(LineEnd::NO);
+            SimpleRow & row = scu::grow(m_lines);
+            row.setRowEnd(RowEnd::NO);
         }
     }
 }

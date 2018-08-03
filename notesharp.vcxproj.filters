@@ -123,12 +123,6 @@
     <ClInclude Include="src\doc\doc_define.h">
       <Filter>src\doc</Filter>
     </ClInclude>
-    <ClInclude Include="src\doc\doc_line.h">
-      <Filter>src\doc</Filter>
-    </ClInclude>
-    <ClInclude Include="src\doc\simple_doc_line.h">
-      <Filter>src\doc</Filter>
-    </ClInclude>
     <ClInclude Include="src\doc\doc.h">
       <Filter>src\doc</Filter>
     </ClInclude>
@@ -156,9 +150,6 @@
     <ClInclude Include="src\common\nullable_class.h">
       <Filter>src\common</Filter>
     </ClInclude>
-    <ClInclude Include="src\view\view_line.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
     <ClInclude Include="src\view\font_to_qfont.h">
       <Filter>src\view</Filter>
     </ClInclude>
@@ -183,8 +174,17 @@
     <ClInclude Include="src\qt\textpad.h">
       <Filter>src\qt</Filter>
     </ClInclude>
-    <ClInclude Include="src\doc\line_end_enum.h">
+    <ClInclude Include="src\doc\doc_row.h">
       <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\row_end_enum.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\simple_doc_row.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\draw_vertical_line.h">
+      <Filter>src\view</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

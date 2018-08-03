@@ -21,7 +21,7 @@ public:
 
     const DocCursor &normalCursor() { return m_normalCursor; }
 
-    LineN lastActLine() { return m_lastActLine; }
+    RowN lastActRow() { return m_lastActRow; }
 
     void onPrimaryKeyPress(const DocAddr &addr);
 
@@ -34,11 +34,11 @@ public:
     DocAddr getNextRightAddrByChar(const DocAddr & addr) const;
 
 public:
-    ListenerID addOnLastActLineUpdateListener(std::function<void()> && action);
-    void removeOnLastActLineUpdateListener(ListenerID id);
+    ListenerID addOnLastActRowUpdateListener(std::function<void()> && action);
+    void removeOnLastActRowUpdateListener(ListenerID id);
 
 private:
-    void setLastActLine(LineN line);
+    void setLastActRow(RowN row);
 
 private:
 
@@ -48,10 +48,10 @@ private:
     DocCursor m_normalCursor;
 
     // 最后一次活跃的行
-    LineN m_lastActLine = -1;
+    RowN m_lastActRow = -1;
 
 private:
-    Listeners<void()> m_onLastActLineUpdateListeners;
+    Listeners<void()> m_lastActRowUpdateListeners;
 
 
 };

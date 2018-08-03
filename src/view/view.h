@@ -10,7 +10,7 @@
 #include "view/view_page.h"
 #include "view/view_addr.h"
 #include "view/view_rect.h"
-#include "view/view_line.h"
+#include "view/draw_vertical_line.h"
 
 #include "util/listeners.h"
 #include "common/dir_enum.h"
@@ -80,7 +80,7 @@ namespace view
 } // namespace view
 
 
-class Line;
+class Row;
 class DocAddr;
 class Editor;
 
@@ -120,7 +120,7 @@ public:
 
     int getLineNumBarWidth() const;
 
-    void drawEachLineNum(std::function<void(LineN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const;
+    void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const;
 
 public:
     ListenerID addOnUpdateListener(std::function<void()> && action);
@@ -133,7 +133,7 @@ private:
     view::LineAddr getLineAddrByY(int y) const;
     view::CharAddr getCharAddrByPoint(int x, int y) const;
     DocAddr getDocAddrByPoint(int x, int y) const;
-    view::PhaseAddr convertToPhaseAddr(LineN line) const;
+    view::PhaseAddr convertToPhaseAddr(RowN line) const;
     view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
     DocAddr convertToDocAddr(const view::CharAddr &charAddr) const;
     const view::Char & getChar(const view::CharAddr & charAddr) const;
@@ -153,16 +153,16 @@ private:
 private:
     void remakePage();
 
-    void DocLineToViewPhase(const Line &line, view::Phase &phase);
-    void DocLineToViewPhaseWithWrapLine(const Line &line, view::Phase &phase);
-    void DocLineToViewPhaseNoWrapLine(const Line &line, view::Phase &phase);
+    void DocLineToViewPhase(const Row & row, view::Phase &phase);
+    void DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase &phase);
+    void DocLineToViewPhaseNoWrapLine(const Row & row, view::Phase &phase);
 
 private:
     Editor & m_editor;
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
-    LineN m_viewStart = 0;
+    RowN m_viewStart = 0;
     
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作

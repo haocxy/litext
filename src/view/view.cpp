@@ -2,7 +2,7 @@
 #include "view.h"
 #include "view_config.h"
 #include "doc/doc.h"
-#include "doc/doc_line.h"
+#include "doc/doc_row.h"
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
@@ -14,14 +14,14 @@ View::View(Editor * editor, view::Config *config)
     assert(editor);
     assert(config);
    
-    m_listenerIdForLastActLineUpdate = m_editor.addOnLastActLineUpdateListener([this] {
+    m_listenerIdForLastActLineUpdate = m_editor.addOnLastActRowUpdateListener([this] {
         m_onUpdateListeners.call();
     });
 }
 
 View::~View()
 {
-    m_editor.removeOnLastActLineUpdateListener(m_listenerIdForLastActLineUpdate);
+    m_editor.removeOnLastActRowUpdateListener(m_listenerIdForLastActLineUpdate);
 }
 
 void View::initSize(const view::Size & size)
@@ -105,20 +105,20 @@ DocAddr View::getDocAddrByPoint(int x, int y) const
     return docAddr;
 }
 
-view::PhaseAddr View::convertToPhaseAddr(LineN line) const
+view::PhaseAddr View::convertToPhaseAddr(RowN line) const
 {
     const int phase = line - m_viewStart;
     const int phaseCnt = m_page.size();
     if (phase < 0 || phase >= phaseCnt)
     {
-        if (line >= m_editor.doc().lineCnt())
+        if (line >= m_editor.doc().rowCnt())
         {
             return view::PhaseAddr::newPhaseAddrAfterLastPhase();
         }
         return view::PhaseAddr();
     }
 
-    if (line >= m_editor.doc().lineCnt())
+    if (line >= m_editor.doc().rowCnt())
     {
         return view::PhaseAddr::newPhaseAddrAfterLastPhase();
     }
@@ -133,12 +133,12 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
         return view::CharAddr();
     }
 
-    if (docAddr.isAfterLastPhase())
+    if (docAddr.isAfterLastRow())
     {
         return view::CharAddr::newCharAddrAfterLastPhase();
     }
 
-    const int phase = docAddr.line() - m_viewStart;
+    const int phase = docAddr.row() - m_viewStart;
     const int phaseCnt = m_page.size();
     if (phase < 0 || phase >= phaseCnt)
     {
@@ -189,7 +189,7 @@ DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
 
     if (charAddr.isAfterLastPhase())
     {
-        return DocAddr::newCharAddrAfterLastPhase();
+        return DocAddr::newDocAddrAfterLastRow();
     }
 
     if (charAddr.isAfterLastChar())
@@ -201,7 +201,7 @@ DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
         }
         else
         {
-            return DocAddr::newCharAddrAfterLastChar(m_viewStart + charAddr.phase());
+            return DocAddr::newDocAddrAfterLastChar(m_viewStart + charAddr.phase());
         }
     }
 
@@ -360,7 +360,7 @@ void View::onDirRightKeyPress()
 
 view::Rect View::getLastActLineDrawRect() const
 {
-    const LineN phase = m_editor.lastActLine();
+    const RowN phase = m_editor.lastActRow();
     const view::PhaseAddr addr = convertToPhaseAddr(phase);
     if (addr.isNull())
     {
@@ -421,7 +421,7 @@ int View::getLineNumBarWidth() const
     return 100;
 }
 
-void View::drawEachLineNum(std::function<void(LineN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const
+void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const
 {
     const int phaseCnt = m_page.size();
 
@@ -431,8 +431,8 @@ void View::drawEachLineNum(std::function<void(LineN lineNum, int baseline, const
     {
         const view::PhaseAddr addr(phase);
         const view::PhaseBound bound = getPhaseBound(addr);
-        const LineN lineNum = m_viewStart + phase;
-        const LineN lastAct = m_editor.lastActLine();
+        const RowN lineNum = m_viewStart + phase;
+        const RowN lastAct = m_editor.lastActRow();
         const bool isLastAct = lineNum == lastAct;
         const int baseline = getBaseLineByLineOffset(offset);
 
@@ -481,32 +481,32 @@ void View::remakePage()
 {
     m_page.clear();
 
-    const LineN maxShowLine = m_viewStart + m_size.height() / m_config.lineHeight() + 1;
+    const RowN maxShowLine = m_viewStart + m_size.height() / m_config.lineHeight() + 1;
 
-    const LineN rowCnt = std::min(maxShowLine, m_editor.doc().lineCnt());
+    const RowN rowCnt = std::min(maxShowLine, m_editor.doc().rowCnt());
 
-    for (LineN i = m_viewStart; i < rowCnt; ++i)
+    for (RowN i = m_viewStart; i < rowCnt; ++i)
     {
         view::Phase &vphase = m_page.grow();
 
-        DocLineToViewPhase(m_editor.doc().lineAt(i), vphase);
+        DocLineToViewPhase(m_editor.doc().rowAt(i), vphase);
     }
 
 }
 
-void View::DocLineToViewPhase(const Line& line, view::Phase & phase)
+void View::DocLineToViewPhase(const Row & row, view::Phase & phase)
 {
     if (m_config.wrapLine())
     {
-        DocLineToViewPhaseWithWrapLine(line, phase);
+        DocLineToViewPhaseWithWrapLine(row, phase);
     }
     else
     {
-        DocLineToViewPhaseNoWrapLine(line, phase);
+        DocLineToViewPhaseNoWrapLine(row, phase);
     }
 }
 
-void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
+void View::DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase & phase)
 {
     assert(phase.size() == 0);
 
@@ -515,7 +515,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
 
     view::Line *vline = &phase.grow();
 
-    DocLineCharInStream charStream(line);
+    DocLineCharInStream charStream(row);
     TxtWordStream wordStream(charStream);
 
     int leftX = hGap;
@@ -584,7 +584,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Line& line, view::Phase & phase)
     }
 }
 
-void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)
+void View::DocLineToViewPhaseNoWrapLine(const Row & row, view::Phase & phase)
 {
     assert(phase.size() == 0);
 
@@ -595,10 +595,10 @@ void View::DocLineToViewPhaseNoWrapLine(const Line& line, view::Phase & phase)
 
     int leftX = hGap;
 
-    const CharN cnt = line.charCnt();
+    const CharN cnt = row.charCnt();
     for (CharN i = 0; i < cnt; ++i)
     {
-        const UChar c = line.charAt(i);
+        const UChar c = row.charAt(i);
         const int charWidth = m_config.charWidth(c);
 
         view::Char &vchar = vline.grow();

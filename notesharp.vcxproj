@@ -217,10 +217,10 @@
     <ClInclude Include="src\common\nullable_class.h" />
     <ClInclude Include="src\doc\doc_addr.h" />
     <ClInclude Include="src\doc\doc_define.h" />
-    <ClInclude Include="src\doc\doc_line.h" />
+    <ClInclude Include="src\doc\doc_row.h" />
     <ClInclude Include="src\doc\doc.h" />
-    <ClInclude Include="src\doc\line_end_enum.h" />
-    <ClInclude Include="src\doc\simple_doc_line.h" />
+    <ClInclude Include="src\doc\row_end_enum.h" />
+    <ClInclude Include="src\doc\simple_doc_row.h" />
     <ClInclude Include="src\doc\simple_doc.h" />
     <ClInclude Include="src\editor\cursor.h" />
     <ClInclude Include="src\editor\editor.h" />
@@ -244,7 +244,7 @@
     <ClInclude Include="src\view\view.h" />
     <ClInclude Include="src\view\view_addr.h" />
     <ClInclude Include="src\view\view_config.h" />
-    <ClInclude Include="src\view\view_line.h" />
+    <ClInclude Include="src\view\draw_vertical_line.h" />
     <ClInclude Include="src\view\view_page.h" />
     <ClInclude Include="src\view\view_rect.h" />
   </ItemGroup>

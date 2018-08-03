@@ -1,12 +1,12 @@
 #pragma once
 
-#include "doc_line.h"
+#include "doc_row.h"
 
-class SimpleDocLine : public Line
+class SimpleRow : public Row
 {
 public:
 
-    virtual ~SimpleDocLine() {}
+    virtual ~SimpleRow() {}
 
     virtual CharN charCnt() const override
     {
@@ -18,9 +18,9 @@ public:
         return m_content[i];
     }
 
-    virtual LineEnd lineEnd() const override
+    virtual RowEnd rowEnd() const override
     {
-        return m_lineEnd;
+        return m_rowEnd;
     }
 
     void setContent(const UString &content)
@@ -38,12 +38,12 @@ public:
         m_content.push_back(c);
     }
 
-    void setLineEnd(LineEnd lineEnd)
+    void setRowEnd(RowEnd rowEnd)
     {
-        m_lineEnd = lineEnd;
+        m_rowEnd = rowEnd;
     }
 
 private:
     UString m_content;
-    LineEnd m_lineEnd = LineEnd::NO;
+    RowEnd m_rowEnd = RowEnd::NO;
 };

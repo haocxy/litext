@@ -5,6 +5,6 @@
 
 #include "common/common_define.h"
 
-typedef int64_t LineN;
+typedef int64_t RowN;
 typedef int32_t CharN;
 

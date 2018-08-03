@@ -2,7 +2,7 @@
 
 #include <assert.h>
 #include "doc/doc.h"
-#include "doc/doc_line.h"
+#include "doc/doc_row.h"
 
 Editor::Editor(Doc * model)
     : m_model(*model)
@@ -12,11 +12,11 @@ Editor::Editor(Doc * model)
 
 void Editor::onPrimaryKeyPress(const DocAddr & addr)
 {
-    if (addr.isAfterLastPhase())
+    if (addr.isAfterLastRow())
     {
-        const LineN lineCnt = m_model.lineCnt();
-        assert(lineCnt > 0);
-        setNormalCursor(DocAddr::newCharAddrAfterLastChar(lineCnt - 1));
+        const RowN rowCnt = m_model.rowCnt();
+        assert(rowCnt > 0);
+        setNormalCursor(DocAddr::newDocAddrAfterLastChar(rowCnt - 1));
     }
     else
     {
@@ -29,7 +29,7 @@ void Editor::setNormalCursor(const DocCursor & cursor)
     m_normalCursor = cursor;
     if (!cursor.to().isNull())
     {
-        setLastActLine(cursor.to().line());
+        setLastActRow(cursor.to().row());
     }
 }
 
@@ -40,36 +40,36 @@ DocAddr Editor::getNextLeftAddrByChar(const DocAddr & addr) const
         return DocAddr();
     }
 
-    if (addr.isAfterLastPhase())
+    if (addr.isAfterLastRow())
     {
-        const LineN lineCnt = m_model.lineCnt();
-        if (lineCnt <= 0)
+        const RowN rowCnt = m_model.rowCnt();
+        if (rowCnt <= 0)
         {
             return DocAddr();
         }
 
-        return DocAddr::newCharAddrAfterLastChar(lineCnt - 1);
+        return DocAddr::newDocAddrAfterLastChar(rowCnt - 1);
     }
 
     if (addr.isAfterLastChar())
     {
-        const CharN charCnt = m_model.lineAt(addr.line()).charCnt();
+        const CharN charCnt = m_model.rowAt(addr.row()).charCnt();
         if (charCnt <= 0)
         {
-            if (addr.line() > 0)
+            if (addr.row() > 0)
             {
-                return DocAddr::newCharAddrAfterLastChar(addr.line() - 1);
+                return DocAddr::newDocAddrAfterLastChar(addr.row() - 1);
             }
             return DocAddr();
         }
-        return DocAddr(addr.line(), charCnt - 1);
+        return DocAddr(addr.row(), charCnt - 1);
     }
 
     if (addr.col() <= 0)
     {
-        if (addr.line() > 0)
+        if (addr.row() > 0)
         {
-            return DocAddr::newCharAddrAfterLastChar(addr.line() - 1);
+            return DocAddr::newDocAddrAfterLastChar(addr.row() - 1);
         }
         return DocAddr();
     }
@@ -85,24 +85,24 @@ DocAddr Editor::getNextRightAddrByChar(const DocAddr & addr) const
         return DocAddr();
     }
 
-    if (addr.isAfterLastPhase())
+    if (addr.isAfterLastRow())
     {
         return DocAddr();
     }
 
     if (addr.isAfterLastChar())
     {
-        const LineN lineCnt = m_model.lineCnt();
-        if (addr.line() < lineCnt - 1)
+        const RowN rowCnt = m_model.rowCnt();
+        if (addr.row() < rowCnt - 1)
         {
-            const Line & nextLine = m_model.lineAt(addr.line() + 1);
-            if (nextLine.charCnt() > 0)
+            const Row & nextRow = m_model.rowAt(addr.row() + 1);
+            if (nextRow.charCnt() > 0)
             {
-                return DocAddr(addr.line() + 1, 0);
+                return DocAddr(addr.row() + 1, 0);
             }
             else
             {
-                return DocAddr::newCharAddrAfterLastChar(addr.line() + 1);
+                return DocAddr::newDocAddrAfterLastChar(addr.row() + 1);
             }
         }
         else
@@ -111,35 +111,35 @@ DocAddr Editor::getNextRightAddrByChar(const DocAddr & addr) const
         }
     }
 
-    const Line & line = m_model.lineAt(addr.line());
-    if (addr.col() < line.charCnt() - 1)
+    const Row & row = m_model.rowAt(addr.row());
+    if (addr.col() < row.charCnt() - 1)
     {
         return addr.nextRight();
     }
     else
     {
-        return DocAddr::newCharAddrAfterLastChar(addr.line());
+        return DocAddr::newDocAddrAfterLastChar(addr.row());
     }
 }
 
-ListenerID Editor::addOnLastActLineUpdateListener(std::function<void()>&& action)
+ListenerID Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
 {
-    return m_onLastActLineUpdateListeners.add(std::move(action));
+    return m_lastActRowUpdateListeners.add(std::move(action));
 }
 
-void Editor::removeOnLastActLineUpdateListener(ListenerID id)
+void Editor::removeOnLastActRowUpdateListener(ListenerID id)
 {
-    m_onLastActLineUpdateListeners.remove(id);
+    m_lastActRowUpdateListeners.remove(id);
 }
 
-void Editor::setLastActLine(LineN line)
+void Editor::setLastActRow(RowN row)
 {
-    const LineN old = m_lastActLine;
-    m_lastActLine = line;
+    const RowN old = m_lastActRow;
+    m_lastActRow = row;
 
-    if (old != m_lastActLine)
+    if (old != m_lastActRow)
     {
-        m_onLastActLineUpdateListeners.call();
+        m_lastActRowUpdateListeners.call();
     }
 }
 
