@@ -289,93 +289,6 @@ view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
     return view::PhaseBound(top, height);
 }
 
-DocAddr View::getNextLeftAddr(const DocAddr & curAddr) const
-{
-    if (curAddr.isNull())
-    {
-        return DocAddr();
-    }
-
-    if (curAddr.isAfterLastPhase())
-    {
-        const LineN lineCnt = m_editor.doc().lineCnt();
-        if (lineCnt <= 0)
-        {
-            return DocAddr();
-        }
-
-        return DocAddr::newCharAddrAfterLastChar(lineCnt - 1);
-    }
-
-    if (curAddr.isAfterLastChar())
-    {
-        const CharN charCnt = m_editor.doc().lineAt(curAddr.line()).charCnt();
-        if (charCnt <= 0)
-        {
-            if (curAddr.line() > 0)
-            {
-                return DocAddr::newCharAddrAfterLastChar(curAddr.line() - 1);
-            }
-            return DocAddr();
-        }
-        return DocAddr(curAddr.line(), charCnt - 1);
-    }
-
-    if (curAddr.col() <= 0)
-    {
-        if (curAddr.line() > 0)
-        {
-            return DocAddr::newCharAddrAfterLastChar(curAddr.line() - 1);
-        }
-        return DocAddr();
-    }
-
-    return curAddr.nextLeft();
-}
-
-DocAddr View::getNextRightAddr(const DocAddr & addr) const
-{
-    if (addr.isNull())
-    {
-        return DocAddr();
-    }
-
-    if (addr.isAfterLastPhase())
-    {
-        return DocAddr();
-    }
-
-    if (addr.isAfterLastChar())
-    {
-        const LineN lineCnt = m_editor.doc().lineCnt();
-        if (addr.line() < lineCnt - 1)
-        {
-            const Line & nextLine = m_editor.doc().lineAt(addr.line() + 1);
-            if (nextLine.charCnt() > 0)
-            {
-                return DocAddr(addr.line() + 1, 0);
-            }
-            else
-            {
-                return DocAddr::newCharAddrAfterLastChar(addr.line() + 1);
-            }
-        }
-        else
-        {
-            return DocAddr();
-        }
-    }
-
-    const Line & line = m_editor.doc().lineAt(addr.line());
-    if (addr.col() < line.charCnt() - 1)
-    {
-        return addr.nextRight();
-    }
-    else
-    {
-        return DocAddr::newCharAddrAfterLastChar(addr.line());
-    }
-}
 
 void View::onDirUpKeyPress()
 {
@@ -387,7 +300,7 @@ void View::onDirDownKeyPress()
 
 void View::onDirLeftKeyPress()
 {
-    const DocAddr & newAddr = getNextLeftAddr(m_editor.normalCursor().to());
+    const DocAddr & newAddr = m_editor.getNextLeftAddrByChar(m_editor.normalCursor().to());
     if (!newAddr.isNull())
     {
         m_editor.setNormalCursor(newAddr);
@@ -396,7 +309,7 @@ void View::onDirLeftKeyPress()
 
 void View::onDirRightKeyPress()
 {
-    const DocAddr & newAddr = getNextRightAddr(m_editor.normalCursor().to());
+    const DocAddr & newAddr = m_editor.getNextRightAddrByChar(m_editor.normalCursor().to());
     if (!newAddr.isNull())
     {
         m_editor.setNormalCursor(newAddr);

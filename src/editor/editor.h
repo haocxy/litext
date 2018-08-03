@@ -27,6 +27,12 @@ public:
 
     void setNormalCursor(const DocCursor & cursor);
 
+    // 以字符为单位，获得向左移动光标时的下一个字符位置
+    DocAddr getNextLeftAddrByChar(const DocAddr & addr) const;
+
+    // 以字符为单位，获得向右移动光标时的下一个字符位置
+    DocAddr getNextRightAddrByChar(const DocAddr & addr) const;
+
 public:
     ListenerID addOnLastActLineUpdateListener(std::function<void()> && action);
     void removeOnLastActLineUpdateListener(ListenerID id);

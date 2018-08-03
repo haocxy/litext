@@ -33,6 +33,94 @@ void Editor::setNormalCursor(const DocCursor & cursor)
     }
 }
 
+DocAddr Editor::getNextLeftAddrByChar(const DocAddr & addr) const
+{
+    if (addr.isNull())
+    {
+        return DocAddr();
+    }
+
+    if (addr.isAfterLastPhase())
+    {
+        const LineN lineCnt = m_model.lineCnt();
+        if (lineCnt <= 0)
+        {
+            return DocAddr();
+        }
+
+        return DocAddr::newCharAddrAfterLastChar(lineCnt - 1);
+    }
+
+    if (addr.isAfterLastChar())
+    {
+        const CharN charCnt = m_model.lineAt(addr.line()).charCnt();
+        if (charCnt <= 0)
+        {
+            if (addr.line() > 0)
+            {
+                return DocAddr::newCharAddrAfterLastChar(addr.line() - 1);
+            }
+            return DocAddr();
+        }
+        return DocAddr(addr.line(), charCnt - 1);
+    }
+
+    if (addr.col() <= 0)
+    {
+        if (addr.line() > 0)
+        {
+            return DocAddr::newCharAddrAfterLastChar(addr.line() - 1);
+        }
+        return DocAddr();
+    }
+
+    return addr.nextLeft();
+}
+
+
+DocAddr Editor::getNextRightAddrByChar(const DocAddr & addr) const
+{
+    if (addr.isNull())
+    {
+        return DocAddr();
+    }
+
+    if (addr.isAfterLastPhase())
+    {
+        return DocAddr();
+    }
+
+    if (addr.isAfterLastChar())
+    {
+        const LineN lineCnt = m_model.lineCnt();
+        if (addr.line() < lineCnt - 1)
+        {
+            const Line & nextLine = m_model.lineAt(addr.line() + 1);
+            if (nextLine.charCnt() > 0)
+            {
+                return DocAddr(addr.line() + 1, 0);
+            }
+            else
+            {
+                return DocAddr::newCharAddrAfterLastChar(addr.line() + 1);
+            }
+        }
+        else
+        {
+            return DocAddr();
+        }
+    }
+
+    const Line & line = m_model.lineAt(addr.line());
+    if (addr.col() < line.charCnt() - 1)
+    {
+        return addr.nextRight();
+    }
+    else
+    {
+        return DocAddr::newCharAddrAfterLastChar(addr.line());
+    }
+}
 
 ListenerID Editor::addOnLastActLineUpdateListener(std::function<void()>&& action)
 {
