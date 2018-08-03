@@ -143,6 +143,8 @@ private:
     view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
 private:
+    DocAddr getNextUpAddr(const DocAddr & addr) const;
+    DocAddr getNextDownAddr(const DocAddr & addr) const;
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();

@@ -290,12 +290,54 @@ view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
 }
 
 
+DocAddr View::getNextUpAddr(const DocAddr & addr) const
+{
+    const view::CharAddr charAddr = convertToCharAddr(addr);
+    if (charAddr.isNull())
+    {
+        return DocAddr();
+    }
+
+    const view::LineAddr upLineAddr = m_page.getNextUpLineAddr(charAddr);
+    const view::CharAddr upCharAddr = m_page.getCharAddrByLineAddrAndX(upLineAddr, m_stable_x);
+
+    return convertToDocAddr(upCharAddr);
+}
+
+DocAddr View::getNextDownAddr(const DocAddr & addr) const
+{
+    const view::CharAddr charAddr = convertToCharAddr(addr);
+    if (charAddr.isNull())
+    {
+        return DocAddr();
+    }
+
+    const view::LineAddr downLineAddr = m_page.getNextDownLineAddr(charAddr);
+    const view::CharAddr downCharAddr = m_page.getCharAddrByLineAddrAndX(downLineAddr, m_stable_x);
+
+    return convertToDocAddr(downCharAddr);
+}
+
 void View::onDirUpKeyPress()
 {
+    m_stable_x = 200; // TODO test data
+
+    const DocAddr & newAddr = getNextUpAddr(m_editor.normalCursor().to());
+    if (!newAddr.isNull())
+    {
+        m_editor.setNormalCursor(newAddr);
+    }
 }
 
 void View::onDirDownKeyPress()
 {
+    m_stable_x = 200; // TODO test data
+
+    const DocAddr & newAddr = getNextDownAddr(m_editor.normalCursor().to());
+    if (!newAddr.isNull())
+    {
+        m_editor.setNormalCursor(newAddr);
+    }
 }
 
 void View::onDirLeftKeyPress()

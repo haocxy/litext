@@ -110,6 +110,8 @@ namespace view
         }
         LineAddr getLineAddrByLineOffset(int offset) const;
         CharAddr getCharAddrByLineAddrAndX(const LineAddr &lineAddr, int x) const;
+        LineAddr getNextUpLineAddr(const LineAddr & addr) const;
+        LineAddr getNextDownLineAddr(const LineAddr & addr) const;
         const Line & getLine(const view::LineAddr & addr) const
         {
             return m_phases[addr.phase()][addr.line()];

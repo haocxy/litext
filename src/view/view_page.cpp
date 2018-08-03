@@ -1,5 +1,7 @@
 #include "view_page.h"
 
+#include <assert.h>
+
 view::LineAddr view::Page::getLineAddrByLineOffset(int offset) const
 {
     const int phaseCnt = static_cast<int>(m_phases.size());
@@ -42,4 +44,51 @@ view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, 
     }
 
     return CharAddr::newCharAddrAfterLastChar(lineAddr);
+}
+
+view::LineAddr view::Page::getNextUpLineAddr(const LineAddr & addr) const
+{
+    if (addr.isNull() || addr.isAfterLastPhase())
+    {
+        return LineAddr();
+    }
+
+    if (addr.line() > 0)
+    {
+        return LineAddr(addr.phase(), addr.line() - 1);
+    }
+
+    if (addr.phase() > 0)
+    {
+        const int upPhaseIndex = addr.phase() - 1;
+        const Phase & upPhase = m_phases[upPhaseIndex];
+        assert(upPhase.size() > 0);
+        return LineAddr(upPhaseIndex, upPhase.size() - 1);
+    }
+
+    return LineAddr();
+}
+
+view::LineAddr view::Page::getNextDownLineAddr(const LineAddr & addr) const
+{
+    if (addr.isNull() || addr.isAfterLastPhase())
+    {
+        return LineAddr();
+    }
+
+    const Phase & curPhase = m_phases[addr.phase()];
+    const int curPhaseLineCnt = curPhase.size();
+    
+    if (addr.line() < curPhaseLineCnt - 1)
+    {
+        return LineAddr(addr.phase(), addr.line() + 1);
+    }
+
+    const int phaseCnt = size();
+    if (addr.phase() < phaseCnt - 1)
+    {
+        return LineAddr(addr.phase() + 1, 0);
+    }
+
+    return LineAddr();
 }
