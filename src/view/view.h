@@ -63,11 +63,11 @@ namespace view
         int m_bottom = 0;
     };
 
-    class PhaseBound
+    class RowBound
     {
     public:
-        PhaseBound() = default;
-        PhaseBound(int top, int height) :m_top(top), m_height(height) {}
+        RowBound() = default;
+        RowBound(int top, int height) :m_top(top), m_height(height) {}
         int top() const { return m_top; }
         void setTop(int top) { m_top = top; }
         int height() const { return m_height; }
@@ -120,7 +120,7 @@ public:
 
     int getLineNumBarWidth() const;
 
-    void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const;
+    void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const;
 
 public:
     ListenerID addOnUpdateListener(std::function<void()> && action);
@@ -140,7 +140,7 @@ private:
     int getXByAddr(const view::CharAddr & charAddr) const;
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
     view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
-    view::PhaseBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
+    view::RowBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
 
 private:
     DocAddr getNextUpAddr(const DocAddr & addr) const;

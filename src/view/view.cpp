@@ -267,11 +267,11 @@ view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
     return getLineBoundByLineOffset(lineOffset);
 }
 
-view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
+view::RowBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
 {
     if (phaseAddr.isNull())
     {
-        return view::PhaseBound();
+        return view::RowBound();
     }
 
     if (phaseAddr.isAfterLastPhase())
@@ -279,14 +279,14 @@ view::PhaseBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
         const int lineOffset = m_page.lineCnt();
         const int lineHeight = m_config.lineHeight();
         const int top = lineHeight * lineOffset;
-        return view::PhaseBound(top, lineHeight);
+        return view::RowBound(top, lineHeight);
     }
 
     const int lineOffset = getLineOffsetByPhaseIndex(phaseAddr.phase());
     const int lineHeight = m_config.lineHeight();
     const int top = lineHeight * lineOffset;
     const int height = lineHeight * m_page[phaseAddr.phase()].size();
-    return view::PhaseBound(top, height);
+    return view::RowBound(top, height);
 }
 
 
@@ -367,7 +367,7 @@ view::Rect View::getLastActLineDrawRect() const
         return view::Rect();
     }
 
-    const view::PhaseBound bound = getPhaseBound(addr);
+    const view::RowBound bound = getPhaseBound(addr);
 
     view::Rect rect;
     rect.setNull(false);
@@ -421,7 +421,7 @@ int View::getLineNumBarWidth() const
     return 100;
 }
 
-void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::PhaseBound & bound, bool isLastAct)> && action) const
+void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const
 {
     const int phaseCnt = m_page.size();
 
@@ -430,7 +430,7 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
     for (int phase = 0; phase < phaseCnt; ++phase)
     {
         const view::PhaseAddr addr(phase);
-        const view::PhaseBound bound = getPhaseBound(addr);
+        const view::RowBound bound = getPhaseBound(addr);
         const RowN lineNum = m_viewStart + phase;
         const RowN lastAct = m_editor.lastActRow();
         const bool isLastAct = lineNum == lastAct;
