@@ -63,15 +63,15 @@ namespace view
     段落，段落以换行结束
     一个段落包含多个行
     */
-    class Phase
+    class VRow
     {
     public:
         typedef Lines::const_iterator const_iterator;
         typedef Lines::iterator iterator;
 
-        Phase() = default;
-        Phase(Phase&& phase) : m_lines(std::move(phase.m_lines)) {}
-        Phase &operator=(Phase &&phase) { m_lines = std::move(phase.m_lines); return *this; }
+        VRow() = default;
+        VRow(VRow&& row) : m_lines(std::move(row.m_lines)) {}
+        VRow &operator=(VRow && row) { m_lines = std::move(row.m_lines); return *this; }
         int size() const { return static_cast<int>(m_lines.size()); }
         const Line &operator[](int line) const { return m_lines[line]; }
         Line &operator[](int line) { return m_lines[line]; }
@@ -87,26 +87,26 @@ namespace view
         Lines m_lines;
     };
 
-    typedef std::deque<Phase> Phases;
+    typedef std::deque<VRow> VRows;
 
 
     class Page
     {
     public:
-        typedef Phases::const_iterator const_iterator;
-        typedef Phases::iterator iterator;
+        typedef VRows::const_iterator const_iterator;
+        typedef VRows::iterator iterator;
 
-        void clear() { m_phases.clear(); }
-        int size() const { return static_cast<int>(m_phases.size()); }
-        const Phase &operator[](int line) const { return m_phases[line]; }
-        Phase &operator[](int line) { return m_phases[line]; }
-        const_iterator begin() const { return m_phases.begin(); }
-        const_iterator end() const { return m_phases.end(); }
-        iterator begin() { return m_phases.begin(); }
-        iterator end() { return m_phases.end(); }
-        Phase &grow()
+        void clear() { m_rows.clear(); }
+        int size() const { return static_cast<int>(m_rows.size()); }
+        const VRow &operator[](int line) const { return m_rows[line]; }
+        VRow &operator[](int line) { return m_rows[line]; }
+        const_iterator begin() const { return m_rows.begin(); }
+        const_iterator end() const { return m_rows.end(); }
+        iterator begin() { return m_rows.begin(); }
+        iterator end() { return m_rows.end(); }
+        VRow &grow()
         {
-            return StlContainerUtil::grow(m_phases);
+            return StlContainerUtil::grow(m_rows);
         }
         LineAddr getLineAddrByLineOffset(int offset) const;
         CharAddr getCharAddrByLineAddrAndX(const LineAddr &lineAddr, int x) const;
@@ -114,22 +114,22 @@ namespace view
         LineAddr getNextDownLineAddr(const LineAddr & addr) const;
         const Line & getLine(const view::LineAddr & addr) const
         {
-            return m_phases[addr.phase()][addr.line()];
+            return m_rows[addr.row()][addr.line()];
         }
         view::Line & getLine(const view::LineAddr & addr)
         {
-            return m_phases[addr.phase()][addr.line()];
+            return m_rows[addr.row()][addr.line()];
         }
         int lineCnt() const
         {
             int sum = 0;
-            for (const Phase &phase : m_phases)
+            for (const VRow & row : m_rows)
             {
-                sum += phase.size();
+                sum += row.size();
             }
             return sum;
         }
     private:
-        Phases m_phases;
+        VRows m_rows;
     };
 }

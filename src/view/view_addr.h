@@ -4,30 +4,30 @@
 
 namespace view
 {
-    class PhaseAddr
+    class RowAddr
     {
     public:
-        static PhaseAddr newPhaseAddrAfterLastPhase()
+        static RowAddr newRowAddrAfterLastRow()
         {
-            PhaseAddr phaseAddr(0);
-            phaseAddr.setFlag(kAfterLastPhase);
-            phaseAddr.setFlag(kAfterLastLine);
-            phaseAddr.setFlag(kAfterLastChar);
-            return phaseAddr;
+            RowAddr rowAddr(0);
+            rowAddr.setFlag(kAfterLastRow);
+            rowAddr.setFlag(kAfterLastLine);
+            rowAddr.setFlag(kAfterLastChar);
+            return rowAddr;
         }
     public:
-        PhaseAddr() :m_flag(kIsNull), m_phase(0) {}
-        PhaseAddr(int phase) : m_phase(phase) {}
-        int phase() const { return m_phase; }
-        void setPhase(int phase) { m_phase = phase; }
+        RowAddr() :m_flag(kIsNull), m_row(0) {}
+        RowAddr(int row) : m_row(row) {}
+        int row() const { return m_row; }
+        void setRow(int row) { m_row = row; }
         bool isNull() const { return hasFlag(kIsNull); }
-        bool isAfterLastPhase() const { return hasFlag(kAfterLastPhase); }
+        bool isAfterLastRow() const { return hasFlag(kAfterLastRow); }
     protected:
         typedef uint_least8_t flag_t;
         enum : flag_t
         {
             kIsNull = 1,
-            kAfterLastPhase = 1 << 1,
+            kAfterLastRow = 1 << 1,
             kAfterLastLine = 1 << 2,
             kAfterLastChar = 1 << 3,
         };
@@ -36,23 +36,23 @@ namespace view
         void setFlag(flag_t f) { m_flag |= f; }
     private:
         flag_t m_flag = 0;
-        int m_phase = 0;
+        int m_row = 0;
     };
 
-    class LineAddr : public PhaseAddr
+    class LineAddr : public RowAddr
     {
     public:
-        static LineAddr newLineAddrAfterLastPhase()
+        static LineAddr newLineAddrAfterLastRow()
         {
             LineAddr lineAddr(0, 0);
-            lineAddr.setFlag(kAfterLastPhase);
+            lineAddr.setFlag(kAfterLastRow);
             lineAddr.setFlag(kAfterLastLine);
             lineAddr.setFlag(kAfterLastChar);
             return lineAddr;
         }
     public:
         LineAddr() = default;
-        LineAddr(int phase, int line) :PhaseAddr(phase), m_line(line) {}
+        LineAddr(int row, int line) :RowAddr(row), m_line(line) {}
         int line() const { return m_line; }
         void setLine(int line) { m_line = line; }
     private:
@@ -62,10 +62,10 @@ namespace view
     class CharAddr : public LineAddr
     {
     public:
-        static CharAddr newCharAddrAfterLastPhase()
+        static CharAddr newCharAddrAfterLastRow()
         {
             CharAddr addr(0, 0, 0);
-            addr.setFlag(kAfterLastPhase);
+            addr.setFlag(kAfterLastRow);
             addr.setFlag(kAfterLastLine);
             addr.setFlag(kAfterLastChar);
             return addr;
@@ -79,7 +79,7 @@ namespace view
     public:
         CharAddr() = default;
         CharAddr(const LineAddr & lineAddr, CharN col) : LineAddr(lineAddr), m_col(col) {}
-        CharAddr(int phase, int line, CharN col) :LineAddr(phase, line), m_col(col) {}
+        CharAddr(int row, int line, CharN col) :LineAddr(row, line), m_col(col) {}
         CharN col() const { return m_col; }
         void setCol(CharN col) { m_col = col; }
         bool isAfterLastChar() const { return hasFlag(kAfterLastChar); }

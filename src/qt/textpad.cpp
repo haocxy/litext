@@ -150,9 +150,9 @@ void TextPad::paintTextContent(QPainter & p)
 
     int lineOffset = 0;
 
-    for (const v::Phase &phase : page)
+    for (const v::VRow & row : page)
     {
-        for (const v::Line &line : phase)
+        for (const v::Line &line : row)
         {
             const int baseline = m_view.getBaseLineByLineOffset(lineOffset);
 

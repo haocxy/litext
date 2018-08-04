@@ -61,10 +61,10 @@ int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
 {
     int sum = lineAddr.line();
 
-    const int phaseCnt = m_page.size();
-    const int phase = lineAddr.phase();
+    const int rowCnt = m_page.size();
+    const int row = lineAddr.row();
 
-    for (int i = 0; i < phaseCnt && i < phase; ++i)
+    for (int i = 0; i < rowCnt && i < row; ++i)
     {
         sum += m_page[i].size();
     }
@@ -72,13 +72,13 @@ int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
     return sum;
 }
 
-int View::getLineOffsetByPhaseIndex(int phase) const
+int View::getLineOffsetByRowIndex(int row) const
 {
     int sum = 0;
 
-    const int phaseCnt = m_page.size();
+    const int rowCnt = m_page.size();
 
-    for (int i = 0; i < phaseCnt && i < phase; ++i)
+    for (int i = 0; i < rowCnt && i < row; ++i)
     {
         sum += m_page[i].size();
     }
@@ -105,25 +105,25 @@ DocAddr View::getDocAddrByPoint(int x, int y) const
     return docAddr;
 }
 
-view::PhaseAddr View::convertToPhaseAddr(RowN line) const
+view::RowAddr View::convertToRowAddr(RowN row) const
 {
-    const int phase = line - m_viewStart;
-    const int phaseCnt = m_page.size();
-    if (phase < 0 || phase >= phaseCnt)
+    const int vrowIndex = row - m_viewStart;
+    const int vrowCnt = m_page.size();
+    if (vrowIndex < 0 || vrowIndex >= vrowCnt)
     {
-        if (line >= m_editor.doc().rowCnt())
+        if (row >= m_editor.doc().rowCnt())
         {
-            return view::PhaseAddr::newPhaseAddrAfterLastPhase();
+            return view::RowAddr::newRowAddrAfterLastRow();
         }
-        return view::PhaseAddr();
+        return view::RowAddr();
     }
 
-    if (line >= m_editor.doc().rowCnt())
+    if (row >= m_editor.doc().rowCnt())
     {
-        return view::PhaseAddr::newPhaseAddrAfterLastPhase();
+        return view::RowAddr::newRowAddrAfterLastRow();
     }
 
-    return view::PhaseAddr(phase);
+    return view::RowAddr(vrowIndex);
 }
 
 view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
@@ -135,21 +135,21 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
 
     if (docAddr.isAfterLastRow())
     {
-        return view::CharAddr::newCharAddrAfterLastPhase();
+        return view::CharAddr::newCharAddrAfterLastRow();
     }
 
-    const int phase = docAddr.row() - m_viewStart;
-    const int phaseCnt = m_page.size();
-    if (phase < 0 || phase >= phaseCnt)
+    const int r = docAddr.row() - m_viewStart;
+    const int rowCnt = m_page.size();
+    if (r < 0 || r >= rowCnt)
     {
         return view::CharAddr();
     }
 
-    const view::Phase &vphase = m_page[phase];
+    const view::VRow & vrow = m_page[r];
 
     if (docAddr.isAfterLastChar())
     {
-        view::LineAddr lineAddr(phase, vphase.size() - 1);
+        view::LineAddr lineAddr(r, vrow.size() - 1);
         return view::CharAddr::newCharAddrAfterLastChar(lineAddr);
     }
     
@@ -160,13 +160,13 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
 
     const CharN col = docAddr.col();
 
-    for (const view::Line &vline : vphase)
+    for (const view::Line &vline : vrow)
     {
         for (const view::Char &vc : vline)
         {
             if (charIndex == col)
             {
-                return view::CharAddr(phase, lineIndex, col - prevLineCharCnt);
+                return view::CharAddr(r, lineIndex, col - prevLineCharCnt);
             }
 
             ++charIndex;
@@ -187,39 +187,39 @@ DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
         return DocAddr();
     }
 
-    if (charAddr.isAfterLastPhase())
+    if (charAddr.isAfterLastRow())
     {
         return DocAddr::newDocAddrAfterLastRow();
     }
 
     if (charAddr.isAfterLastChar())
     {
-        if (charAddr.line() < m_page[charAddr.phase()].size() - 1)
+        if (charAddr.line() < m_page[charAddr.row()].size() - 1)
         {
             // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
-            return convertToDocAddr(view::CharAddr(charAddr.phase(), charAddr.line() + 1, 0));
+            return convertToDocAddr(view::CharAddr(charAddr.row(), charAddr.line() + 1, 0));
         }
         else
         {
-            return DocAddr::newDocAddrAfterLastChar(m_viewStart + charAddr.phase());
+            return DocAddr::newDocAddrAfterLastChar(m_viewStart + charAddr.row());
         }
     }
 
     
-    const view::Phase & phase = m_page[charAddr.phase()];
+    const view::VRow & vrow = m_page[charAddr.row()];
     const int lineIndex = charAddr.line();
     CharN col = charAddr.col();
     for (int i = 0; i < lineIndex; ++i)
     {
-        col += phase[i].size();
+        col += vrow[i].size();
     }
 
-    return DocAddr(m_viewStart + charAddr.phase(), col);
+    return DocAddr(m_viewStart + charAddr.row(), col);
 }
 
 const view::Char & View::getChar(const view::CharAddr & charAddr) const
 {
-    return m_page[charAddr.phase()][charAddr.line()][charAddr.col()];
+    return m_page[charAddr.row()][charAddr.line()][charAddr.col()];
 }
 
 int View::getXByAddr(const view::CharAddr & charAddr) const
@@ -229,19 +229,19 @@ int View::getXByAddr(const view::CharAddr & charAddr) const
         return 0;
     }
 
-    if (charAddr.isAfterLastPhase())
+    if (charAddr.isAfterLastRow())
     {
         return m_config.hGap();
     }
 
     if (charAddr.isAfterLastChar())
     {
-        const view::Line & line = m_page[charAddr.phase()][charAddr.line()];
+        const view::Line & line = m_page[charAddr.row()][charAddr.line()];
         if (line.empty())
         {
             return m_config.hGap();
         }
-        const view::Char &vc = m_page[charAddr.phase()][charAddr.line()].last();
+        const view::Char &vc = m_page[charAddr.row()][charAddr.line()].last();
         return vc.x() + vc.width();
     }
 
@@ -259,7 +259,7 @@ view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
 
 view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
 {
-    if (lineAddr.isAfterLastPhase())
+    if (lineAddr.isAfterLastRow())
     {
         return getLineBoundByLineOffset(m_page.lineCnt());
     }
@@ -267,14 +267,14 @@ view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
     return getLineBoundByLineOffset(lineOffset);
 }
 
-view::RowBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
+view::RowBound View::getRowBound(const view::RowAddr & rowAddr) const
 {
-    if (phaseAddr.isNull())
+    if (rowAddr.isNull())
     {
         return view::RowBound();
     }
 
-    if (phaseAddr.isAfterLastPhase())
+    if (rowAddr.isAfterLastRow())
     {
         const int lineOffset = m_page.lineCnt();
         const int lineHeight = m_config.lineHeight();
@@ -282,10 +282,10 @@ view::RowBound View::getPhaseBound(const view::PhaseAddr & phaseAddr) const
         return view::RowBound(top, lineHeight);
     }
 
-    const int lineOffset = getLineOffsetByPhaseIndex(phaseAddr.phase());
+    const int lineOffset = getLineOffsetByRowIndex(rowAddr.row());
     const int lineHeight = m_config.lineHeight();
     const int top = lineHeight * lineOffset;
-    const int height = lineHeight * m_page[phaseAddr.phase()].size();
+    const int height = lineHeight * m_page[rowAddr.row()].size();
     return view::RowBound(top, height);
 }
 
@@ -360,14 +360,14 @@ void View::onDirRightKeyPress()
 
 view::Rect View::getLastActLineDrawRect() const
 {
-    const RowN phase = m_editor.lastActRow();
-    const view::PhaseAddr addr = convertToPhaseAddr(phase);
+    const RowN row = m_editor.lastActRow();
+    const view::RowAddr addr = convertToRowAddr(row);
     if (addr.isNull())
     {
         return view::Rect();
     }
 
-    const view::RowBound bound = getPhaseBound(addr);
+    const view::RowBound bound = getRowBound(addr);
 
     view::Rect rect;
     rect.setNull(false);
@@ -423,22 +423,22 @@ int View::getLineNumBarWidth() const
 
 void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const
 {
-    const int phaseCnt = m_page.size();
+    const int rowCnt = m_page.size();
 
     int offset = 0;
 
-    for (int phase = 0; phase < phaseCnt; ++phase)
+    for (int r = 0; r < rowCnt; ++r)
     {
-        const view::PhaseAddr addr(phase);
-        const view::RowBound bound = getPhaseBound(addr);
-        const RowN lineNum = m_viewStart + phase;
+        const view::RowAddr addr(r);
+        const view::RowBound bound = getRowBound(addr);
+        const RowN lineNum = m_viewStart + r;
         const RowN lastAct = m_editor.lastActRow();
         const bool isLastAct = lineNum == lastAct;
         const int baseline = getBaseLineByLineOffset(offset);
 
         action(lineNum, baseline, bound, isLastAct);
 
-        offset += m_page[phase].size();
+        offset += m_page[r].size();
     }
 }
 
@@ -487,33 +487,33 @@ void View::remakePage()
 
     for (RowN i = m_viewStart; i < rowCnt; ++i)
     {
-        view::Phase &vphase = m_page.grow();
+        view::VRow & vrow = m_page.grow();
 
-        DocLineToViewPhase(m_editor.doc().rowAt(i), vphase);
+        makeVRow(m_editor.doc().rowAt(i), vrow);
     }
 
 }
 
-void View::DocLineToViewPhase(const Row & row, view::Phase & phase)
+void View::makeVRow(const Row & row, view::VRow & vrow)
 {
     if (m_config.wrapLine())
     {
-        DocLineToViewPhaseWithWrapLine(row, phase);
+        makeVRowWithWrapLine(row, vrow);
     }
     else
     {
-        DocLineToViewPhaseNoWrapLine(row, phase);
+        makeVRowNoWrapLine(row, vrow);
     }
 }
 
-void View::DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase & phase)
+void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow)
 {
-    assert(phase.size() == 0);
+    assert(vrow.size() == 0);
 
     const int hGap = m_config.hGap();
     const int hMargin = m_config.hMargin();
 
-    view::Line *vline = &phase.grow();
+    view::Line *vline = &vrow.grow();
 
     DocLineCharInStream charStream(row);
     TxtWordStream wordStream(charStream);
@@ -537,7 +537,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase & phase)
                 if (leftX + charWidth > m_size.width())
                 {
                     leftX = hGap;
-                    vline = &phase.grow();
+                    vline = &vrow.grow();
                 }
 
                 view::Char &vc = vline->grow();
@@ -560,7 +560,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase & phase)
             if (leftX + wordWidth > m_size.width())
             {
                 leftX = hGap;
-                vline = &phase.grow();
+                vline = &vrow.grow();
             }
             for (const UChar c : word)
             {
@@ -569,7 +569,7 @@ void View::DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase & phase)
                 if (leftX + charWidth > m_size.width())
                 {
                     leftX = hGap;
-                    vline = &phase.grow();
+                    vline = &vrow.grow();
                 }
 
                 view::Char &vc = vline->grow();
@@ -584,14 +584,14 @@ void View::DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase & phase)
     }
 }
 
-void View::DocLineToViewPhaseNoWrapLine(const Row & row, view::Phase & phase)
+void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow)
 {
-    assert(phase.size() == 0);
+    assert(vrow.size() == 0);
 
     const int hGap = m_config.hGap();
     const int hMargin = m_config.hMargin();
 
-    view::Line &vline = phase.grow();
+    view::Line &vline = vrow.grow();
 
     int leftX = hGap;
 

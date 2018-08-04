@@ -127,20 +127,20 @@ public:
     void removeOnUpdateListener(ListenerID id);
 
 private:
-    int getLineOffsetByPhaseIndex(int phase) const;
+    int getLineOffsetByRowIndex(int row) const;
     int getLineOffsetByLineAddr(const view::LineAddr &lineAddr) const;
     int getLineOffsetByY(int y) const;
     view::LineAddr getLineAddrByY(int y) const;
     view::CharAddr getCharAddrByPoint(int x, int y) const;
     DocAddr getDocAddrByPoint(int x, int y) const;
-    view::PhaseAddr convertToPhaseAddr(RowN line) const;
+    view::RowAddr convertToRowAddr(RowN row) const;
     view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
     DocAddr convertToDocAddr(const view::CharAddr &charAddr) const;
     const view::Char & getChar(const view::CharAddr & charAddr) const;
     int getXByAddr(const view::CharAddr & charAddr) const;
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
     view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
-    view::RowBound getPhaseBound(const view::PhaseAddr &phaseAddr) const;
+    view::RowBound getRowBound(const view::RowAddr & rowAddr) const;
 
 private:
     DocAddr getNextUpAddr(const DocAddr & addr) const;
@@ -153,9 +153,9 @@ private:
 private:
     void remakePage();
 
-    void DocLineToViewPhase(const Row & row, view::Phase &phase);
-    void DocLineToViewPhaseWithWrapLine(const Row & row, view::Phase &phase);
-    void DocLineToViewPhaseNoWrapLine(const Row & row, view::Phase &phase);
+    void makeVRow(const Row & row, view::VRow & vrow);
+    void makeVRowWithWrapLine(const Row & row, view::VRow & vrow);
+    void makeVRowNoWrapLine(const Row & row, view::VRow & vrow);
 
 private:
     Editor & m_editor;
