@@ -15,7 +15,7 @@ class Doc;
 class Editor
 {
 public:
-    Editor(Doc * model);
+    explicit Editor(Doc * model);
 
     const Doc & doc() const { return m_model; }
 
@@ -24,6 +24,8 @@ public:
     RowN lastActRow() { return m_lastActRow; }
 
     void onPrimaryKeyPress(const DocLoc & loc);
+
+    void setNormalCursor(const DocLoc & loc);
 
     void setNormalCursor(const DocCursor & cursor);
 

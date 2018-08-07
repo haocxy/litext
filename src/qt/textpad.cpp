@@ -13,7 +13,7 @@ namespace
     class AutoSaver
     {
     public:
-        AutoSaver(QPainter & painter) : m_painter(painter) {
+        explicit AutoSaver(QPainter & painter) : m_painter(painter) {
             m_painter.save();
         }
         ~AutoSaver() {

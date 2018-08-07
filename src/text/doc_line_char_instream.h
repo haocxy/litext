@@ -6,7 +6,7 @@
 class DocLineCharInStream : public CharInStream
 {
 public:
-    DocLineCharInStream(const Row & line) : m_line(line) {}
+    explicit DocLineCharInStream(const Row & line) : m_line(line) {}
     virtual ~DocLineCharInStream() {}
 
     virtual UChar Next() override

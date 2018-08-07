@@ -7,7 +7,7 @@ public:
     void setNull(bool isNull) { m_isNull = isNull; }
 protected:
     NullableClass() {}
-    NullableClass(bool isNull) :m_isNull(isNull) {}
+    explicit NullableClass(bool isNull) :m_isNull(isNull) {}
 
 private:
     bool m_isNull = true;

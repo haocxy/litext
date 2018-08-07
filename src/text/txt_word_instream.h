@@ -8,7 +8,7 @@ class CharInStream;
 class TxtWordStream : public WordInStream
 {
 public:
-    TxtWordStream(CharInStream & charInStream)
+    explicit TxtWordStream(CharInStream & charInStream)
         : m_charInStream(charInStream)
     {
 

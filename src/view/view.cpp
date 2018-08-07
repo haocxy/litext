@@ -86,11 +86,6 @@ int View::getLineOffsetByRowIndex(int row) const
     return sum;
 }
 
-view::LineLoc View::getLineLocByY(int y) const
-{
-    return m_page.getLineLocByLineOffset(getLineOffsetByY(y));
-}
-
 view::CharLoc View::getCharLocByPoint(int x, int y) const
 {
     const int lineOffset = getLineOffsetByY(y);

@@ -11,7 +11,7 @@ public:
     };
 public:
     DocCursor() : m_flags(flgNull) {}
-    DocCursor(const DocLoc & loc) : m_from(loc), m_to(loc) {}
+    explicit DocCursor(const DocLoc & loc) : m_from(loc), m_to(loc) {}
 
     const DocLoc & loc() const { return m_from; }
     void setLoc(const DocLoc & loc)

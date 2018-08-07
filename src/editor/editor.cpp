@@ -16,12 +16,17 @@ void Editor::onPrimaryKeyPress(const DocLoc & loc)
     {
         const RowN rowCnt = m_model.rowCnt();
         assert(rowCnt > 0);
-        setNormalCursor(DocLoc::newDocLocAfterLastChar(rowCnt - 1));
+        setNormalCursor(DocCursor(DocLoc::newDocLocAfterLastChar(rowCnt - 1)));
     }
     else
     {
-        setNormalCursor(loc);
+        setNormalCursor(DocCursor(loc));
     }
+}
+
+void Editor::setNormalCursor(const DocLoc & loc)
+{
+    setNormalCursor(DocCursor(loc));
 }
 
 void Editor::setNormalCursor(const DocCursor & cursor)

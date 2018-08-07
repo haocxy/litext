@@ -66,7 +66,6 @@ private:
         kAfterLastChar = 1 << 2,
     };
     bool hasFlag(flag_t f) const { return (m_flag & f) != 0; }
-    void clearFlag(flag_t f) { m_flag &= (~f); }
     void setFlag(flag_t f) { m_flag |= f; }
 private:
     flag_t m_flag = 0;

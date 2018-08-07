@@ -17,7 +17,7 @@ namespace view
         }
     public:
         RowLoc() :m_flag(kIsNull), m_row(0) {}
-        RowLoc(int row) : m_row(row) {}
+        explicit RowLoc(int row) : m_row(row) {}
         int row() const { return m_row; }
         void setRow(int row) { m_row = row; }
         bool isNull() const { return hasFlag(kIsNull); }
