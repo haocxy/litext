@@ -2,7 +2,7 @@
 
 #include <assert.h>
 
-view::LineAddr view::Page::getLineAddrByLineOffset(int offset) const
+view::LineLoc view::Page::getLineLocByLineOffset(int offset) const
 {
     const int rowCnt = static_cast<int>(m_rows.size());
 
@@ -15,23 +15,23 @@ view::LineAddr view::Page::getLineAddrByLineOffset(int offset) const
 
         if (sum + lineCnt > offset)
         {
-            return view::LineAddr(i, offset - sum);
+            return view::LineLoc(i, offset - sum);
         }
 
         sum += lineCnt;
     }
 
-    return view::LineAddr::newLineAddrAfterLastRow();
+    return view::LineLoc::newLineLocAfterLastRow();
 }
 
-view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, int x) const
+view::CharLoc view::Page::getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const
 {
-    if (lineAddr.isNull() || lineAddr.isAfterLastRow())
+    if (lineLoc.isNull() || lineLoc.isAfterLastRow())
     {
-        return view::CharAddr::newCharAddrAfterLastChar(lineAddr);
+        return view::CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Line & line = getLine(lineAddr);
+    const Line & line = getLine(lineLoc);
 
     const int charCnt = line.size();
     for (int i = 0; i < charCnt; ++i)
@@ -39,57 +39,57 @@ view::CharAddr view::Page::getCharAddrByLineAddrAndX(const LineAddr & lineAddr, 
         const Char & c = line[i];
         if (x < c.x() + c.width() / 2)
         {
-            return CharAddr(lineAddr, i);
+            return CharLoc(lineLoc, i);
         }
     }
 
-    return CharAddr::newCharAddrAfterLastChar(lineAddr);
+    return CharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
-view::LineAddr view::Page::getNextUpLineAddr(const LineAddr & addr) const
+view::LineLoc view::Page::getNextUpLineLoc(const LineLoc & lineLoc) const
 {
-    if (addr.isNull() || addr.isAfterLastRow())
+    if (lineLoc.isNull() || lineLoc.isAfterLastRow())
     {
-        return LineAddr();
+        return LineLoc();
     }
 
-    if (addr.line() > 0)
+    if (lineLoc.line() > 0)
     {
-        return LineAddr(addr.row(), addr.line() - 1);
+        return LineLoc(lineLoc.row(), lineLoc.line() - 1);
     }
 
-    if (addr.row() > 0)
+    if (lineLoc.row() > 0)
     {
-        const int upRowIndex = addr.row() - 1;
+        const int upRowIndex = lineLoc.row() - 1;
         const VRow & upRow = m_rows[upRowIndex];
         assert(upRow.size() > 0);
-        return LineAddr(upRowIndex, upRow.size() - 1);
+        return LineLoc(upRowIndex, upRow.size() - 1);
     }
 
-    return LineAddr();
+    return LineLoc();
 }
 
-view::LineAddr view::Page::getNextDownLineAddr(const LineAddr & addr) const
+view::LineLoc view::Page::getNextDownLineLoc(const LineLoc & lineLoc) const
 {
-    if (addr.isNull() || addr.isAfterLastRow())
+    if (lineLoc.isNull() || lineLoc.isAfterLastRow())
     {
-        return LineAddr();
+        return LineLoc();
     }
 
-    const int r = addr.row();
+    const int r = lineLoc.row();
     const VRow & row = m_rows[r];
     const int curRowSize = row.size();
     
-    if (addr.line() < curRowSize - 1)
+    if (lineLoc.line() < curRowSize - 1)
     {
-        return LineAddr(r, addr.line() + 1);
+        return LineLoc(r, lineLoc.line() + 1);
     }
 
     const int rowCnt = size();
     if (r < rowCnt - 1)
     {
-        return LineAddr(r + 1, 0);
+        return LineLoc(r + 1, 0);
     }
 
-    return LineAddr();
+    return LineLoc();
 }

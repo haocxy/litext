@@ -6,9 +6,9 @@
 
 #include "doc/doc_define.h"
 #include "util/stl_container_util.h"
-#include "doc/doc_addr.h"
+#include "doc/doc_loc.h"
 #include "view/view_page.h"
-#include "view/view_addr.h"
+#include "view/view_loc.h"
 #include "view/view_rect.h"
 #include "view/draw_vertical_line.h"
 
@@ -81,7 +81,7 @@ namespace view
 
 
 class Row;
-class DocAddr;
+class DocLoc;
 class Editor;
 
 /*
@@ -128,23 +128,23 @@ public:
 
 private:
     int getLineOffsetByRowIndex(int row) const;
-    int getLineOffsetByLineAddr(const view::LineAddr &lineAddr) const;
+    int getLineOffsetByLineLoc(const view::LineLoc & loc) const;
     int getLineOffsetByY(int y) const;
-    view::LineAddr getLineAddrByY(int y) const;
-    view::CharAddr getCharAddrByPoint(int x, int y) const;
-    DocAddr getDocAddrByPoint(int x, int y) const;
-    view::RowAddr convertToRowAddr(RowN row) const;
-    view::CharAddr convertToCharAddr(const DocAddr &docAddr) const;
-    DocAddr convertToDocAddr(const view::CharAddr &charAddr) const;
-    const view::Char & getChar(const view::CharAddr & charAddr) const;
-    int getXByAddr(const view::CharAddr & charAddr) const;
+    view::LineLoc getLineLocByY(int y) const;
+    view::CharLoc getCharLocByPoint(int x, int y) const;
+    DocLoc getDocLocByPoint(int x, int y) const;
+    view::RowLoc convertToRowLoc(RowN row) const;
+    view::CharLoc convertToCharLoc(const DocLoc & docLoc) const;
+    DocLoc convertToDocLoc(const view::CharLoc & charLoc) const;
+    const view::Char & getChar(const view::CharLoc & charLoc) const;
+    int getXByCharLoc(const view::CharLoc & charLoc) const;
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
-    view::LineBound getLineBound(const view::LineAddr &lineAddr) const;
-    view::RowBound getRowBound(const view::RowAddr & rowAddr) const;
+    view::LineBound getLineBound(const view::LineLoc & lineLoc) const;
+    view::RowBound getRowBound(const view::RowLoc & rowLoc) const;
 
 private:
-    DocAddr getNextUpAddr(const DocAddr & addr) const;
-    DocAddr getNextDownAddr(const DocAddr & addr) const;
+    DocLoc getNextUpLoc(const DocLoc & docLoc) const;
+    DocLoc getNextDownLoc(const DocLoc & docLoc) const;
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();

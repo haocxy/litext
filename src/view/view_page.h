@@ -3,7 +3,7 @@
 #include <deque>
 #include "common/common_define.h"
 #include "util/stl_container_util.h"
-#include "view/view_addr.h"
+#include "view/view_loc.h"
 
 namespace view
 {
@@ -108,17 +108,17 @@ namespace view
         {
             return StlContainerUtil::grow(m_rows);
         }
-        LineAddr getLineAddrByLineOffset(int offset) const;
-        CharAddr getCharAddrByLineAddrAndX(const LineAddr &lineAddr, int x) const;
-        LineAddr getNextUpLineAddr(const LineAddr & addr) const;
-        LineAddr getNextDownLineAddr(const LineAddr & addr) const;
-        const Line & getLine(const view::LineAddr & addr) const
+        LineLoc getLineLocByLineOffset(int offset) const;
+        CharLoc getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const;
+        LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
+        LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
+        const Line & getLine(const view::LineLoc & lineLoc) const
         {
-            return m_rows[addr.row()][addr.line()];
+            return m_rows[lineLoc.row()][lineLoc.line()];
         }
-        view::Line & getLine(const view::LineAddr & addr)
+        view::Line & getLine(const view::LineLoc & lineLoc)
         {
-            return m_rows[addr.row()][addr.line()];
+            return m_rows[lineLoc.row()][lineLoc.line()];
         }
         int lineCnt() const
         {

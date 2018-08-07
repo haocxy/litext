@@ -117,9 +117,6 @@
     <ClInclude Include="src\editor\editor.h">
       <Filter>src\editor</Filter>
     </ClInclude>
-    <ClInclude Include="src\doc\doc_addr.h">
-      <Filter>src\doc</Filter>
-    </ClInclude>
     <ClInclude Include="src\doc\doc_define.h">
       <Filter>src\doc</Filter>
     </ClInclude>
@@ -133,9 +130,6 @@
       <Filter>src\view</Filter>
     </ClInclude>
     <ClInclude Include="src\view\view.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\view\view_addr.h">
       <Filter>src\view</Filter>
     </ClInclude>
     <ClInclude Include="src\view\view_config.h">
@@ -184,6 +178,12 @@
       <Filter>src\doc</Filter>
     </ClInclude>
     <ClInclude Include="src\view\draw_vertical_line.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\doc\doc_loc.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\view\view_loc.h">
       <Filter>src\view</Filter>
     </ClInclude>
   </ItemGroup>

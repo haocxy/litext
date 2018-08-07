@@ -1,6 +1,6 @@
 #pragma once
 
-#include "doc/doc_addr.h"
+#include "doc/doc_loc.h"
 
 class DocCursor
 {
@@ -11,20 +11,20 @@ public:
     };
 public:
     DocCursor() : m_flags(flgNull) {}
-    DocCursor(const DocAddr & addr) : m_from(addr), m_to(addr) {}
+    DocCursor(const DocLoc & loc) : m_from(loc), m_to(loc) {}
 
-    const DocAddr & addr() const { return m_from; }
-    void setAddr(const DocAddr &addr)
+    const DocLoc & loc() const { return m_from; }
+    void setLoc(const DocLoc & loc)
     {
-        m_from = addr;
-        m_to = addr;
+        m_from = loc;
+        m_to = loc;
     }
 
-    const DocAddr & from() const { return m_from; }
-    void setFrom(const DocAddr &from) { m_from = from; }
+    const DocLoc & from() const { return m_from; }
+    void setFrom(const DocLoc &from) { m_from = from; }
 
-    const DocAddr & to() const { return m_to; }
-    void setTo(const DocAddr &to) { m_to = to; }
+    const DocLoc & to() const { return m_to; }
+    void setTo(const DocLoc &to) { m_to = to; }
 
     bool hasFlag(uint32_t flag) const
     {
@@ -48,6 +48,6 @@ public:
 
 private:
     uint32_t m_flags = 0;
-    DocAddr m_from;
-    DocAddr m_to;
+    DocLoc m_from;
+    DocLoc m_to;
 };

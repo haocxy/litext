@@ -23,15 +23,15 @@ public:
 
     RowN lastActRow() { return m_lastActRow; }
 
-    void onPrimaryKeyPress(const DocAddr &addr);
+    void onPrimaryKeyPress(const DocLoc & loc);
 
     void setNormalCursor(const DocCursor & cursor);
 
     // 以字符为单位，获得向左移动光标时的下一个字符位置
-    DocAddr getNextLeftAddrByChar(const DocAddr & addr) const;
+    DocLoc getNextLeftLocByChar(const DocLoc & loc) const;
 
     // 以字符为单位，获得向右移动光标时的下一个字符位置
-    DocAddr getNextRightAddrByChar(const DocAddr & addr) const;
+    DocLoc getNextRightLocByChar(const DocLoc & loc) const;
 
 public:
     ListenerID addOnLastActRowUpdateListener(std::function<void()> && action);

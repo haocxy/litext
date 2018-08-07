@@ -10,17 +10,17 @@ Editor::Editor(Doc * model)
     assert(model);
 }
 
-void Editor::onPrimaryKeyPress(const DocAddr & addr)
+void Editor::onPrimaryKeyPress(const DocLoc & loc)
 {
-    if (addr.isAfterLastRow())
+    if (loc.isAfterLastRow())
     {
         const RowN rowCnt = m_model.rowCnt();
         assert(rowCnt > 0);
-        setNormalCursor(DocAddr::newDocAddrAfterLastChar(rowCnt - 1));
+        setNormalCursor(DocLoc::newDocLocAfterLastChar(rowCnt - 1));
     }
     else
     {
-        setNormalCursor(addr);
+        setNormalCursor(loc);
     }
 }
 
@@ -33,92 +33,92 @@ void Editor::setNormalCursor(const DocCursor & cursor)
     }
 }
 
-DocAddr Editor::getNextLeftAddrByChar(const DocAddr & addr) const
+DocLoc Editor::getNextLeftLocByChar(const DocLoc & loc) const
 {
-    if (addr.isNull())
+    if (loc.isNull())
     {
-        return DocAddr();
+        return DocLoc();
     }
 
-    if (addr.isAfterLastRow())
+    if (loc.isAfterLastRow())
     {
         const RowN rowCnt = m_model.rowCnt();
         if (rowCnt <= 0)
         {
-            return DocAddr();
+            return DocLoc();
         }
 
-        return DocAddr::newDocAddrAfterLastChar(rowCnt - 1);
+        return DocLoc::newDocLocAfterLastChar(rowCnt - 1);
     }
 
-    if (addr.isAfterLastChar())
+    if (loc.isAfterLastChar())
     {
-        const CharN charCnt = m_model.rowAt(addr.row()).charCnt();
+        const CharN charCnt = m_model.rowAt(loc.row()).charCnt();
         if (charCnt <= 0)
         {
-            if (addr.row() > 0)
+            if (loc.row() > 0)
             {
-                return DocAddr::newDocAddrAfterLastChar(addr.row() - 1);
+                return DocLoc::newDocLocAfterLastChar(loc.row() - 1);
             }
-            return DocAddr();
+            return DocLoc();
         }
-        return DocAddr(addr.row(), charCnt - 1);
+        return DocLoc(loc.row(), charCnt - 1);
     }
 
-    if (addr.col() <= 0)
+    if (loc.col() <= 0)
     {
-        if (addr.row() > 0)
+        if (loc.row() > 0)
         {
-            return DocAddr::newDocAddrAfterLastChar(addr.row() - 1);
+            return DocLoc::newDocLocAfterLastChar(loc.row() - 1);
         }
-        return DocAddr();
+        return DocLoc();
     }
 
-    return addr.nextLeft();
+    return loc.nextLeft();
 }
 
 
-DocAddr Editor::getNextRightAddrByChar(const DocAddr & addr) const
+DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
 {
-    if (addr.isNull())
+    if (loc.isNull())
     {
-        return DocAddr();
+        return DocLoc();
     }
 
-    if (addr.isAfterLastRow())
+    if (loc.isAfterLastRow())
     {
-        return DocAddr();
+        return DocLoc();
     }
 
-    if (addr.isAfterLastChar())
+    if (loc.isAfterLastChar())
     {
         const RowN rowCnt = m_model.rowCnt();
-        if (addr.row() < rowCnt - 1)
+        if (loc.row() < rowCnt - 1)
         {
-            const Row & nextRow = m_model.rowAt(addr.row() + 1);
+            const Row & nextRow = m_model.rowAt(loc.row() + 1);
             if (nextRow.charCnt() > 0)
             {
-                return DocAddr(addr.row() + 1, 0);
+                return DocLoc(loc.row() + 1, 0);
             }
             else
             {
-                return DocAddr::newDocAddrAfterLastChar(addr.row() + 1);
+                return DocLoc::newDocLocAfterLastChar(loc.row() + 1);
             }
         }
         else
         {
-            return DocAddr();
+            return DocLoc();
         }
     }
 
-    const Row & row = m_model.rowAt(addr.row());
-    if (addr.col() < row.charCnt() - 1)
+    const Row & row = m_model.rowAt(loc.row());
+    if (loc.col() < row.charCnt() - 1)
     {
-        return addr.nextRight();
+        return loc.nextRight();
     }
     else
     {
-        return DocAddr::newDocAddrAfterLastChar(addr.row());
+        return DocLoc::newDocLocAfterLastChar(loc.row());
     }
 }
 

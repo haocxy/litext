@@ -57,12 +57,12 @@ int View::getBaseLineByLineOffset(int off) const
     return (1 + off) * m_config.lineHeight() - m_config.font().descent();
 }
 
-int View::getLineOffsetByLineAddr(const view::LineAddr & lineAddr) const
+int View::getLineOffsetByLineLoc(const view::LineLoc & loc) const
 {
-    int sum = lineAddr.line();
+    int sum = loc.line();
 
     const int rowCnt = m_page.size();
-    const int row = lineAddr.row();
+    const int row = loc.row();
 
     for (int i = 0; i < rowCnt && i < row; ++i)
     {
@@ -86,26 +86,26 @@ int View::getLineOffsetByRowIndex(int row) const
     return sum;
 }
 
-view::LineAddr View::getLineAddrByY(int y) const
+view::LineLoc View::getLineLocByY(int y) const
 {
-    return m_page.getLineAddrByLineOffset(getLineOffsetByY(y));
+    return m_page.getLineLocByLineOffset(getLineOffsetByY(y));
 }
 
-view::CharAddr View::getCharAddrByPoint(int x, int y) const
+view::CharLoc View::getCharLocByPoint(int x, int y) const
 {
     const int lineOffset = getLineOffsetByY(y);
-    const view::LineAddr lineAddr = m_page.getLineAddrByLineOffset(lineOffset);
-    return m_page.getCharAddrByLineAddrAndX(lineAddr, x);
+    const view::LineLoc lineLoc = m_page.getLineLocByLineOffset(lineOffset);
+    return m_page.getCharLocByLineLocAndX(lineLoc, x);
 }
 
-DocAddr View::getDocAddrByPoint(int x, int y) const
+DocLoc View::getDocLocByPoint(int x, int y) const
 {
-    const view::CharAddr charAddr = getCharAddrByPoint(x, y);
-    const DocAddr docAddr = convertToDocAddr(charAddr);
-    return docAddr;
+    const view::CharLoc charLoc = getCharLocByPoint(x, y);
+    const DocLoc docLoc = convertToDocLoc(charLoc);
+    return docLoc;
 }
 
-view::RowAddr View::convertToRowAddr(RowN row) const
+view::RowLoc View::convertToRowLoc(RowN row) const
 {
     const int vrowIndex = row - m_viewStart;
     const int vrowCnt = m_page.size();
@@ -113,44 +113,44 @@ view::RowAddr View::convertToRowAddr(RowN row) const
     {
         if (row >= m_editor.doc().rowCnt())
         {
-            return view::RowAddr::newRowAddrAfterLastRow();
+            return view::RowLoc::newRowLocAfterLastRow();
         }
-        return view::RowAddr();
+        return view::RowLoc();
     }
 
     if (row >= m_editor.doc().rowCnt())
     {
-        return view::RowAddr::newRowAddrAfterLastRow();
+        return view::RowLoc::newRowLocAfterLastRow();
     }
 
-    return view::RowAddr(vrowIndex);
+    return view::RowLoc(vrowIndex);
 }
 
-view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
+view::CharLoc View::convertToCharLoc(const DocLoc & docLoc) const
 {
-    if (docAddr.isNull())
+    if (docLoc.isNull())
     {
-        return view::CharAddr();
+        return view::CharLoc();
     }
 
-    if (docAddr.isAfterLastRow())
+    if (docLoc.isAfterLastRow())
     {
-        return view::CharAddr::newCharAddrAfterLastRow();
+        return view::CharLoc::newCharLocAfterLastRow();
     }
 
-    const int r = docAddr.row() - m_viewStart;
+    const int r = docLoc.row() - m_viewStart;
     const int rowCnt = m_page.size();
     if (r < 0 || r >= rowCnt)
     {
-        return view::CharAddr();
+        return view::CharLoc();
     }
 
     const view::VRow & vrow = m_page[r];
 
-    if (docAddr.isAfterLastChar())
+    if (docLoc.isAfterLastChar())
     {
-        view::LineAddr lineAddr(r, vrow.size() - 1);
-        return view::CharAddr::newCharAddrAfterLastChar(lineAddr);
+        view::LineLoc lineLoc(r, vrow.size() - 1);
+        return view::CharLoc::newCharLocAfterLastChar(lineLoc);
     }
     
     int lineIndex = 0;
@@ -158,7 +158,7 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
 
     int prevLineCharCnt = 0;
 
-    const CharN col = docAddr.col();
+    const CharN col = docLoc.col();
 
     for (const view::Line &vline : vrow)
     {
@@ -166,7 +166,7 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
         {
             if (charIndex == col)
             {
-                return view::CharAddr(r, lineIndex, col - prevLineCharCnt);
+                return view::CharLoc(r, lineIndex, col - prevLineCharCnt);
             }
 
             ++charIndex;
@@ -177,75 +177,75 @@ view::CharAddr View::convertToCharAddr(const DocAddr & docAddr) const
         prevLineCharCnt += vline.size();
     }
 
-    return view::CharAddr();
+    return view::CharLoc();
 }
 
-DocAddr View::convertToDocAddr(const view::CharAddr & charAddr) const
+DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
 {
-    if (charAddr.isNull())
+    if (charLoc.isNull())
     {
-        return DocAddr();
+        return DocLoc();
     }
 
-    if (charAddr.isAfterLastRow())
+    if (charLoc.isAfterLastRow())
     {
-        return DocAddr::newDocAddrAfterLastRow();
+        return DocLoc::newDocLocAfterLastRow();
     }
 
-    if (charAddr.isAfterLastChar())
+    if (charLoc.isAfterLastChar())
     {
-        if (charAddr.line() < m_page[charAddr.row()].size() - 1)
+        if (charLoc.line() < m_page[charLoc.row()].size() - 1)
         {
             // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
-            return convertToDocAddr(view::CharAddr(charAddr.row(), charAddr.line() + 1, 0));
+            return convertToDocLoc(view::CharLoc(charLoc.row(), charLoc.line() + 1, 0));
         }
         else
         {
-            return DocAddr::newDocAddrAfterLastChar(m_viewStart + charAddr.row());
+            return DocLoc::newDocLocAfterLastChar(m_viewStart + charLoc.row());
         }
     }
 
     
-    const view::VRow & vrow = m_page[charAddr.row()];
-    const int lineIndex = charAddr.line();
-    CharN col = charAddr.col();
+    const view::VRow & vrow = m_page[charLoc.row()];
+    const int lineIndex = charLoc.line();
+    CharN col = charLoc.col();
     for (int i = 0; i < lineIndex; ++i)
     {
         col += vrow[i].size();
     }
 
-    return DocAddr(m_viewStart + charAddr.row(), col);
+    return DocLoc(m_viewStart + charLoc.row(), col);
 }
 
-const view::Char & View::getChar(const view::CharAddr & charAddr) const
+const view::Char & View::getChar(const view::CharLoc & charLoc) const
 {
-    return m_page[charAddr.row()][charAddr.line()][charAddr.col()];
+    return m_page[charLoc.row()][charLoc.line()][charLoc.col()];
 }
 
-int View::getXByAddr(const view::CharAddr & charAddr) const
+int View::getXByCharLoc(const view::CharLoc & charLoc) const
 {
-    if (charAddr.isNull())
+    if (charLoc.isNull())
     {
         return 0;
     }
 
-    if (charAddr.isAfterLastRow())
+    if (charLoc.isAfterLastRow())
     {
         return m_config.hGap();
     }
 
-    if (charAddr.isAfterLastChar())
+    if (charLoc.isAfterLastChar())
     {
-        const view::Line & line = m_page[charAddr.row()][charAddr.line()];
+        const view::Line & line = m_page[charLoc.row()][charLoc.line()];
         if (line.empty())
         {
             return m_config.hGap();
         }
-        const view::Char &vc = m_page[charAddr.row()][charAddr.line()].last();
+        const view::Char &vc = m_page[charLoc.row()][charLoc.line()].last();
         return vc.x() + vc.width();
     }
 
-    return getChar(charAddr).x();
+    return getChar(charLoc).x();
 }
 
 view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
@@ -257,24 +257,24 @@ view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
     return view::LineBound(top, bottom);
 }
 
-view::LineBound View::getLineBound(const view::LineAddr & lineAddr) const
+view::LineBound View::getLineBound(const view::LineLoc & lineLoc) const
 {
-    if (lineAddr.isAfterLastRow())
+    if (lineLoc.isAfterLastRow())
     {
         return getLineBoundByLineOffset(m_page.lineCnt());
     }
-    const int lineOffset = getLineOffsetByLineAddr(lineAddr);
+    const int lineOffset = getLineOffsetByLineLoc(lineLoc);
     return getLineBoundByLineOffset(lineOffset);
 }
 
-view::RowBound View::getRowBound(const view::RowAddr & rowAddr) const
+view::RowBound View::getRowBound(const view::RowLoc & rowLoc) const
 {
-    if (rowAddr.isNull())
+    if (rowLoc.isNull())
     {
         return view::RowBound();
     }
 
-    if (rowAddr.isAfterLastRow())
+    if (rowLoc.isAfterLastRow())
     {
         const int lineOffset = m_page.lineCnt();
         const int lineHeight = m_config.lineHeight();
@@ -282,50 +282,50 @@ view::RowBound View::getRowBound(const view::RowAddr & rowAddr) const
         return view::RowBound(top, lineHeight);
     }
 
-    const int lineOffset = getLineOffsetByRowIndex(rowAddr.row());
+    const int lineOffset = getLineOffsetByRowIndex(rowLoc.row());
     const int lineHeight = m_config.lineHeight();
     const int top = lineHeight * lineOffset;
-    const int height = lineHeight * m_page[rowAddr.row()].size();
+    const int height = lineHeight * m_page[rowLoc.row()].size();
     return view::RowBound(top, height);
 }
 
 
-DocAddr View::getNextUpAddr(const DocAddr & addr) const
+DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
 {
-    const view::CharAddr charAddr = convertToCharAddr(addr);
-    if (charAddr.isNull())
+    const view::CharLoc charLoc = convertToCharLoc(docLoc);
+    if (charLoc.isNull())
     {
-        return DocAddr();
+        return DocLoc();
     }
 
-    const view::LineAddr upLineAddr = m_page.getNextUpLineAddr(charAddr);
-    const view::CharAddr upCharAddr = m_page.getCharAddrByLineAddrAndX(upLineAddr, m_stable_x);
+    const view::LineLoc upLineLoc = m_page.getNextUpLineLoc(charLoc);
+    const view::CharLoc upCharLoc = m_page.getCharLocByLineLocAndX(upLineLoc, m_stable_x);
 
-    return convertToDocAddr(upCharAddr);
+    return convertToDocLoc(upCharLoc);
 }
 
-DocAddr View::getNextDownAddr(const DocAddr & addr) const
+DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
 {
-    const view::CharAddr charAddr = convertToCharAddr(addr);
-    if (charAddr.isNull())
+    const view::CharLoc charLoc = convertToCharLoc(docLoc);
+    if (charLoc.isNull())
     {
-        return DocAddr();
+        return DocLoc();
     }
 
-    const view::LineAddr downLineAddr = m_page.getNextDownLineAddr(charAddr);
-    const view::CharAddr downCharAddr = m_page.getCharAddrByLineAddrAndX(downLineAddr, m_stable_x);
+    const view::LineLoc downLineLoc = m_page.getNextDownLineLoc(charLoc);
+    const view::CharLoc downCharLoc = m_page.getCharLocByLineLocAndX(downLineLoc, m_stable_x);
 
-    return convertToDocAddr(downCharAddr);
+    return convertToDocLoc(downCharLoc);
 }
 
 void View::onDirUpKeyPress()
 {
     m_stable_x = 200; // TODO test data
 
-    const DocAddr & newAddr = getNextUpAddr(m_editor.normalCursor().to());
-    if (!newAddr.isNull())
+    const DocLoc newLoc = getNextUpLoc(m_editor.normalCursor().to());
+    if (!newLoc.isNull())
     {
-        m_editor.setNormalCursor(newAddr);
+        m_editor.setNormalCursor(newLoc);
     }
 }
 
@@ -333,41 +333,41 @@ void View::onDirDownKeyPress()
 {
     m_stable_x = 200; // TODO test data
 
-    const DocAddr & newAddr = getNextDownAddr(m_editor.normalCursor().to());
-    if (!newAddr.isNull())
+    const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
+    if (!newLoc.isNull())
     {
-        m_editor.setNormalCursor(newAddr);
+        m_editor.setNormalCursor(newLoc);
     }
 }
 
 void View::onDirLeftKeyPress()
 {
-    const DocAddr & newAddr = m_editor.getNextLeftAddrByChar(m_editor.normalCursor().to());
-    if (!newAddr.isNull())
+    const DocLoc newLoc = m_editor.getNextLeftLocByChar(m_editor.normalCursor().to());
+    if (!newLoc.isNull())
     {
-        m_editor.setNormalCursor(newAddr);
+        m_editor.setNormalCursor(newLoc);
     }
 }
 
 void View::onDirRightKeyPress()
 {
-    const DocAddr & newAddr = m_editor.getNextRightAddrByChar(m_editor.normalCursor().to());
-    if (!newAddr.isNull())
+    const DocLoc newLoc = m_editor.getNextRightLocByChar(m_editor.normalCursor().to());
+    if (!newLoc.isNull())
     {
-        m_editor.setNormalCursor(newAddr);
+        m_editor.setNormalCursor(newLoc);
     }
 }
 
 view::Rect View::getLastActLineDrawRect() const
 {
     const RowN row = m_editor.lastActRow();
-    const view::RowAddr addr = convertToRowAddr(row);
-    if (addr.isNull())
+    const view::RowLoc loc = convertToRowLoc(row);
+    if (loc.isNull())
     {
         return view::Rect();
     }
 
-    const view::RowBound bound = getRowBound(addr);
+    const view::RowBound bound = getRowBound(loc);
 
     view::Rect rect;
     rect.setNull(false);
@@ -395,18 +395,18 @@ draw::VerticalLine View::getNormalCursorDrawData() const
         return draw::VerticalLine();
     }
 
-    const DocAddr & docAddr = cursor.addr();
+    const DocLoc & docLoc = cursor.loc();
 
-    const view::CharAddr & charAddr = convertToCharAddr(docAddr);
+    const view::CharLoc charLoc = convertToCharLoc(docLoc);
 
-    if (charAddr.isNull())
+    if (charLoc.isNull())
     {
         return draw::VerticalLine();
     }
 
-    const view::LineBound bound = getLineBound(charAddr);
+    const view::LineBound bound = getLineBound(charLoc);
 
-    const int x = getXByAddr(charAddr) + kHorizontalDelta;
+    const int x = getXByCharLoc(charLoc) + kHorizontalDelta;
 
     draw::VerticalLine vl;
     vl.setNull(false);
@@ -429,8 +429,8 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
 
     for (int r = 0; r < rowCnt; ++r)
     {
-        const view::RowAddr addr(r);
-        const view::RowBound bound = getRowBound(addr);
+        const view::RowLoc loc(r);
+        const view::RowBound bound = getRowBound(loc);
         const RowN lineNum = m_viewStart + r;
         const RowN lastAct = m_editor.lastActRow();
         const bool isLastAct = lineNum == lastAct;
@@ -456,8 +456,8 @@ void View::removeOnUpdateListener(ListenerID id)
 
 void View::onPrimaryButtomPress(int x, int y)
 {
-    const DocAddr da = getDocAddrByPoint(x, y);
-    m_editor.onPrimaryKeyPress(da);
+    const DocLoc loc = getDocLocByPoint(x, y);
+    m_editor.onPrimaryKeyPress(loc);
 }
 
 void View::onDirKeyPress(Dir dir)

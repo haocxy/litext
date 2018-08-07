@@ -3,25 +3,25 @@
 #include "doc_define.h"
 #include "common/dir_enum.h"
 
-class DocAddr
+class DocLoc
 {
 public:
-    static DocAddr newDocAddrAfterLastRow()
+    static DocLoc newDocLocAfterLastRow()
     {
-        DocAddr docAddr(0, 0);
-        docAddr.setFlag(kAfterLastRow);
-        docAddr.setFlag(kAfterLastChar);
-        return docAddr;
+        DocLoc loc(0, 0);
+        loc.setFlag(kAfterLastRow);
+        loc.setFlag(kAfterLastChar);
+        return loc;
     }
-    static DocAddr newDocAddrAfterLastChar(RowN row)
+    static DocLoc newDocLocAfterLastChar(RowN row)
     {
-        DocAddr docAddr(row, 0);
-        docAddr.setFlag(kAfterLastChar);
-        return docAddr;
+        DocLoc loc(row, 0);
+        loc.setFlag(kAfterLastChar);
+        return loc;
     }
 public:
-    DocAddr() :m_flag(kIsNull), m_row(0), m_col(0) {}
-    DocAddr(RowN row, CharN col) : m_row(row), m_col(col) {}
+    DocLoc() :m_flag(kIsNull), m_row(0), m_col(0) {}
+    DocLoc(RowN row, CharN col) : m_row(row), m_col(col) {}
     RowN row() const { return m_row; }
     void setRow(RowN row) { m_row = row; }
     CharN col() const { return m_col; }
@@ -29,7 +29,7 @@ public:
     bool isNull() const { return hasFlag(kIsNull); }
     bool isAfterLastRow() const { return hasFlag(kAfterLastRow); }
     bool isAfterLastChar() const { return hasFlag(kAfterLastChar); }
-    bool operator<(const DocAddr &b) const
+    bool operator<(const DocLoc &b) const
     {
         if (m_row < b.m_row)
         {
@@ -41,22 +41,22 @@ public:
         }
         return m_col < b.m_col;
     }
-    bool operator>(const DocAddr &b) const
+    bool operator>(const DocLoc &b) const
     {
         return b < (*this);
     }
-    bool operator==(const DocAddr &b) const
+    bool operator==(const DocLoc &b) const
     {
         return m_row == b.m_row && m_col == b.m_col;
     }
-    bool operator!=(const DocAddr &b) const
+    bool operator!=(const DocLoc &b) const
     {
         return !((*this) == b);
     }
-    DocAddr nextUp() const { return DocAddr(m_row - 1, m_col); }
-    DocAddr nextDown() const { return DocAddr(m_row + 1, m_col); }
-    DocAddr nextLeft() const { return DocAddr(m_row, m_col - 1); }
-    DocAddr nextRight() const { return DocAddr(m_row, m_col + 1); }
+    DocLoc nextUp() const { return DocLoc(m_row - 1, m_col); }
+    DocLoc nextDown() const { return DocLoc(m_row + 1, m_col); }
+    DocLoc nextLeft() const { return DocLoc(m_row, m_col - 1); }
+    DocLoc nextRight() const { return DocLoc(m_row, m_col + 1); }
 private:
     typedef uint_least8_t flag_t;
     enum : flag_t
