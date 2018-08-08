@@ -2,28 +2,6 @@
 
 #include <assert.h>
 
-view::LineLoc view::Page::getLineLocByLineOffset(int offset) const
-{
-    const int rowCnt = static_cast<int>(m_rows.size());
-
-    int sum = 0;
-
-    for (int i = 0; i < rowCnt; ++i)
-    {
-        const view::VRow &row = m_rows[i];
-        const int lineCnt = row.size();
-
-        if (sum + lineCnt > offset)
-        {
-            return view::LineLoc(i, offset - sum);
-        }
-
-        sum += lineCnt;
-    }
-
-    return view::LineLoc::newLineLocAfterLastRow();
-}
-
 view::CharLoc view::Page::getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const
 {
     if (lineLoc.isNull() || lineLoc.isAfterLastRow())

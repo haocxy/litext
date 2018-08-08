@@ -154,6 +154,8 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const;
 
+    void drawEachChar(std::function<void(int x, int y, UChar c)> && action) const;
+
 public:
     void scrollUp(LineN line);
     void scrollDown(LineN line);
@@ -166,6 +168,7 @@ private:
     int getLineOffsetByRowIndex(int row) const;
     int getLineOffsetByLineLoc(const view::LineLoc & loc) const;
     int getLineOffsetByY(int y) const;
+    view::LineLoc getLineLocByLineOffset(int offset) const;
     view::CharLoc getCharLocByPoint(int x, int y) const;
     DocLoc getDocLocByPoint(int x, int y) const;
     view::RowLoc convertToRowLoc(RowN row) const;
@@ -197,7 +200,7 @@ private:
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
-    ViewLoc m_loc{ 0 };
+    ViewLoc m_loc{ 1, 1 };
     
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作

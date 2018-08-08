@@ -140,30 +140,13 @@ void TextPad::paintLastActLine(QPainter & p)
 
 void TextPad::paintTextContent(QPainter & p)
 {
-    namespace v = view;
-
     QFont qfont;
     fillQFont(m_view.config().font(), qfont);
     p.setFont(qfont);
 
-    const v::Page &page = m_view.page();
-
-    int lineOffset = 0;
-
-    for (const v::VRow & row : page)
-    {
-        for (const v::Line &line : row)
-        {
-            const int baseline = m_view.getBaseLineByLineOffset(lineOffset);
-
-            for (const v::Char &c : line)
-            {
-                p.drawText(c.x(), baseline, QChar(c.unicode()));
-            }
-
-            ++lineOffset;
-        }
-    }
+    m_view.drawEachChar([&p](int x, int y, UChar c) {
+        p.drawText(x, y, QChar(c));
+    });
 }
 
 void TextPad::paintOnPixmap()

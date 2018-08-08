@@ -108,7 +108,6 @@ namespace view
         {
             return StlContainerUtil::grow(m_rows);
         }
-        LineLoc getLineLocByLineOffset(int offset) const;
         CharLoc getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const;
         LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
         LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;

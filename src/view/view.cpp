@@ -69,6 +69,8 @@ int View::getLineOffsetByLineLoc(const view::LineLoc & loc) const
         sum += m_page[i].size();
     }
 
+    sum -= m_loc.line();
+    
     return sum;
 }
 
@@ -83,13 +85,15 @@ int View::getLineOffsetByRowIndex(int row) const
         sum += m_page[i].size();
     }
 
+    sum -= m_loc.line();
+
     return sum;
 }
 
 view::CharLoc View::getCharLocByPoint(int x, int y) const
 {
     const int lineOffset = getLineOffsetByY(y);
-    const view::LineLoc lineLoc = m_page.getLineLocByLineOffset(lineOffset);
+    const view::LineLoc lineLoc = getLineLocByLineOffset(lineOffset);
     return m_page.getCharLocByLineLocAndX(lineLoc, x);
 }
 
@@ -202,9 +206,14 @@ DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
 
     
     const view::VRow & vrow = m_page[charLoc.row()];
-    const int lineIndex = charLoc.line();
+    int lastLine = charLoc.line();
+    if (m_loc.row() == 0)
+    {
+        // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
+        lastLine += m_loc.line();
+    }
     CharN col = charLoc.col();
-    for (int i = 0; i < lineIndex; ++i)
+    for (int i = 0; i < lastLine; ++i)
     {
         col += vrow[i].size();
     }
@@ -426,7 +435,7 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
 {
     const int rowCnt = m_page.size();
 
-    int offset = 0;
+    int offset = -m_loc.line();
 
     for (int r = 0; r < rowCnt; ++r)
     {
@@ -440,6 +449,51 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
         action(lineNum, baseline, bound, isLastAct);
 
         offset += m_page[r].size();
+    }
+}
+
+void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) const
+{
+    const int rowCnt = m_page.size();
+    if (rowCnt == 0)
+    {
+        return;
+    }
+
+    const view::VRow & curRow = m_page[0];
+    const int curRowSize = curRow.size();
+
+    int lineOffset = 0;
+
+    for (int i = m_loc.line(); i < curRowSize; ++i)
+    {
+        const view::Line & line = curRow[i];
+
+        const int baseline = getBaseLineByLineOffset(lineOffset);
+
+        for (const view::Char & c : line)
+        {
+            action(c.x(), baseline, c.unicode());
+        }
+
+        ++lineOffset;
+    }
+
+    for (int r = 1; r < rowCnt; ++r)
+    {
+        const view::VRow & row = m_page[r];
+
+        for (const view::Line & line : row)
+        {
+            const int baseline = getBaseLineByLineOffset(lineOffset);
+
+            for (const view::Char & c : line)
+            {
+                action(c.x(), baseline, c.unicode());
+            }
+
+            ++lineOffset;
+        }
     }
 }
 
@@ -486,6 +540,39 @@ void View::onDirKeyPress(Dir dir)
 int View::getLineOffsetByY(int y) const
 {
     return y / m_config.lineHeight();
+}
+
+view::LineLoc View::getLineLocByLineOffset(int offset) const
+{
+    const int rowCnt = m_page.size();
+    if (rowCnt == 0)
+    {
+        return view::LineLoc();
+    }
+
+    const view::VRow & curRow = m_page[0];
+    const int curRowSize = curRow.size();
+    if (m_loc.line() + offset < curRowSize)
+    {
+        return view::LineLoc(0, m_loc.line() + offset);
+    }
+
+    int sum = curRowSize - m_loc.line();
+
+    for (int i = 1; i < rowCnt; ++i)
+    {
+        const view::VRow &row = m_page[i];
+        const int lineCnt = row.size();
+
+        if (sum + lineCnt > offset)
+        {
+            return view::LineLoc(i, offset - sum);
+        }
+
+        sum += lineCnt;
+    }
+
+    return view::LineLoc::newLineLocAfterLastRow();
 }
 
 void View::remakePage()
