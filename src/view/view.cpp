@@ -315,8 +315,6 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
 
 void View::onDirUpKeyPress()
 {
-    m_stable_x = 200; // TODO test data
-
     const DocLoc newLoc = getNextUpLoc(m_editor.normalCursor().to());
     if (!newLoc.isNull())
     {
@@ -326,8 +324,6 @@ void View::onDirUpKeyPress()
 
 void View::onDirDownKeyPress()
 {
-    m_stable_x = 200; // TODO test data
-
     const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
     if (!newLoc.isNull())
     {
@@ -338,19 +334,29 @@ void View::onDirDownKeyPress()
 void View::onDirLeftKeyPress()
 {
     const DocLoc newLoc = m_editor.getNextLeftLocByChar(m_editor.normalCursor().to());
-    if (!newLoc.isNull())
+    if (newLoc.isNull())
     {
-        m_editor.setNormalCursor(newLoc);
+        return;
     }
+    
+    m_editor.setNormalCursor(newLoc);
+    
+    const view::CharLoc charLoc = convertToCharLoc(newLoc);
+    m_stable_x = getXByCharLoc(charLoc);
 }
 
 void View::onDirRightKeyPress()
 {
     const DocLoc newLoc = m_editor.getNextRightLocByChar(m_editor.normalCursor().to());
-    if (!newLoc.isNull())
+    if (newLoc.isNull())
     {
-        m_editor.setNormalCursor(newLoc);
+        return;
     }
+    
+    m_editor.setNormalCursor(newLoc);
+
+    const view::CharLoc charLoc = convertToCharLoc(newLoc);
+    m_stable_x = getXByCharLoc(charLoc);
 }
 
 view::Rect View::getLastActLineDrawRect() const
@@ -447,12 +453,13 @@ void View::removeOnUpdateListener(ListenerID id)
     m_onUpdateListeners.remove(id);
 }
 
-
-
 void View::onPrimaryButtomPress(int x, int y)
 {
-    const DocLoc loc = getDocLocByPoint(x, y);
-    m_editor.onPrimaryKeyPress(loc);
+    const view::CharLoc charLoc = getCharLocByPoint(x, y);
+    const DocLoc docLoc = convertToDocLoc(charLoc);
+    m_editor.onPrimaryKeyPress(docLoc);
+
+    m_stable_x = getXByCharLoc(charLoc);
 }
 
 void View::onDirKeyPress(Dir dir)
