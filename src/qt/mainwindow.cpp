@@ -22,7 +22,7 @@ static void setupConfig(view::Config &c)
     view::Font &f = c.rfont();
     view::FontInfo fi;
     fi.family = kFontFamilyYaHei;
-    fi.size = 16;
+    fi.size = 20;
     fi.bold = false;
 
     f.setFont(fi);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "doc/doc_define.h"
+#include "view/view_define.h"
 
 namespace view
 {
@@ -53,10 +54,10 @@ namespace view
     public:
         LineLoc() = default;
         LineLoc(int row, int line) :RowLoc(row), m_line(line) {}
-        int line() const { return m_line; }
-        void setLine(int line) { m_line = line; }
+        LineN line() const { return m_line; }
+        void setLine(LineN line) { m_line = line; }
     private:
-        int m_line = 0;
+        LineN m_line = 0;
     };
 
     class CharLoc : public LineLoc

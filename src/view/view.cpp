@@ -102,7 +102,7 @@ DocLoc View::getDocLocByPoint(int x, int y) const
 
 view::RowLoc View::convertToRowLoc(RowN row) const
 {
-    const int vrowIndex = row - m_viewStart;
+    const int vrowIndex = row - m_loc.row();
     const int vrowCnt = m_page.size();
     if (vrowIndex < 0 || vrowIndex >= vrowCnt)
     {
@@ -133,7 +133,7 @@ view::CharLoc View::convertToCharLoc(const DocLoc & docLoc) const
         return view::CharLoc::newCharLocAfterLastRow();
     }
 
-    const int r = docLoc.row() - m_viewStart;
+    const int r = docLoc.row() - m_loc.row();
     const int rowCnt = m_page.size();
     if (r < 0 || r >= rowCnt)
     {
@@ -196,7 +196,7 @@ DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
         }
         else
         {
-            return DocLoc::newDocLocAfterLastChar(m_viewStart + charLoc.row());
+            return DocLoc::newDocLocAfterLastChar(m_loc.row() + charLoc.row());
         }
     }
 
@@ -209,7 +209,7 @@ DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
         col += vrow[i].size();
     }
 
-    return DocLoc(m_viewStart + charLoc.row(), col);
+    return DocLoc(m_loc.row() + charLoc.row(), col);
 }
 
 const view::Char & View::getChar(const view::CharLoc & charLoc) const
@@ -426,7 +426,7 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
     {
         const view::RowLoc loc(r);
         const view::RowBound bound = getRowBound(loc);
-        const RowN lineNum = m_viewStart + r;
+        const RowN lineNum = m_loc.row() + r;
         const RowN lastAct = m_editor.lastActRow();
         const bool isLastAct = lineNum == lastAct;
         const int baseline = getBaseLineByLineOffset(offset);
@@ -476,11 +476,11 @@ void View::remakePage()
 {
     m_page.clear();
 
-    const RowN maxShowLine = m_viewStart + m_size.height() / m_config.lineHeight() + 1;
+    const RowN maxShowLine = m_loc.row() + m_size.height() / m_config.lineHeight() + 1;
 
     const RowN rowCnt = std::min(maxShowLine, m_editor.doc().rowCnt());
 
-    for (RowN i = m_viewStart; i < rowCnt; ++i)
+    for (RowN i = m_loc.row(); i < rowCnt; ++i)
     {
         view::VRow & vrow = m_page.grow();
 

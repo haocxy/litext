@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <vector>
 #include <deque>
+#include <bitset>
 
 #include "doc/doc_define.h"
 #include "util/stl_container_util.h"
@@ -11,6 +12,7 @@
 #include "view/view_loc.h"
 #include "view/view_rect.h"
 #include "view/draw_vertical_line.h"
+#include "view/view_define.h"
 
 #include "util/listeners.h"
 #include "common/dir_enum.h"
@@ -79,6 +81,36 @@ namespace view
 
 } // namespace view
 
+class ViewLoc
+{
+public:
+    ViewLoc() { m_flag.set(flgNull); }
+    explicit ViewLoc(RowN row) : m_row(row), m_line(0) {}
+    ViewLoc(RowN row, LineN line) : m_row(row), m_line(line) {}
+
+    bool isNull() const { return m_flag.test(flgNull); }
+    bool atEnd() const { return m_flag.test(flgAtEnd); }
+    
+    RowN row() const { return m_row; }
+    void setRow(RowN row) { m_row = row; }
+
+    LineN line() const { return m_line; }
+    void setLine(LineN line) { m_line = line; }
+
+private:
+    enum Flag
+    {
+        flgNull,
+        flgAtEnd,
+
+        flgCnt,
+    };
+
+private:
+    RowN m_row = 0;
+    LineN m_line = 0;
+    std::bitset<flgCnt> m_flag;
+};
 
 class Row;
 class DocLoc;
@@ -161,7 +193,7 @@ private:
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
-    RowN m_viewStart = 0;
+    ViewLoc m_loc{ 0 };
     
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
