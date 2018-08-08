@@ -443,6 +443,15 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
     }
 }
 
+void View::scrollUp(LineN line)
+{
+
+}
+
+void View::scrollDown(LineN line)
+{
+}
+
 ListenerID View::addOnUpdateListener(std::function<void()>&& action)
 {
     return m_onUpdateListeners.add(std::move(action));

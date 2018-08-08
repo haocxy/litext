@@ -155,6 +155,10 @@ public:
     void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const;
 
 public:
+    void scrollUp(LineN line);
+    void scrollDown(LineN line);
+
+public:
     ListenerID addOnUpdateListener(std::function<void()> && action);
     void removeOnUpdateListener(ListenerID id);
 
