@@ -325,6 +325,7 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
 void View::onDirUpKeyPress()
 {
     // 第一步：确保上一行在视图内
+    // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
     const DocLoc & oldDocLoc = m_editor.normalCursor().to();
     const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
     if (oldCharLoc.row() == 0 && oldCharLoc.line() <= m_loc.line())
