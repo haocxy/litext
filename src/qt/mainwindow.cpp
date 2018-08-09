@@ -6,7 +6,7 @@
 #include "doc/simple_doc.h"
 #include "editor_view_widget.h"
 
-const char *kFontFamilyTimes = "Times New Roman";
+const char *kFontFamilyTimes = "Times";
 const char *kFontFamilyYaHei = "Microsoft YaHei";
 
 static void setupConfig(view::Config &c)
