@@ -1,7 +1,8 @@
 #pragma once
 
+#include <bitset>
 #include <QWidget>
-#include <QPixmap>
+#include <QImage>
 
 class View;
 
@@ -24,11 +25,22 @@ private:
     void paintBackground(QPainter &p);
     void paintLastActLine(QPainter &p);
     void paintCursor(QPainter &p);
-    void paintTextContent(QPainter &p);
+    void paintTextContent();
     void paintOnPixmap();
     void refresh();
 private:
+    enum DirtyBuffFlag
+    {
+        DBF_Text,
+
+
+        DBF_Cnt, // 保证在最后一个，用于计数
+    };
+
+private:
     View &m_view;
-    QPixmap m_buff;
+    std::bitset<DBF_Cnt> m_dirtyBuffFlags;
+    QImage m_buff;
+    QImage m_textBuff;
 };
 

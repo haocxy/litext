@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QDebug>
 
 #include "view/view.h"
 #include "view/view_config.h"
@@ -38,7 +39,8 @@ namespace
 TextPad::TextPad(View *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
-    , m_buff(kWidthHint, kHeightHint)
+    , m_buff(kWidthHint, kHeightHint, QImage::Format_RGBA8888)
+    , m_textBuff(kWidthHint, kHeightHint, QImage::Format_RGBA8888)
 {
     assert(view);
 
@@ -48,6 +50,7 @@ TextPad::TextPad(View *view, QWidget *parent)
 
     m_view.initSize({kWidthHint,kHeightHint});
 
+    paintTextContent();
     paintOnPixmap();
 }
 
@@ -64,7 +67,7 @@ QSize TextPad::sizeHint() const
 void TextPad::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
-    p.drawPixmap(rect(), m_buff);
+    p.drawImage(0, 0, m_buff);
 }
 
 void TextPad::showEvent(QShowEvent * e)
@@ -78,7 +81,9 @@ void TextPad::resizeEvent(QResizeEvent * e)
 
     if (e->oldSize().isValid() && sz != e->oldSize())
     {
-        m_buff = std::move(QPixmap(sz));
+        m_buff = std::move(QImage(sz, QImage::Format_RGBA8888));
+        m_textBuff = std::move(QImage(sz, QImage::Format_RGBA8888));
+        m_dirtyBuffFlags.set(DBF_Text);
     }
 
     m_view.onResize({ sz.width(), sz.height() });
@@ -124,7 +129,7 @@ void TextPad::mousePressEvent(QMouseEvent * e)
 
 void TextPad::paintBackground(QPainter & p)
 {
-    p.fillRect(m_buff.rect(), QColor(Qt::white));
+    p.fillRect(m_buff.rect(), Qt::white);
 }
 
 void TextPad::paintLastActLine(QPainter & p)
@@ -138,8 +143,11 @@ void TextPad::paintLastActLine(QPainter & p)
     p.fillRect(r.left(), r.top(), r.width(), r.height(), QColor(Qt::green).lighter(192));
 }
 
-void TextPad::paintTextContent(QPainter & p)
+void TextPad::paintTextContent()
 {
+    QPainter p(&m_textBuff);
+    m_textBuff.fill(QColor(0, 0, 0, 0));
+
     QFont qfont;
     fillQFont(m_view.config().font(), qfont);
     p.setFont(qfont);
@@ -152,14 +160,21 @@ void TextPad::paintTextContent(QPainter & p)
 void TextPad::paintOnPixmap()
 {
     QPainter p(&m_buff);
+
     paintBackground(p);
     paintLastActLine(p);
-    paintTextContent(p);
+    p.drawImage(0, 0, m_textBuff);
     paintCursor(p);
 }
 
 void TextPad::refresh()
 {
+    if (m_dirtyBuffFlags.test(DBF_Text))
+    {
+        paintTextContent();
+        m_dirtyBuffFlags.set(DBF_Text, false);
+    }
+
     paintOnPixmap();
     update();
 }
