@@ -545,6 +545,27 @@ int View::getLineOffsetByY(int y) const
 view::LineLoc View::getLineLocByLineOffset(int offset) const
 {
     const int rowCnt = m_page.size();
+
+    if (m_loc.line() == 0)
+    {
+        int sum = 0;
+
+        for (int i = 0; i < rowCnt; ++i)
+        {
+            const view::VRow &row = m_page[i];
+            const int lineCnt = row.size();
+
+            if (sum + lineCnt > offset)
+            {
+                return view::LineLoc(i, offset - sum);
+            }
+
+            sum += lineCnt;
+        }
+
+        return view::LineLoc::newLineLocAfterLastRow();
+    }
+
     if (rowCnt == 0)
     {
         return view::LineLoc();
