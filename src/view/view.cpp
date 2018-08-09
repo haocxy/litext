@@ -21,7 +21,7 @@ View::View(Editor * editor, view::Config *config)
 
 View::~View()
 {
-    m_editor.removeOnLastActRowUpdateListener(m_listenerIdForLastActLineUpdate);
+
 }
 
 void View::initSize(const view::Size & size)
@@ -532,24 +532,14 @@ void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) con
     }
 }
 
-ListenerID View::addOnUpdateListener(std::function<void()>&& action)
+ListenerHandle View::addOnUpdateListener(std::function<void()>&& action)
 {
     return m_onUpdateListeners.add(std::move(action));
 }
 
-void View::removeOnUpdateListener(ListenerID id)
-{
-    m_onUpdateListeners.remove(id);
-}
-
-ListenerID View::addOnViewLocChangeListener(std::function<void()>&& action)
+ListenerHandle View::addOnViewLocChangeListener(std::function<void()>&& action)
 {
     return m_onViewLocChangeListeners.add(std::move(action));
-}
-
-void View::removeOnViewLocChangeListener(ListenerID id)
-{
-    m_onViewLocChangeListeners.remove(id);
 }
 
 void View::onPrimaryButtomPress(int x, int y)

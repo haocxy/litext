@@ -24,14 +24,14 @@ LineNumBar::LineNumBar(View * view, QWidget * parent)
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
 
-    m_listenerIdForUpdate = m_view.addOnUpdateListener([this] {
+    m_listenerHandleUpdate = m_view.addOnUpdateListener([this] {
         update();
     });
 }
 
 LineNumBar::~LineNumBar()
 {
-    m_view.removeOnUpdateListener(m_listenerIdForUpdate);
+
 }
 
 void LineNumBar::paintEvent(QPaintEvent * e)

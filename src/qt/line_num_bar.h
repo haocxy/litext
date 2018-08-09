@@ -21,5 +21,5 @@ private:
 
 private:
     View & m_view;
-    ListenerID m_listenerIdForUpdate = 0;
+    ListenerHandle m_listenerHandleUpdate;
 };

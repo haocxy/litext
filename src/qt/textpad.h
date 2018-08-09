@@ -47,6 +47,6 @@ private:
 
 // listener id
 private:
-    ListenerID m_listenerIdForViewLocChange = 0;
+    ListenerHandle m_listenerHandleViewLocChange;
 };
 

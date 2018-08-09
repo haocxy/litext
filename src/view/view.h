@@ -167,11 +167,8 @@ public:
 
 
 public:
-    ListenerID addOnUpdateListener(std::function<void()> && action);
-    void removeOnUpdateListener(ListenerID id);
-
-    ListenerID addOnViewLocChangeListener(std::function<void()> && action);
-    void removeOnViewLocChangeListener(ListenerID id);
+    ListenerHandle addOnUpdateListener(std::function<void()> && action);
+    ListenerHandle addOnViewLocChangeListener(std::function<void()> && action);
 
 private:
     int getLineOffsetByRowIndex(int row) const;
@@ -221,5 +218,5 @@ private:
     Listeners<void()> m_onViewLocChangeListeners;
 
 private:
-    ListenerID m_listenerIdForLastActLineUpdate = 0;
+    ListenerHandle m_listenerIdForLastActLineUpdate;
 };

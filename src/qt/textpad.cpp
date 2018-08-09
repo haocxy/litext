@@ -52,12 +52,12 @@ TextPad::TextPad(View *view, QWidget *parent)
 
     prepareTextImage();
 
-    m_listenerIdForViewLocChange = m_view.addOnViewLocChangeListener([this] { m_dirtyBuffFlags.set(DBF_Text); });
+    m_listenerHandleViewLocChange = m_view.addOnViewLocChangeListener([this] { m_dirtyBuffFlags.set(DBF_Text); });
 }
 
 TextPad::~TextPad()
 {
-    m_view.removeOnViewLocChangeListener(m_listenerIdForViewLocChange);
+
 }
 
 QSize TextPad::sizeHint() const

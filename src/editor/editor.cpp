@@ -127,14 +127,9 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
     }
 }
 
-ListenerID Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
+ListenerHandle Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
 {
     return m_lastActRowUpdateListeners.add(std::move(action));
-}
-
-void Editor::removeOnLastActRowUpdateListener(ListenerID id)
-{
-    m_lastActRowUpdateListeners.remove(id);
 }
 
 void Editor::setLastActRow(RowN row)
