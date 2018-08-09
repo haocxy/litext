@@ -104,9 +104,23 @@ namespace view
         const_iterator end() const { return m_rows.end(); }
         iterator begin() { return m_rows.begin(); }
         iterator end() { return m_rows.end(); }
+        VRow &growFront()
+        {
+            VRow vrow;
+            m_rows.push_front(std::move(vrow));
+            return m_rows[0];
+        }
+        void popFront()
+        {
+            m_rows.pop_front();
+        }
         VRow &grow()
         {
             return StlContainerUtil::grow(m_rows);
+        }
+        void popBack()
+        {
+            m_rows.pop_back();
         }
         CharLoc getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const;
         LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;

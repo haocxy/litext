@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QImage>
 
+#include "util/listeners.h"
+
 class View;
 
 class TextPad : public QWidget
@@ -42,5 +44,9 @@ private:
     std::bitset<DBF_Cnt> m_dirtyBuffFlags;
     QImage m_buff;
     QImage m_textBuff;
+
+// listener id
+private:
+    ListenerID m_listenerIdForViewLocChange = 0;
 };
 

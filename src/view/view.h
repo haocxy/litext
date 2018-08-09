@@ -97,6 +97,15 @@ public:
     LineN line() const { return m_line; }
     void setLine(LineN line) { m_line = line; }
 
+    bool operator==(const ViewLoc & b) const
+    {
+        return m_row == b.m_row && m_line == b.m_line && m_flag == b.m_flag;
+    }
+    bool operator!=(const ViewLoc & b) const
+    {
+        return !(*this == b);
+    }
+
 private:
     enum Flag
     {
@@ -156,13 +165,13 @@ public:
 
     void drawEachChar(std::function<void(int x, int y, UChar c)> && action) const;
 
-public:
-    void scrollUp(LineN line);
-    void scrollDown(LineN line);
 
 public:
     ListenerID addOnUpdateListener(std::function<void()> && action);
     void removeOnUpdateListener(ListenerID id);
+
+    ListenerID addOnViewLocChangeListener(std::function<void()> && action);
+    void removeOnViewLocChangeListener(ListenerID id);
 
 private:
     int getLineOffsetByRowIndex(int row) const;
@@ -187,6 +196,7 @@ private:
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
     void onDirRightKeyPress();
+    void setViewLoc(const ViewLoc & viewLoc);
 
 private:
     void remakePage();
@@ -200,7 +210,7 @@ private:
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
-    ViewLoc m_loc{ 0 };
+    ViewLoc m_loc{ 0, 0 };
     
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
@@ -208,6 +218,7 @@ private:
 
 private:
     Listeners<void()> m_onUpdateListeners;
+    Listeners<void()> m_onViewLocChangeListeners;
 
 private:
     ListenerID m_listenerIdForLastActLineUpdate = 0;

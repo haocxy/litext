@@ -324,6 +324,28 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
 
 void View::onDirUpKeyPress()
 {
+    // 第一步：确保上一行在视图内
+    const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+    const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+    if (oldCharLoc.row() == 0 && oldCharLoc.line() <= m_loc.line())
+    {
+        if (m_loc.line() > 0)
+        {
+            setViewLoc(ViewLoc(m_loc.row(), m_loc.line() - 1));
+        }
+        else
+        {
+            if (m_loc.row() > 0)
+            {
+                view::VRow & vrow = m_page.growFront();
+                m_page.popBack();
+                makeVRow(m_editor.doc().rowAt(m_loc.row() - 1), vrow);
+                setViewLoc(ViewLoc(m_loc.row() - 1, vrow.size() - 1));
+            }
+        }
+    }
+
+    // 第二步：使用第一步更新后的新的视图数据取目标位置
     const DocLoc newLoc = getNextUpLoc(m_editor.normalCursor().to());
     if (!newLoc.isNull())
     {
@@ -366,6 +388,18 @@ void View::onDirRightKeyPress()
 
     const view::CharLoc charLoc = convertToCharLoc(newLoc);
     m_stable_x = getXByCharLoc(charLoc);
+}
+
+void View::setViewLoc(const ViewLoc & viewLoc)
+{
+    if (m_loc == viewLoc)
+    {
+        return;
+    }
+
+    m_loc = viewLoc;
+
+    m_onViewLocChangeListeners.call();
 }
 
 view::Rect View::getLastActLineDrawRect() const
@@ -497,15 +531,6 @@ void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) con
     }
 }
 
-void View::scrollUp(LineN line)
-{
-
-}
-
-void View::scrollDown(LineN line)
-{
-}
-
 ListenerID View::addOnUpdateListener(std::function<void()>&& action)
 {
     return m_onUpdateListeners.add(std::move(action));
@@ -514,6 +539,16 @@ ListenerID View::addOnUpdateListener(std::function<void()>&& action)
 void View::removeOnUpdateListener(ListenerID id)
 {
     m_onUpdateListeners.remove(id);
+}
+
+ListenerID View::addOnViewLocChangeListener(std::function<void()>&& action)
+{
+    return m_onViewLocChangeListeners.add(std::move(action));
+}
+
+void View::removeOnViewLocChangeListener(ListenerID id)
+{
+    m_onViewLocChangeListeners.remove(id);
 }
 
 void View::onPrimaryButtomPress(int x, int y)
