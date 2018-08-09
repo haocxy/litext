@@ -127,7 +127,7 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
     }
 }
 
-ListenerHandle Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
+CallbackHandle Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
 {
     return m_lastActRowUpdateListeners.add(std::move(action));
 }

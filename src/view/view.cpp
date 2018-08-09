@@ -532,12 +532,12 @@ void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) con
     }
 }
 
-ListenerHandle View::addOnUpdateListener(std::function<void()>&& action)
+CallbackHandle View::addOnUpdateListener(std::function<void()>&& action)
 {
     return m_onUpdateListeners.add(std::move(action));
 }
 
-ListenerHandle View::addOnViewLocChangeListener(std::function<void()>&& action)
+CallbackHandle View::addOnViewLocChangeListener(std::function<void()>&& action)
 {
     return m_onViewLocChangeListeners.add(std::move(action));
 }

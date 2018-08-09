@@ -45,8 +45,7 @@ private:
     QImage m_buff;
     QImage m_textBuff;
 
-// listener id
 private:
-    ListenerHandle m_listenerHandleViewLocChange;
+    CallbackHandle m_listenerHandleViewLocChange;
 };
 

@@ -4,70 +4,70 @@
 #include <functional>
 #include <memory>
 
-class RemovableListeners
+class RemovableCallbacks
 {
 public:
-    virtual ~RemovableListeners() {}
+    virtual ~RemovableCallbacks() {}
     virtual void remove(void * id) = 0;
 };
 
 // 监听器句柄
 // 由监听事件的模块(通常是添加监听器的模块)负责维护生命周期
 // 句柄析构时会自动移除监听器,以保证当监听者消失时监听器被正确移除
-class ListenerHandle
+class CallbackHandle
 {
 public:
-    ListenerHandle()
-        : m_listeners(nullptr)
-        , m_listenerId(0)
+    CallbackHandle()
+        : m_callbacks(nullptr)
+        , m_callbackId(nullptr)
     {
 
     }
 
-    ListenerHandle(ListenerHandle && listenerHandler)
-        : m_listeners(listenerHandler.m_listeners)
-        , m_listenerId(listenerHandler.m_listenerId)
+    CallbackHandle(CallbackHandle && cbh)
+        : m_callbacks(cbh.m_callbacks)
+        , m_callbackId(cbh.m_callbackId)
     {
-        listenerHandler.m_listeners = nullptr;
-        listenerHandler.m_listenerId = nullptr;
+        cbh.m_callbacks = nullptr;
+        cbh.m_callbackId = nullptr;
     }
 
-    ListenerHandle & operator=(ListenerHandle && h)
+    CallbackHandle & operator=(CallbackHandle && cbh)
     {
-        m_listeners = h.m_listeners;
-        h.m_listeners = nullptr;
+        m_callbacks = cbh.m_callbacks;
+        cbh.m_callbacks = nullptr;
 
-        m_listenerId = h.m_listenerId;
-        h.m_listenerId = nullptr;
+        m_callbackId = cbh.m_callbackId;
+        cbh.m_callbackId = nullptr;
 
         return *this;
     }
 
-    ~ListenerHandle()
+    ~CallbackHandle()
     {
-        if (m_listeners && m_listenerId)
+        if (m_callbacks && m_callbackId)
         {
-            m_listeners->remove(m_listenerId);
-            m_listeners = nullptr;
-            m_listenerId = nullptr;
+            m_callbacks->remove(m_callbackId);
+            m_callbacks = nullptr;
+            m_callbackId = nullptr;
         }
     }
 
 private:
-    std::shared_ptr<RemovableListeners> m_listeners;
-    void * m_listenerId;
+    std::shared_ptr<RemovableCallbacks> m_callbacks;
+    void * m_callbackId;
 
-    ListenerHandle(std::shared_ptr<RemovableListeners> listeners, void * id) : m_listeners(listeners), m_listenerId(id) {}
+    CallbackHandle(std::shared_ptr<RemovableCallbacks> callbacks, void * id) : m_callbacks(callbacks), m_callbackId(id) {}
 
     template <typename Fn>
-    friend class Listeners;
+    friend class Callbacks;
 };
 
 template <typename Fn>
-class ListenersInner : public RemovableListeners
+class CallbacksInner : public RemovableCallbacks
 {
 public:
-    virtual ~ListenersInner() {}
+    virtual ~CallbacksInner() {}
 
     void * add(std::function<Fn> && f)
     {
@@ -102,13 +102,13 @@ private:
 };
 
 template <typename Fn>
-class Listeners
+class Callbacks
 {
 public:
-    ListenerHandle add(std::function<Fn> && f)
+    CallbackHandle add(std::function<Fn> && f)
     {
         void * id = m_ptr->add(std::move(f));
-        return ListenerHandle(m_ptr, id);
+        return CallbackHandle(m_ptr, id);
     }
 
     template <typename ...Args>
@@ -118,5 +118,5 @@ public:
     }
 
 private:
-    std::shared_ptr<ListenersInner<Fn>> m_ptr{ new ListenersInner<Fn> };
+    std::shared_ptr<CallbacksInner<Fn>> m_ptr{ new CallbacksInner<Fn> };
 };

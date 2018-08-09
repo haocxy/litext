@@ -21,5 +21,5 @@ private:
 
 private:
     View & m_view;
-    ListenerHandle m_listenerHandleUpdate;
+    CallbackHandle m_listenerHandleUpdate;
 };
