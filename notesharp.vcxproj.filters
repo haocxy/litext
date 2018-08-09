@@ -147,9 +147,6 @@
     <ClInclude Include="src\view\font_to_qfont.h">
       <Filter>src\view</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\listeners.h">
-      <Filter>src\util</Filter>
-    </ClInclude>
     <ClInclude Include="src\text\encoding_detector.h">
       <Filter>src\text</Filter>
     </ClInclude>
@@ -188,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="src\view\view_define.h">
       <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\callbacks.h">
+      <Filter>src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

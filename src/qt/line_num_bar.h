@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "util/listeners.h"
+#include "util/callbacks.h"
 
 class View;
 class QPainter;

@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QImage>
 
-#include "util/listeners.h"
+#include "util/callbacks.h"
 
 class View;
 
