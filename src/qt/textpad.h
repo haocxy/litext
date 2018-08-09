@@ -25,14 +25,14 @@ private:
     void paintBackground(QPainter &p);
     void paintLastActLine(QPainter &p);
     void paintCursor(QPainter &p);
-    void paintTextContent();
+    void prepareTextImage();
     void paintOnPixmap();
     void refresh();
 private:
     enum DirtyBuffFlag
     {
         DBF_Text,
-
+        
 
         DBF_Cnt, // 保证在最后一个，用于计数
     };

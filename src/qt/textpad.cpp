@@ -50,8 +50,7 @@ TextPad::TextPad(View *view, QWidget *parent)
 
     m_view.initSize({kWidthHint,kHeightHint});
 
-    paintTextContent();
-    paintOnPixmap();
+    prepareTextImage();
 }
 
 TextPad::~TextPad()
@@ -66,6 +65,14 @@ QSize TextPad::sizeHint() const
 
 void TextPad::paintEvent(QPaintEvent * e)
 {
+    if (m_dirtyBuffFlags.test(DBF_Text))
+    {
+        prepareTextImage();
+        m_dirtyBuffFlags.set(DBF_Text, false);
+    }
+
+    paintOnPixmap();
+
     QPainter p(this);
     p.drawImage(0, 0, m_buff);
 }
@@ -143,7 +150,7 @@ void TextPad::paintLastActLine(QPainter & p)
     p.fillRect(r.left(), r.top(), r.width(), r.height(), QColor(Qt::green).lighter(192));
 }
 
-void TextPad::paintTextContent()
+void TextPad::prepareTextImage()
 {
     QPainter p(&m_textBuff);
     m_textBuff.fill(QColor(0, 0, 0, 0));
@@ -169,13 +176,8 @@ void TextPad::paintOnPixmap()
 
 void TextPad::refresh()
 {
-    if (m_dirtyBuffFlags.test(DBF_Text))
-    {
-        paintTextContent();
-        m_dirtyBuffFlags.set(DBF_Text, false);
-    }
-
-    paintOnPixmap();
+    // refresh这个函数里即使只调用了update，也要这样包装一层
+    // 其他部分调用refresh，这样就便于以后需要时添加重绘相关的公用逻辑
     update();
 }
 
