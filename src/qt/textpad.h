@@ -28,7 +28,7 @@ private:
     void paintLastActLine(QPainter &p);
     void paintCursor(QPainter &p);
     void prepareTextImage();
-    void paintOnPixmap();
+    void paintWidget(QPainter &p);
     void refresh();
 private:
     enum DirtyBuffFlag
@@ -42,7 +42,6 @@ private:
 private:
     View &m_view;
     std::bitset<DBF_Cnt> m_dirtyBuffFlags;
-    QImage m_buff;
     QImage m_textBuff;
 
 private:

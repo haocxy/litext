@@ -40,7 +40,6 @@ namespace
 TextPad::TextPad(View *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
-    , m_buff(kWidthHint, kHeightHint, kBuffImageFormat)
     , m_textBuff(kWidthHint, kHeightHint, kBuffImageFormat)
 {
     assert(view);
@@ -74,10 +73,8 @@ void TextPad::paintEvent(QPaintEvent * e)
         m_dirtyBuffFlags.set(DBF_Text, false);
     }
 
-    paintOnPixmap();
-
     QPainter p(this);
-    p.drawImage(0, 0, m_buff);
+    paintWidget(p);
 }
 
 void TextPad::showEvent(QShowEvent * e)
@@ -91,7 +88,6 @@ void TextPad::resizeEvent(QResizeEvent * e)
 
     if (e->oldSize().isValid() && sz != e->oldSize())
     {
-        m_buff = std::move(QImage(sz, kBuffImageFormat));
         m_textBuff = std::move(QImage(sz, kBuffImageFormat));
         m_dirtyBuffFlags.set(DBF_Text);
     }
@@ -139,7 +135,7 @@ void TextPad::mousePressEvent(QMouseEvent * e)
 
 void TextPad::paintBackground(QPainter & p)
 {
-    p.fillRect(m_buff.rect(), Qt::white);
+    p.fillRect(rect(), Qt::white);
 }
 
 void TextPad::paintLastActLine(QPainter & p)
@@ -167,10 +163,8 @@ void TextPad::prepareTextImage()
     });
 }
 
-void TextPad::paintOnPixmap()
+void TextPad::paintWidget(QPainter & p)
 {
-    QPainter p(&m_buff);
-
     paintBackground(p);
     paintLastActLine(p);
     p.drawImage(0, 0, m_textBuff);
