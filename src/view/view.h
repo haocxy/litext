@@ -175,6 +175,7 @@ private:
     int getLineOffsetByLineLoc(const view::LineLoc & loc) const;
     int getLineOffsetByY(int y) const;
     view::LineLoc getLineLocByLineOffset(int offset) const;
+    view::CharLoc getCharLocByLineLocAndX(const view::LineLoc & lineLoc, int x) const;
     view::CharLoc getCharLocByPoint(int x, int y) const;
     DocLoc getDocLocByPoint(int x, int y) const;
     view::RowLoc convertToRowLoc(RowN row) const;

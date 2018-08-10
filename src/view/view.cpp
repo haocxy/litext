@@ -94,7 +94,7 @@ view::CharLoc View::getCharLocByPoint(int x, int y) const
 {
     const int lineOffset = getLineOffsetByY(y);
     const view::LineLoc lineLoc = getLineLocByLineOffset(lineOffset);
-    return m_page.getCharLocByLineLocAndX(lineLoc, x);
+    return getCharLocByLineLocAndX(lineLoc, x);
 }
 
 DocLoc View::getDocLocByPoint(int x, int y) const
@@ -303,7 +303,7 @@ DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
     }
 
     const view::LineLoc upLineLoc = m_page.getNextUpLineLoc(charLoc);
-    const view::CharLoc upCharLoc = m_page.getCharLocByLineLocAndX(upLineLoc, m_stable_x);
+    const view::CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, m_stable_x);
 
     return convertToDocLoc(upCharLoc);
 }
@@ -317,7 +317,7 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
     }
 
     const view::LineLoc downLineLoc = m_page.getNextDownLineLoc(charLoc);
-    const view::CharLoc downCharLoc = m_page.getCharLocByLineLocAndX(downLineLoc, m_stable_x);
+    const view::CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, m_stable_x);
 
     return convertToDocLoc(downCharLoc);
 }
@@ -620,6 +620,79 @@ view::LineLoc View::getLineLocByLineOffset(int offset) const
     }
 
     return view::LineLoc::newLineLocAfterLastRow();
+}
+
+static inline int calcLeftBound(int x, int leftWidth)
+{
+    assert(leftWidth > 0);
+
+    return x - (leftWidth >> 1);
+}
+
+static inline int calcRightBound(int x, int curWidth)
+{
+    assert(curWidth > 0);
+
+    if ((curWidth & 1) == 0)
+    {
+        return x + (curWidth >> 1) - 1;
+    }
+    else
+    {
+        return x + (curWidth >> 1);
+    }
+}
+
+view::CharLoc View::getCharLocByLineLocAndX(const view::LineLoc & lineLoc, int x) const
+{
+    if (lineLoc.isNull() || lineLoc.isAfterLastRow())
+    {
+        return view::CharLoc::newCharLocAfterLastChar(lineLoc);
+    }
+
+    const view::Line & line = m_page.getLine(lineLoc);
+
+    const int charCnt = line.size();
+
+    if (charCnt == 0)
+    {
+        return view::CharLoc::newCharLocAfterLastChar(lineLoc);
+    }
+
+    // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
+    const view::Char & firstChar = line[0];
+    const int firstX = firstChar.x();
+    const int firstWidth = firstChar.width();
+    const int firstCharRightBound = calcRightBound(firstX, firstWidth);
+    if (x <= firstCharRightBound)
+    {
+        return view::CharLoc(lineLoc, 0);
+    }
+
+    int left = 1;
+    int right = charCnt - 1;
+    while (left <= right)
+    {
+        const int mid = ((left + right) >> 1);
+        const view::Char & c = line[mid];
+        const int cx = c.x();
+        const int a = calcLeftBound(cx, line[mid - 1].width());
+        const int b = calcRightBound(cx, c.width());
+        if (x < a)
+        {
+            right = mid - 1;
+        }
+        else if (x > b)
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            return view::CharLoc(lineLoc, mid);
+        }
+    }
+
+    return view::CharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
 void View::remakePage()

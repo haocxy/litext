@@ -122,7 +122,6 @@ namespace view
         {
             m_rows.pop_back();
         }
-        CharLoc getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const;
         LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
         LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
         const Line & getLine(const view::LineLoc & lineLoc) const
