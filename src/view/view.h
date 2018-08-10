@@ -186,10 +186,13 @@ private:
     view::LineBound getLineBoundByLineOffset(int lineOffset) const;
     view::LineBound getLineBound(const view::LineLoc & lineLoc) const;
     view::RowBound getRowBound(const view::RowLoc & rowLoc) const;
+    bool hasPrevCharAtSameLine(const view::CharLoc & charLoc) const;
+    bool noPrevCharAtSameLine(const view::CharLoc & charLoc) const;
 
 private:
     DocLoc getNextUpLoc(const DocLoc & docLoc) const;
     DocLoc getNextDownLoc(const DocLoc & docLoc) const;
+    void ensureHasPrevLine(const view::LineLoc & curLineLoc);
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
@@ -208,7 +211,7 @@ private:
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
-    ViewLoc m_loc{ 0, 0 };
+    ViewLoc m_loc{ 10, 0 };
     
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作

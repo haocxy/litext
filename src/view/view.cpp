@@ -293,6 +293,22 @@ view::RowBound View::getRowBound(const view::RowLoc & rowLoc) const
     return view::RowBound(top, height);
 }
 
+bool View::hasPrevCharAtSameLine(const view::CharLoc & charLoc) const
+{
+    return !noPrevCharAtSameLine(charLoc);
+}
+
+bool View::noPrevCharAtSameLine(const view::CharLoc & charLoc) const
+{
+    if (charLoc.isAfterLastChar())
+    {
+        return m_page.getLine(charLoc).size() == 0;
+    }
+    else
+    {
+        return charLoc.col() == 0;
+    }
+}
 
 DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
 {
@@ -322,13 +338,9 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
     return convertToDocLoc(downCharLoc);
 }
 
-void View::onDirUpKeyPress()
+void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
 {
-    // 第一步：确保上一行在视图内
-    // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
-    const DocLoc & oldDocLoc = m_editor.normalCursor().to();
-    const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
-    if (oldCharLoc.row() == 0 && oldCharLoc.line() <= m_loc.line())
+    if (curLineLoc.row() == 0 && curLineLoc.line() <= m_loc.line())
     {
         if (m_loc.line() > 0)
         {
@@ -345,6 +357,15 @@ void View::onDirUpKeyPress()
             }
         }
     }
+}
+
+void View::onDirUpKeyPress()
+{
+    // 第一步：确保上一行在视图内
+    // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
+    const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+    const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+    ensureHasPrevLine(oldCharLoc);
 
     // 第二步：使用第一步更新后的新的视图数据取目标位置
     const DocLoc newLoc = getNextUpLoc(m_editor.normalCursor().to());
@@ -365,6 +386,12 @@ void View::onDirDownKeyPress()
 
 void View::onDirLeftKeyPress()
 {
+    const DocLoc oldDocLoc = m_editor.normalCursor().to();
+    const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+    if (noPrevCharAtSameLine(oldCharLoc))
+    {
+        ensureHasPrevLine(oldCharLoc);
+    }
     const DocLoc newLoc = m_editor.getNextLeftLocByChar(m_editor.normalCursor().to());
     if (newLoc.isNull())
     {
