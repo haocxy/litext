@@ -12,7 +12,7 @@ const char *kFontFamilyYaHei = "Microsoft YaHei";
 static void setupConfig(view::Config &c)
 {
     c.setLineHeightFactor(1.f);
-    c.setHGap(2);
+    c.setHGap(100);
     c.setHMargin(0);
     c.setTabSize(4);
     c.setWrapLine(true);
@@ -22,7 +22,7 @@ static void setupConfig(view::Config &c)
     view::Font &f = c.rfont();
     view::FontInfo fi;
     fi.family = kFontFamilyTimes;
-    fi.size = 20;
+    fi.size = 40;
     fi.bold = false;
 
     f.setFont(fi);
