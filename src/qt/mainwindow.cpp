@@ -13,7 +13,7 @@ static void setupConfig(view::Config &c)
 {
     c.setLineHeightFactor(1.f);
     c.setHGap(100);
-    c.setHMargin(0);
+    c.setHMargin(20);
     c.setTabSize(4);
     c.setWrapLine(true);
     c.setShowLineNum(true);

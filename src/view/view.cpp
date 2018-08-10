@@ -622,11 +622,11 @@ view::LineLoc View::getLineLocByLineOffset(int offset) const
     return view::LineLoc::newLineLocAfterLastRow();
 }
 
-static inline int calcLeftBound(int x, int leftWidth)
+static inline int calcLeftBound(int x, int leftWidth, int margin)
 {
     assert(leftWidth > 0);
 
-    return x - (leftWidth >> 1);
+    return x - (leftWidth >> 1) - margin;
 }
 
 static inline int calcRightBound(int x, int curWidth)
@@ -659,6 +659,8 @@ view::CharLoc View::getCharLocByLineLocAndX(const view::LineLoc & lineLoc, int x
         return view::CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
+    const int margin = m_config.hMargin();
+
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const view::Char & firstChar = line[0];
     const int firstX = firstChar.x();
@@ -676,7 +678,7 @@ view::CharLoc View::getCharLocByLineLocAndX(const view::LineLoc & lineLoc, int x
         const int mid = ((left + right) >> 1);
         const view::Char & c = line[mid];
         const int cx = c.x();
-        const int a = calcLeftBound(cx, line[mid - 1].width());
+        const int a = calcLeftBound(cx, line[mid - 1].width(), margin);
         const int b = calcRightBound(cx, c.width());
         if (x < a)
         {
