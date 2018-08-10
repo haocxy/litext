@@ -34,13 +34,14 @@ namespace
     static int kWidthHint = 800;
     static int kHeightHint = 600;
     static QSize kSizeHint(kWidthHint, kHeightHint);
+    static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 }
 
 TextPad::TextPad(View *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
-    , m_buff(kWidthHint, kHeightHint, QImage::Format_RGBA8888)
-    , m_textBuff(kWidthHint, kHeightHint, QImage::Format_RGBA8888)
+    , m_buff(kWidthHint, kHeightHint, kBuffImageFormat)
+    , m_textBuff(kWidthHint, kHeightHint, kBuffImageFormat)
 {
     assert(view);
 
@@ -90,8 +91,8 @@ void TextPad::resizeEvent(QResizeEvent * e)
 
     if (e->oldSize().isValid() && sz != e->oldSize())
     {
-        m_buff = std::move(QImage(sz, QImage::Format_RGBA8888));
-        m_textBuff = std::move(QImage(sz, QImage::Format_RGBA8888));
+        m_buff = std::move(QImage(sz, kBuffImageFormat));
+        m_textBuff = std::move(QImage(sz, kBuffImageFormat));
         m_dirtyBuffFlags.set(DBF_Text);
     }
 
