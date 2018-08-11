@@ -102,12 +102,13 @@ namespace view
             m_lineCnt = 0;
         }
         int size() const { return static_cast<int>(m_rows.size()); }
+        int lineCnt() const { return m_lineCnt; }
         const VRow &operator[](int line) const { return m_rows[line]; }
-        VRow &operator[](int line) { return m_rows[line]; }
         const_iterator begin() const { return m_rows.begin(); }
         const_iterator end() const { return m_rows.end(); }
-        iterator begin() { return m_rows.begin(); }
-        iterator end() { return m_rows.end(); }
+        LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
+        LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
+        const Line & getLine(const view::LineLoc & lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
         void pushFront(VRow && row)
         {
             m_lineCnt += row.size();
@@ -134,17 +135,7 @@ namespace view
                 m_rows.pop_back();
             }
         }
-        LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
-        LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
-        const Line & getLine(const view::LineLoc & lineLoc) const
-        {
-            return m_rows[lineLoc.row()][lineLoc.line()];
-        }
-        view::Line & getLine(const view::LineLoc & lineLoc)
-        {
-            return m_rows[lineLoc.row()][lineLoc.line()];
-        }
-        int lineCnt() const { return m_lineCnt; }
+        
     private:
         VRows m_rows;
         int m_lineCnt = 0;
