@@ -392,24 +392,21 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 
 void View::removeSpareRow()
 {
-    int sum = -m_loc.line();
-
-    const int rowCnt = m_page.size();
-
     const int maxShownLineCnt = getMaxShownLineCnt();
 
-    for (int r = 0; r < rowCnt; ++r)
+    int remainLineCnt = m_page.lineCnt();
+
+    for (int r = m_page.size() - 1; r >= 0; --r)
     {
-        if (sum >= maxShownLineCnt)
+        remainLineCnt -= m_page[r].size();
+        if (remainLineCnt >= maxShownLineCnt)
         {
-            for (int i = r; i < rowCnt; ++i)
-            {
-                m_page.popBack();
-            }
+            m_page.popBack();
+        }
+        else
+        {
             break;
         }
-
-        sum += m_page[r].size();
     }
 }
 

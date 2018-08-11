@@ -200,7 +200,6 @@ private:
 private:
     void ensureHasPrevLine(const view::LineLoc & curLineLoc);
     void ensureHasNextLine(const view::LineLoc & curLineLoc);
-    void removeSpareRow();
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
@@ -209,6 +208,7 @@ private:
 
 private:
     void remakePage();
+    void removeSpareRow();
 
 private:
     Editor & m_editor;
