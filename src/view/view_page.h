@@ -106,19 +106,29 @@ namespace view
         iterator end() { return m_rows.end(); }
         void pushFront(VRow && row)
         {
+            m_lineCnt += row.size();
             m_rows.push_front(std::move(row));
         }
         void popFront()
         {
-            m_rows.pop_front();
+            if (!m_rows.empty())
+            {
+                m_lineCnt -= m_rows.front().size();
+                m_rows.pop_front();
+            }
         }
         void pushBack(VRow && row)
         {
+            m_lineCnt += row.size();
             m_rows.push_back(std::move(row));
         }
         void popBack()
         {
-            m_rows.pop_back();
+            if (!m_rows.empty())
+            {
+                m_lineCnt -= m_rows.back().size();
+                m_rows.pop_back();
+            }
         }
         LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
         LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
@@ -130,16 +140,9 @@ namespace view
         {
             return m_rows[lineLoc.row()][lineLoc.line()];
         }
-        int lineCnt() const
-        {
-            int sum = 0;
-            for (const VRow & row : m_rows)
-            {
-                sum += row.size();
-            }
-            return sum;
-        }
+        int lineCnt() const { return m_lineCnt; }
     private:
         VRows m_rows;
+        int m_lineCnt = 0;
     };
 }
