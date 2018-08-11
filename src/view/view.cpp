@@ -378,9 +378,9 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
                 const int newRowSize = vrow.size();
                 m_page.pushFront(std::move(vrow));
 
-                removeSpareRow();
-
                 setViewLoc(ViewLoc(m_loc.row() - 1, newRowSize - 1));
+
+                removeSpareRow();
             }
         }
     }
@@ -394,7 +394,7 @@ void View::removeSpareRow()
 {
     const int maxShownLineCnt = getMaxShownLineCnt();
 
-    int remainLineCnt = m_page.lineCnt();
+    int remainLineCnt = m_page.lineCnt() - m_loc.line();
 
     for (int r = m_page.size() - 1; r >= 0; --r)
     {
