@@ -199,14 +199,14 @@ DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
 
     if (charLoc.isAfterLastChar())
     {
-        if (charLoc.line() < m_page[charLoc.row()].size() - 1)
+        if (isLastLineOfRow(charLoc))
         {
-            // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
-            return convertToDocLoc(view::CharLoc(charLoc.row(), charLoc.line() + 1, 0));
+            return DocLoc::newDocLocAfterLastChar(m_loc.row() + charLoc.row());
         }
         else
         {
-            return DocLoc::newDocLocAfterLastChar(m_loc.row() + charLoc.row());
+            // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
+            return convertToDocLoc(view::CharLoc(charLoc.row(), charLoc.line() + 1, 0));
         }
     }
 
@@ -333,6 +333,35 @@ bool View::noNextCharAtSameLine(const view::CharLoc & charLoc) const
     }
 }
 
+bool View::isLastLineOfRow(const view::LineLoc & lineLoc) const
+{
+    return lineLoc.line() == m_page[lineLoc.row()].size() - 1;
+}
+
+bool View::isEndOfVirtualLine(const view::CharLoc & charLoc) const
+{
+    return charLoc.isAfterLastChar() && !isLastLineOfRow(charLoc);
+}
+
+// 避免出现因为定位到虚拟行尾部而使虚拟行被跳过的情况
+view::CharLoc View::betterLocForVerticalMove(const view::CharLoc & charLoc) const
+{
+    if (!isEndOfVirtualLine(charLoc))
+    {
+        return charLoc;
+    }
+
+    const view::Line & line = m_page.getLine(charLoc);
+    const CharN charCnt = line.size();
+
+    if (charCnt != 0)
+    {
+        return view::CharLoc(charLoc.row(), charLoc.line(), charCnt - 1);
+    }
+
+    return charLoc;
+}
+
 DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
 {
     const view::CharLoc charLoc = convertToCharLoc(docLoc);
@@ -344,17 +373,7 @@ DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
     const view::LineLoc upLineLoc = m_page.getNextUpLineLoc(charLoc);
     const view::CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, m_stable_x);
 
-    if (upCharLoc.isAfterLastChar() && upCharLoc.row() == charLoc.row())
-    {
-        const view::Line & upLine = m_page.getLine(upLineLoc);
-        const CharN upCharCnt = upLine.size();
-        if (upCharCnt != 0)
-        {
-            return convertToDocLoc(view::CharLoc(upLineLoc, upCharCnt - 1));
-        }
-    }
-
-    return convertToDocLoc(upCharLoc);
+    return convertToDocLoc(betterLocForVerticalMove(upCharLoc));
 }
 
 DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
@@ -368,21 +387,7 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
     const view::LineLoc downLineLoc = m_page.getNextDownLineLoc(charLoc);
     const view::CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, m_stable_x);
 
-    if (downCharLoc.isAfterLastChar())
-    {
-        const view::VRow & downRow = m_page[downCharLoc.row()];
-        if (downRow.size() > 1)
-        {
-            const view::Line & downLine = m_page.getLine(downLineLoc);
-            const CharN downCharCnt = downLine.size();
-            if (downCharCnt != 0)
-            {
-                return convertToDocLoc(view::CharLoc(downLineLoc, downCharCnt - 1));
-            }
-        }
-    }
-
-    return convertToDocLoc(downCharLoc);
+    return convertToDocLoc(betterLocForVerticalMove(downCharLoc));
 }
 
 void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
