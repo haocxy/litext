@@ -344,6 +344,16 @@ DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
     const view::LineLoc upLineLoc = m_page.getNextUpLineLoc(charLoc);
     const view::CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, m_stable_x);
 
+    if (upCharLoc.isAfterLastChar() && upCharLoc.row() == charLoc.row())
+    {
+        const view::Line & upLine = m_page.getLine(upLineLoc);
+        const CharN upCharCnt = upLine.size();
+        if (upCharCnt != 0)
+        {
+            return convertToDocLoc(view::CharLoc(upLineLoc, upCharCnt - 1));
+        }
+    }
+
     return convertToDocLoc(upCharLoc);
 }
 
@@ -357,6 +367,20 @@ DocLoc View::getNextDownLoc(const DocLoc & docLoc) const
 
     const view::LineLoc downLineLoc = m_page.getNextDownLineLoc(charLoc);
     const view::CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, m_stable_x);
+
+    if (downCharLoc.isAfterLastChar())
+    {
+        const view::VRow & downRow = m_page[downCharLoc.row()];
+        if (downRow.size() > 1)
+        {
+            const view::Line & downLine = m_page.getLine(downLineLoc);
+            const CharN downCharCnt = downLine.size();
+            if (downCharCnt != 0)
+            {
+                return convertToDocLoc(view::CharLoc(downLineLoc, downCharCnt - 1));
+            }
+        }
+    }
 
     return convertToDocLoc(downCharLoc);
 }
