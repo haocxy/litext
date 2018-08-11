@@ -96,7 +96,11 @@ namespace view
         typedef VRows::const_iterator const_iterator;
         typedef VRows::iterator iterator;
 
-        void clear() { m_rows.clear(); }
+        void clear()
+        {
+            m_rows.clear();
+            m_lineCnt = 0;
+        }
         int size() const { return static_cast<int>(m_rows.size()); }
         const VRow &operator[](int line) const { return m_rows[line]; }
         VRow &operator[](int line) { return m_rows[line]; }
