@@ -797,9 +797,10 @@ void View::remakePage()
 
         view::VRow vrow;
         makeVRow(m_editor.doc().rowAt(i), vrow);
+        const int rowSize = vrow.size();
         m_page.pushBack(std::move(vrow));
 
-        h += vrow.size();
+        h += rowSize;
     }
 }
 
