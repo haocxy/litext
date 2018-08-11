@@ -373,10 +373,14 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
         {
             if (m_loc.row() > 0)
             {
-                view::VRow & vrow = m_page.growFront();
+                view::VRow vrow;
                 makeVRow(m_editor.doc().rowAt(m_loc.row() - 1), vrow);
+                const int newRowSize = vrow.size();
+                m_page.pushFront(std::move(vrow));
+
                 removeSpareRow();
-                setViewLoc(ViewLoc(m_loc.row() - 1, vrow.size() - 1));
+
+                setViewLoc(ViewLoc(m_loc.row() - 1, newRowSize - 1));
             }
         }
     }
@@ -791,9 +795,9 @@ void View::remakePage()
             break;
         }
 
-        view::VRow & vrow = m_page.grow();
-
+        view::VRow vrow;
         makeVRow(m_editor.doc().rowAt(i), vrow);
+        m_page.pushBack(std::move(vrow));
 
         h += vrow.size();
     }

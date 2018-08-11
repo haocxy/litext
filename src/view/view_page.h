@@ -104,19 +104,17 @@ namespace view
         const_iterator end() const { return m_rows.end(); }
         iterator begin() { return m_rows.begin(); }
         iterator end() { return m_rows.end(); }
-        VRow &growFront()
+        void pushFront(VRow && row)
         {
-            VRow vrow;
-            m_rows.push_front(std::move(vrow));
-            return m_rows[0];
+            m_rows.push_front(std::move(row));
         }
         void popFront()
         {
             m_rows.pop_front();
         }
-        VRow &grow()
+        void pushBack(VRow && row)
         {
-            return StlContainerUtil::grow(m_rows);
+            m_rows.push_back(std::move(row));
         }
         void popBack()
         {
