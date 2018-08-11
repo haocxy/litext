@@ -376,6 +376,10 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
     }
 }
 
+void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
+{
+}
+
 void View::onDirUpKeyPress()
 {
     // 第一步：确保上一行在视图内
@@ -758,7 +762,7 @@ void View::remakePage()
 
 }
 
-void View::makeVRow(const Row & row, view::VRow & vrow)
+void View::makeVRow(const Row & row, view::VRow & vrow) const
 {
     if (m_config.wrapLine())
     {
@@ -770,7 +774,7 @@ void View::makeVRow(const Row & row, view::VRow & vrow)
     }
 }
 
-void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow)
+void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
 {
     assert(vrow.size() == 0);
 
@@ -848,7 +852,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow)
     }
 }
 
-void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow)
+void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
 {
     assert(vrow.size() == 0);
 

@@ -190,11 +190,15 @@ private:
     bool noPrevCharAtSameLine(const view::CharLoc & charLoc) const;
     bool hasNextCharAtSameLine(const view::CharLoc & charLoc) const;
     bool noNextCharAtSameLine(const view::CharLoc & charLoc) const;
-
-private:
     DocLoc getNextUpLoc(const DocLoc & docLoc) const;
     DocLoc getNextDownLoc(const DocLoc & docLoc) const;
+    void makeVRow(const Row & row, view::VRow & vrow) const;
+    void makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const;
+    void makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const;
+
+private:
     void ensureHasPrevLine(const view::LineLoc & curLineLoc);
+    void ensureHasNextLine(const view::LineLoc & curLineLoc);
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
@@ -203,10 +207,6 @@ private:
 
 private:
     void remakePage();
-
-    void makeVRow(const Row & row, view::VRow & vrow);
-    void makeVRowWithWrapLine(const Row & row, view::VRow & vrow);
-    void makeVRowNoWrapLine(const Row & row, view::VRow & vrow);
 
 private:
     Editor & m_editor;
