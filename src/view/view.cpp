@@ -74,6 +74,12 @@ int View::getLineOffsetByLineLoc(const view::LineLoc & loc) const
     return sum;
 }
 
+int View::getMaxShownLineCnt() const
+{
+    const int lineHeight = m_config.lineHeight();
+    return (m_size.height() + lineHeight - 1) / lineHeight;
+}
+
 int View::getLineOffsetByRowIndex(int row) const
 {
     int sum = 0;
@@ -368,8 +374,8 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
             if (m_loc.row() > 0)
             {
                 view::VRow & vrow = m_page.growFront();
-                m_page.popBack();
                 makeVRow(m_editor.doc().rowAt(m_loc.row() - 1), vrow);
+                removeSpareRow();
                 setViewLoc(ViewLoc(m_loc.row() - 1, vrow.size() - 1));
             }
         }
@@ -378,6 +384,29 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
 
 void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 {
+}
+
+void View::removeSpareRow()
+{
+    int sum = -m_loc.line();
+
+    const int rowCnt = m_page.size();
+
+    const int maxShownLineCnt = getMaxShownLineCnt();
+
+    for (int r = 0; r < rowCnt; ++r)
+    {
+        if (sum >= maxShownLineCnt)
+        {
+            for (int i = r; i < rowCnt; ++i)
+            {
+                m_page.popBack();
+            }
+            break;
+        }
+
+        sum += m_page[r].size();
+    }
 }
 
 void View::onDirUpKeyPress()
@@ -749,18 +778,27 @@ void View::remakePage()
 {
     m_page.clear();
 
-    const RowN maxShowLine = m_loc.row() + m_size.height() / m_config.lineHeight() + 1;
+    const RowN rowCnt = m_editor.doc().rowCnt();
 
-    const RowN rowCnt = std::min(maxShowLine, m_editor.doc().rowCnt());
+    const int maxShownLineCnt = getMaxShownLineCnt();
+
+    int h = -m_loc.line();
 
     for (RowN i = m_loc.row(); i < rowCnt; ++i)
     {
+        if (h >= maxShownLineCnt)
+        {
+            break;
+        }
+
         view::VRow & vrow = m_page.grow();
 
         makeVRow(m_editor.doc().rowAt(i), vrow);
-    }
 
+        h += vrow.size();
+    }
 }
+
 
 void View::makeVRow(const Row & row, view::VRow & vrow) const
 {

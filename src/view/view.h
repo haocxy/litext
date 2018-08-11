@@ -171,6 +171,7 @@ public:
     CallbackHandle addOnViewLocChangeListener(std::function<void()> && action);
 
 private:
+    int getMaxShownLineCnt() const;
     int getLineOffsetByRowIndex(int row) const;
     int getLineOffsetByLineLoc(const view::LineLoc & loc) const;
     int getLineOffsetByY(int y) const;
@@ -199,6 +200,7 @@ private:
 private:
     void ensureHasPrevLine(const view::LineLoc & curLineLoc);
     void ensureHasNextLine(const view::LineLoc & curLineLoc);
+    void removeSpareRow();
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
