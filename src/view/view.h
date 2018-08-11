@@ -188,6 +188,8 @@ private:
     view::RowBound getRowBound(const view::RowLoc & rowLoc) const;
     bool hasPrevCharAtSameLine(const view::CharLoc & charLoc) const;
     bool noPrevCharAtSameLine(const view::CharLoc & charLoc) const;
+    bool hasNextCharAtSameLine(const view::CharLoc & charLoc) const;
+    bool noNextCharAtSameLine(const view::CharLoc & charLoc) const;
 
 private:
     DocLoc getNextUpLoc(const DocLoc & docLoc) const;

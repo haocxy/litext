@@ -310,6 +310,23 @@ bool View::noPrevCharAtSameLine(const view::CharLoc & charLoc) const
     }
 }
 
+bool View::hasNextCharAtSameLine(const view::CharLoc & charLoc) const
+{
+    return !noNextCharAtSameLine(charLoc);
+}
+
+bool View::noNextCharAtSameLine(const view::CharLoc & charLoc) const
+{
+    if (charLoc.isAfterLastChar())
+    {
+        return true;
+    }
+    else
+    {
+        return charLoc.col() != m_page.size() - 1;
+    }
+}
+
 DocLoc View::getNextUpLoc(const DocLoc & docLoc) const
 {
     const view::CharLoc charLoc = convertToCharLoc(docLoc);
