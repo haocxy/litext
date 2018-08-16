@@ -417,6 +417,52 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
 
 void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 {
+	const int maxShownLineCnt = getMaxShownLineCnt();
+
+	const int rowCnt = m_page.size();
+
+	if (rowCnt == 0)
+	{
+		return;
+	}
+
+	if (curLineLoc.row() != rowCnt - 1)
+	{
+		return;
+	}
+
+	const view::VRow & lastRow = m_page[rowCnt - 1];
+
+	const int prevLineCnt = m_page.lineCnt() - m_loc.line() - lastRow.size();
+
+	const int lineIndex = maxShownLineCnt - prevLineCnt - 1;
+
+	if (!isLastLineOfRow(view::LineLoc(rowCnt - 1, lineIndex)))
+	{
+		return;
+	}
+
+	const RowN newDocRowIndex = m_loc.row() + rowCnt;
+	const RowN docRowCnt = m_editor.doc().rowCnt();
+	if (newDocRowIndex > docRowCnt - 1)
+	{
+		return;
+	}
+
+	const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
+	view::VRow vrow;
+	makeVRow(docRow, vrow);
+	m_page.pushBack(std::move(vrow));
+
+	if (isLastLineOfRow(view::LineLoc(0, m_loc.line())))
+	{
+		setViewLoc(ViewLoc(m_loc.row() + 1, 0));
+		m_page.popFront();
+	}
+	else
+	{
+		setViewLoc(ViewLoc(m_loc.row(), m_loc.line() + 1));
+	}
 }
 
 void View::removeSpareRow()
@@ -457,6 +503,10 @@ void View::onDirUpKeyPress()
 
 void View::onDirDownKeyPress()
 {
+	const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+	ensureHasNextLine(oldCharLoc);
+
     const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
     if (!newLoc.isNull())
     {
