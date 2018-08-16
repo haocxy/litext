@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget * parent)
     m_viewConfig = new view::Config();
     setupConfig(*m_viewConfig);
     m_doc = new SimpleDoc;
-    m_doc->LoadFromFile(R"(F:\a.txt)");
+    m_doc->LoadFromFile(R"(../nocode/demo/a.txt)");
     
     m_editor = new Editor(m_doc);
     m_view = new View(m_editor, m_viewConfig);
