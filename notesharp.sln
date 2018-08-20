@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "notesharp", "notesharp.vcxp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "third_party", "third_party", "{23122E49-6C35-4CE9-9978-DFFC281A8E2E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv-static", "third_party\libiconv-win-build-master\build-VS2015\libiconv-static\libiconv-static.vcxproj", "{46CAFE4A-B5BD-4422-ACC6-117D4AD041E2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libiconv-static", "third_party\libiconv-win-build-master\build-VS2017\libiconv-static\libiconv-static.vcxproj", "{46CAFE4A-B5BD-4422-ACC6-117D4AD041E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
