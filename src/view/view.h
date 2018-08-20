@@ -208,6 +208,7 @@ private:
     void onDirLeftKeyPress();
     void onDirRightKeyPress();
     void setViewLoc(const ViewLoc & viewLoc);
+	void movePageHeadOneLine();
 
 private:
     void remakePage();

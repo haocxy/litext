@@ -453,15 +453,7 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 		m_page.pushBack(std::move(vrow));
 	}
 
-	if (isLastLineOfRow(view::LineLoc(0, m_loc.line())))
-	{
-		setViewLoc(ViewLoc(m_loc.row() + 1, 0));
-		m_page.popFront();
-	}
-	else
-	{
-		setViewLoc(ViewLoc(m_loc.row(), m_loc.line() + 1));
-	}
+	movePageHeadOneLine();
 }
 
 void View::removeSpareRow()
@@ -502,15 +494,45 @@ void View::onDirUpKeyPress()
 
 void View::onDirDownKeyPress()
 {
-	const DocLoc & oldDocLoc = m_editor.normalCursor().to();
-	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
-	ensureHasNextLine(oldCharLoc);
+	// 当显示的文档行数（包括因为跨越视图边界而不完整显示的行）超过1行时，可以先更新视图位置，然后直接在更新后的视图中计算得到下方位置
+	// 而当显示的文档行数不足1行时，无法直接通过当前显示中的行信息计算下方位置，要特殊处理，不能简单地先更新视图位置
 
-    const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
-    if (!newLoc.isNull())
-    {
-        m_editor.setNormalCursor(newLoc);
-    }
+	if (m_page.lineCnt() - m_loc.line() > 1)
+	{
+		// 第一步，确保当前位置在视图中有下一行
+		const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+		const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+		ensureHasNextLine(oldCharLoc);
+
+		// 第二步，更新编辑器中的文档位置
+		const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
+		if (!newLoc.isNull())
+		{
+			m_editor.setNormalCursor(newLoc);
+		}
+	}
+	else
+	{
+		const RowN newDocRowIndex = m_loc.row() + 1;
+		const RowN docRowCnt = m_editor.doc().rowCnt();
+		if (newDocRowIndex > docRowCnt - 1)
+		{
+			return;
+		}
+
+		const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
+		view::VRow vrow;
+		makeVRow(docRow, vrow);
+		m_page.pushBack(std::move(vrow));
+
+		const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
+		if (!newLoc.isNull())
+		{
+			m_editor.setNormalCursor(newLoc);
+		}
+
+		movePageHeadOneLine();
+	}
 }
 
 void View::onDirLeftKeyPress()
@@ -557,6 +579,19 @@ void View::setViewLoc(const ViewLoc & viewLoc)
     m_loc = viewLoc;
 
     m_onViewLocChangeListeners.call();
+}
+
+void View::movePageHeadOneLine()
+{
+	if (isLastLineOfRow(view::LineLoc(0, m_loc.line())))
+	{
+		setViewLoc(ViewLoc(m_loc.row() + 1, 0));
+		m_page.popFront();
+	}
+	else
+	{
+		setViewLoc(ViewLoc(m_loc.row(), m_loc.line() + 1));
+	}
 }
 
 view::Rect View::getLastActLineDrawRect() const
