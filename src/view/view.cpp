@@ -437,22 +437,21 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 
 	const int lineIndex = maxShownLineCnt - prevLineCnt - 1;
 
-	if (!isLastLineOfRow(view::LineLoc(rowCnt - 1, lineIndex)))
+	if (isLastLineOfRow(view::LineLoc(rowCnt - 1, lineIndex)))
 	{
-		return;
-	}
 
-	const RowN newDocRowIndex = m_loc.row() + rowCnt;
-	const RowN docRowCnt = m_editor.doc().rowCnt();
-	if (newDocRowIndex > docRowCnt - 1)
-	{
-		return;
-	}
+		const RowN newDocRowIndex = m_loc.row() + rowCnt;
+		const RowN docRowCnt = m_editor.doc().rowCnt();
+		if (newDocRowIndex > docRowCnt - 1)
+		{
+			return;
+		}
 
-	const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
-	view::VRow vrow;
-	makeVRow(docRow, vrow);
-	m_page.pushBack(std::move(vrow));
+		const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
+		view::VRow vrow;
+		makeVRow(docRow, vrow);
+		m_page.pushBack(std::move(vrow));
+	}
 
 	if (isLastLineOfRow(view::LineLoc(0, m_loc.line())))
 	{
