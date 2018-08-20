@@ -421,12 +421,26 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 
 	const int rowCnt = m_page.size();
 
+	// 没有内容则返回
 	if (rowCnt == 0)
 	{
 		return;
 	}
 
-	if (curLineLoc.row() != rowCnt - 1)
+	// 当前视图坐标不在视图最后则返回
+	if (curLineLoc.row() < rowCnt - 1)
+	{
+		return;
+	}
+
+	if (!isLastLineOfRow(curLineLoc))
+	{
+		return;
+	}
+
+	// 当前坐标为文档最后一行则返回
+	const RowN docRowCnt = m_editor.doc().rowCnt();
+	if (m_loc.row() + curLineLoc.row() >= docRowCnt - 1)
 	{
 		return;
 	}
@@ -439,9 +453,7 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 
 	if (isLastLineOfRow(view::LineLoc(rowCnt - 1, lineIndex)))
 	{
-
 		const RowN newDocRowIndex = m_loc.row() + rowCnt;
-		const RowN docRowCnt = m_editor.doc().rowCnt();
 		if (newDocRowIndex > docRowCnt - 1)
 		{
 			return;
