@@ -202,7 +202,10 @@ private:
 
 private:
     void ensureHasPrevLine(const view::LineLoc & curLineLoc);
-    void ensureHasNextLine(const view::LineLoc & curLineLoc);
+
+	// 确保参数行有下一行
+	// 如果需要把页面头部向后移动则返回true
+    bool ensureHasNextLine(const view::LineLoc & curLineLoc);
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();

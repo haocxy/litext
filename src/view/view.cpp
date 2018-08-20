@@ -415,7 +415,7 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
     }
 }
 
-void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
+bool View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 {
 	const int maxShownLineCnt = getMaxShownLineCnt();
 
@@ -424,25 +424,25 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 	// 没有内容则返回
 	if (rowCnt == 0)
 	{
-		return;
+		return false;
 	}
 
 	// 当前视图坐标不在视图最后则返回
 	if (curLineLoc.row() < rowCnt - 1)
 	{
-		return;
+		return false;
 	}
 
 	if (!isLastLineOfRow(curLineLoc))
 	{
-		return;
+		return false;
 	}
 
 	// 当前坐标为文档最后一行则返回
 	const RowN docRowCnt = m_editor.doc().rowCnt();
 	if (m_loc.row() + curLineLoc.row() >= docRowCnt - 1)
 	{
-		return;
+		return false;
 	}
 
 	const view::VRow & lastRow = m_page[rowCnt - 1];
@@ -456,7 +456,7 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 		const RowN newDocRowIndex = m_loc.row() + rowCnt;
 		if (newDocRowIndex > docRowCnt - 1)
 		{
-			return;
+			return false;
 		}
 
 		const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
@@ -465,7 +465,7 @@ void View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 		m_page.pushBack(std::move(vrow));
 	}
 
-	movePageHeadOneLine();
+	return true;
 }
 
 void View::removeSpareRow()
@@ -506,43 +506,21 @@ void View::onDirUpKeyPress()
 
 void View::onDirDownKeyPress()
 {
-	// 当显示的文档行数（包括因为跨越视图边界而不完整显示的行）超过1行时，可以先更新视图位置，然后直接在更新后的视图中计算得到下方位置
-	// 而当显示的文档行数不足1行时，无法直接通过当前显示中的行信息计算下方位置，要特殊处理，不能简单地先更新视图位置
+	// 第一步，确保当前位置在视图中有下一行
+	const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+	const bool shouldMovePageHead = ensureHasNextLine(oldCharLoc);
 
-	if (m_page.lineCnt() - m_loc.line() > 1)
+	// 第二步，更新编辑器中的文档位置
+	const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
+	if (!newLoc.isNull())
 	{
-		// 第一步，确保当前位置在视图中有下一行
-		const DocLoc & oldDocLoc = m_editor.normalCursor().to();
-		const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
-		ensureHasNextLine(oldCharLoc);
-
-		// 第二步，更新编辑器中的文档位置
-		const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
-		if (!newLoc.isNull())
-		{
-			m_editor.setNormalCursor(newLoc);
-		}
+		m_editor.setNormalCursor(newLoc);
 	}
-	else
+
+	// 第三步，向下移动页面头部
+	if (shouldMovePageHead)
 	{
-		const RowN newDocRowIndex = m_loc.row() + 1;
-		const RowN docRowCnt = m_editor.doc().rowCnt();
-		if (newDocRowIndex > docRowCnt - 1)
-		{
-			return;
-		}
-
-		const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
-		view::VRow vrow;
-		makeVRow(docRow, vrow);
-		m_page.pushBack(std::move(vrow));
-
-		const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
-		if (!newLoc.isNull())
-		{
-			m_editor.setNormalCursor(newLoc);
-		}
-
 		movePageHeadOneLine();
 	}
 }
