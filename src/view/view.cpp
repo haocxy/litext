@@ -408,8 +408,6 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
                 m_page.pushFront(std::move(vrow));
 
                 setViewLoc(ViewLoc(m_loc.row() - 1, newRowSize - 1));
-
-                removeSpareRow();
             }
         }
     }
@@ -502,6 +500,8 @@ void View::onDirUpKeyPress()
     {
         m_editor.setNormalCursor(newLoc);
     }
+
+	removeSpareRow();
 }
 
 void View::onDirDownKeyPress()
@@ -533,16 +533,17 @@ void View::onDirLeftKeyPress()
     {
         ensureHasPrevLine(oldCharLoc);
     }
+
     const DocLoc newLoc = m_editor.getNextLeftLocByChar(m_editor.normalCursor().to());
-    if (newLoc.isNull())
+    if (!newLoc.isNull())
     {
-        return;
+		m_editor.setNormalCursor(newLoc);
+
+		const view::CharLoc charLoc = convertToCharLoc(newLoc);
+		m_stable_x = getXByCharLoc(charLoc);
     }
     
-    m_editor.setNormalCursor(newLoc);
-    
-    const view::CharLoc charLoc = convertToCharLoc(newLoc);
-    m_stable_x = getXByCharLoc(charLoc);
+	removeSpareRow();
 }
 
 void View::onDirRightKeyPress()

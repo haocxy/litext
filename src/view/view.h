@@ -201,20 +201,22 @@ private:
     void makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const;
 
 private:
+	// 调用这个函数后，需要在合适的时刻调用removeSpareRow
     void ensureHasPrevLine(const view::LineLoc & curLineLoc);
 
 	// 确保参数行有下一行
 	// 如果需要把页面头部向后移动则返回true
+	// 返回true则需要在合适的时刻调用movePageHeadOneLine
     bool ensureHasNextLine(const view::LineLoc & curLineLoc);
     void onDirUpKeyPress();
     void onDirDownKeyPress();
     void onDirLeftKeyPress();
     void onDirRightKeyPress();
     void setViewLoc(const ViewLoc & viewLoc);
-	void movePageHeadOneLine();
 
 private:
     void remakePage();
+	void movePageHeadOneLine();
     void removeSpareRow();
 
 private:
