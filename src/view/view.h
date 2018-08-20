@@ -216,7 +216,10 @@ private:
 
 private:
     void remakePage();
+
+	// 把页面开头向后移动一个line
 	void movePageHeadOneLine();
+	// 删除多余的row
     void removeSpareRow();
 
 private:
