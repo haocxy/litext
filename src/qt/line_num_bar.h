@@ -21,5 +21,6 @@ private:
 
 private:
     View & m_view;
-    CallbackHandle m_listenerHandleUpdate;
+    CallbackHandle m_cbhUpdate;
+	CallbackHandle m_cbhViewLocChange;
 };

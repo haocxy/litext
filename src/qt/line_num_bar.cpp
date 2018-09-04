@@ -24,9 +24,13 @@ LineNumBar::LineNumBar(View * view, QWidget * parent)
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
 
-    m_listenerHandleUpdate = m_view.addOnUpdateListener([this] {
+    m_cbhUpdate = m_view.addOnUpdateListener([this] {
         update();
     });
+
+	m_cbhViewLocChange = m_view.addOnViewLocChangeListener([this] {
+		update();
+	});
 }
 
 LineNumBar::~LineNumBar()
