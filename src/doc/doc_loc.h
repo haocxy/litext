@@ -2,6 +2,7 @@
 
 #include "doc_define.h"
 #include "common/dir_enum.h"
+#include "util/flagset.h"
 
 class DocLoc
 {
@@ -9,14 +10,14 @@ public:
     static DocLoc newDocLocAfterLastRow()
     {
         DocLoc loc(0, 0);
-        loc.setFlag(kAfterLastRow);
-        loc.setFlag(kAfterLastChar);
+        loc.m_flag.set(kAfterLastRow);
+        loc.m_flag.set(kAfterLastChar);
         return loc;
     }
     static DocLoc newDocLocAfterLastChar(RowN row)
     {
         DocLoc loc(row, 0);
-        loc.setFlag(kAfterLastChar);
+        loc.m_flag.set(kAfterLastChar);
         return loc;
     }
 public:
@@ -26,9 +27,9 @@ public:
     void setRow(RowN row) { m_row = row; }
     CharN col() const { return m_col; }
     void setCol(CharN col) { m_col = col; }
-    bool isNull() const { return hasFlag(kIsNull); }
-    bool isAfterLastRow() const { return hasFlag(kAfterLastRow); }
-    bool isAfterLastChar() const { return hasFlag(kAfterLastChar); }
+    bool isNull() const { return m_flag.has(kIsNull); }
+    bool isAfterLastRow() const { return m_flag.has(kAfterLastRow); }
+    bool isAfterLastChar() const { return m_flag.has(kAfterLastChar); }
     bool operator<(const DocLoc &b) const
     {
         if (m_row < b.m_row)
@@ -58,17 +59,15 @@ public:
     DocLoc nextLeft() const { return DocLoc(m_row, m_col - 1); }
     DocLoc nextRight() const { return DocLoc(m_row, m_col + 1); }
 private:
-    typedef uint_least8_t flag_t;
-    enum : flag_t
+    enum
     {
-        kIsNull = 1,
-        kAfterLastRow = 1 << 1,
-        kAfterLastChar = 1 << 2,
+        kIsNull = 0,
+        kAfterLastRow = 1,
+        kAfterLastChar = 2,
+		kFlagCnt,
     };
-    bool hasFlag(flag_t f) const { return (m_flag & f) != 0; }
-    void setFlag(flag_t f) { m_flag |= f; }
 private:
-    flag_t m_flag = 0;
+    FlagSet<kFlagCnt> m_flag;
     RowN m_row = 0;
     CharN m_col = 0;
 };

@@ -189,6 +189,9 @@
     <ClInclude Include="src\util\callbacks.h">
       <Filter>src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\flagset.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt">

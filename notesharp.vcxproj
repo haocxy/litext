@@ -239,6 +239,7 @@
     <ClInclude Include="src\text\word_instream.h" />
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\callbacks.h" />
+    <ClInclude Include="src\util\flagset.h" />
     <ClInclude Include="src\util\stl_container_util.h" />
     <ClInclude Include="src\util\str_util.h" />
     <ClInclude Include="src\view\font.h" />
