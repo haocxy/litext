@@ -431,11 +431,6 @@ bool View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 		return false;
 	}
 
-	if (!isLastLineOfRow(curLineLoc))
-	{
-		return false;
-	}
-
 	// 当前坐标为文档最后一行则返回
 	const RowN docRowCnt = m_editor.doc().rowCnt();
 	if (m_loc.row() + curLineLoc.row() >= docRowCnt - 1)
