@@ -508,7 +508,7 @@ void View::onDirDownKeyPress()
 
 	// 第二步，更新编辑器中的文档位置
 	const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
-	if (!newLoc.isNull())
+	if (!newLoc.isNull() && !newLoc.isAfterLastRow())
 	{
 		m_editor.setNormalCursor(newLoc);
 	}
