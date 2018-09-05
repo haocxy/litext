@@ -47,11 +47,6 @@ void View::onResize(const view::Size & size)
     m_onUpdateListeners.call();
 }
 
-const view::Page & View::page() const
-{
-    return m_page;
-}
-
 int View::getBaseLineByLineOffset(int off) const
 {
     return (1 + off) * m_config.lineHeight() - m_config.font().descent();

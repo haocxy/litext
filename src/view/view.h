@@ -149,8 +149,6 @@ public:
 
 public:
 
-    const view::Page &page() const;
-
     const view::Config &config() const { return m_config; }
 
     int getBaseLineByLineOffset(int off) const;
