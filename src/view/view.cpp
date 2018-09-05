@@ -329,7 +329,7 @@ bool View::noNextCharAtSameLine(const view::CharLoc & charLoc) const
     }
     else
     {
-        return charLoc.col() != m_page.size() - 1;
+        return charLoc.col() == m_page.getLine(charLoc).size() - 1;
     }
 }
 
@@ -529,7 +529,7 @@ void View::onDirLeftKeyPress()
         ensureHasPrevLine(oldCharLoc);
     }
 
-    const DocLoc newLoc = m_editor.getNextLeftLocByChar(m_editor.normalCursor().to());
+    const DocLoc newLoc = m_editor.getNextLeftLocByChar(oldDocLoc);
     if (!newLoc.isNull())
     {
 		m_editor.setNormalCursor(newLoc);
@@ -543,16 +543,27 @@ void View::onDirLeftKeyPress()
 
 void View::onDirRightKeyPress()
 {
-    const DocLoc newLoc = m_editor.getNextRightLocByChar(m_editor.normalCursor().to());
-    if (newLoc.isNull())
-    {
-        return;
-    }
-    
-    m_editor.setNormalCursor(newLoc);
+	const DocLoc oldDocLoc = m_editor.normalCursor().to();
+	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+	bool needMoveHead = false;
+	if (noNextCharAtSameLine(oldCharLoc))
+	{
+		needMoveHead = ensureHasNextLine(oldCharLoc);
+	}
 
-    const view::CharLoc charLoc = convertToCharLoc(newLoc);
-    m_stable_x = getXByCharLoc(charLoc);
+	const DocLoc newLoc = m_editor.getNextRightLocByChar(oldDocLoc);
+	if (!newLoc.isNull())
+	{
+		m_editor.setNormalCursor(newLoc);
+
+		const view::CharLoc charLoc = convertToCharLoc(newLoc);
+		m_stable_x = getXByCharLoc(charLoc);
+	}
+
+	if (needMoveHead)
+	{
+		movePageHeadOneLine();
+	}
 }
 
 void View::setViewLoc(const ViewLoc & viewLoc)
