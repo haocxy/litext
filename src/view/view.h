@@ -191,6 +191,7 @@ private:
     bool noPrevCharAtSameLine(const view::CharLoc & charLoc) const;
     bool hasNextCharAtSameLine(const view::CharLoc & charLoc) const;
     bool noNextCharAtSameLine(const view::CharLoc & charLoc) const;
+	bool needEnsureHasNextLine(const view::CharLoc & charLoc) const;
     bool isLastLineOfRow(const view::LineLoc & lineLoc) const;
     bool isEndOfVirtualLine(const view::CharLoc & charLoc) const;
     view::CharLoc betterLocForVerticalMove(const view::CharLoc & charLoc) const;

@@ -334,6 +334,27 @@ bool View::noNextCharAtSameLine(const view::CharLoc & charLoc) const
     }
 }
 
+bool View::needEnsureHasNextLine(const view::CharLoc & charLoc) const
+{
+	if (hasNextCharAtSameLine(charLoc))
+	{
+		const view::VRow & vrow = m_page[charLoc.row()];
+		if (charLoc.line() < vrow.size() - 1)
+		{
+			const view::Line & line = vrow[charLoc.line()];
+			return charLoc.col() >= line.size() - 1;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return true;
+	}
+}
+
 bool View::isLastLineOfRow(const view::LineLoc & lineLoc) const
 {
     return lineLoc.line() == m_page[lineLoc.row()].size() - 1;
@@ -551,7 +572,7 @@ void View::onDirRightKeyPress()
 	const DocLoc oldDocLoc = m_editor.normalCursor().to();
 	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
 	bool needMoveHead = false;
-	if (noNextCharAtSameLine(oldCharLoc))
+	if (needEnsureHasNextLine(oldCharLoc))
 	{
 		needMoveHead = ensureHasNextLine(oldCharLoc);
 	}
