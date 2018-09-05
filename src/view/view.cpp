@@ -484,6 +484,9 @@ void View::removeSpareRow()
 
 void View::onDirUpKeyPress()
 {
+	// TODO !!!
+	// 如果光标位置不在视图内，则只做一件事：把文档视图滚动到恰好显示光标所在行
+
     // 第一步：确保上一行在视图内
     // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
     const DocLoc & oldDocLoc = m_editor.normalCursor().to();
@@ -497,6 +500,7 @@ void View::onDirUpKeyPress()
         m_editor.setNormalCursor(newLoc);
     }
 
+	// 第三步：移除尾部多余的行
 	removeSpareRow();
 }
 
