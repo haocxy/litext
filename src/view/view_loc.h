@@ -2,6 +2,7 @@
 
 #include "doc/doc_define.h"
 #include "view/view_define.h"
+#include "util/flagset.h"
 
 namespace view
 {
@@ -24,19 +25,19 @@ namespace view
         bool isNull() const { return hasFlag(kIsNull); }
         bool isAfterLastRow() const { return hasFlag(kAfterLastRow); }
     protected:
-        typedef uint_least8_t flag_t;
-        enum : flag_t
+        enum
         {
-            kIsNull = 1,
-            kAfterLastRow = 1 << 1,
-            kAfterLastLine = 1 << 2,
-            kAfterLastChar = 1 << 3,
+            kIsNull,
+            kAfterLastRow,
+            kAfterLastLine,
+            kAfterLastChar,
+			kFlagCnt,
         };
-        bool hasFlag(flag_t f) const { return (m_flag & f) != 0; }
-        void clearFlag(flag_t f) { m_flag &= (~f); }
-        void setFlag(flag_t f) { m_flag |= f; }
+		bool hasFlag(int f) const { return m_flag.has(f); }
+		void clearFlag(int f) { m_flag.unset(f); }
+		void setFlag(int f) { m_flag.set(f); }
     private:
-        flag_t m_flag = 0;
+        FlagSet<kFlagCnt> m_flag;
         int m_row = 0;
     };
 
