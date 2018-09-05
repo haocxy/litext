@@ -329,7 +329,8 @@ bool View::noNextCharAtSameLine(const view::CharLoc & charLoc) const
     }
     else
     {
-        return charLoc.col() == m_page.getLine(charLoc).size() - 1;
+		const view::Line & line = m_page.getLine(charLoc);
+        return charLoc.col() == line.size();
     }
 }
 
