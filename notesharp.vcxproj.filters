@@ -80,6 +80,12 @@
     <ClCompile Include="src\qt\textpad.cpp">
       <Filter>src\qt</Filter>
     </ClCompile>
+    <ClCompile Include="src\qt\view_status_bar.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qt\qt_util.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="debug\moc_predefs.h.cbt">
@@ -191,6 +197,12 @@
     </ClInclude>
     <ClInclude Include="src\util\flagset.h">
       <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\qt\view_status_bar.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\qt\qt_util.h">
+      <Filter>src\qt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

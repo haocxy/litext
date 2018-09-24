@@ -5,6 +5,7 @@
 class LineNumBar;
 class TextPad;
 class View;
+class ViewStatusBar;
 
 class EditorViewWidget : public QWidget
 {
@@ -16,4 +17,5 @@ public:
 private:
     LineNumBar * m_lineNumBar = nullptr;
     TextPad * m_textPad = nullptr;
+	ViewStatusBar * m_viewStatusBar = nullptr;
 };

@@ -34,6 +34,9 @@ namespace view
         Font &rfont() { return m_font; }
         const Font &font() const { return m_font; }
 
+		Font & rStatusBarFont() { return m_statusBarFont; }
+		const Font & statusBarFont() const { return m_statusBarFont; }
+
         int charWidth(UChar c) const;
 
         bool showLineNum() const { return m_showLineNum; }
@@ -52,5 +55,6 @@ namespace view
         int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
         
         Font m_font;
+		Font m_statusBarFont; // 状态栏字体
     };
 }

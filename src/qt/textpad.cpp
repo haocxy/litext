@@ -8,6 +8,7 @@
 #include "view/view.h"
 #include "view/view_config.h"
 #include "editor/editor.h"
+#include "qt_util.h"
 
 namespace
 {
@@ -24,12 +25,7 @@ namespace
         QPainter & m_painter;
     };
 
-    void fillQFont(const view::Font &font, QFont &qfont)
-    {
-        qfont.setFamily(font.family().c_str());
-        qfont.setPointSize(font.size());
-        qfont.setBold(font.bold());
-    }
+
 
     static int kWidthHint = 800;
     static int kHeightHint = 600;
@@ -155,7 +151,7 @@ void TextPad::prepareTextImage()
     m_textBuff.fill(QColor(0, 0, 0, 0));
 
     QFont qfont;
-    fillQFont(m_view.config().font(), qfont);
+    QtUtil::fillQFont(m_view.config().font(), qfont);
     p.setFont(qfont);
 
     m_view.drawEachChar([&p](int x, int y, UChar c) {

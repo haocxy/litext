@@ -186,7 +186,9 @@
     <ClCompile Include="src\qt\editor_view_widget.cpp" />
     <ClCompile Include="src\qt\line_num_bar.cpp" />
     <ClCompile Include="src\qt\mainwindow.cpp" />
+    <ClCompile Include="src\qt\qt_util.cpp" />
     <ClCompile Include="src\qt\textpad.cpp" />
+    <ClCompile Include="src\qt\view_status_bar.cpp" />
     <ClCompile Include="src\text\encoding_converter.cpp" />
     <ClCompile Include="src\text\encoding_detector.cpp" />
     <ClCompile Include="src\text\txt_word_instream.cpp" />
@@ -229,6 +231,8 @@
     <QtMoc Include="src\qt\editor_view_widget.h" />
     <QtMoc Include="src\qt\line_num_bar.h" />
     <QtMoc Include="src\qt\mainwindow.h" />
+    <ClInclude Include="src\qt\qt_util.h" />
+    <ClInclude Include="src\qt\view_status_bar.h" />
     <ClInclude Include="src\qt\textpad.h" />
     <ClInclude Include="src\text\char_instream.h" />
     <ClInclude Include="src\text\doc_line_char_instream.h" />

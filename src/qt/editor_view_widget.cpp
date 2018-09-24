@@ -1,23 +1,33 @@
 #include "editor_view_widget.h"
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "line_num_bar.h"
 #include "textpad.h"
+#include "view_status_bar.h"
 
 EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
     : QWidget(parent)
 {
-    m_lineNumBar = new LineNumBar(view, this);
-    m_textPad = new TextPad(view, this);
+    m_lineNumBar = new LineNumBar(view);
+    m_textPad = new TextPad(view);
+	m_viewStatusBar = new ViewStatusBar(view);
 
-    QHBoxLayout * layout = new QHBoxLayout(this);
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    layout->addWidget(m_lineNumBar);
-    layout->addWidget(m_textPad);
+	QVBoxLayout * vlayout = new QVBoxLayout;
+	vlayout->setMargin(0);
+	vlayout->setSpacing(0);
 
-    setLayout(layout);
+    QHBoxLayout * hlayout = new QHBoxLayout;
+    hlayout->setMargin(0);
+    hlayout->setSpacing(0);
+    hlayout->addWidget(m_lineNumBar);
+    hlayout->addWidget(m_textPad);
+
+	vlayout->addLayout(hlayout);
+	vlayout->addWidget(m_viewStatusBar);
+
+    setLayout(vlayout);
 }
 
 EditorViewWidget::~EditorViewWidget()

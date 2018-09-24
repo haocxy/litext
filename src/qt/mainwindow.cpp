@@ -20,12 +20,18 @@ static void setupConfig(view::Config &c)
     c.setLineNumOffset(1);
 
     view::Font &f = c.rfont();
-    view::FontInfo fi;
-    fi.family = kFontFamilyYaHei;
-    fi.size = 22;
-    fi.bold = false;
-
+	view::FontInfo fi;
+	fi.family = kFontFamilyYaHei;
+	fi.size = 22;
+	fi.bold = false;
     f.setFont(fi);
+
+	view::Font & statusBarFont = c.rStatusBarFont();
+	view::FontInfo barFontInfo;
+	barFontInfo.family = kFontFamilyYaHei;
+	barFontInfo.size = 12;
+	barFontInfo.bold = false;
+	statusBarFont.setFont(barFontInfo);
 }
 
 MainWindow::MainWindow(QWidget * parent)
