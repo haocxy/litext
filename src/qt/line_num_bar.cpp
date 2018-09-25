@@ -4,7 +4,7 @@
 
 #include "view/view.h"
 #include "view/font_to_qfont.h"
-#include "view/view_config.h"
+#include "config/view_config.h"
 
 namespace
 {

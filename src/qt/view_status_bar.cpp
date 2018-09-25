@@ -5,7 +5,7 @@
 #include <QPainter>
 
 #include "view/view.h"
-#include "view/view_config.h"
+#include "config/view_config.h"
 #include "qt_util.h"
 
 namespace

@@ -1,6 +1,6 @@
 #include <cassert>
 #include "view.h"
-#include "view_config.h"
+#include "config/view_config.h"
 #include "doc/doc.h"
 #include "doc/doc_row.h"
 #include "text/doc_line_char_instream.h"

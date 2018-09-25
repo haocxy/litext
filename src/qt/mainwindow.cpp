@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 #include "view/view.h"
-#include "view/view_config.h"
+#include "config/view_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
 #include "editor_view_widget.h"
