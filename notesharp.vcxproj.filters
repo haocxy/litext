@@ -36,6 +36,9 @@
     <Filter Include="src\qt">
       <UniqueIdentifier>{5116a3d9-9f95-4786-840a-56febc435c4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\config">
+      <UniqueIdentifier>{28004a99-3461-44a9-8123-76a904505ed0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -50,13 +53,7 @@
     <ClCompile Include="src\doc\simple_doc.cpp">
       <Filter>src\doc</Filter>
     </ClCompile>
-    <ClCompile Include="src\view\font.cpp">
-      <Filter>src\view</Filter>
-    </ClCompile>
     <ClCompile Include="src\view\view.cpp">
-      <Filter>src\view</Filter>
-    </ClCompile>
-    <ClCompile Include="src\view\view_config.cpp">
       <Filter>src\view</Filter>
     </ClCompile>
     <ClCompile Include="src\view\view_page.cpp">
@@ -85,6 +82,12 @@
     </ClCompile>
     <ClCompile Include="src\qt\qt_util.cpp">
       <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\config\view_config.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\font.cpp">
+      <Filter>src\util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,13 +135,7 @@
     <ClInclude Include="src\doc\simple_doc.h">
       <Filter>src\doc</Filter>
     </ClInclude>
-    <ClInclude Include="src\view\font.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
     <ClInclude Include="src\view\view.h">
-      <Filter>src\view</Filter>
-    </ClInclude>
-    <ClInclude Include="src\view\view_config.h">
       <Filter>src\view</Filter>
     </ClInclude>
     <ClInclude Include="src\view\view_page.h">
@@ -203,6 +200,12 @@
     </ClInclude>
     <ClInclude Include="src\qt\qt_util.h">
       <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config\view_config.h">
+      <Filter>src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\font.h">
+      <Filter>src\util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

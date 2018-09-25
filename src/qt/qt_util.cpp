@@ -1,7 +1,7 @@
 #include "qt_util.h"
 
 #include <QFont>
-#include "view/font.h"
+#include "util/font.h"
 
 namespace QtUtil
 {

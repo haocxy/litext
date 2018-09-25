@@ -180,6 +180,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\config\view_config.cpp" />
     <ClCompile Include="src\doc\simple_doc.cpp" />
     <ClCompile Include="src\editor\editor.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -192,9 +193,8 @@
     <ClCompile Include="src\text\encoding_converter.cpp" />
     <ClCompile Include="src\text\encoding_detector.cpp" />
     <ClCompile Include="src\text\txt_word_instream.cpp" />
-    <ClCompile Include="src\view\font.cpp" />
+    <ClCompile Include="src\util\font.cpp" />
     <ClCompile Include="src\view\view.cpp" />
-    <ClCompile Include="src\view\view_config.cpp" />
     <ClCompile Include="src\view\view_page.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +219,7 @@
     <ClInclude Include="src\common\common_define.h" />
     <ClInclude Include="src\common\dir_enum.h" />
     <ClInclude Include="src\common\nullable_class.h" />
+    <ClInclude Include="src\config\view_config.h" />
     <ClInclude Include="src\doc\doc_loc.h" />
     <ClInclude Include="src\doc\doc_define.h" />
     <ClInclude Include="src\doc\doc_row.h" />
@@ -244,14 +245,13 @@
     <ClInclude Include="src\util\delete_helper.h" />
     <ClInclude Include="src\util\callbacks.h" />
     <ClInclude Include="src\util\flagset.h" />
+    <ClInclude Include="src\util\font.h" />
     <ClInclude Include="src\util\stl_container_util.h" />
     <ClInclude Include="src\util\str_util.h" />
-    <ClInclude Include="src\view\font.h" />
     <ClInclude Include="src\view\font_to_qfont.h" />
     <ClInclude Include="src\view\view.h" />
     <ClInclude Include="src\view\view_define.h" />
     <ClInclude Include="src\view\view_loc.h" />
-    <ClInclude Include="src\view\view_config.h" />
     <ClInclude Include="src\view\draw_vertical_line.h" />
     <ClInclude Include="src\view\view_page.h" />
     <ClInclude Include="src\view\view_rect.h" />
