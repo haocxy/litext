@@ -207,6 +207,9 @@
     <ClInclude Include="src\util\font.h">
       <Filter>src\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\config\loc_outside_policy.h">
+      <Filter>src\config</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="nocode\开发中的思路记录.txt">

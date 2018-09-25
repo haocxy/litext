@@ -1,6 +1,7 @@
 #pragma once
 
 #include "util/font.h"
+#include "loc_outside_policy.h"
 
 namespace view
 {
@@ -45,6 +46,9 @@ namespace view
         int32_t lineNumOffset() const { return m_lineNumOffset; }
         void setLineNumOffset(int32_t lineNumOffset) { m_lineNumOffset = lineNumOffset; }
 
+		LocOutsidePolicy locateOutsideOfViewPolicy() const { return m_locateOutsideOfViewPolicy; }
+		void setLocateOutsideOfViewPolicy(LocOutsidePolicy policy) { m_locateOutsideOfViewPolicy = policy; }
+
     private:
         int m_lineHeightFactor = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
         int m_hGap = kDefaultHGap; // 水平方向最左侧字符左边的空白
@@ -53,6 +57,7 @@ namespace view
         bool m_wrapLine = false;
         bool m_showLineNum = false; // 是否显示行号
         int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
+		LocOutsidePolicy m_locateOutsideOfViewPolicy = LocOutsidePolicy::MoveView;
         
         Font m_font;
 		Font m_statusBarFont; // 状态栏字体
