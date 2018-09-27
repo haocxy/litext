@@ -772,6 +772,41 @@ void View::onDirKeyPress(Dir dir)
     }
 }
 
+bool View::moveDownByOneLine()
+{
+	const int docRowCnt = m_editor.doc().rowCnt();
+
+	// 文档没有内容则不能移动
+	if (docRowCnt == 0)
+	{
+		return false;
+	}
+
+	// 视图位于文档最后一个line
+	if (m_loc.row() == docRowCnt - 1 && isLastLineOfRow(view::LineLoc(m_page.size() - 1, m_loc.line())))
+	{
+		return false;
+	}
+
+	// 如果最后一个可视line是row中最后一个line，则需要新解析一个row的内容
+	const view::LineLoc shownLastLineLoc = getShownLastLineLoc();
+	if (isLastLineOfRow(shownLastLineLoc))
+	{
+		const RowN newDocRowIndex = m_loc.row() + m_page.size();
+		if (newDocRowIndex <= docRowCnt - 1)
+		{
+			const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
+			view::VRow vrow;
+			makeVRow(docRow, vrow);
+			m_page.pushBack(std::move(vrow));
+		}
+	}
+
+	movePageHeadOneLine();
+
+	return true;
+}
+
 int View::getLineOffsetByY(int y) const
 {
     return y / m_config.lineHeight();
@@ -1048,5 +1083,27 @@ void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
         leftX += charWidth;
         leftX += hMargin;
     }
+}
+
+view::LineLoc View::getShownLastLineLoc() const
+{
+	const int rowCnt = m_page.size();
+
+	const view::VRow & lastRow = m_page[rowCnt - 1];
+
+	const int prevLineCnt = m_page.lineCnt() - m_loc.line() - lastRow.size();
+
+	const int maxShownLineCnt = getMaxShownLineCnt();
+
+	if (m_page.lineCnt() - m_loc.line() < maxShownLineCnt)
+	{
+		const int lastLineIndex = m_page.lineCnt() - m_loc.line() - prevLineCnt - 1;
+		return view::LineLoc(m_page.size() - 1, lastLineIndex);
+	}
+	else
+	{
+		const int lastLineIndex = getMaxShownLineCnt() - prevLineCnt - 1;
+		return view::LineLoc(m_page.size() - 1, lastLineIndex);
+	}
 }
 

@@ -115,6 +115,10 @@ void TextPad::keyPressEvent(QKeyEvent * e)
         m_view.onDirKeyPress(Dir::Right);
         refresh();
         break;
+	case Qt::Key_S:
+		m_view.moveDownByOneLine();
+		refresh();
+		break;
     default:
         break;
     }
