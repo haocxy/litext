@@ -696,7 +696,7 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
     }
 }
 
-void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) const
+void View::drawEachChar(std::function<void(int x, int y, QChar c)>&& action) const
 {
     const int rowCnt = m_page.size();
     if (rowCnt == 0)
@@ -717,7 +717,7 @@ void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) con
 
         for (const view::Char & c : line)
         {
-            action(c.x(), baseline, c.unicode());
+            action(c.x(), baseline, c.qchar());
         }
 
         ++lineOffset;
@@ -733,7 +733,7 @@ void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) con
 
             for (const view::Char & c : line)
             {
-                action(c.x(), baseline, c.unicode());
+                action(c.x(), baseline, c.qchar());
             }
 
             ++lineOffset;
@@ -1015,7 +1015,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
                 }
 
                 view::Char &vc = vline->grow();
-                vc.setUnicode(c);
+                vc.setQChar(c);
                 vc.setX(leftX);
                 vc.setWidth(charWidth);
 
@@ -1047,7 +1047,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
                 }
 
                 view::Char &vc = vline->grow();
-                vc.setUnicode(c);
+                vc.setQChar(c);
                 vc.setX(leftX);
                 vc.setWidth(charWidth);
 
@@ -1072,11 +1072,11 @@ void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
     const CharN cnt = row.charCnt();
     for (CharN i = 0; i < cnt; ++i)
     {
-        const UChar c = row.charAt(i);
+        const UChar c = row.charAt(i).unicode();
         const int charWidth = m_config.charWidth(c);
 
         view::Char &vchar = vline.grow();
-        vchar.setUnicode(c);
+        vchar.setQChar(c);
         vchar.setX(leftX);
         vchar.setWidth(charWidth);
 

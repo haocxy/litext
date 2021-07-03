@@ -1,6 +1,7 @@
 #pragma once
 
 #include <deque>
+#include <QChar>
 #include "common/common_define.h"
 #include "util/stl_container_util.h"
 #include "view/view_loc.h"
@@ -11,17 +12,17 @@ namespace view
     class Char
     {
     public:
-        UChar unicode() const { return m_unicode; }
+        QChar qchar() const { return m_unicode; }
         int x() const { return m_x; }
 
-        void setUnicode(UChar unicode) { m_unicode = unicode; }
+        void setQChar(UChar unicode) { m_unicode = unicode; }
         void setX(int x) { m_x = x; }
 
         int width() const { return m_width; }
         void setWidth(int width) { m_width = width; }
 
     private:
-        UChar m_unicode = 0;
+        QChar m_unicode = 0;
         int m_x = 0;
         int m_width = 0;
     };
@@ -47,7 +48,8 @@ namespace view
 
         Char &grow()
         {
-            return StlContainerUtil::grow(m_chars);
+            m_chars.resize(m_chars.size() + 1);
+            return m_chars.back();
         }
 
         const Char &last() const { return m_chars.back(); }

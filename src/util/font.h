@@ -37,7 +37,9 @@ namespace view
 
         int charWidth(UChar c) const;
 
-        bool isFixWidth() const { return m_metrics.width('i') == m_metrics.width('x'); }
+        bool isFixWidth() const {
+            return m_metrics.horizontalAdvance('i') == m_metrics.horizontalAdvance('x');
+        }
 
     private:
         QFont m_font;

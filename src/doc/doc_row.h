@@ -10,7 +10,7 @@ public:
 
     virtual CharN charCnt() const = 0;
 
-    virtual UChar charAt(CharN i) const = 0;
+    virtual QChar charAt(CharN i) const = 0;
 
     virtual RowEnd rowEnd() const = 0;
 };

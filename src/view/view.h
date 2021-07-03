@@ -5,6 +5,8 @@
 #include <deque>
 #include <bitset>
 
+#include <QChar>
+
 #include "doc/doc_define.h"
 #include "util/stl_container_util.h"
 #include "doc/doc_loc.h"
@@ -165,7 +167,7 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const;
 
-    void drawEachChar(std::function<void(int x, int y, UChar c)> && action) const;
+    void drawEachChar(std::function<void(int x, int y, QChar c)> && action) const;
 
 
 public:

@@ -2,7 +2,7 @@
 
 int view::Font::charWidth(UChar c) const
 {
-    return m_metrics.width(QChar(c));
+    return m_metrics.horizontalAdvance(QChar(c));
 }
 
 void view::Font::setFont(const FontInfo & fi)

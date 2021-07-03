@@ -13,7 +13,7 @@ public:
         return static_cast<UChar>(m_content.size());
     }
 
-    virtual UChar charAt(CharN i) const override
+    virtual QChar charAt(CharN i) const override
     {
         return m_content[i];
     }
@@ -23,12 +23,12 @@ public:
         return m_rowEnd;
     }
 
-    void setContent(const UString &content)
+    void setContent(const QString &content)
     {
         m_content = content;
     }
     
-    void setContent(UString &&content)
+    void setContent(QString &&content)
     {
         m_content = std::move(content);
     }
@@ -44,6 +44,6 @@ public:
     }
 
 private:
-    UString m_content;
+    QString m_content;
     RowEnd m_rowEnd = RowEnd::NO;
 };

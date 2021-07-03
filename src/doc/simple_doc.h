@@ -3,6 +3,8 @@
 #include <vector>
 #include <filesystem>
 
+#include <QString>
+
 #include "simple_doc_row.h"
 #include "doc.h"
 
@@ -22,7 +24,7 @@ public:
     }
 
 public:
-    void LoadFromFile(const std::string &path);
+    bool LoadFromFile(const std::string &path);
 
 private:
     std::vector<SimpleRow> m_lines;

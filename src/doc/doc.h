@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QString>
+
 #include "doc_define.h"
 
 class Row;
@@ -45,5 +47,5 @@ public:
 
     virtual RowN rowCnt() const = 0;
 
-    virtual const Row & rowAt(RowN line) const = 0;
+    virtual const Row &rowAt(RowN line) const = 0;
 };

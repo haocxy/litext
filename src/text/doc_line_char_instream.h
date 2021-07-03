@@ -13,7 +13,7 @@ public:
     {
         if (m_index < m_line.charCnt())
         {
-            return m_line.charAt(m_index++);
+            return m_line.charAt(m_index++).unicode();
         }
         return 0;
     }
