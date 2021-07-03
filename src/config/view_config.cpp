@@ -18,11 +18,11 @@ int view::Config::charWidth(QChar c) const
         if (fixWidth)
         {
             // *[]*[]*[]*[]*
-            return m_hMargin * (m_tabSize - 1) + widthForFix * m_tabSize;
+            return hMargin_ * (m_tabSize - 1) + widthForFix * m_tabSize;
         }
         else
         {
-            return m_hMargin * (m_tabSize - 1) + m_font.charWidth(' ') * m_tabSize;
+            return hMargin_ * (m_tabSize - 1) + m_font.charWidth(' ') * m_tabSize;
         }
     }
 
@@ -38,7 +38,7 @@ int view::Config::charWidth(QChar c) const
     if (rawWidth > widthForFix)
     {
         // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-        return m_hMargin + widthForFix * 2;
+        return hMargin_ + widthForFix * 2;
     }
     else
     {
