@@ -31,8 +31,8 @@ public:
 	int tabSize() const { return tabSize_; }
 	void setTabSize(int tabSize) { tabSize_ = tabSize; }
 
-	bool wrapLine() const { return m_wrapLine; }
-	void setWrapLine(bool wrapLine) { m_wrapLine = wrapLine; }
+	bool wrapLine() const { return wrapLine_; }
+	void setWrapLine(bool wrapLine) { wrapLine_ = wrapLine; }
 
 	Font &rfont() { return m_font; }
 	const Font &font() const { return m_font; }
@@ -56,7 +56,7 @@ private:
 	int hGap_ = kDefaultHGap; // 水平方向最左侧字符左边的空白
 	int hMargin_ = kDefaultHMargin; // 水平字符间距
 	int tabSize_ = kDefaultTabSize; // 一个TAB的宽度为若干个空格
-	bool m_wrapLine = false;
+	bool wrapLine_ = false;
 	bool m_showLineNum = false; // 是否显示行号
 	int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 	LocOutsidePolicy m_locateOutsideOfViewPolicy = LocOutsidePolicy::MoveView;
