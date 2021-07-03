@@ -1,6 +1,9 @@
 #pragma once
 
+#include "core/ustring.h"
+
 #include "doc_row.h"
+
 
 class SimpleRow : public Row
 {
@@ -13,7 +16,7 @@ public:
         return static_cast<CharN>(m_content.size());
     }
 
-    virtual QChar charAt(CharN i) const override
+    virtual UChar charAt(CharN i) const override
     {
         return m_content[i];
     }
@@ -23,17 +26,17 @@ public:
         return m_rowEnd;
     }
 
-    void setContent(const QString &content)
+    void setContent(const UString &content)
     {
         m_content = content;
     }
     
-    void setContent(QString &&content)
+    void setContent(UString &&content)
     {
         m_content = std::move(content);
     }
 
-    void Add(QChar c)
+    void Add(UChar c)
     {
         m_content.push_back(c);
     }
@@ -44,6 +47,6 @@ public:
     }
 
 private:
-    QString m_content;
+    UString m_content;
     RowEnd m_rowEnd = RowEnd::NO;
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QChar>
+#include "core/uchar.h"
 
 
 class CharInStream
@@ -8,5 +8,5 @@ class CharInStream
 public:
     virtual ~CharInStream() {}
 
-    virtual QChar Next() = 0;
+    virtual UChar Next() = 0;
 };

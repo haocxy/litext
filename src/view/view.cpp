@@ -1058,7 +1058,7 @@ void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
     const CharN cnt = row.charCnt();
     for (CharN i = 0; i < cnt; ++i)
     {
-        const QChar c = row.charAt(i).unicode();
+        const QChar c = row.charAt(i);
         const int charWidth = m_config.charWidth(c);
 
         view::Char &vchar = vline.grow();

@@ -9,11 +9,11 @@ public:
     explicit DocLineCharInStream(const Row & line) : m_line(line) {}
     virtual ~DocLineCharInStream() {}
 
-    virtual QChar Next() override
+    virtual UChar Next() override
     {
         if (m_index < m_line.charCnt())
         {
-            return m_line.charAt(m_index++).unicode();
+            return m_line.charAt(m_index++);
         }
         return 0;
     }
