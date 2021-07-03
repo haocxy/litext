@@ -8,8 +8,4 @@
 
 ## 环境搭建
 
-### 必要组件
-* Visual Studio 2017
-* Qt版本：5.10.1 vs2017_64
-* vs插件：Qt Visual Studio Tools
 

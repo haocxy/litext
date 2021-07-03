@@ -16,7 +16,7 @@
 #include "view/view_define.h"
 
 #include "util/callbacks.h"
-#include "common/dir_enum.h"
+
 
 namespace view
 {
@@ -146,7 +146,13 @@ public:
 
     void onPrimaryButtomPress(int x, int y);
 
-    void onDirKeyPress(Dir dir);
+    void onDirUpKeyPress();
+
+    void onDirDownKeyPress();
+
+    void onDirLeftKeyPress();
+
+    void onDirRightKeyPress();
 
 	// 向后移动一个line，移动成功则返回true，移动失败则返回false
 	// 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
@@ -168,6 +174,7 @@ public:
 
     void drawEachChar(std::function<void(int x, int y, QChar c)> && action) const;
 
+    
 
 public:
     CallbackHandle addOnUpdateListener(std::function<void()> && action);
@@ -215,10 +222,7 @@ private:
 	// 如果需要把页面头部向后移动则返回true
 	// 返回true则需要在合适的时刻调用movePageHeadOneLine
     bool ensureHasNextLine(const view::LineLoc & curLineLoc);
-    void onDirUpKeyPress();
-    void onDirDownKeyPress();
-    void onDirLeftKeyPress();
-    void onDirRightKeyPress();
+    
     void setViewLoc(const ViewLoc & viewLoc);
 
 private:

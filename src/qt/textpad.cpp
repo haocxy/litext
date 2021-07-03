@@ -100,19 +100,19 @@ void TextPad::keyPressEvent(QKeyEvent * e)
     switch (key)
     {
     case Qt::Key_Up:
-        m_view.onDirKeyPress(Dir::Up);
+        m_view.onDirUpKeyPress();
         refresh();
         break;
     case Qt::Key_Down:
-        m_view.onDirKeyPress(Dir::Down);
+        m_view.onDirDownKeyPress();
         refresh();
         break;
     case Qt::Key_Left:
-        m_view.onDirKeyPress(Dir::Left);
+        m_view.onDirLeftKeyPress();
         refresh();
         break;
     case Qt::Key_Right:
-        m_view.onDirKeyPress(Dir::Right);
+        m_view.onDirRightKeyPress();
         refresh();
         break;
 	case Qt::Key_S:

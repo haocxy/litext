@@ -3,7 +3,6 @@
 #include <vector>
 #include "cursor.h"
 #include "util/callbacks.h"
-#include "common/dir_enum.h"
 
 class Doc;
 

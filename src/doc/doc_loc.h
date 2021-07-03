@@ -1,7 +1,6 @@
 #pragma once
 
 #include "doc_define.h"
-#include "common/dir_enum.h"
 #include "util/flagset.h"
 
 class DocLoc

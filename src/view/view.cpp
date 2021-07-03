@@ -760,18 +760,6 @@ void View::onPrimaryButtomPress(int x, int y)
     m_stable_x = getXByCharLoc(charLoc);
 }
 
-void View::onDirKeyPress(Dir dir)
-{
-    switch (dir)
-    {
-    case Dir::Up: onDirUpKeyPress(); break;
-    case Dir::Down: onDirDownKeyPress(); break;
-    case Dir::Left: onDirLeftKeyPress(); break;
-    case Dir::Right: onDirRightKeyPress(); break;
-    default: break;
-    }
-}
-
 bool View::moveDownByOneLine()
 {
 	const int docRowCnt = m_editor.doc().rowCnt();
