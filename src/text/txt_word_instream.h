@@ -16,7 +16,7 @@ public:
 
     virtual ~TxtWordStream() {}
 
-    virtual UString Next() override;
+    virtual QString Next() override;
 private:
     UChar PopNextChar();
     void PushBackChar(UChar c)

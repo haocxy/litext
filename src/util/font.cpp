@@ -1,6 +1,6 @@
 #include "font.h"
 
-int view::Font::charWidth(UChar c) const
+int view::Font::charWidth(QChar c) const
 {
     return m_metrics.horizontalAdvance(QChar(c));
 }

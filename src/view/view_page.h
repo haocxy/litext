@@ -15,7 +15,7 @@ namespace view
         QChar qchar() const { return m_unicode; }
         int x() const { return m_x; }
 
-        void setQChar(UChar unicode) { m_unicode = unicode; }
+        void setQChar(QChar unicode) { m_unicode = unicode; }
         void setX(int x) { m_x = x; }
 
         int width() const { return m_width; }

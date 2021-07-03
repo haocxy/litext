@@ -1,6 +1,6 @@
 #include "view_config.h"
 
-int view::Config::charWidth(UChar c) const
+int view::Config::charWidth(QChar c) const
 {
     // 换行符不占用空间
     if (c == UChar('\n') || c == UChar('\r'))

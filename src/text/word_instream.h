@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QString>
+
 #include "common/common_define.h"
 
 class WordInStream
@@ -7,5 +9,5 @@ class WordInStream
 public:
     virtual ~WordInStream() {}
 
-    virtual UString Next() = 0;
+    virtual QString Next() = 0;
 };

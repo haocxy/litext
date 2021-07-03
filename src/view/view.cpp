@@ -996,15 +996,15 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
 
     while (true)
     {
-        const UString word = wordStream.Next();
-        if (check::isNull(word))
+        const QString word = wordStream.Next();
+        if (word.isEmpty())
         {
             return;
         }
 
         if (vline->size() == 0)
         {
-            for (const UChar c : word)
+            for (const QChar c : word)
             {
                 const int charWidth = m_config.charWidth(c);
 
@@ -1026,7 +1026,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
         else
         {
             int wordWidth = 0;
-            for (const UChar c : word)
+            for (const QChar c : word)
             {
                 wordWidth += m_config.charWidth(c);
                 wordWidth += hMargin;
@@ -1036,7 +1036,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
                 leftX = hGap;
                 vline = &vrow.grow();
             }
-            for (const UChar c : word)
+            for (const QChar c : word)
             {
                 const int charWidth = m_config.charWidth(c);
 

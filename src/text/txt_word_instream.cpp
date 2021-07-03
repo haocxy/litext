@@ -20,15 +20,15 @@ namespace
     }
 }
 
-UString TxtWordStream::Next()
+QString TxtWordStream::Next()
 {
     UChar next = PopNextChar();
     if (next == 0)
     {
-        return UString();
+        return QString();
     }
 
-    UString result;
+    QString result;
     result.push_back(next);
 
     if (IsWordChar(next))

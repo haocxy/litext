@@ -38,7 +38,7 @@ namespace view
 		Font & rStatusBarFont() { return m_statusBarFont; }
 		const Font & statusBarFont() const { return m_statusBarFont; }
 
-        int charWidth(UChar c) const;
+        int charWidth(QChar c) const;
 
         bool showLineNum() const { return m_showLineNum; }
         void setShowLineNum(bool showLineNum) { m_showLineNum = showLineNum; }

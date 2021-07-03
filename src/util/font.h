@@ -35,7 +35,7 @@ namespace view
         int ascent() const { return m_metrics.ascent(); }
         int descent() const { return m_metrics.descent(); }
 
-        int charWidth(UChar c) const;
+        int charWidth(QChar c) const;
 
         bool isFixWidth() const {
             return m_metrics.horizontalAdvance('i') == m_metrics.horizontalAdvance('x');
