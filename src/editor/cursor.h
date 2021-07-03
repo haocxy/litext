@@ -7,7 +7,7 @@ class DocCursor
 public:
     enum Flag : uint32_t
     {
-        flgNull = 1 << 0, // 有此标志时，这个DocCursor对象为无效对象，类似NULL或者false语义
+        flgNull = 1 << 0, // 鏈夋鏍囧織鏃讹紝杩欎釜DocCursor瀵硅薄涓烘棤鏁堝璞★紝绫讳技NULL鎴栬�協alse璇箟
     };
 public:
     DocCursor() : m_flags(flgNull) {}

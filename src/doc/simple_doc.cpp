@@ -18,7 +18,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
         return false;
     }
 
-    // QTextCodec ¶ÔÏó²»ĞèÒªÓÉÓÃ»§ÊÍ·Å
+    // QTextCodec å¯¹è±¡ä¸éœ€è¦ç”±ç”¨æˆ·é‡Šæ”¾
     const char *encoding = "gbk";
     QTextCodec *codec = QTextCodec::codecForName(encoding);
     if (!codec) {
@@ -105,7 +105,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
     }
     else
     {
-        // °ÑbuffÖĞµÄ²ĞÁô×Ö½Ú½âÎö²¢Ìí¼Ó½øÈ¥
+        // æŠŠbuffä¸­çš„æ®‹ç•™å­—èŠ‚è§£æå¹¶æ·»åŠ è¿›å»
         if (buff.length() > 0)
         {
             SimpleRow row;
@@ -114,7 +114,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
         }
     }
 
-    // Èç¹û×îºóÒ»ĞĞÒÔ»»ĞĞ½áÊø£¬ÔòÌí¼ÓÒ»¸ö¿ÕĞĞ
+    // å¦‚æœæœ€åä¸€è¡Œä»¥æ¢è¡Œç»“æŸï¼Œåˆ™æ·»åŠ ä¸€ä¸ªç©ºè¡Œ
     if (m_lines.empty())
     {
         SimpleRow row;

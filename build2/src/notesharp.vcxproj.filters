@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\code\notesharp\build2\src\notesharp_autogen\mocs_compilation_Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\config\view_config.cpp">
+      <Filter>src\config</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\doc\simple_doc.cpp">
+      <Filter>src\doc</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\editor\editor.cpp">
+      <Filter>src\editor</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\qt\editor_view_widget.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\qt\line_num_bar.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\qt\mainwindow.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\qt\qt_util.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\qt\textpad.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\qt\view_status_bar.cpp">
+      <Filter>src\qt</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\text\encoding_converter.cpp">
+      <Filter>src\text</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\text\encoding_detector.cpp">
+      <Filter>src\text</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\text\txt_word_instream.cpp">
+      <Filter>src\text</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\util\font.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\view\view.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\src\view\view_page.cpp">
+      <Filter>src\view</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\build2\src\notesharp_autogen\mocs_compilation_Release.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\build2\src\notesharp_autogen\mocs_compilation_MinSizeRel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\code\notesharp\build2\src\notesharp_autogen\mocs_compilation_RelWithDebInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\code\notesharp\src\config\loc_outside_policy.h">
+      <Filter>src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\config\view_config.h">
+      <Filter>src\config</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\doc.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\doc_define.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\doc_loc.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\doc_row.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\row_end_enum.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\simple_doc.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\doc\simple_doc_row.h">
+      <Filter>src\doc</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\editor\cursor.h">
+      <Filter>src\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\editor\editor.h">
+      <Filter>src\editor</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\qt\editor_view_widget.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\qt\line_num_bar.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\qt\mainwindow.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\qt\qt_util.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\qt\textpad.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\qt\view_status_bar.h">
+      <Filter>src\qt</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\char_instream.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\doc_line_char_instream.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\encoding_converter.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\encoding_detector.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\supported_encoding.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\txt_word_instream.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\text\word_instream.h">
+      <Filter>src\text</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\util\callbacks.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\util\delete_helper.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\util\flagset.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\util\font.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\draw_vertical_line.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\font_to_qfont.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\view.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\view_define.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\view_loc.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\view_page.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\code\notesharp\src\view\view_rect.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\code\notesharp\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{312759CB-C072-306D-B7CA-2DC873D24B48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{6BA01845-DD60-313D-9EB0-875668B92AF8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\config">
+      <UniqueIdentifier>{76A54FEA-A543-374A-B1D1-DAC19E769B89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\doc">
+      <UniqueIdentifier>{56B457FF-8309-353D-9E94-64D94C5B02E1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\editor">
+      <UniqueIdentifier>{6F2E26E6-C1EA-3B2B-AB28-49F7E4E7D063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\qt">
+      <UniqueIdentifier>{13DEB19F-F286-324D-8867-9C1EEADCF9B2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\text">
+      <UniqueIdentifier>{965388A5-23D6-3ECC-AB50-B648C404BF60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{960F4763-5B32-324F-9F13-CA10F9BA8E3E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\view">
+      <UniqueIdentifier>{D496231B-9720-3ED2-A16B-5DD85094F70D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

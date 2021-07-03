@@ -200,7 +200,7 @@ DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
         }
         else
         {
-            // Èç¹û²»ÊÇ×îºóÒ»¸öÏÔÊ¾ĞĞ£¬Ôò°Ñ¹â±ê·ÅÔÚÏÂÒ»¸öÏÔÊ¾ĞĞ×î¿ªÊ¼´¦
+            // å¦‚æœä¸æ˜¯æœ€åä¸€ä¸ªæ˜¾ç¤ºè¡Œï¼Œåˆ™æŠŠå…‰æ ‡æ”¾åœ¨ä¸‹ä¸€ä¸ªæ˜¾ç¤ºè¡Œæœ€å¼€å§‹å¤„
             return convertToDocLoc(view::CharLoc(charLoc.row(), charLoc.line() + 1, 0));
         }
     }
@@ -210,7 +210,7 @@ DocLoc View::convertToDocLoc(const view::CharLoc & charLoc) const
     int lastLine = charLoc.line();
     if (m_loc.row() == 0)
     {
-        // Èç¹ûÔÚµÚÒ»¸öVRow£¬ÔòĞèÒª°ÑÆ«ÒÆÁ¿¼ÓÉÏ£¬ÒòÎªViewLocÖĞµÄlineÊôĞÔÎªĞĞÆ«ÒÆ
+        // å¦‚æœåœ¨ç¬¬ä¸€ä¸ªVRowï¼Œåˆ™éœ€è¦æŠŠåç§»é‡åŠ ä¸Šï¼Œå› ä¸ºViewLocä¸­çš„lineå±æ€§ä¸ºè¡Œåç§»
         lastLine += m_loc.line();
     }
     CharN col = charLoc.col();
@@ -360,7 +360,7 @@ bool View::isEndOfVirtualLine(const view::CharLoc & charLoc) const
     return charLoc.isAfterLastChar() && !isLastLineOfRow(charLoc);
 }
 
-// ±ÜÃâ³öÏÖÒòÎª¶¨Î»µ½ĞéÄâĞĞÎ²²¿¶øÊ¹ĞéÄâĞĞ±»Ìø¹ıµÄÇé¿ö
+// é¿å…å‡ºç°å› ä¸ºå®šä½åˆ°è™šæ‹Ÿè¡Œå°¾éƒ¨è€Œä½¿è™šæ‹Ÿè¡Œè¢«è·³è¿‡çš„æƒ…å†µ
 view::CharLoc View::betterLocForVerticalMove(const view::CharLoc & charLoc) const
 {
     if (!isEndOfVirtualLine(charLoc))
@@ -436,19 +436,19 @@ bool View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 
 	const int rowCnt = m_page.size();
 
-	// Ã»ÓĞÄÚÈİÔò·µ»Ø
+	// æ²¡æœ‰å†…å®¹åˆ™è¿”å›
 	if (rowCnt == 0)
 	{
 		return false;
 	}
 
-	// µ±Ç°ÊÓÍ¼×ø±ê²»ÔÚÊÓÍ¼×îºóÔò·µ»Ø
+	// å½“å‰è§†å›¾åæ ‡ä¸åœ¨è§†å›¾æœ€ååˆ™è¿”å›
 	if (curLineLoc.row() < rowCnt - 1)
 	{
 		return false;
 	}
 
-	// µ±Ç°×ø±êÎªÎÄµµ×îºóÒ»ĞĞÔò·µ»Ø
+	// å½“å‰åæ ‡ä¸ºæ–‡æ¡£æœ€åä¸€è¡Œåˆ™è¿”å›
 	const RowN docRowCnt = m_editor.doc().rowCnt();
 	if (m_loc.row() + curLineLoc.row() >= docRowCnt - 1)
 	{
@@ -501,40 +501,40 @@ void View::removeSpareRow()
 void View::onDirUpKeyPress()
 {
 	// TODO !!!
-	// Èç¹û¹â±êÎ»ÖÃ²»ÔÚÊÓÍ¼ÄÚ£¬ÔòÖ»×öÒ»¼şÊÂ£º°ÑÎÄµµÊÓÍ¼¹ö¶¯µ½Ç¡ºÃÏÔÊ¾¹â±êËùÔÚĞĞ
+	// å¦‚æœå…‰æ ‡ä½ç½®ä¸åœ¨è§†å›¾å†…ï¼Œåˆ™åªåšä¸€ä»¶äº‹ï¼šæŠŠæ–‡æ¡£è§†å›¾æ»šåŠ¨åˆ°æ°å¥½æ˜¾ç¤ºå…‰æ ‡æ‰€åœ¨è¡Œ
 
-    // µÚÒ»²½£ºÈ·±£ÉÏÒ»ĞĞÔÚÊÓÍ¼ÄÚ
-    // ×¢Òâ£¬ÔÚµÚÒ»²½Íê³Éºó£¬µÚÒ»²½ÒÀÀµµÄÊÓÍ¼ÔªËØÎ»ÖÃ¿ÉÄÜÒÑ¾­Ê§Ğ§£¬µÚ¶ş²½ĞèÒªÖØĞÂ»ñÈ¡
+    // ç¬¬ä¸€æ­¥ï¼šç¡®ä¿ä¸Šä¸€è¡Œåœ¨è§†å›¾å†…
+    // æ³¨æ„ï¼Œåœ¨ç¬¬ä¸€æ­¥å®Œæˆåï¼Œç¬¬ä¸€æ­¥ä¾èµ–çš„è§†å›¾å…ƒç´ ä½ç½®å¯èƒ½å·²ç»å¤±æ•ˆï¼Œç¬¬äºŒæ­¥éœ€è¦é‡æ–°è·å–
     const DocLoc & oldDocLoc = m_editor.normalCursor().to();
     const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
     ensureHasPrevLine(oldCharLoc);
 
-    // µÚ¶ş²½£ºÊ¹ÓÃµÚÒ»²½¸üĞÂºóµÄĞÂµÄÊÓÍ¼Êı¾İÈ¡Ä¿±êÎ»ÖÃ
+    // ç¬¬äºŒæ­¥ï¼šä½¿ç”¨ç¬¬ä¸€æ­¥æ›´æ–°åçš„æ–°çš„è§†å›¾æ•°æ®å–ç›®æ ‡ä½ç½®
     const DocLoc newLoc = getNextUpLoc(m_editor.normalCursor().to());
     if (!newLoc.isNull())
     {
         m_editor.setNormalCursor(newLoc);
     }
 
-	// µÚÈı²½£ºÒÆ³ıÎ²²¿¶àÓàµÄĞĞ
+	// ç¬¬ä¸‰æ­¥ï¼šç§»é™¤å°¾éƒ¨å¤šä½™çš„è¡Œ
 	removeSpareRow();
 }
 
 void View::onDirDownKeyPress()
 {
-	// µÚÒ»²½£¬È·±£µ±Ç°Î»ÖÃÔÚÊÓÍ¼ÖĞÓĞÏÂÒ»ĞĞ
+	// ç¬¬ä¸€æ­¥ï¼Œç¡®ä¿å½“å‰ä½ç½®åœ¨è§†å›¾ä¸­æœ‰ä¸‹ä¸€è¡Œ
 	const DocLoc & oldDocLoc = m_editor.normalCursor().to();
 	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
 	const bool shouldMovePageHead = ensureHasNextLine(oldCharLoc);
 
-	// µÚ¶ş²½£¬¸üĞÂ±à¼­Æ÷ÖĞµÄÎÄµµÎ»ÖÃ
+	// ç¬¬äºŒæ­¥ï¼Œæ›´æ–°ç¼–è¾‘å™¨ä¸­çš„æ–‡æ¡£ä½ç½®
 	const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
 	if (!newLoc.isNull() && !newLoc.isAfterLastRow())
 	{
 		m_editor.setNormalCursor(newLoc);
 	}
 
-	// µÚÈı²½£¬ÏòÏÂÒÆ¶¯Ò³ÃæÍ·²¿
+	// ç¬¬ä¸‰æ­¥ï¼Œå‘ä¸‹ç§»åŠ¨é¡µé¢å¤´éƒ¨
 	if (shouldMovePageHead)
 	{
 		movePageHeadOneLine();
@@ -762,19 +762,19 @@ bool View::moveDownByOneLine()
 {
 	const int docRowCnt = m_editor.doc().rowCnt();
 
-	// ÎÄµµÃ»ÓĞÄÚÈİÔò²»ÄÜÒÆ¶¯
+	// æ–‡æ¡£æ²¡æœ‰å†…å®¹åˆ™ä¸èƒ½ç§»åŠ¨
 	if (docRowCnt == 0)
 	{
 		return false;
 	}
 
-	// ÊÓÍ¼Î»ÓÚÎÄµµ×îºóÒ»¸öline
+	// è§†å›¾ä½äºæ–‡æ¡£æœ€åä¸€ä¸ªline
 	if (m_loc.row() == docRowCnt - 1 && isLastLineOfRow(view::LineLoc(m_page.size() - 1, m_loc.line())))
 	{
 		return false;
 	}
 
-	// Èç¹û×îºóÒ»¸ö¿ÉÊÓlineÊÇrowÖĞ×îºóÒ»¸öline£¬ÔòĞèÒªĞÂ½âÎöÒ»¸örowµÄÄÚÈİ
+	// å¦‚æœæœ€åä¸€ä¸ªå¯è§†lineæ˜¯rowä¸­æœ€åä¸€ä¸ªlineï¼Œåˆ™éœ€è¦æ–°è§£æä¸€ä¸ªrowçš„å†…å®¹
 	const view::LineLoc shownLastLineLoc = getShownLastLineLoc();
 	if (isLastLineOfRow(shownLastLineLoc))
 	{
@@ -891,7 +891,7 @@ view::CharLoc View::getCharLocByLineLocAndX(const view::LineLoc & lineLoc, int x
 
     const int margin = m_config.hMargin();
 
-    // ÎªÁË¼ò»¯´¦Àí£¬°ÑµÚÒ»¸ö×Ö·ûµ¥¶À´¦Àí£¬ÒòÎªµÚÒ»¸ö×Ö·ûÃ»ÓĞÇ°Ò»¸ö×Ö·û
+    // ä¸ºäº†ç®€åŒ–å¤„ç†ï¼ŒæŠŠç¬¬ä¸€ä¸ªå­—ç¬¦å•ç‹¬å¤„ç†ï¼Œå› ä¸ºç¬¬ä¸€ä¸ªå­—ç¬¦æ²¡æœ‰å‰ä¸€ä¸ªå­—ç¬¦
     const view::Char & firstChar = line[0];
     const int firstX = firstChar.x();
     const int firstWidth = firstChar.width();

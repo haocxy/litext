@@ -36,7 +36,7 @@ private:
         DBF_Text,
         
 
-        DBF_Cnt, // 保证在最后一个，用于计数
+        DBF_Cnt, // 淇濊瘉鍦ㄦ渶鍚庝竴涓紝鐢ㄤ簬璁℃暟
     };
 
 private:

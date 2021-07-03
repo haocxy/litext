@@ -128,9 +128,9 @@ class DocLoc;
 class Editor;
 
 /*
-ÊÓÍ¼
-Ö§³Ö¿´ÎÄµµÄ³Ò»¶Î
-Èç£¬¹ö¶¯ÌõÏà¹ØÂß¼­ÓÉÕâ¸ö½Ó¿ÚÖ§³Ö
+è§†å›¾
+æ”¯æŒçœ‹æ–‡æ¡£æŸä¸€æ®µ
+å¦‚ï¼Œæ»šåŠ¨æ¡ç›¸å…³é€»è¾‘ç”±è¿™ä¸ªæ¥å£æ”¯æŒ
 */
 class View
 {
@@ -155,8 +155,8 @@ public:
 
     void onDirRightKeyPress();
 
-	// ÏòºóÒÆ¶¯Ò»¸öline£¬ÒÆ¶¯³É¹¦Ôò·µ»Øtrue£¬ÒÆ¶¯Ê§°ÜÔò·µ»Øfalse
-	// ½öµ±ÊÓÍ¼ÖĞÖ»ÏÔÊ¾ÎÄµµ×îºóÒ»¸öline»òÎÄµµÃ»ÓĞÄÚÈİÊ±£¬·µ»Øfalse
+	// å‘åç§»åŠ¨ä¸€ä¸ªlineï¼Œç§»åŠ¨æˆåŠŸåˆ™è¿”å›trueï¼Œç§»åŠ¨å¤±è´¥åˆ™è¿”å›false
+	// ä»…å½“è§†å›¾ä¸­åªæ˜¾ç¤ºæ–‡æ¡£æœ€åä¸€ä¸ªlineæˆ–æ–‡æ¡£æ²¡æœ‰å†…å®¹æ—¶ï¼Œè¿”å›false
 	bool moveDownByOneLine();
 
 public:
@@ -212,16 +212,16 @@ private:
     void makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const;
     void makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const;
 
-	// ÊÓÍ¼ÖĞ×îºóÒ»¸ö¿ÉÊÓlineµÄLineLoc
+	// è§†å›¾ä¸­æœ€åä¸€ä¸ªå¯è§†lineçš„LineLoc
 	view::LineLoc getShownLastLineLoc() const;
 
 private:
-	// µ÷ÓÃÕâ¸öº¯Êıºó£¬ĞèÒªÔÚºÏÊÊµÄÊ±¿Ìµ÷ÓÃremoveSpareRow
+	// è°ƒç”¨è¿™ä¸ªå‡½æ•°åï¼Œéœ€è¦åœ¨åˆé€‚çš„æ—¶åˆ»è°ƒç”¨removeSpareRow
     void ensureHasPrevLine(const view::LineLoc & curLineLoc);
 
-	// È·±£²ÎÊıĞĞÓĞÏÂÒ»ĞĞ
-	// Èç¹ûĞèÒª°ÑÒ³ÃæÍ·²¿ÏòºóÒÆ¶¯Ôò·µ»Øtrue
-	// ·µ»ØtrueÔòĞèÒªÔÚºÏÊÊµÄÊ±¿Ìµ÷ÓÃmovePageHeadOneLine
+	// ç¡®ä¿å‚æ•°è¡Œæœ‰ä¸‹ä¸€è¡Œ
+	// å¦‚æœéœ€è¦æŠŠé¡µé¢å¤´éƒ¨å‘åç§»åŠ¨åˆ™è¿”å›true
+	// è¿”å›trueåˆ™éœ€è¦åœ¨åˆé€‚çš„æ—¶åˆ»è°ƒç”¨movePageHeadOneLine
     bool ensureHasNextLine(const view::LineLoc & curLineLoc);
     
     void setViewLoc(const ViewLoc & viewLoc);
@@ -229,9 +229,9 @@ private:
 private:
     void remakePage();
 
-	// °ÑÒ³Ãæ¿ªÍ·ÏòºóÒÆ¶¯Ò»¸öline
+	// æŠŠé¡µé¢å¼€å¤´å‘åç§»åŠ¨ä¸€ä¸ªline
 	void movePageHeadOneLine();
-	// É¾³ı¶àÓàµÄrow
+	// åˆ é™¤å¤šä½™çš„row
     void removeSpareRow();
 
 private:
@@ -241,8 +241,8 @@ private:
     view::Size m_size;
     ViewLoc m_loc{ 10, 0 };
     
-    // ¶ÔÓÚ·ÇµÈ¿í×ÖÌå£¬µ±¹â±ê¶à´ÎÉÏÏÂÒÆ¶¯Ê±£¬Ï£Íûºá×ø±êÏà¶ÔÎÈ¶¨£¬¼ÇÂ¼Ò»¸öÎÈ¶¨Î»ÖÃ£¬Ã¿´ÎÉÏÏÂÒÆ¶¯Ê±¾¡¿ÉÄÜÑ¡È¡ÓëÖ®½Ó½üµÄÎ»ÖÃ
-    // ÔÚÄ³Ğ©²Ù×÷ºó¸üĞÂ£¬Èç×óÓÒÒÆ¶¯¹â±êµÈ²Ù×÷
+    // å¯¹äºéç­‰å®½å­—ä½“ï¼Œå½“å…‰æ ‡å¤šæ¬¡ä¸Šä¸‹ç§»åŠ¨æ—¶ï¼Œå¸Œæœ›æ¨ªåæ ‡ç›¸å¯¹ç¨³å®šï¼Œè®°å½•ä¸€ä¸ªç¨³å®šä½ç½®ï¼Œæ¯æ¬¡ä¸Šä¸‹ç§»åŠ¨æ—¶å°½å¯èƒ½é€‰å–ä¸ä¹‹æ¥è¿‘çš„ä½ç½®
+    // åœ¨æŸäº›æ“ä½œåæ›´æ–°ï¼Œå¦‚å·¦å³ç§»åŠ¨å…‰æ ‡ç­‰æ“ä½œ
     int m_stable_x = 0;
 
 private:
