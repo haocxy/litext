@@ -48,8 +48,8 @@ public:
 	int32_t lineNumOffset() const { return lineNumOffset_; }
 	void setLineNumOffset(int32_t lineNumOffset) { lineNumOffset_ = lineNumOffset; }
 
-	LocOutsidePolicy locateOutsideOfViewPolicy() const { return m_locateOutsideOfViewPolicy; }
-	void setLocateOutsideOfViewPolicy(LocOutsidePolicy policy) { m_locateOutsideOfViewPolicy = policy; }
+	LocOutsidePolicy locateOutsideOfViewPolicy() const { return locateOutsideOfViewPolicy_; }
+	void setLocateOutsideOfViewPolicy(LocOutsidePolicy policy) { locateOutsideOfViewPolicy_ = policy; }
 
 private:
 	int lineHeightFactor_ = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
@@ -59,7 +59,7 @@ private:
 	bool wrapLine_ = false;
 	bool showLineNum_ = false; // 是否显示行号
 	int32_t lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
-	LocOutsidePolicy m_locateOutsideOfViewPolicy = LocOutsidePolicy::MoveView;
+	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
 	Font m_font;
 	Font m_statusBarFont; // 状态栏字体
