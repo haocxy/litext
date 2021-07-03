@@ -1,7 +1,9 @@
 #pragma once
 
-#include <filesystem>
 #include <QMainWindow>
+
+#include "util/fs.h"
+
 
 class EditorViewWidget;
 class View;
@@ -17,7 +19,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
 
-    explicit MainWindow(std::filesystem::path filePath, QWidget *parent = nullptr);
+    explicit MainWindow(fs::path filePath, QWidget *parent = nullptr);
     virtual ~MainWindow();
 
 private:

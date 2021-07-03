@@ -34,7 +34,7 @@ static void setupConfig(view::Config &c)
 	statusBarFont.setFont(barFontInfo);
 }
 
-MainWindow::MainWindow(std::filesystem::path filePath, QWidget * parent)
+MainWindow::MainWindow(fs::path filePath, QWidget * parent)
     : QMainWindow(parent)
 {
     m_viewConfig = new view::Config();
