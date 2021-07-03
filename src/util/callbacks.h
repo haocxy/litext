@@ -77,7 +77,7 @@ public:
 
     virtual void remove(void * id) override
     {
-        for (Vec::size_type i = 0; i < m_vec.size(); ++i)
+        for (auto i = 0; i < m_vec.size(); ++i)
         {
             if (&(m_vec[i]) == id)
             {
