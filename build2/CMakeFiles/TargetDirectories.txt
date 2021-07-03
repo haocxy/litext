@@ -1,3 +1,0 @@
-D:/code/notesharp/build2/CMakeFiles/ALL_BUILD.dir
-D:/code/notesharp/build2/CMakeFiles/ZERO_CHECK.dir
-D:/code/notesharp/build2/src/CMakeFiles/notesharp.dir
