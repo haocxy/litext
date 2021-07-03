@@ -20,7 +20,7 @@ public:
 	float lineHeightFactor() const { return lineHeightFactor_ / 1000.0; }
 	void setLineHeightFactor(float f) { lineHeightFactor_ = static_cast<int>(f * 1000); }
 
-	int lineHeight() const { return lineHeightFactor_ * m_font.height() / 1000; }
+	int lineHeight() const { return lineHeightFactor_ * font_.height() / 1000; }
 
 	int hGap() const { return hGap_; }
 	void setHGap(int hGap) { hGap_ = hGap; }
@@ -34,8 +34,8 @@ public:
 	bool wrapLine() const { return wrapLine_; }
 	void setWrapLine(bool wrapLine) { wrapLine_ = wrapLine; }
 
-	Font &rfont() { return m_font; }
-	const Font &font() const { return m_font; }
+	Font &rfont() { return font_; }
+	const Font &font() const { return font_; }
 
 	Font &rStatusBarFont() { return m_statusBarFont; }
 	const Font &statusBarFont() const { return m_statusBarFont; }
@@ -61,7 +61,7 @@ private:
 	int32_t lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
-	Font m_font;
+	Font font_;
 	Font m_statusBarFont; // 状态栏字体
 };
 

@@ -9,8 +9,8 @@ int view::Config::charWidth(QChar c) const
         return 0;
     }
 
-    const bool fixWidth = m_font.isFixWidth();
-    const int widthForFix = m_font.charWidth('a');
+    const bool fixWidth = font_.isFixWidth();
+    const int widthForFix = font_.charWidth('a');
 
     // tab符特殊处理
     if (c == '\t')
@@ -22,19 +22,19 @@ int view::Config::charWidth(QChar c) const
         }
         else
         {
-            return hMargin_ * (tabSize_ - 1) + m_font.charWidth(' ') * tabSize_;
+            return hMargin_ * (tabSize_ - 1) + font_.charWidth(' ') * tabSize_;
         }
     }
 
     // 不是等宽字体则直接返回宽度
     if (!fixWidth)
     {
-        return m_font.charWidth(c);
+        return font_.charWidth(c);
     }
 
     // 下面处理等宽字体
 
-    const int rawWidth = m_font.charWidth(c);
+    const int rawWidth = font_.charWidth(c);
     if (rawWidth > widthForFix)
     {
         // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
