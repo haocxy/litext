@@ -239,7 +239,7 @@ private:
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;
-    ViewLoc m_loc{ 10, 0 };
+    ViewLoc m_loc{ 0, 0 };
     
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
