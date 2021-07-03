@@ -29,4 +29,12 @@ if(MSVC)
 endif()
 
 
+# GNU体系全局设置
+if(CMAKE_COMPILER_IS_GNUCXX)
+    # 确保std::filesystem可用
+    link_libraries(-lstdc++fs)
+    message(STATUS "option: -lstdc++fs")
+endif()
+
+
 add_subdirectory(src)
