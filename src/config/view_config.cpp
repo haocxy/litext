@@ -1,5 +1,6 @@
 #include "view_config.h"
 
+
 int view::Config::charWidth(QChar c) const
 {
     // 换行符不占用空间
