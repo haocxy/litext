@@ -45,8 +45,8 @@ public:
 	bool showLineNum() const { return showLineNum_; }
 	void setShowLineNum(bool showLineNum) { showLineNum_ = showLineNum; }
 
-	int32_t lineNumOffset() const { return m_lineNumOffset; }
-	void setLineNumOffset(int32_t lineNumOffset) { m_lineNumOffset = lineNumOffset; }
+	int32_t lineNumOffset() const { return lineNumOffset_; }
+	void setLineNumOffset(int32_t lineNumOffset) { lineNumOffset_ = lineNumOffset; }
 
 	LocOutsidePolicy locateOutsideOfViewPolicy() const { return m_locateOutsideOfViewPolicy; }
 	void setLocateOutsideOfViewPolicy(LocOutsidePolicy policy) { m_locateOutsideOfViewPolicy = policy; }
@@ -58,7 +58,7 @@ private:
 	int tabSize_ = kDefaultTabSize; // 一个TAB的宽度为若干个空格
 	bool wrapLine_ = false;
 	bool showLineNum_ = false; // 是否显示行号
-	int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
+	int32_t lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 	LocOutsidePolicy m_locateOutsideOfViewPolicy = LocOutsidePolicy::MoveView;
 
 	Font m_font;
