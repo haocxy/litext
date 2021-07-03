@@ -37,8 +37,8 @@ public:
 	Font &rfont() { return font_; }
 	const Font &font() const { return font_; }
 
-	Font &rStatusBarFont() { return m_statusBarFont; }
-	const Font &statusBarFont() const { return m_statusBarFont; }
+	Font &rStatusBarFont() { return statusBarFont_; }
+	const Font &statusBarFont() const { return statusBarFont_; }
 
 	int charWidth(QChar c) const;
 
@@ -62,7 +62,7 @@ private:
 	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
 	Font font_;
-	Font m_statusBarFont; // 状态栏字体
+	Font statusBarFont_; // 状态栏字体
 };
 
 
