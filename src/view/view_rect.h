@@ -1,10 +1,9 @@
 #pragma once
 
-#include "common/nullable_class.h"
 
 namespace view
 {
-    class Rect : public NullableClass
+    class Rect
     {
     public:
         int top() const { return m_top; }

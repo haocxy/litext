@@ -140,13 +140,13 @@ void TextPad::paintBackground(QPainter & p)
 
 void TextPad::paintLastActLine(QPainter & p)
 {
-    view::Rect r = m_view.getLastActLineDrawRect();
-    if (r.isNull())
+    std::optional<view::Rect> r = m_view.getLastActLineDrawRect();
+    if (!r)
     {
         return;
     }
 
-    p.fillRect(r.left(), r.top(), r.width(), r.height(), QColor(Qt::green).lighter(192));
+    p.fillRect(r->left(), r->top(), r->width(), r->height(), QColor(Qt::green).lighter(192));
 }
 
 void TextPad::prepareTextImage()
@@ -180,11 +180,11 @@ void TextPad::refresh()
 
 void TextPad::paintCursor(QPainter & p)
 {
-    const draw::VerticalLine vl = m_view.getNormalCursorDrawData();
+    std::optional<draw::VerticalLine> vl = m_view.getNormalCursorDrawData();
 
-    if (!vl.isNull())
+    if (vl)
     {
-        p.drawLine(vl.x(), vl.top(), vl.x(), vl.bottom());
+        p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }
 }
 

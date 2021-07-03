@@ -4,6 +4,7 @@
 #include <vector>
 #include <deque>
 #include <bitset>
+#include <optional>
 
 #include <QChar>
 
@@ -164,9 +165,9 @@ public:
 
     int getBaseLineByLineOffset(int off) const;
 
-    view::Rect getLastActLineDrawRect() const;
+    std::optional<view::Rect> getLastActLineDrawRect() const;
 
-    draw::VerticalLine getNormalCursorDrawData() const;
+    std::optional<draw::VerticalLine> getNormalCursorDrawData() const;
 
     int getLineNumBarWidth() const;
 

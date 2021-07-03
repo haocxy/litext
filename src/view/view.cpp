@@ -612,19 +612,18 @@ void View::movePageHeadOneLine()
 	}
 }
 
-view::Rect View::getLastActLineDrawRect() const
+std::optional<view::Rect> View::getLastActLineDrawRect() const
 {
     const RowN row = m_editor.lastActRow();
     const view::RowLoc loc = convertToRowLoc(row);
     if (loc.isNull())
     {
-        return view::Rect();
+        return std::nullopt;
     }
 
     const view::RowBound bound = getRowBound(loc);
 
     view::Rect rect;
-    rect.setNull(false);
     rect.setLeft(0);
     rect.setTop(bound.top());
     rect.setWidth(m_size.width());
@@ -632,7 +631,7 @@ view::Rect View::getLastActLineDrawRect() const
     return rect;
 }
 
-draw::VerticalLine View::getNormalCursorDrawData() const
+std::optional<draw::VerticalLine> View::getNormalCursorDrawData() const
 {
     enum { kHorizontalDelta = -1 };
     enum { kVerticalShrink = 2 };
@@ -641,12 +640,12 @@ draw::VerticalLine View::getNormalCursorDrawData() const
 
     if (cursor.isNull())
     {
-        return draw::VerticalLine();
+        return std::nullopt;
     }
 
     if (!cursor.isInsert())
     {
-        return draw::VerticalLine();
+        return std::nullopt;
     }
 
     const DocLoc & docLoc = cursor.loc();
@@ -655,7 +654,7 @@ draw::VerticalLine View::getNormalCursorDrawData() const
 
     if (charLoc.isNull())
     {
-        return draw::VerticalLine();
+        return std::nullopt;
     }
 
     const view::LineBound bound = getLineBound(charLoc);
@@ -663,7 +662,6 @@ draw::VerticalLine View::getNormalCursorDrawData() const
     const int x = getXByCharLoc(charLoc) + kHorizontalDelta;
 
     draw::VerticalLine vl;
-    vl.setNull(false);
     vl.setX(x);
     vl.setTop(bound.top() + kVerticalShrink);
     vl.setBottom(bound.bottom() - kVerticalShrink);

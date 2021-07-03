@@ -1,10 +1,9 @@
 #pragma once
 
-#include "common/nullable_class.h"
 
 namespace draw
 {
-    class VerticalLine : public NullableClass
+    class VerticalLine
     {
     public:
         int x() const { return m_x; }
