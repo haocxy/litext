@@ -42,8 +42,8 @@ public:
 
 	int charWidth(QChar c) const;
 
-	bool showLineNum() const { return m_showLineNum; }
-	void setShowLineNum(bool showLineNum) { m_showLineNum = showLineNum; }
+	bool showLineNum() const { return showLineNum_; }
+	void setShowLineNum(bool showLineNum) { showLineNum_ = showLineNum; }
 
 	int32_t lineNumOffset() const { return m_lineNumOffset; }
 	void setLineNumOffset(int32_t lineNumOffset) { m_lineNumOffset = lineNumOffset; }
@@ -57,7 +57,7 @@ private:
 	int hMargin_ = kDefaultHMargin; // 水平字符间距
 	int tabSize_ = kDefaultTabSize; // 一个TAB的宽度为若干个空格
 	bool wrapLine_ = false;
-	bool m_showLineNum = false; // 是否显示行号
+	bool showLineNum_ = false; // 是否显示行号
 	int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 	LocOutsidePolicy m_locateOutsideOfViewPolicy = LocOutsidePolicy::MoveView;
 
