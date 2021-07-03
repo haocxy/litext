@@ -3,7 +3,7 @@
 #include <vector>
 #include <deque>
 #include <QChar>
-#include "common/common_define.h"
+
 #include "view/view_loc.h"
 
 namespace view

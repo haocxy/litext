@@ -10,7 +10,7 @@ public:
 
     virtual CharN charCnt() const override
     {
-        return static_cast<UChar>(m_content.size());
+        return static_cast<CharN>(m_content.size());
     }
 
     virtual QChar charAt(CharN i) const override
@@ -33,7 +33,7 @@ public:
         m_content = std::move(content);
     }
 
-    void Add(UChar c)
+    void Add(QChar c)
     {
         m_content.push_back(c);
     }

@@ -6,7 +6,7 @@
 
 namespace
 {
-    inline bool IsWordChar(UChar c)
+    inline bool IsWordChar(QChar c)
     {
         return c >= 'a' && c <= 'z'
             || c >= 'A' && c <= 'Z'
@@ -14,7 +14,7 @@ namespace
             || c == '_';
     }
 
-    inline bool IsEmptyChar(UChar c)
+    inline bool IsEmptyChar(QChar c)
     {
         return c == ' ' || c == '\t';
     }
@@ -22,7 +22,7 @@ namespace
 
 QString TxtWordStream::Next()
 {
-    UChar next = PopNextChar();
+    QChar next = PopNextChar();
     if (next == 0)
     {
         return QString();
@@ -35,7 +35,7 @@ QString TxtWordStream::Next()
     {
         while (true)
         {
-            UChar c = PopNextChar();
+            QChar c = PopNextChar();
             if (c == 0)
             {
                 return result;
@@ -55,7 +55,7 @@ QString TxtWordStream::Next()
     {
         while (true)
         {
-            UChar c = PopNextChar();
+            QChar c = PopNextChar();
             if (c == 0)
             {
                 return result;
@@ -75,11 +75,11 @@ QString TxtWordStream::Next()
     return result;
 }
 
-UChar TxtWordStream::PopNextChar()
+QChar TxtWordStream::PopNextChar()
 {
     if (!m_buff.empty())
     {
-        UChar first = m_buff.front();
+        QChar first = m_buff.front();
         m_buff.pop_front();
         return first;
     }

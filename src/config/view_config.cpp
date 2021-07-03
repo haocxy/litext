@@ -3,7 +3,7 @@
 int view::Config::charWidth(QChar c) const
 {
     // 换行符不占用空间
-    if (c == UChar('\n') || c == UChar('\r'))
+    if (c == '\n' || c == '\r')
     {
         return 0;
     }
@@ -12,7 +12,7 @@ int view::Config::charWidth(QChar c) const
     const int widthForFix = m_font.charWidth('a');
 
     // tab符特殊处理
-    if (c == UChar('\t'))
+    if (c == '\t')
     {
         if (fixWidth)
         {

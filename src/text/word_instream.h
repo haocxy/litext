@@ -2,7 +2,6 @@
 
 #include <QString>
 
-#include "common/common_define.h"
 
 class WordInStream
 {

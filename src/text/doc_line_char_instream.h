@@ -9,7 +9,7 @@ public:
     explicit DocLineCharInStream(const Row & line) : m_line(line) {}
     virtual ~DocLineCharInStream() {}
 
-    virtual UChar Next() override
+    virtual QChar Next() override
     {
         if (m_index < m_line.charCnt())
         {

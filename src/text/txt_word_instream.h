@@ -18,13 +18,13 @@ public:
 
     virtual QString Next() override;
 private:
-    UChar PopNextChar();
-    void PushBackChar(UChar c)
+    QChar PopNextChar();
+    void PushBackChar(QChar c)
     {
         m_buff.push_front(c);
     }
 
 private:
     CharInStream & m_charInStream;
-    std::deque<UChar> m_buff;
+    std::deque<QChar> m_buff;
 };

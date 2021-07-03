@@ -1,11 +1,12 @@
 #pragma once
 
-#include "common/common_define.h"
+#include <QChar>
+
 
 class CharInStream
 {
 public:
     virtual ~CharInStream() {}
 
-    virtual UChar Next() = 0;
+    virtual QChar Next() = 0;
 };
