@@ -34,6 +34,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     # 确保std::filesystem可用
     link_libraries(-lstdc++fs)
     message(STATUS "option: -lstdc++fs")
+    link_libraries(-lpthread)
+    message(STATUS "option: -lpthread")
 endif()
 
 
