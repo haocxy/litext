@@ -28,8 +28,8 @@ public:
 	int hMargin() const { return hMargin_; }
 	void setHMargin(int hMargin) { hMargin_ = hMargin; }
 
-	int tabSize() const { return m_tabSize; }
-	void setTabSize(int tabSize) { m_tabSize = tabSize; }
+	int tabSize() const { return tabSize_; }
+	void setTabSize(int tabSize) { tabSize_ = tabSize; }
 
 	bool wrapLine() const { return m_wrapLine; }
 	void setWrapLine(bool wrapLine) { m_wrapLine = wrapLine; }
@@ -55,7 +55,7 @@ private:
 	int lineHeightFactor_ = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
 	int hGap_ = kDefaultHGap; // 水平方向最左侧字符左边的空白
 	int hMargin_ = kDefaultHMargin; // 水平字符间距
-	int m_tabSize = kDefaultTabSize; // 一个TAB的宽度为若干个空格
+	int tabSize_ = kDefaultTabSize; // 一个TAB的宽度为若干个空格
 	bool m_wrapLine = false;
 	bool m_showLineNum = false; // 是否显示行号
 	int32_t m_lineNumOffset = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值

@@ -18,11 +18,11 @@ int view::Config::charWidth(QChar c) const
         if (fixWidth)
         {
             // *[]*[]*[]*[]*
-            return hMargin_ * (m_tabSize - 1) + widthForFix * m_tabSize;
+            return hMargin_ * (tabSize_ - 1) + widthForFix * tabSize_;
         }
         else
         {
-            return hMargin_ * (m_tabSize - 1) + m_font.charWidth(' ') * m_tabSize;
+            return hMargin_ * (tabSize_ - 1) + m_font.charWidth(' ') * tabSize_;
         }
     }
 
