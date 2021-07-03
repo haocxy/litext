@@ -11,10 +11,10 @@ namespace view
 class Config {
 public:
 	static const int kLineHeightScale = 1000;
-	static const int kDefaultLineHeightFactor = static_cast<int>(1.2 * kLineHeightScale); // Ä¬ÈÏĞĞ¸ßÏµÊı
-	static const int kDefaultHGap = 2; // Ä¬ÈÏË®Æ½×Ö·û¼ä¾à
-	static const int kDefaultHMargin = 2; // Ä¬ÈÏË®Æ½¼ä¾à
-	static const int kDefaultTabSize = 4; // Ä¬ÈÏTAB³ß´ç
+	static const int kDefaultLineHeightFactor = static_cast<int>(1.2 * kLineHeightScale); // é»˜è®¤è¡Œé«˜ç³»æ•°
+	static const int kDefaultHGap = 2; // é»˜è®¤æ°´å¹³å­—ç¬¦é—´è·
+	static const int kDefaultHMargin = 2; // é»˜è®¤æ°´å¹³é—´è·
+	static const int kDefaultTabSize = 4; // é»˜è®¤TABå°ºå¯¸
 
 public:
 	float lineHeightFactor() const { return lineHeightFactor_ / 1000.0; }
@@ -52,17 +52,17 @@ public:
 	void setLocateOutsideOfViewPolicy(LocOutsidePolicy policy) { m_locateOutsideOfViewPolicy = policy; }
 
 private:
-	int lineHeightFactor_ = kDefaultLineHeightFactor; // ĞĞ¸ßÏµÊı£¬ĞĞ¸ß = ĞĞ¸ßÏµÊı * ×ÖÌå¸ß¶È / 1000
-	int m_hGap = kDefaultHGap; // Ë®Æ½·½Ïò×î×ó²à×Ö·û×ó±ßµÄ¿Õ°×
-	int m_hMargin = kDefaultHMargin; // Ë®Æ½×Ö·û¼ä¾à
-	int m_tabSize = kDefaultTabSize; // Ò»¸öTABµÄ¿í¶ÈÎªÈô¸É¸ö¿Õ¸ñ
+	int lineHeightFactor_ = kDefaultLineHeightFactor; // è¡Œé«˜ç³»æ•°ï¼Œè¡Œé«˜ = è¡Œé«˜ç³»æ•° * å­—ä½“é«˜åº¦ / 1000
+	int m_hGap = kDefaultHGap; // æ°´å¹³æ–¹å‘æœ€å·¦ä¾§å­—ç¬¦å·¦è¾¹çš„ç©ºç™½
+	int m_hMargin = kDefaultHMargin; // æ°´å¹³å­—ç¬¦é—´è·
+	int m_tabSize = kDefaultTabSize; // ä¸€ä¸ªTABçš„å®½åº¦ä¸ºè‹¥å¹²ä¸ªç©ºæ ¼
 	bool m_wrapLine = false;
-	bool m_showLineNum = false; // ÊÇ·ñÏÔÊ¾ĞĞºÅ
-	int32_t m_lineNumOffset = 0; // ĞĞºÅÆ«ÒÆ£¬ÏÔÊ¾ĞĞºÅÊ±£¬°Ñ³ÌĞòÄÚ²¿´Ó0¿ªÊ¼µÄĞĞË÷Òı¼ÓÉÏÕâ¸öÖµ
+	bool m_showLineNum = false; // æ˜¯å¦æ˜¾ç¤ºè¡Œå·
+	int32_t m_lineNumOffset = 0; // è¡Œå·åç§»ï¼Œæ˜¾ç¤ºè¡Œå·æ—¶ï¼ŒæŠŠç¨‹åºå†…éƒ¨ä»0å¼€å§‹çš„è¡Œç´¢å¼•åŠ ä¸Šè¿™ä¸ªå€¼
 	LocOutsidePolicy m_locateOutsideOfViewPolicy = LocOutsidePolicy::MoveView;
 
 	Font m_font;
-	Font m_statusBarFont; // ×´Ì¬À¸×ÖÌå
+	Font m_statusBarFont; // çŠ¶æ€æ å­—ä½“
 };
 
 
