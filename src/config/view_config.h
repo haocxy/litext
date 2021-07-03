@@ -22,8 +22,8 @@ public:
 
 	int lineHeight() const { return lineHeightFactor_ * m_font.height() / 1000; }
 
-	int hGap() const { return m_hGap; }
-	void setHGap(int hGap) { m_hGap = hGap; }
+	int hGap() const { return hGap_; }
+	void setHGap(int hGap) { hGap_ = hGap; }
 
 	int hMargin() const { return m_hMargin; }
 	void setHMargin(int hMargin) { m_hMargin = hMargin; }
@@ -53,7 +53,7 @@ public:
 
 private:
 	int lineHeightFactor_ = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
-	int m_hGap = kDefaultHGap; // 水平方向最左侧字符左边的空白
+	int hGap_ = kDefaultHGap; // 水平方向最左侧字符左边的空白
 	int m_hMargin = kDefaultHMargin; // 水平字符间距
 	int m_tabSize = kDefaultTabSize; // 一个TAB的宽度为若干个空格
 	bool m_wrapLine = false;
