@@ -8,7 +8,6 @@
 #include <QChar>
 
 #include "doc/doc_define.h"
-#include "util/stl_container_util.h"
 #include "doc/doc_loc.h"
 #include "view/view_page.h"
 #include "view/view_loc.h"

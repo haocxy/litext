@@ -1,9 +1,9 @@
 #pragma once
 
+#include <vector>
 #include <deque>
 #include <QChar>
 #include "common/common_define.h"
-#include "util/stl_container_util.h"
 #include "view/view_loc.h"
 
 namespace view
@@ -83,7 +83,8 @@ namespace view
         iterator end() { return m_lines.end(); }
         Line &grow()
         {
-            return StlContainerUtil::grow(m_lines);
+            m_lines.resize(m_lines.size() + 1);
+            return m_lines.back();
         }
     private:
         Lines m_lines;
