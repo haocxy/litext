@@ -34,13 +34,13 @@ static void setupConfig(view::Config &c)
 	statusBarFont.setFont(barFontInfo);
 }
 
-MainWindow::MainWindow(QWidget * parent)
+MainWindow::MainWindow(std::filesystem::path filePath, QWidget * parent)
     : QMainWindow(parent)
 {
     m_viewConfig = new view::Config();
     setupConfig(*m_viewConfig);
     m_doc = new SimpleDoc;
-    m_doc->LoadFromFile(R"(../../nocode/demo/a.txt)");
+    m_doc->LoadFromFile(filePath.generic_string());
     
     m_editor = new Editor(m_doc);
     m_view = new View(m_editor, m_viewConfig);
