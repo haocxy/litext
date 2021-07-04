@@ -635,7 +635,7 @@ std::optional<view::Rect> TextArea::getLastActLineDrawRect() const
     return rect;
 }
 
-std::optional<draw::VerticalLine> TextArea::getNormalCursorDrawData() const
+std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
 {
     enum { kHorizontalDelta = -1 };
     enum { kVerticalShrink = 2 };
@@ -665,7 +665,7 @@ std::optional<draw::VerticalLine> TextArea::getNormalCursorDrawData() const
 
     const int x = getXByCharLoc(charLoc) + kHorizontalDelta;
 
-    draw::VerticalLine vl;
+    VerticalLine vl;
     vl.setX(x);
     vl.setTop(bound.top() + kVerticalShrink);
     vl.setBottom(bound.bottom() - kVerticalShrink);

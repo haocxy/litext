@@ -11,7 +11,7 @@
 #include "view_page.h"
 #include "view_loc.h"
 #include "view_rect.h"
-#include "draw_vertical_line.h"
+#include "vertical_line.h"
 #include "view_define.h"
 
 #include "core/callbacks.h"
@@ -162,7 +162,7 @@ public:
 
     std::optional<view::Rect> getLastActLineDrawRect() const;
 
-    std::optional<draw::VerticalLine> getNormalCursorDrawData() const;
+    std::optional<VerticalLine> getNormalCursorDrawData() const;
 
     int getLineNumBarWidth() const;
 

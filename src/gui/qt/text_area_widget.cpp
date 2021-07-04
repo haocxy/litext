@@ -187,11 +187,9 @@ void TextAreaWidget::refresh()
 
 void TextAreaWidget::paintCursor(QPainter &p)
 {
-    std::optional<draw::VerticalLine> vl = view_.getNormalCursorDrawData();
+    std::optional<VerticalLine> vl = view_.getNormalCursorDrawData();
     if (vl)
     {
         p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }
 }
-
-
