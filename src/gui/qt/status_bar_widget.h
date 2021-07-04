@@ -10,6 +10,7 @@ namespace gui::qt
 
 
 class StatusBarWidget : public QWidget {
+	Q_OBJECT
 public:
 	explicit StatusBarWidget(TextArea *view, QWidget *parent = nullptr);
 

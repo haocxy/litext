@@ -5,6 +5,7 @@
 #include "core/fs.h"
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
+#include "declare_editor_view_widget.h"
 
 
 class Editor;
@@ -13,9 +14,6 @@ class SimpleDoc;
 
 namespace gui::qt
 {
-
-
-class EditorViewWidget;
 
 
 class MainWindow : public QMainWindow {

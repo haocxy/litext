@@ -3,15 +3,13 @@
 #include <QWidget>
 
 #include "gui/declare_text_area.h"
+#include "declare_ruler_widget.h"
+#include "declare_text_area_widget.h"
+#include "declare_status_bar_widget.h"
 
 
 namespace gui::qt
 {
-
-
-class RulerWidget;
-class TextAreaWidget;
-class StatusBarWidget;
 
 
 class EditorViewWidget : public QWidget {
