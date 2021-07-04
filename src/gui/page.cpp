@@ -1,4 +1,4 @@
-#include "view_page.h"
+#include "page.h"
 
 #include <assert.h>
 
