@@ -56,7 +56,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
     }
 
     // QTextCodec 对象不需要由用户释放
-    const char *encoding = "gbk";
+    const char *encoding = "utf-8";
     QTextCodec *codec = QTextCodec::codecForName(encoding);
     if (!codec) {
         std::cerr << "cannot find codec for: " << encoding;
