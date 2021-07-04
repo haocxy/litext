@@ -18,7 +18,7 @@ LineLoc Page::getNextUpLineLoc(const LineLoc &lineLoc) const
     }
 
     if (lineLoc.row() > 0) {
-        const int upRowIndex = lineLoc.row() - 1;
+        const RowN upRowIndex = lineLoc.row() - 1;
         const VRow &upRow = m_rows[upRowIndex];
         assert(upRow.size() > 0);
         return LineLoc(upRowIndex, upRow.size() - 1);
@@ -33,7 +33,7 @@ LineLoc Page::getNextDownLineLoc(const LineLoc &lineLoc) const
         return LineLoc();
     }
 
-    const int r = lineLoc.row();
+    const RowN r = lineLoc.row();
     const VRow &row = m_rows[r];
     const int curRowSize = row.size();
 
@@ -41,7 +41,7 @@ LineLoc Page::getNextDownLineLoc(const LineLoc &lineLoc) const
         return LineLoc(r, lineLoc.line() + 1);
     }
 
-    const int rowCnt = size();
+    const RowN rowCnt = size();
     if (r < rowCnt - 1) {
         return LineLoc(r + 1, 0);
     }

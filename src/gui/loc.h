@@ -21,9 +21,9 @@ public:
 	}
 public:
 	RowLoc() :m_flag(kIsNull), m_row(0) {}
-	explicit RowLoc(int row) : m_row(row) {}
-	int row() const { return m_row; }
-	void setRow(int row) { m_row = row; }
+	explicit RowLoc(RowN row) : m_row(row) {}
+	RowN row() const { return m_row; }
+	void setRow(RowN row) { m_row = row; }
 	bool isNull() const { return hasFlag(kIsNull); }
 	bool isAfterLastRow() const { return hasFlag(kAfterLastRow); }
 protected:
@@ -39,7 +39,7 @@ protected:
 	void setFlag(int f) { m_flag.set(f); }
 private:
 	FlagSet<kFlagCnt> m_flag;
-	int m_row = 0;
+	RowN m_row = 0;
 };
 
 class LineLoc : public RowLoc {
@@ -54,7 +54,7 @@ public:
 	}
 public:
 	LineLoc() = default;
-	LineLoc(int row, int line) :RowLoc(row), m_line(line) {}
+	LineLoc(RowN row, LineN line) :RowLoc(row), m_line(line) {}
 	LineN line() const { return m_line; }
 	void setLine(LineN line) { m_line = line; }
 private:
