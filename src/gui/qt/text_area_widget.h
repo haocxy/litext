@@ -16,7 +16,7 @@ class TextAreaWidget : public QWidget {
     Q_OBJECT
 
 public:
-    TextAreaWidget(gui::TextArea *view, QWidget *parent = nullptr);
+    TextAreaWidget(TextArea *view, QWidget *parent = nullptr);
 
     ~TextAreaWidget();
 
@@ -55,7 +55,7 @@ private:
     };
 
 private:
-    gui::TextArea &view_;
+    TextArea &view_;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
     CallbackHandle cbhViewLocChanged_;

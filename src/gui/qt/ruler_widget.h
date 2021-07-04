@@ -15,7 +15,7 @@ namespace gui::qt
 class RulerWidget : public QWidget {
     Q_OBJECT
 public:
-    RulerWidget(gui::TextArea *view, QWidget *parent = nullptr);
+    RulerWidget(TextArea *view, QWidget *parent = nullptr);
     virtual ~RulerWidget();
 
     virtual void paintEvent(QPaintEvent *e) override;
@@ -25,7 +25,7 @@ private:
     void paintLineNum(QPainter &p);
 
 private:
-    gui::TextArea &m_view;
+    TextArea &m_view;
     CallbackHandle m_cbhUpdate;
     CallbackHandle m_cbhViewLocChange;
 };

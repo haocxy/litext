@@ -17,7 +17,7 @@ class StatusBarWidget;
 class EditorViewWidget : public QWidget {
     Q_OBJECT
 public:
-    EditorViewWidget(gui::TextArea *view, QWidget *parent = nullptr);
+    EditorViewWidget(TextArea *view, QWidget *parent = nullptr);
     virtual ~EditorViewWidget();
 
 private:

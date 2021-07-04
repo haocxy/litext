@@ -11,13 +11,13 @@ namespace gui::qt
 
 class StatusBarWidget : public QWidget {
 public:
-	explicit StatusBarWidget(gui::TextArea *view, QWidget *parent = nullptr);
+	explicit StatusBarWidget(TextArea *view, QWidget *parent = nullptr);
 
 	virtual QSize sizeHint() const override;
 	virtual void paintEvent(QPaintEvent *e) override;
 
 private:
-	gui::TextArea &view_;
+	TextArea &view_;
 };
 
 

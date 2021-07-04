@@ -14,7 +14,7 @@ namespace gui::qt
 static const char *kFontFamilyTimes = "Times";
 static const char *kFontFamilyYaHei = "Microsoft YaHei";
 
-static void setupConfig(gui::TextAreaConfig &c)
+static void setupConfig(TextAreaConfig &c)
 {
     c.setLineHeightFactor(1.f);
     c.setHGap(2);
@@ -35,13 +35,13 @@ static void setupConfig(gui::TextAreaConfig &c)
 MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     : QMainWindow(parent)
 {
-    m_viewConfig = new gui::TextAreaConfig();
+    m_viewConfig = new TextAreaConfig();
     setupConfig(*m_viewConfig);
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(filePath.generic_string());
 
     m_editor = new Editor(m_doc);
-    m_view = new gui::TextArea(m_editor, m_viewConfig);
+    m_view = new TextArea(m_editor, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(m_view);
 
 

@@ -12,7 +12,7 @@ namespace gui::qt
 {
 
 
-EditorViewWidget::EditorViewWidget(gui::TextArea *view, QWidget *parent)
+EditorViewWidget::EditorViewWidget(TextArea *view, QWidget *parent)
     : QWidget(parent)
 {
     ruler_ = new RulerWidget(view);

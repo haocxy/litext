@@ -24,7 +24,7 @@ namespace gui::qt
 {
 
 
-StatusBarWidget::StatusBarWidget(gui::TextArea *view, QWidget *parent)
+StatusBarWidget::StatusBarWidget(TextArea *view, QWidget *parent)
 	: QWidget(parent)
 	, view_(*view)
 {

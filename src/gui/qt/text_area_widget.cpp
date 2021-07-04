@@ -36,7 +36,7 @@ namespace gui::qt
 {
 
 
-TextAreaWidget::TextAreaWidget(gui::TextArea *view, QWidget *parent)
+TextAreaWidget::TextAreaWidget(TextArea *view, QWidget *parent)
     : QWidget(parent)
     , view_(*view)
     , textPaintBuff_(kSizeHint, kBuffImageFormat)
@@ -47,7 +47,7 @@ TextAreaWidget::TextAreaWidget(gui::TextArea *view, QWidget *parent)
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
 
-    view_.initSize(gui::Size(textPaintBuff_.width(), textPaintBuff_.height()));
+    view_.initSize(Size(textPaintBuff_.width(), textPaintBuff_.height()));
 
     prepareTextImage();
 
@@ -141,7 +141,7 @@ void TextAreaWidget::paintBackground(QPainter &p)
 
 void TextAreaWidget::paintLastActLine(QPainter &p)
 {
-    std::optional<gui::Rect> r = view_.getLastActLineDrawRect();
+    std::optional<Rect> r = view_.getLastActLineDrawRect();
     if (r) {
         p.fillRect(r->left(), r->top(), r->width(), r->height(), QColor(Qt::green).lighter(192));
     }
@@ -191,7 +191,7 @@ void TextAreaWidget::refresh()
 
 void TextAreaWidget::paintCursor(QPainter &p)
 {
-    std::optional<gui::VerticalLine> vl = view_.getNormalCursorDrawData();
+    std::optional<VerticalLine> vl = view_.getNormalCursorDrawData();
     if (vl) {
         p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }

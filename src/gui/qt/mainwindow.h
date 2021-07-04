@@ -29,9 +29,9 @@ private:
     void initMenuBar();
 
 private:
-    gui::TextAreaConfig *m_viewConfig = nullptr;
+    TextAreaConfig *m_viewConfig = nullptr;
     SimpleDoc *m_doc = nullptr;
-    gui::TextArea *m_view = nullptr;
+    TextArea *m_view = nullptr;
     Editor *m_editor = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
 };
