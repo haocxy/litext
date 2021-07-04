@@ -12,17 +12,16 @@
 namespace
 {
 
-enum
-{
-kMargin = 5,
-kDoubleMargin = kMargin << 1,
+enum {
+    kMargin = 5,
+    kDoubleMargin = kMargin << 1,
 };
 
 }
 
 StatusBarWidget::StatusBarWidget(View * view, QWidget * parent)
 	: QWidget(parent)
-	, m_view(*view)
+	, view_(*view)
 {
 	assert(view);
 
@@ -31,13 +30,13 @@ StatusBarWidget::StatusBarWidget(View * view, QWidget * parent)
 
 QSize StatusBarWidget::sizeHint() const
 {
-	return QSize(-1, m_view.config().statusBarFont().height() + kDoubleMargin);
+	return QSize(-1, view_.config().statusBarFont().height() + kDoubleMargin);
 }
 
 void StatusBarWidget::paintEvent(QPaintEvent * e)
 {
-	const view::Font & font = m_view.config().font();
-	const view::Font & barFont = m_view.config().statusBarFont();
+	const view::Font &font = view_.config().font();
+	const view::Font &barFont = view_.config().statusBarFont();
 
 	QFont qfont;
 	QtUtil::fillQFont(barFont, qfont);

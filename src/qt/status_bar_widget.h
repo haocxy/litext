@@ -13,5 +13,5 @@ public:
 	virtual void paintEvent(QPaintEvent *e) override;
 
 private:
-	View & m_view;
+	View &view_;
 };
