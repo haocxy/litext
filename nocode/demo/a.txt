@@ -17,5 +17,5 @@ vs插件：Qt Visual Studio Tools
 
 需要用两个UTF-16存储的特殊字符测试：
 aa1第一个字符：123𤭢abc
-aa2第二个字符：123??abc
-aa3连续两个字符：123????abc
+aa2第二个字符：123𐐷abc
+aa3连续两个字符：123𤭢𐐷abc

@@ -158,8 +158,17 @@ void TextPad::prepareTextImage()
     QtUtil::fillQFont(m_view.config().font(), qfont);
     p.setFont(qfont);
 
-    m_view.drawEachChar([&p](int x, int y, QChar c) {
-        p.drawText(x, y, c);
+    m_view.drawEachChar([&p](int x, int y, UChar c) {
+        if (!UCharUtil::needSurrogate(c)) {
+            p.drawText(x, y, QChar(c));
+        } else {
+            QChar high = QChar::highSurrogate(c);
+            QChar low = QChar::lowSurrogate(c);
+            QString surrogatedChar;
+            surrogatedChar.push_back(high);
+            surrogatedChar.push_back(low);
+            p.drawText(x, y, surrogatedChar);
+        }
     });
 }
 

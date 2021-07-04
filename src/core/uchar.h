@@ -12,7 +12,7 @@ inline constexpr bool needSurrogate(T ch) {
 
 template <typename T>
 inline constexpr bool isSurrogate(T ch) {
-	return (ch & (~T(0b1'1111'1111))) == (T(0b1101'1) << T(11));
+	return (ch & (~T(0b111'1111'1111))) == (T(0b1101'1) << T(11));
 }
 
 template <typename T>
