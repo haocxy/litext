@@ -4,15 +4,10 @@
 
 #include "core/fs.h"
 #include "gui/declare_text_area.h"
+#include "gui/declare_text_area_config.h"
 
 
 class EditorViewWidget;
-
-namespace gui
-{
-class TextAreaConfig;
-}
-
 class Editor;
 class SimpleDoc;
 

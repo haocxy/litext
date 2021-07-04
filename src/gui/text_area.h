@@ -6,6 +6,7 @@
 #include <bitset>
 #include <optional>
 
+#include "core/callbacks.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "page.h"
@@ -13,8 +14,7 @@
 #include "rect.h"
 #include "vertical_line.h"
 #include "view_define.h"
-
-#include "core/callbacks.h"
+#include "declare_text_area_config.h"
 
 
 class Row;
@@ -25,8 +25,6 @@ class Editor;
 
 namespace gui
 {
-
-class TextAreaConfig;
 
 class Size {
 public:
