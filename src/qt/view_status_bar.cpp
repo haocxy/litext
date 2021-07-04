@@ -1,4 +1,4 @@
-#include "view_status_bar.h"
+#include "status_bar_widget.h"
 
 #include <cassert>
 

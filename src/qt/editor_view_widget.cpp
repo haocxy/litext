@@ -5,7 +5,7 @@
 
 #include "ruler_widget.h"
 #include "text_area_widget.h"
-#include "view_status_bar.h"
+#include "status_bar_widget.h"
 
 
 EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
