@@ -761,7 +761,7 @@ void View::onPrimaryButtomPress(int x, int y)
 
 bool View::moveDownByOneLine()
 {
-	const int docRowCnt = m_editor.doc().rowCnt();
+	const RowN docRowCnt = m_editor.doc().rowCnt();
 
 	// 文档没有内容则不能移动
 	if (docRowCnt == 0)
