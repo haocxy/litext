@@ -127,11 +127,8 @@ class Row;
 class DocLoc;
 class Editor;
 
-/*
-视图
-支持看文档某一段
-如，滚动条相关逻辑由这个接口支持
-*/
+
+// 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class View
 {
 public:
