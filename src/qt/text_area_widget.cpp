@@ -1,4 +1,4 @@
-#include "textpad.h"
+#include "text_area_widget.h"
 
 #include <assert.h>
 #include <QPainter>
@@ -9,6 +9,7 @@
 #include "config/view_config.h"
 #include "editor/editor.h"
 #include "qt_util.h"
+
 
 namespace
 {
