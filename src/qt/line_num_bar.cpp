@@ -13,7 +13,7 @@ namespace
     const QColor kLastActColor = QColor(Qt::black);
 }
 
-LineNumBar::LineNumBar(View * view, QWidget * parent)
+LineNumBarWidget::LineNumBarWidget(View * view, QWidget * parent)
     : QWidget(parent)
     , m_view(*view)
 {
@@ -33,24 +33,24 @@ LineNumBar::LineNumBar(View * view, QWidget * parent)
 	});
 }
 
-LineNumBar::~LineNumBar()
+LineNumBarWidget::~LineNumBarWidget()
 {
 
 }
 
-void LineNumBar::paintEvent(QPaintEvent * e)
+void LineNumBarWidget::paintEvent(QPaintEvent * e)
 {
     QPainter p(this);
     paintBackground(p);
     paintLineNum(p);
 }
 
-void LineNumBar::paintBackground(QPainter & p)
+void LineNumBarWidget::paintBackground(QPainter & p)
 {
     p.fillRect(rect(), kBgColor);
 }
 
-void LineNumBar::paintLineNum(QPainter & p)
+void LineNumBarWidget::paintLineNum(QPainter & p)
 {
     const QFont font = view::fontToQFont(m_view.config().font());
     p.setFont(font);

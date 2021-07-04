@@ -6,12 +6,12 @@
 class View;
 class QPainter;
 
-class LineNumBar : public QWidget
+class LineNumBarWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LineNumBar(View * view, QWidget * parent = nullptr);
-    virtual ~LineNumBar();
+    LineNumBarWidget(View * view, QWidget * parent = nullptr);
+    virtual ~LineNumBarWidget();
 
     virtual void paintEvent(QPaintEvent *e) override;
 

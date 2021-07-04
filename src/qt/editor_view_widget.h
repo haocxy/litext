@@ -2,10 +2,11 @@
 
 #include <QWidget>
 
-class LineNumBar;
+class LineNumBarWidget;
 class TextAreaWidget;
 class View;
 class ViewStatusBar;
+
 
 class EditorViewWidget : public QWidget
 {
@@ -15,7 +16,7 @@ public:
     virtual ~EditorViewWidget();
 
 private:
-    LineNumBar * m_lineNumBar = nullptr;
+    LineNumBarWidget * m_lineNumBar = nullptr;
     TextAreaWidget * textArea_ = nullptr;
 	ViewStatusBar * m_viewStatusBar = nullptr;
 };

@@ -4,13 +4,14 @@
 #include <QVBoxLayout>
 
 #include "line_num_bar.h"
-#include "textpad.h"
+#include "text_area_widget.h"
 #include "view_status_bar.h"
+
 
 EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
     : QWidget(parent)
 {
-    m_lineNumBar = new LineNumBar(view);
+    m_lineNumBar = new LineNumBarWidget(view);
     textArea_ = new TextAreaWidget(view);
 	m_viewStatusBar = new ViewStatusBar(view);
 
