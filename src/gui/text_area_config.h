@@ -6,7 +6,7 @@
 #include "loc_outside_policy.h"
 
 
-namespace view
+namespace gui
 {
 
 

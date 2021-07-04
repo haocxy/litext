@@ -1,7 +1,7 @@
 #include "text_area_config.h"
 
 
-namespace view
+namespace gui
 {
 
 int TextAreaConfig::charWidth(UChar c) const

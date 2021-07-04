@@ -14,7 +14,7 @@
 namespace gui
 {
 
-TextArea::TextArea(Editor *editor, view::TextAreaConfig *config)
+TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
 {

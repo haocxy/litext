@@ -10,16 +10,12 @@ class EditorViewWidget;
 namespace gui
 {
 class TextArea;
+class TextAreaConfig;
 }
 
 class Editor;
 class SimpleDoc;
 
-
-namespace view
-{
-    class TextAreaConfig;
-}
 
 class MainWindow : public QMainWindow
 {
@@ -33,7 +29,7 @@ private:
     void initMenuBar();
 
 private:
-    view::TextAreaConfig * m_viewConfig = nullptr;
+    gui::TextAreaConfig * m_viewConfig = nullptr;
     SimpleDoc * m_doc = nullptr;
     gui::TextArea * m_view = nullptr;
     Editor * m_editor = nullptr;

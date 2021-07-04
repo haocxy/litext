@@ -22,14 +22,11 @@ class DocLoc;
 class Editor;
 
 
-namespace view
-{
-class TextAreaConfig;
-}
-
 
 namespace gui
 {
+
+class TextAreaConfig;
 
 class Size {
 public:
@@ -116,7 +113,7 @@ private:
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
-    TextArea(Editor *editor, view::TextAreaConfig *config);
+    TextArea(Editor *editor, TextAreaConfig *config);
 
     ~TextArea();
 
@@ -142,7 +139,7 @@ public:
 
 public:
 
-    const view::TextAreaConfig &config() const { return config_; }
+    const TextAreaConfig &config() const { return config_; }
 
     int getBaseLineByLineOffset(int off) const;
 
@@ -217,7 +214,7 @@ private:
 
 private:
     Editor &editor_;
-    const view::TextAreaConfig &config_;
+    const TextAreaConfig &config_;
     view::Page m_page;
     Size m_size;
     ViewLoc m_loc{ 0, 0 };
