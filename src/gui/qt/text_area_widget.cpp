@@ -31,6 +31,11 @@ static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 
 }
 
+
+namespace gui::qt
+{
+
+
 TextAreaWidget::TextAreaWidget(gui::TextArea *view, QWidget *parent)
     : QWidget(parent)
     , view_(*view)
@@ -48,7 +53,7 @@ TextAreaWidget::TextAreaWidget(gui::TextArea *view, QWidget *parent)
 
     cbhViewLocChanged_ = view_.addOnViewLocChangeListener([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
-    });
+        });
 }
 
 TextAreaWidget::~TextAreaWidget()
@@ -95,8 +100,7 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 {
     const int key = e->key();
 
-    switch (key)
-    {
+    switch (key) {
     case Qt::Key_Up:
         view_.onDirUpKeyPress();
         refresh();
@@ -113,10 +117,10 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
         view_.onDirRightKeyPress();
         refresh();
         break;
-	case Qt::Key_S:
-		view_.moveDownByOneLine();
-		refresh();
-		break;
+    case Qt::Key_S:
+        view_.moveDownByOneLine();
+        refresh();
+        break;
     default:
         break;
     }
@@ -167,7 +171,7 @@ void TextAreaWidget::prepareTextImage()
         } else {
             p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
         }
-    });
+        });
 }
 
 void TextAreaWidget::paintWidget(QPainter &p)
@@ -188,8 +192,10 @@ void TextAreaWidget::refresh()
 void TextAreaWidget::paintCursor(QPainter &p)
 {
     std::optional<gui::VerticalLine> vl = view_.getNormalCursorDrawData();
-    if (vl)
-    {
+    if (vl) {
         p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }
+}
+
+
 }

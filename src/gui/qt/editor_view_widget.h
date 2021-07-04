@@ -5,16 +5,19 @@
 #include "gui/declare_text_area.h"
 
 
+namespace gui::qt
+{
+
+
 class RulerWidget;
 class TextAreaWidget;
 class StatusBarWidget;
 
 
-class EditorViewWidget : public QWidget
-{
+class EditorViewWidget : public QWidget {
     Q_OBJECT
 public:
-    EditorViewWidget(gui::TextArea *view, QWidget * parent = nullptr);
+    EditorViewWidget(gui::TextArea *view, QWidget *parent = nullptr);
     virtual ~EditorViewWidget();
 
 private:
@@ -22,3 +25,6 @@ private:
     TextAreaWidget *textArea_ = nullptr;
     StatusBarWidget *statusBar_ = nullptr;
 };
+
+
+}

@@ -7,13 +7,18 @@
 #include "gui/declare_text_area_config.h"
 
 
-class EditorViewWidget;
 class Editor;
 class SimpleDoc;
 
 
-class MainWindow : public QMainWindow
+namespace gui::qt
 {
+
+
+class EditorViewWidget;
+
+
+class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
 
@@ -24,9 +29,12 @@ private:
     void initMenuBar();
 
 private:
-    gui::TextAreaConfig * m_viewConfig = nullptr;
-    SimpleDoc * m_doc = nullptr;
-    gui::TextArea * m_view = nullptr;
-    Editor * m_editor = nullptr;
-    EditorViewWidget * m_editorViewWidget = nullptr;
+    gui::TextAreaConfig *m_viewConfig = nullptr;
+    SimpleDoc *m_doc = nullptr;
+    gui::TextArea *m_view = nullptr;
+    Editor *m_editor = nullptr;
+    EditorViewWidget *m_editorViewWidget = nullptr;
 };
+
+
+}

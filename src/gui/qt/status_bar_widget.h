@@ -5,10 +5,13 @@
 #include "gui/declare_text_area.h"
 
 
-class StatusBarWidget : public QWidget
+namespace gui::qt
 {
+
+
+class StatusBarWidget : public QWidget {
 public:
-	explicit StatusBarWidget(gui::TextArea *view, QWidget * parent = nullptr);
+	explicit StatusBarWidget(gui::TextArea *view, QWidget *parent = nullptr);
 
 	virtual QSize sizeHint() const override;
 	virtual void paintEvent(QPaintEvent *e) override;
@@ -16,3 +19,6 @@ public:
 private:
 	gui::TextArea &view_;
 };
+
+
+}

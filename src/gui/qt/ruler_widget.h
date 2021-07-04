@@ -7,11 +7,15 @@
 
 class QPainter;
 
-class RulerWidget : public QWidget
+
+namespace gui::qt
 {
+
+
+class RulerWidget : public QWidget {
     Q_OBJECT
 public:
-    RulerWidget(gui::TextArea *view, QWidget * parent = nullptr);
+    RulerWidget(gui::TextArea *view, QWidget *parent = nullptr);
     virtual ~RulerWidget();
 
     virtual void paintEvent(QPaintEvent *e) override;
@@ -23,5 +27,8 @@ private:
 private:
     gui::TextArea &m_view;
     CallbackHandle m_cbhUpdate;
-	CallbackHandle m_cbhViewLocChange;
+    CallbackHandle m_cbhViewLocChange;
 };
+
+
+}

@@ -19,7 +19,12 @@ enum {
 
 }
 
-StatusBarWidget::StatusBarWidget(gui::TextArea *view, QWidget * parent)
+
+namespace gui::qt
+{
+
+
+StatusBarWidget::StatusBarWidget(gui::TextArea *view, QWidget *parent)
 	: QWidget(parent)
 	, view_(*view)
 {
@@ -33,7 +38,7 @@ QSize StatusBarWidget::sizeHint() const
 	return QSize(-1, fontMetrics().height() + kDoubleMargin);
 }
 
-void StatusBarWidget::paintEvent(QPaintEvent * e)
+void StatusBarWidget::paintEvent(QPaintEvent *e)
 {
 	const Font &font = view_.config().font();
 
@@ -45,4 +50,7 @@ void StatusBarWidget::paintEvent(QPaintEvent * e)
 
 	p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(),
 		QString("%1 (%2)").arg(font.family().c_str()).arg(font.size()));
+}
+
+
 }

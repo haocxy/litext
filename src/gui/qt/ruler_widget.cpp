@@ -14,6 +14,11 @@ namespace
     const QColor kLastActColor = QColor(Qt::black);
 }
 
+
+namespace gui::qt
+{
+
+
 RulerWidget::RulerWidget(gui::TextArea *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
@@ -27,11 +32,11 @@ RulerWidget::RulerWidget(gui::TextArea *view, QWidget *parent)
 
     m_cbhUpdate = m_view.addOnUpdateListener([this] {
         update();
-    });
+        });
 
-	m_cbhViewLocChange = m_view.addOnViewLocChangeListener([this] {
-		update();
-	});
+    m_cbhViewLocChange = m_view.addOnViewLocChangeListener([this] {
+        update();
+        });
 }
 
 RulerWidget::~RulerWidget()
@@ -39,19 +44,19 @@ RulerWidget::~RulerWidget()
 
 }
 
-void RulerWidget::paintEvent(QPaintEvent * e)
+void RulerWidget::paintEvent(QPaintEvent *e)
 {
     QPainter p(this);
     paintBackground(p);
     paintLineNum(p);
 }
 
-void RulerWidget::paintBackground(QPainter & p)
+void RulerWidget::paintBackground(QPainter &p)
 {
     p.fillRect(rect(), kBgColor);
 }
 
-void RulerWidget::paintLineNum(QPainter & p)
+void RulerWidget::paintLineNum(QPainter &p)
 {
     const QFont font = fontToQFont(m_view.config().font());
     p.setFont(font);
@@ -59,21 +64,21 @@ void RulerWidget::paintLineNum(QPainter & p)
 
     const int32_t lineNumOffset = m_view.config().lineNumOffset();
 
-    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, int baseline, const gui::RowBound & bound, bool isLastAct) {
+    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, int baseline, const gui::RowBound &bound, bool isLastAct) {
         const QString s = QString::number(lineNum + lineNumOffset);
 
-        if (isLastAct)
-        {
+        if (isLastAct) {
             p.setPen(kLastActColor);
         }
 
         p.drawText(10, baseline, s);
 
-        if (isLastAct)
-        {
+        if (isLastAct) {
             p.setPen(kNormalColor);
         }
-    });
+        });
 }
 
+
+}
 

@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    MainWindow mainWindow(argv[1]);
+    gui::qt::MainWindow mainWindow(argv[1]);
     mainWindow.show();
 
     return app.exec();
