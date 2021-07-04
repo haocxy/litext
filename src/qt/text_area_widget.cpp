@@ -1,9 +1,8 @@
 #include "text_area_widget.h"
 
-#include <assert.h>
+#include <cassert>
 #include <QPainter>
 #include <QMouseEvent>
-#include <QDebug>
 
 #include "view/view.h"
 #include "config/view_config.h"
@@ -13,25 +12,24 @@
 
 namespace
 {
-    class AutoSaver
-    {
-    public:
-        explicit AutoSaver(QPainter & painter) : m_painter(painter) {
-            m_painter.save();
-        }
-        ~AutoSaver() {
-            m_painter.restore();
-        }
-    private:
-        QPainter & m_painter;
-    };
 
+class AutoSaver {
+public:
+    explicit AutoSaver(QPainter &painter) : m_painter(painter) {
+        m_painter.save();
+    }
+    ~AutoSaver() {
+        m_painter.restore();
+    }
+private:
+    QPainter &m_painter;
+};
 
+static int kWidthHint = 800;
+static int kHeightHint = 600;
+static QSize kSizeHint(kWidthHint, kHeightHint);
+static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 
-    static int kWidthHint = 800;
-    static int kHeightHint = 600;
-    static QSize kSizeHint(kWidthHint, kHeightHint);
-    static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 }
 
 TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
@@ -64,8 +62,7 @@ QSize TextAreaWidget::sizeHint() const
 
 void TextAreaWidget::paintEvent(QPaintEvent * e)
 {
-    if (m_dirtyBuffFlags.test(DBF_Text))
-    {
+    if (m_dirtyBuffFlags.test(DBF_Text)) {
         prepareTextImage();
         m_dirtyBuffFlags.set(DBF_Text, false);
     }
@@ -83,8 +80,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
 
-    if (e->oldSize().isValid() && sz != e->oldSize())
-    {
+    if (e->oldSize().isValid() && sz != e->oldSize()) {
         m_textBuff = std::move(QImage(sz, kBuffImageFormat));
         m_dirtyBuffFlags.set(DBF_Text);
     }
@@ -127,8 +123,7 @@ void TextAreaWidget::keyPressEvent(QKeyEvent * e)
 
 void TextAreaWidget::mousePressEvent(QMouseEvent * e)
 {
-    if (e->button() == Qt::LeftButton)
-    {
+    if (e->button() == Qt::LeftButton) {
         view_.onPrimaryButtomPress(e->x(), e->y());
         refresh();
     }
@@ -142,12 +137,9 @@ void TextAreaWidget::paintBackground(QPainter & p)
 void TextAreaWidget::paintLastActLine(QPainter & p)
 {
     std::optional<view::Rect> r = view_.getLastActLineDrawRect();
-    if (!r)
-    {
-        return;
+    if (r) {
+        p.fillRect(r->left(), r->top(), r->width(), r->height(), QColor(Qt::green).lighter(192));
     }
-
-    p.fillRect(r->left(), r->top(), r->width(), r->height(), QColor(Qt::green).lighter(192));
 }
 
 void TextAreaWidget::prepareTextImage()
@@ -191,7 +183,6 @@ void TextAreaWidget::refresh()
 void TextAreaWidget::paintCursor(QPainter & p)
 {
     std::optional<draw::VerticalLine> vl = view_.getNormalCursorDrawData();
-
     if (vl)
     {
         p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
