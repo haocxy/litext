@@ -34,7 +34,7 @@ void View::initSize(const view::Size & size)
     m_onUpdateListeners.call();
 }
 
-void View::onResize(const view::Size & size)
+void View::resize(const view::Size & size)
 {
     if (m_size == size)
     {

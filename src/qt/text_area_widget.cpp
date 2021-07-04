@@ -86,7 +86,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent *e)
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
     }
 
-    view_.onResize({ sz.width(), sz.height() });
+    view_.resize({ sz.width(), sz.height() });
 
     refresh();
 }

@@ -143,7 +143,7 @@ public:
 
     void initSize(const view::Size &size);
 
-    void onResize(const view::Size & size);
+    void resize(const view::Size &size);
 
     void onPrimaryButtomPress(int x, int y);
 
