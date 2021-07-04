@@ -1,8 +1,9 @@
 #pragma once
 
 #include "doc/doc_define.h"
-#include "view/view_define.h"
+#include "gui/view_define.h"
 #include "util/flagset.h"
+
 
 namespace view
 {

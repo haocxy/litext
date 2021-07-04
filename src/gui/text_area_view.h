@@ -10,11 +10,11 @@
 
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
-#include "view/view_page.h"
-#include "view/view_loc.h"
-#include "view/view_rect.h"
-#include "view/draw_vertical_line.h"
-#include "view/view_define.h"
+#include "gui/view_page.h"
+#include "gui/view_loc.h"
+#include "gui/view_rect.h"
+#include "gui/draw_vertical_line.h"
+#include "gui/view_define.h"
 
 #include "util/callbacks.h"
 

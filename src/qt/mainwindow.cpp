@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 
-#include "view/text_area_view.h"
+#include "gui/text_area_view.h"
 #include "config/view_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
