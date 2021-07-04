@@ -10,7 +10,7 @@
 static const char *kFontFamilyTimes = "Times";
 static const char *kFontFamilyYaHei = "Microsoft YaHei";
 
-static void setupConfig(view::Config &c)
+static void setupConfig(view::TextAreaConfig &c)
 {
     c.setLineHeightFactor(1.f);
     c.setHGap(2);
@@ -31,7 +31,7 @@ static void setupConfig(view::Config &c)
 MainWindow::MainWindow(fs::path filePath, QWidget * parent)
     : QMainWindow(parent)
 {
-    m_viewConfig = new view::Config();
+    m_viewConfig = new view::TextAreaConfig();
     setupConfig(*m_viewConfig);
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(filePath.generic_string());

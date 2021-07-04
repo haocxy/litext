@@ -8,7 +8,7 @@ namespace view
 {
 
 
-class Config {
+class TextAreaConfig {
 public:
 	static const int kLineHeightScale = 1000;
 	static const int kDefaultLineHeightFactor = static_cast<int>(1.2 * kLineHeightScale); // 默认行高系数

@@ -49,7 +49,7 @@ namespace view
         int m_height = 0;
     };
 
-    class Config;
+    class TextAreaConfig;
 
     class LineBound
     {
@@ -130,7 +130,7 @@ class Editor;
 class TextArea
 {
 public:
-    TextArea(Editor * editor, view::Config *config);
+    TextArea(Editor * editor, view::TextAreaConfig *config);
 
     ~TextArea();
 
@@ -156,7 +156,7 @@ public:
 
 public:
 
-    const view::Config &config() const { return config_; }
+    const view::TextAreaConfig &config() const { return config_; }
 
     int getBaseLineByLineOffset(int off) const;
 
@@ -231,7 +231,7 @@ private:
 
 private:
     Editor &editor_;
-    const view::Config &config_;
+    const view::TextAreaConfig &config_;
     view::Page m_page;
     view::Size m_size;
     ViewLoc m_loc{ 0, 0 };

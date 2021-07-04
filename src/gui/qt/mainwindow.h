@@ -11,7 +11,7 @@ class Editor;
 class SimpleDoc;
 namespace view
 {
-    class Config;
+    class TextAreaConfig;
 }
 
 class MainWindow : public QMainWindow
@@ -26,7 +26,7 @@ private:
     void initMenuBar();
 
 private:
-    view::Config * m_viewConfig = nullptr;
+    view::TextAreaConfig * m_viewConfig = nullptr;
     SimpleDoc * m_doc = nullptr;
     TextArea * m_view = nullptr;
     Editor * m_editor = nullptr;

@@ -11,7 +11,7 @@
 #include "text_area_config.h"
 
 
-TextArea::TextArea(Editor *editor, view::Config *config)
+TextArea::TextArea(Editor *editor, view::TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
 {
