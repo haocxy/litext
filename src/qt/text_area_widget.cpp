@@ -144,6 +144,15 @@ void TextAreaWidget::paintLastActLine(QPainter & p)
     }
 }
 
+static inline QString unicodeToUtf16SurrogatePairs(UChar c) {
+    QChar high = QChar::highSurrogate(c);
+    QChar low = QChar::lowSurrogate(c);
+    QString surrogatedPairs;
+    surrogatedPairs.push_back(high);
+    surrogatedPairs.push_back(low);
+    return surrogatedPairs;
+}
+
 void TextAreaWidget::prepareTextImage()
 {
     QPainter p(&textPaintBuff_);
@@ -153,16 +162,11 @@ void TextAreaWidget::prepareTextImage()
     QtUtil::fillQFont(view_.config().font(), qfont);
     p.setFont(qfont);
 
-    view_.drawEachChar([&p](int x, int y, UChar c) {
-        if (!UCharUtil::needSurrogate(c)) {
-            p.drawText(x, y, QChar(c));
+    view_.drawEachChar([&p](int x, int y, UChar unicode) {
+        if (!UCharUtil::needSurrogate(unicode)) {
+            p.drawText(x, y, QChar(unicode));
         } else {
-            QChar high = QChar::highSurrogate(c);
-            QChar low = QChar::lowSurrogate(c);
-            QString surrogatedChar;
-            surrogatedChar.push_back(high);
-            surrogatedChar.push_back(low);
-            p.drawText(x, y, surrogatedChar);
+            p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
         }
     });
 }
