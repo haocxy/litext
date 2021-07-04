@@ -4,7 +4,7 @@
 namespace view
 {
 
-int TextAreaConfig::charWidth(QChar c) const
+int TextAreaConfig::charWidth(UChar c) const
 {
     // 换行符不占用空间
     if (c == '\n' || c == '\r') {

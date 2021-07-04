@@ -1,6 +1,8 @@
 #pragma once
 
+#include "core/uchar.h"
 #include "core/font.h"
+
 #include "loc_outside_policy.h"
 
 
@@ -37,7 +39,7 @@ public:
 	Font &rfont() { return font_; }
 	const Font &font() const { return font_; }
 
-	int charWidth(QChar c) const;
+	int charWidth(UChar c) const;
 
 	bool showLineNum() const { return showLineNum_; }
 	void setShowLineNum(bool showLineNum) { showLineNum_ = showLineNum; }

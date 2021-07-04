@@ -3,7 +3,7 @@
 #include <QFont>
 #include <QFontMetrics>
 
-#include "doc/doc_define.h"
+#include "uchar.h"
 
 
 struct FontInfo {
@@ -14,29 +14,27 @@ struct FontInfo {
 
 class Font {
 public:
-	Font() :m_metrics(m_font) {}
+	Font() :metrics_(font_) {}
 
-	void setFont(const FontInfo &fi);
+	void setFont(const FontInfo &fontInfo);
 
-	std::string family() const { return m_font.family().toStdString(); }
+	std::string family() const { return font_.family().toStdString(); }
 
-	int size() const { return m_font.pointSize(); }
+	int size() const { return font_.pointSize(); }
 
-	bool bold() const { return m_font.bold(); }
+	bool bold() const { return font_.bold(); }
 
-	int height() const { return m_metrics.height(); }
+	int height() const { return metrics_.height(); }
 
-	int ascent() const { return m_metrics.ascent(); }
+	int ascent() const { return metrics_.ascent(); }
 	
-	int descent() const { return m_metrics.descent(); }
+	int descent() const { return metrics_.descent(); }
 
-	int charWidth(QChar c) const;
+	int charWidth(UChar unicode) const;
 
-	bool isFixWidth() const {
-		return m_metrics.horizontalAdvance('i') == m_metrics.horizontalAdvance('x');
-	}
+	bool isFixWidth() const;
 
 private:
-	QFont m_font;
-	QFontMetrics m_metrics;
+	QFont font_;
+	QFontMetrics metrics_;
 };
