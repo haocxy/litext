@@ -11,6 +11,9 @@
 #include "text_area_config.h"
 
 
+namespace gui
+{
+
 TextArea::TextArea(Editor *editor, view::TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
@@ -28,7 +31,7 @@ TextArea::~TextArea()
 
 }
 
-void TextArea::initSize(const view::Size & size)
+void TextArea::initSize(const Size & size)
 {
     m_size = size;
 
@@ -37,7 +40,7 @@ void TextArea::initSize(const view::Size & size)
     m_onUpdateListeners.call();
 }
 
-void TextArea::resize(const view::Size & size)
+void TextArea::resize(const Size & size)
 {
     if (m_size == size)
     {
@@ -257,16 +260,16 @@ int TextArea::getXByCharLoc(const view::CharLoc & charLoc) const
     return getChar(charLoc).x();
 }
 
-view::LineBound TextArea::getLineBoundByLineOffset(int lineOffset) const
+LineBound TextArea::getLineBoundByLineOffset(int lineOffset) const
 {
     const int lineHeight = config_.lineHeight();
     const int top = lineHeight * lineOffset;
     const int bottom = top + lineHeight;
 
-    return view::LineBound(top, bottom);
+    return LineBound(top, bottom);
 }
 
-view::LineBound TextArea::getLineBound(const view::LineLoc & lineLoc) const
+LineBound TextArea::getLineBound(const view::LineLoc & lineLoc) const
 {
     if (lineLoc.isAfterLastRow())
     {
@@ -276,11 +279,11 @@ view::LineBound TextArea::getLineBound(const view::LineLoc & lineLoc) const
     return getLineBoundByLineOffset(lineOffset);
 }
 
-view::RowBound TextArea::getRowBound(const view::RowLoc & rowLoc) const
+RowBound TextArea::getRowBound(const view::RowLoc & rowLoc) const
 {
     if (rowLoc.isNull())
     {
-        return view::RowBound();
+        return RowBound();
     }
 
     if (rowLoc.isAfterLastRow())
@@ -288,14 +291,14 @@ view::RowBound TextArea::getRowBound(const view::RowLoc & rowLoc) const
         const int lineOffset = m_page.lineCnt();
         const int lineHeight = config_.lineHeight();
         const int top = lineHeight * lineOffset;
-        return view::RowBound(top, lineHeight);
+        return RowBound(top, lineHeight);
     }
 
     const int lineOffset = getLineOffsetByRowIndex(rowLoc.row());
     const int lineHeight = config_.lineHeight();
     const int top = lineHeight * lineOffset;
     const int height = lineHeight * m_page[rowLoc.row()].size();
-    return view::RowBound(top, height);
+    return RowBound(top, height);
 }
 
 bool TextArea::hasPrevCharAtSameLine(const view::CharLoc & charLoc) const
@@ -625,7 +628,7 @@ std::optional<view::Rect> TextArea::getLastActLineDrawRect() const
         return std::nullopt;
     }
 
-    const view::RowBound bound = getRowBound(loc);
+    const RowBound bound = getRowBound(loc);
 
     view::Rect rect;
     rect.setLeft(0);
@@ -661,7 +664,7 @@ std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
         return std::nullopt;
     }
 
-    const view::LineBound bound = getLineBound(charLoc);
+    const LineBound bound = getLineBound(charLoc);
 
     const int x = getXByCharLoc(charLoc) + kHorizontalDelta;
 
@@ -677,7 +680,7 @@ int TextArea::getLineNumBarWidth() const
     return 100;
 }
 
-void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const
+void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const RowBound &bound, bool isLastAct)> && action) const
 {
     const int rowCnt = m_page.size();
 
@@ -686,7 +689,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, co
     for (int r = 0; r < rowCnt; ++r)
     {
         const view::RowLoc loc(r);
-        const view::RowBound bound = getRowBound(loc);
+        const RowBound bound = getRowBound(loc);
         const RowN lineNum = m_loc.row() + r;
         const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
@@ -1095,5 +1098,8 @@ view::LineLoc TextArea::getShownLastLineLoc() const
 		const int lastLineIndex = getMaxShownLineCnt() - prevLineCnt - 1;
 		return view::LineLoc(m_page.size() - 1, lastLineIndex);
 	}
+}
+
+
 }
 

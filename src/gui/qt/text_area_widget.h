@@ -6,15 +6,17 @@
 #include "core/flagset.h"
 #include "core/callbacks.h"
 
-
+namespace gui
+{
 class TextArea;
+}
 
 class TextAreaWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextAreaWidget(TextArea *view, QWidget *parent = nullptr);
+    TextAreaWidget(gui::TextArea *view, QWidget *parent = nullptr);
 
     ~TextAreaWidget();
 
@@ -53,7 +55,7 @@ private:
     };
 
 private:
-    TextArea &view_;
+    gui::TextArea &view_;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
     CallbackHandle cbhViewLocChanged_;

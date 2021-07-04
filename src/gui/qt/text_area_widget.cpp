@@ -31,7 +31,7 @@ static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 
 }
 
-TextAreaWidget::TextAreaWidget(TextArea *view, QWidget *parent)
+TextAreaWidget::TextAreaWidget(gui::TextArea *view, QWidget *parent)
     : QWidget(parent)
     , view_(*view)
     , textPaintBuff_(kSizeHint, kBuffImageFormat)
@@ -42,7 +42,7 @@ TextAreaWidget::TextAreaWidget(TextArea *view, QWidget *parent)
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
 
-    view_.initSize(view::Size(textPaintBuff_.width(), textPaintBuff_.height()));
+    view_.initSize(gui::Size(textPaintBuff_.width(), textPaintBuff_.height()));
 
     prepareTextImage();
 

@@ -37,7 +37,7 @@ MainWindow::MainWindow(fs::path filePath, QWidget * parent)
     m_doc->LoadFromFile(filePath.generic_string());
     
     m_editor = new Editor(m_doc);
-    m_view = new TextArea(m_editor, m_viewConfig);
+    m_view = new gui::TextArea(m_editor, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(m_view);
 
 

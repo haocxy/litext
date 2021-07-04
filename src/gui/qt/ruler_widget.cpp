@@ -14,7 +14,7 @@ namespace
     const QColor kLastActColor = QColor(Qt::black);
 }
 
-RulerWidget::RulerWidget(TextArea *view, QWidget *parent)
+RulerWidget::RulerWidget(gui::TextArea *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
 {
@@ -59,7 +59,7 @@ void RulerWidget::paintLineNum(QPainter & p)
 
     const int32_t lineNumOffset = m_view.config().lineNumOffset();
 
-    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct) {
+    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, int baseline, const gui::RowBound & bound, bool isLastAct) {
         const QString s = QString::number(lineNum + lineNumOffset);
 
         if (isLastAct)

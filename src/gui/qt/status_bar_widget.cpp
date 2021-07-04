@@ -19,7 +19,7 @@ enum {
 
 }
 
-StatusBarWidget::StatusBarWidget(TextArea *view, QWidget * parent)
+StatusBarWidget::StatusBarWidget(gui::TextArea *view, QWidget * parent)
 	: QWidget(parent)
 	, view_(*view)
 {

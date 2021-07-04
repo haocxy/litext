@@ -8,7 +8,7 @@
 #include "status_bar_widget.h"
 
 
-EditorViewWidget::EditorViewWidget(TextArea * view, QWidget * parent)
+EditorViewWidget::EditorViewWidget(gui::TextArea * view, QWidget * parent)
     : QWidget(parent)
 {
     ruler_ = new RulerWidget(view);
