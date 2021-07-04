@@ -14,9 +14,6 @@ struct FontInfo {
 
 class Font {
 public:
-	static const int kDefaultTabSize = 4;
-
-public:
 	Font() :m_metrics(m_font) {}
 
 	void setFont(const FontInfo &fi);
