@@ -10,7 +10,7 @@
 #include "doc/doc_loc.h"
 #include "view_page.h"
 #include "view_loc.h"
-#include "view_rect.h"
+#include "rect.h"
 #include "vertical_line.h"
 #include "view_define.h"
 
