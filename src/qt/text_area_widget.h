@@ -10,7 +10,7 @@ class View;
 
 class TextAreaWidget : public QWidget
 {
-    // Q_OBJECT
+    Q_OBJECT
 
 public:
     TextAreaWidget(View *view, QWidget *parent = nullptr);
@@ -40,7 +40,7 @@ private:
     };
 
 private:
-    View &m_view;
+    View &view_;
     std::bitset<DBF_Cnt> m_dirtyBuffFlags;
     QImage m_textBuff;
 

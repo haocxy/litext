@@ -36,7 +36,7 @@ namespace
 
 TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
     : QWidget(parent)
-    , m_view(*view)
+    , view_(*view)
     , m_textBuff(kWidthHint, kHeightHint, kBuffImageFormat)
 {
     assert(view);
@@ -45,11 +45,11 @@ TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
 
-    m_view.initSize({kWidthHint,kHeightHint});
+    view_.initSize({kWidthHint,kHeightHint});
 
     prepareTextImage();
 
-    m_listenerHandleViewLocChange = m_view.addOnViewLocChangeListener([this] { m_dirtyBuffFlags.set(DBF_Text); });
+    m_listenerHandleViewLocChange = view_.addOnViewLocChangeListener([this] { m_dirtyBuffFlags.set(DBF_Text); });
 }
 
 TextAreaWidget::~TextAreaWidget()
@@ -89,7 +89,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent * e)
         m_dirtyBuffFlags.set(DBF_Text);
     }
 
-    m_view.onResize({ sz.width(), sz.height() });
+    view_.onResize({ sz.width(), sz.height() });
 
     refresh();
 }
@@ -101,23 +101,23 @@ void TextAreaWidget::keyPressEvent(QKeyEvent * e)
     switch (key)
     {
     case Qt::Key_Up:
-        m_view.onDirUpKeyPress();
+        view_.onDirUpKeyPress();
         refresh();
         break;
     case Qt::Key_Down:
-        m_view.onDirDownKeyPress();
+        view_.onDirDownKeyPress();
         refresh();
         break;
     case Qt::Key_Left:
-        m_view.onDirLeftKeyPress();
+        view_.onDirLeftKeyPress();
         refresh();
         break;
     case Qt::Key_Right:
-        m_view.onDirRightKeyPress();
+        view_.onDirRightKeyPress();
         refresh();
         break;
 	case Qt::Key_S:
-		m_view.moveDownByOneLine();
+		view_.moveDownByOneLine();
 		refresh();
 		break;
     default:
@@ -129,7 +129,7 @@ void TextAreaWidget::mousePressEvent(QMouseEvent * e)
 {
     if (e->button() == Qt::LeftButton)
     {
-        m_view.onPrimaryButtomPress(e->x(), e->y());
+        view_.onPrimaryButtomPress(e->x(), e->y());
         refresh();
     }
 }
@@ -141,7 +141,7 @@ void TextAreaWidget::paintBackground(QPainter & p)
 
 void TextAreaWidget::paintLastActLine(QPainter & p)
 {
-    std::optional<view::Rect> r = m_view.getLastActLineDrawRect();
+    std::optional<view::Rect> r = view_.getLastActLineDrawRect();
     if (!r)
     {
         return;
@@ -156,10 +156,10 @@ void TextAreaWidget::prepareTextImage()
     m_textBuff.fill(QColor(0, 0, 0, 0));
 
     QFont qfont;
-    QtUtil::fillQFont(m_view.config().font(), qfont);
+    QtUtil::fillQFont(view_.config().font(), qfont);
     p.setFont(qfont);
 
-    m_view.drawEachChar([&p](int x, int y, UChar c) {
+    view_.drawEachChar([&p](int x, int y, UChar c) {
         if (!UCharUtil::needSurrogate(c)) {
             p.drawText(x, y, QChar(c));
         } else {
@@ -190,7 +190,7 @@ void TextAreaWidget::refresh()
 
 void TextAreaWidget::paintCursor(QPainter & p)
 {
-    std::optional<draw::VerticalLine> vl = m_view.getNormalCursorDrawData();
+    std::optional<draw::VerticalLine> vl = view_.getNormalCursorDrawData();
 
     if (vl)
     {
