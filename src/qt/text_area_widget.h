@@ -31,20 +31,18 @@ private:
     void paintWidget(QPainter &p);
     void refresh();
 private:
-    enum DirtyBuffFlag
-    {
-        DBF_Text,
-        
-
-        DBF_Cnt, // 保证在最后一个，用于计数
+    class DirtyBuffFlag {
+    public:
+        enum {
+            Text,
+            FlagCount, // 保证在最后一个，用于计数
+        };
     };
 
 private:
     View &view_;
-    std::bitset<DBF_Cnt> m_dirtyBuffFlags;
-    QImage m_textBuff;
-
-private:
-    CallbackHandle m_listenerHandleViewLocChange;
+    std::bitset<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
+    QImage textPaintBuff_;
+    CallbackHandle cbhViewLocChanged_;
 };
 

@@ -35,7 +35,7 @@ static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
     : QWidget(parent)
     , view_(*view)
-    , m_textBuff(kWidthHint, kHeightHint, kBuffImageFormat)
+    , textPaintBuff_(kWidthHint, kHeightHint, kBuffImageFormat)
 {
     assert(view);
 
@@ -47,7 +47,9 @@ TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
 
     prepareTextImage();
 
-    m_listenerHandleViewLocChange = view_.addOnViewLocChangeListener([this] { m_dirtyBuffFlags.set(DBF_Text); });
+    cbhViewLocChanged_ = view_.addOnViewLocChangeListener([this] {
+        dirtyBuffFlags_.set(DirtyBuffFlag::Text);
+    });
 }
 
 TextAreaWidget::~TextAreaWidget()
@@ -62,9 +64,9 @@ QSize TextAreaWidget::sizeHint() const
 
 void TextAreaWidget::paintEvent(QPaintEvent * e)
 {
-    if (m_dirtyBuffFlags.test(DBF_Text)) {
+    if (dirtyBuffFlags_.test(DirtyBuffFlag::Text)) {
         prepareTextImage();
-        m_dirtyBuffFlags.set(DBF_Text, false);
+        dirtyBuffFlags_.set(DirtyBuffFlag::Text, false);
     }
 
     QPainter p(this);
@@ -81,8 +83,8 @@ void TextAreaWidget::resizeEvent(QResizeEvent * e)
     QSize sz(size());
 
     if (e->oldSize().isValid() && sz != e->oldSize()) {
-        m_textBuff = std::move(QImage(sz, kBuffImageFormat));
-        m_dirtyBuffFlags.set(DBF_Text);
+        textPaintBuff_ = std::move(QImage(sz, kBuffImageFormat));
+        dirtyBuffFlags_.set(DirtyBuffFlag::Text);
     }
 
     view_.onResize({ sz.width(), sz.height() });
@@ -144,8 +146,8 @@ void TextAreaWidget::paintLastActLine(QPainter & p)
 
 void TextAreaWidget::prepareTextImage()
 {
-    QPainter p(&m_textBuff);
-    m_textBuff.fill(QColor(0, 0, 0, 0));
+    QPainter p(&textPaintBuff_);
+    textPaintBuff_.fill(QColor(0, 0, 0, 0));
 
     QFont qfont;
     QtUtil::fillQFont(view_.config().font(), qfont);
@@ -169,7 +171,7 @@ void TextAreaWidget::paintWidget(QPainter & p)
 {
     paintBackground(p);
     paintLastActLine(p);
-    p.drawImage(0, 0, m_textBuff);
+    p.drawImage(0, 0, textPaintBuff_);
     paintCursor(p);
 }
 
