@@ -8,9 +8,9 @@
 #include "editor/editor.h"
 
 
-View::View(Editor * editor, view::Config *config)
+View::View(Editor *editor, view::Config *config)
     : editor_(*editor)
-    , m_config(*config)
+    , config_(*config)
 {
     assert(editor);
     assert(config);
@@ -50,7 +50,7 @@ void View::resize(const view::Size & size)
 
 int View::getBaseLineByLineOffset(int off) const
 {
-    return (1 + off) * m_config.lineHeight() - m_config.font().descent();
+    return (1 + off) * config_.lineHeight() - config_.font().descent();
 }
 
 int View::getLineOffsetByLineLoc(const view::LineLoc & loc) const
@@ -72,7 +72,7 @@ int View::getLineOffsetByLineLoc(const view::LineLoc & loc) const
 
 int View::getMaxShownLineCnt() const
 {
-    const int lineHeight = m_config.lineHeight();
+    const int lineHeight = config_.lineHeight();
     return (m_size.height() + lineHeight - 1) / lineHeight;
 }
 
@@ -237,7 +237,7 @@ int View::getXByCharLoc(const view::CharLoc & charLoc) const
 
     if (charLoc.isAfterLastRow())
     {
-        return m_config.hGap();
+        return config_.hGap();
     }
 
     if (charLoc.isAfterLastChar())
@@ -245,7 +245,7 @@ int View::getXByCharLoc(const view::CharLoc & charLoc) const
         const view::Line & line = m_page[charLoc.row()][charLoc.line()];
         if (line.empty())
         {
-            return m_config.hGap();
+            return config_.hGap();
         }
         const view::Char &vc = m_page[charLoc.row()][charLoc.line()].last();
         return vc.x() + vc.width();
@@ -256,7 +256,7 @@ int View::getXByCharLoc(const view::CharLoc & charLoc) const
 
 view::LineBound View::getLineBoundByLineOffset(int lineOffset) const
 {
-    const int lineHeight = m_config.lineHeight();
+    const int lineHeight = config_.lineHeight();
     const int top = lineHeight * lineOffset;
     const int bottom = top + lineHeight;
 
@@ -283,13 +283,13 @@ view::RowBound View::getRowBound(const view::RowLoc & rowLoc) const
     if (rowLoc.isAfterLastRow())
     {
         const int lineOffset = m_page.lineCnt();
-        const int lineHeight = m_config.lineHeight();
+        const int lineHeight = config_.lineHeight();
         const int top = lineHeight * lineOffset;
         return view::RowBound(top, lineHeight);
     }
 
     const int lineOffset = getLineOffsetByRowIndex(rowLoc.row());
-    const int lineHeight = m_config.lineHeight();
+    const int lineHeight = config_.lineHeight();
     const int top = lineHeight * lineOffset;
     const int height = lineHeight * m_page[rowLoc.row()].size();
     return view::RowBound(top, height);
@@ -796,7 +796,7 @@ bool View::moveDownByOneLine()
 
 int View::getLineOffsetByY(int y) const
 {
-    return y / m_config.lineHeight();
+    return y / config_.lineHeight();
 }
 
 view::LineLoc View::getLineLocByLineOffset(int offset) const
@@ -890,7 +890,7 @@ view::CharLoc View::getCharLocByLineLocAndX(const view::LineLoc & lineLoc, int x
         return view::CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const int margin = m_config.hMargin();
+    const int margin = config_.hMargin();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const view::Char & firstChar = line[0];
@@ -957,7 +957,7 @@ void View::remakePage()
 
 void View::makeVRow(const Row & row, view::VRow & vrow) const
 {
-    if (m_config.wrapLine())
+    if (config_.wrapLine())
     {
         makeVRowWithWrapLine(row, vrow);
     }
@@ -971,8 +971,8 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
 {
     assert(vrow.size() == 0);
 
-    const int hGap = m_config.hGap();
-    const int hMargin = m_config.hMargin();
+    const int hGap = config_.hGap();
+    const int hMargin = config_.hMargin();
 
     view::Line *vline = &vrow.grow();
 
@@ -993,7 +993,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
         {
             for (const UChar c : word)
             {
-                const int charWidth = m_config.charWidth(c);
+                const int charWidth = config_.charWidth(c);
 
                 if (leftX + charWidth > m_size.width())
                 {
@@ -1015,7 +1015,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
             int wordWidth = 0;
             for (const UChar c : word)
             {
-                wordWidth += m_config.charWidth(c);
+                wordWidth += config_.charWidth(c);
                 wordWidth += hMargin;
             }
             if (leftX + wordWidth > m_size.width())
@@ -1025,7 +1025,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
             }
             for (const UChar c : word)
             {
-                const int charWidth = m_config.charWidth(c);
+                const int charWidth = config_.charWidth(c);
 
                 if (leftX + charWidth > m_size.width())
                 {
@@ -1049,8 +1049,8 @@ void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
 {
     assert(vrow.size() == 0);
 
-    const int hGap = m_config.hGap();
-    const int hMargin = m_config.hMargin();
+    const int hGap = config_.hGap();
+    const int hMargin = config_.hMargin();
 
     view::Line &vline = vrow.grow();
 
@@ -1060,7 +1060,7 @@ void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
     for (CharN i = 0; i < cnt; ++i)
     {
         const UChar c = row.charAt(i);
-        const int charWidth = m_config.charWidth(c);
+        const int charWidth = config_.charWidth(c);
 
         view::Char &vchar = vline.grow();
         vchar.setUChar(c);

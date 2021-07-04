@@ -161,7 +161,7 @@ public:
 
 public:
 
-    const view::Config &config() const { return m_config; }
+    const view::Config &config() const { return config_; }
 
     int getBaseLineByLineOffset(int off) const;
 
@@ -236,7 +236,7 @@ private:
 
 private:
     Editor &editor_;
-    const view::Config & m_config;
+    const view::Config &config_;
     view::Page m_page;
     view::Size m_size;
     ViewLoc m_loc{ 0, 0 };
