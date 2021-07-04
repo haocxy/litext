@@ -6,8 +6,6 @@
 #include <bitset>
 #include <optional>
 
-#include <QChar>
-
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "view_page.h"
