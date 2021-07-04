@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <list>
 #include <functional>
 #include <memory>
 
@@ -55,7 +55,7 @@ public:
 
 private:
     std::shared_ptr<RemovableCallbacks> m_callbacks;
-    void * m_callbackId;
+    void *m_callbackId;
 
     CallbackHandle(std::shared_ptr<RemovableCallbacks> callbacks, void * id) : m_callbacks(callbacks), m_callbackId(id) {}
 
@@ -69,20 +69,19 @@ class CallbacksInner : public RemovableCallbacks
 public:
     virtual ~CallbacksInner() {}
 
-    void * add(std::function<Fn> && f)
+    void *add(std::function<Fn> && f)
     {
-        m_vec.push_back(std::move(f));
-        return &(m_vec.back());
+        callbacks_.push_back(std::move(f));
+        return &(callbacks_.back());
     }
 
-    virtual void remove(void * id) override
+    virtual void remove(void *id) override
     {
-        for (auto i = 0; i < m_vec.size(); ++i)
+        for (auto it = callbacks_.begin(); it != callbacks_.end(); ++it)
         {
-            if (&(m_vec[i]) == id)
+            if ((&(*it)) == id)
             {
-                m_vec[i].swap(m_vec.back());
-                m_vec.pop_back();
+                callbacks_.erase(it);
                 return;
             }
         }
@@ -91,14 +90,13 @@ public:
     template <typename ...Args>
     void call(const Args & ...args)
     {
-        for (auto & f : m_vec)
+        for (auto &f : callbacks_)
         {
             f(args...);
         }
     }
 private:
-    typedef typename std::vector<std::function<Fn>> Vec;
-    Vec m_vec;
+    std::list<std::function<Fn>> callbacks_;
 };
 
 template <typename Fn>
