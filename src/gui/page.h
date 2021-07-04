@@ -4,7 +4,7 @@
 #include <deque>
 
 #include "core/uchar.h"
-#include "loc.h"
+#include "line_loc.h"
 
 
 namespace gui
