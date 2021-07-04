@@ -3,7 +3,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "line_num_bar.h"
+#include "ruler_widget.h"
 #include "text_area_widget.h"
 #include "view_status_bar.h"
 

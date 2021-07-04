@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+
 class LineNumBarWidget;
 class TextAreaWidget;
 class View;

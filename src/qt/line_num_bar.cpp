@@ -1,4 +1,4 @@
-#include "line_num_bar.h"
+#include "ruler_widget.h"
 
 #include <QPainter>
 
