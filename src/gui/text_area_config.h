@@ -37,9 +37,6 @@ public:
 	Font &rfont() { return font_; }
 	const Font &font() const { return font_; }
 
-	Font &rStatusBarFont() { return statusBarFont_; }
-	const Font &statusBarFont() const { return statusBarFont_; }
-
 	int charWidth(QChar c) const;
 
 	bool showLineNum() const { return showLineNum_; }
@@ -62,7 +59,6 @@ private:
 	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
 	Font font_;
-	Font statusBarFont_; // 状态栏字体
 };
 
 

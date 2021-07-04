@@ -26,13 +26,6 @@ static void setupConfig(view::Config &c)
 	fi.size = 22;
 	fi.bold = false;
     f.setFont(fi);
-
-	view::Font & statusBarFont = c.rStatusBarFont();
-	view::FontInfo barFontInfo;
-	barFontInfo.family = kFontFamilyYaHei;
-	barFontInfo.size = 12;
-	barFontInfo.bold = false;
-	statusBarFont.setFont(barFontInfo);
 }
 
 MainWindow::MainWindow(fs::path filePath, QWidget * parent)
