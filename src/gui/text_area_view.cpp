@@ -2,12 +2,13 @@
 
 #include <cassert>
 
-#include "config/view_config.h"
+
 #include "doc/doc.h"
 #include "doc/doc_row.h"
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
+#include "view_config.h"
 
 
 TextAreaView::TextAreaView(Editor *editor, view::Config *config)

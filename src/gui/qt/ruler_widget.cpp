@@ -4,7 +4,7 @@
 
 #include "gui/text_area_view.h"
 #include "gui/font_to_qfont.h"
-#include "config/view_config.h"
+#include "gui/view_config.h"
 
 
 namespace
