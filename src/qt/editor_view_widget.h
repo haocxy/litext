@@ -6,7 +6,7 @@
 class RulerWidget;
 class TextAreaWidget;
 class View;
-class ViewStatusBar;
+class StatusBarWidget;
 
 
 class EditorViewWidget : public QWidget
@@ -18,6 +18,6 @@ public:
 
 private:
     RulerWidget *ruler_ = nullptr;
-    TextAreaWidget * textArea_ = nullptr;
-	ViewStatusBar * m_viewStatusBar = nullptr;
+    TextAreaWidget *textArea_ = nullptr;
+    StatusBarWidget *statusBar_ = nullptr;
 };

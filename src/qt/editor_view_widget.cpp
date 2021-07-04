@@ -13,7 +13,7 @@ EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
 {
     ruler_ = new RulerWidget(view);
     textArea_ = new TextAreaWidget(view);
-	m_viewStatusBar = new ViewStatusBar(view);
+	statusBar_ = new StatusBarWidget(view);
 
 	QVBoxLayout * vlayout = new QVBoxLayout;
 	vlayout->setMargin(0);
@@ -26,7 +26,7 @@ EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
     hlayout->addWidget(textArea_);
 
 	vlayout->addLayout(hlayout);
-	vlayout->addWidget(m_viewStatusBar);
+	vlayout->addWidget(statusBar_);
 
     setLayout(vlayout);
 }
@@ -35,4 +35,5 @@ EditorViewWidget::~EditorViewWidget()
 {
     ruler_ = nullptr;
     textArea_ = nullptr;
+    statusBar_ = nullptr;
 }

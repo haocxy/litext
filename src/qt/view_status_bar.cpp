@@ -8,6 +8,7 @@
 #include "config/view_config.h"
 #include "qt_util.h"
 
+
 namespace
 {
 
@@ -19,7 +20,7 @@ kDoubleMargin = kMargin << 1,
 
 }
 
-ViewStatusBar::ViewStatusBar(View * view, QWidget * parent)
+StatusBarWidget::StatusBarWidget(View * view, QWidget * parent)
 	: QWidget(parent)
 	, m_view(*view)
 {
@@ -28,12 +29,12 @@ ViewStatusBar::ViewStatusBar(View * view, QWidget * parent)
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 
-QSize ViewStatusBar::sizeHint() const
+QSize StatusBarWidget::sizeHint() const
 {
 	return QSize(-1, m_view.config().statusBarFont().height() + kDoubleMargin);
 }
 
-void ViewStatusBar::paintEvent(QPaintEvent * e)
+void StatusBarWidget::paintEvent(QPaintEvent * e)
 {
 	const view::Font & font = m_view.config().font();
 	const view::Font & barFont = m_view.config().statusBarFont();

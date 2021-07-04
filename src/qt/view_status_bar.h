@@ -4,10 +4,10 @@
 
 class View;
 
-class ViewStatusBar : public QWidget
+class StatusBarWidget : public QWidget
 {
 public:
-	explicit ViewStatusBar(View * view, QWidget * parent = nullptr);
+	explicit StatusBarWidget(View * view, QWidget * parent = nullptr);
 
 	virtual QSize sizeHint() const override;
 	virtual void paintEvent(QPaintEvent *e) override;
