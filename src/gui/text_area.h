@@ -162,45 +162,45 @@ public:
 private:
     int getMaxShownLineCnt() const;
     int getLineOffsetByRowIndex(int row) const;
-    int getLineOffsetByLineLoc(const view::LineLoc &loc) const;
+    int getLineOffsetByLineLoc(const LineLoc &loc) const;
     int getLineOffsetByY(int y) const;
-    view::LineLoc getLineLocByLineOffset(int offset) const;
-    view::CharLoc getCharLocByLineLocAndX(const view::LineLoc &lineLoc, int x) const;
-    view::CharLoc getCharLocByPoint(int x, int y) const;
+    LineLoc getLineLocByLineOffset(int offset) const;
+    CharLoc getCharLocByLineLocAndX(const LineLoc &lineLoc, int x) const;
+    CharLoc getCharLocByPoint(int x, int y) const;
     DocLoc getDocLocByPoint(int x, int y) const;
-    view::RowLoc convertToRowLoc(RowN row) const;
-    view::CharLoc convertToCharLoc(const DocLoc &docLoc) const;
-    DocLoc convertToDocLoc(const view::CharLoc &charLoc) const;
-    const view::Char &getChar(const view::CharLoc &charLoc) const;
-    int getXByCharLoc(const view::CharLoc &charLoc) const;
+    RowLoc convertToRowLoc(RowN row) const;
+    CharLoc convertToCharLoc(const DocLoc &docLoc) const;
+    DocLoc convertToDocLoc(const CharLoc &charLoc) const;
+    const Char &getChar(const CharLoc &charLoc) const;
+    int getXByCharLoc(const CharLoc &charLoc) const;
     LineBound getLineBoundByLineOffset(int lineOffset) const;
-    LineBound getLineBound(const view::LineLoc &lineLoc) const;
-    RowBound getRowBound(const view::RowLoc &rowLoc) const;
-    bool hasPrevCharAtSameLine(const view::CharLoc &charLoc) const;
-    bool noPrevCharAtSameLine(const view::CharLoc &charLoc) const;
-    bool hasNextCharAtSameLine(const view::CharLoc &charLoc) const;
-    bool noNextCharAtSameLine(const view::CharLoc &charLoc) const;
-    bool needEnsureHasNextLine(const view::CharLoc &charLoc) const;
-    bool isLastLineOfRow(const view::LineLoc &lineLoc) const;
-    bool isEndOfVirtualLine(const view::CharLoc &charLoc) const;
-    view::CharLoc betterLocForVerticalMove(const view::CharLoc &charLoc) const;
+    LineBound getLineBound(const LineLoc &lineLoc) const;
+    RowBound getRowBound(const RowLoc &rowLoc) const;
+    bool hasPrevCharAtSameLine(const CharLoc &charLoc) const;
+    bool noPrevCharAtSameLine(const CharLoc &charLoc) const;
+    bool hasNextCharAtSameLine(const CharLoc &charLoc) const;
+    bool noNextCharAtSameLine(const CharLoc &charLoc) const;
+    bool needEnsureHasNextLine(const CharLoc &charLoc) const;
+    bool isLastLineOfRow(const LineLoc &lineLoc) const;
+    bool isEndOfVirtualLine(const CharLoc &charLoc) const;
+    CharLoc betterLocForVerticalMove(const CharLoc &charLoc) const;
     DocLoc getNextUpLoc(const DocLoc &docLoc) const;
     DocLoc getNextDownLoc(const DocLoc &docLoc) const;
-    void makeVRow(const Row &row, view::VRow &vrow) const;
-    void makeVRowWithWrapLine(const Row &row, view::VRow &vrow) const;
-    void makeVRowNoWrapLine(const Row &row, view::VRow &vrow) const;
+    void makeVRow(const Row &row, VRow &vrow) const;
+    void makeVRowWithWrapLine(const Row &row, VRow &vrow) const;
+    void makeVRowNoWrapLine(const Row &row, VRow &vrow) const;
 
     // 视图中最后一个可视line的LineLoc
-    view::LineLoc getShownLastLineLoc() const;
+    LineLoc getShownLastLineLoc() const;
 
 private:
     // 调用这个函数后，需要在合适的时刻调用removeSpareRow
-    void ensureHasPrevLine(const view::LineLoc &curLineLoc);
+    void ensureHasPrevLine(const LineLoc &curLineLoc);
 
     // 确保参数行有下一行
     // 如果需要把页面头部向后移动则返回true
     // 返回true则需要在合适的时刻调用movePageHeadOneLine
-    bool ensureHasNextLine(const view::LineLoc &curLineLoc);
+    bool ensureHasNextLine(const LineLoc &curLineLoc);
 
     void setViewLoc(const ViewLoc &viewLoc);
 
@@ -215,7 +215,7 @@ private:
 private:
     Editor &editor_;
     const TextAreaConfig &config_;
-    view::Page m_page;
+    Page m_page;
     Size m_size;
     ViewLoc m_loc{ 0, 0 };
 

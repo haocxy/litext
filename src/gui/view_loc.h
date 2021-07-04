@@ -5,7 +5,7 @@
 #include "core/flagset.h"
 
 
-namespace view
+namespace gui
 {
     class RowLoc
     {

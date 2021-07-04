@@ -7,7 +7,7 @@
 #include "view_loc.h"
 
 
-namespace view
+namespace gui
 {
     /*×Ö·û*/
     class Char
@@ -112,7 +112,7 @@ namespace view
         const_iterator end() const { return m_rows.end(); }
         LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
         LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
-        const Line & getLine(const view::LineLoc & lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
+        const Line & getLine(const LineLoc & lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
         void pushFront(VRow && row)
         {
             m_lineCnt += row.size();
