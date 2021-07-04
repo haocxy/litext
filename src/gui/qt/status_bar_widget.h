@@ -2,10 +2,8 @@
 
 #include <QWidget>
 
-namespace gui
-{
-class TextArea;
-}
+#include "gui/declare_text_area.h"
+
 
 class StatusBarWidget : public QWidget
 {

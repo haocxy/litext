@@ -2,15 +2,11 @@
 
 #include <QWidget>
 
+#include "gui/declare_text_area.h"
+
 
 class RulerWidget;
 class TextAreaWidget;
-
-namespace gui
-{
-class TextArea;
-}
-
 class StatusBarWidget;
 
 

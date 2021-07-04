@@ -5,11 +5,8 @@
 
 #include "core/flagset.h"
 #include "core/callbacks.h"
+#include "gui/declare_text_area.h"
 
-namespace gui
-{
-class TextArea;
-}
 
 class TextAreaWidget : public QWidget
 {

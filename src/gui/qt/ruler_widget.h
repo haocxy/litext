@@ -2,12 +2,8 @@
 
 #include <QWidget>
 #include "core/callbacks.h"
+#include "gui/declare_text_area.h"
 
-
-namespace gui
-{
-class TextArea;
-}
 
 class QPainter;
 
@@ -21,8 +17,8 @@ public:
     virtual void paintEvent(QPaintEvent *e) override;
 
 private:
-    void paintBackground(QPainter & p);
-    void paintLineNum(QPainter & p);
+    void paintBackground(QPainter &p);
+    void paintLineNum(QPainter &p);
 
 private:
     gui::TextArea &m_view;

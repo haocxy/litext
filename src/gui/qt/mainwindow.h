@@ -3,13 +3,13 @@
 #include <QMainWindow>
 
 #include "core/fs.h"
+#include "gui/declare_text_area.h"
 
 
 class EditorViewWidget;
 
 namespace gui
 {
-class TextArea;
 class TextAreaConfig;
 }
 
