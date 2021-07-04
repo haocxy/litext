@@ -7,14 +7,14 @@
 #include "core/callbacks.h"
 
 
-class TextAreaView;
+class TextArea;
 
 class TextAreaWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    TextAreaWidget(TextAreaView *view, QWidget *parent = nullptr);
+    TextAreaWidget(TextArea *view, QWidget *parent = nullptr);
 
     ~TextAreaWidget();
 
@@ -53,7 +53,7 @@ private:
     };
 
 private:
-    TextAreaView &view_;
+    TextArea &view_;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
     CallbackHandle cbhViewLocChanged_;

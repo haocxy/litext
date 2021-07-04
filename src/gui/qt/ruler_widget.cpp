@@ -14,7 +14,7 @@ namespace
     const QColor kLastActColor = QColor(Qt::black);
 }
 
-RulerWidget::RulerWidget(TextAreaView *view, QWidget *parent)
+RulerWidget::RulerWidget(TextArea *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
 {

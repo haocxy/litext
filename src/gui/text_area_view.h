@@ -129,12 +129,12 @@ class Editor;
 
 
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
-class TextAreaView
+class TextArea
 {
 public:
-    TextAreaView(Editor * editor, view::Config *config);
+    TextArea(Editor * editor, view::Config *config);
 
-    ~TextAreaView();
+    ~TextArea();
 
 public:
 

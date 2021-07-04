@@ -2,16 +2,17 @@
 
 #include <QWidget>
 
-class TextAreaView;
+
+class TextArea;
 
 class StatusBarWidget : public QWidget
 {
 public:
-	explicit StatusBarWidget(TextAreaView *view, QWidget * parent = nullptr);
+	explicit StatusBarWidget(TextArea *view, QWidget * parent = nullptr);
 
 	virtual QSize sizeHint() const override;
 	virtual void paintEvent(QPaintEvent *e) override;
 
 private:
-	TextAreaView &view_;
+	TextArea &view_;
 };
