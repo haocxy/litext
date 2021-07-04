@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace view
+namespace gui
 {
     class Rect
     {

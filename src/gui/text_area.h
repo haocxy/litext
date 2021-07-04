@@ -143,7 +143,7 @@ public:
 
     int getBaseLineByLineOffset(int off) const;
 
-    std::optional<view::Rect> getLastActLineDrawRect() const;
+    std::optional<Rect> getLastActLineDrawRect() const;
 
     std::optional<VerticalLine> getNormalCursorDrawData() const;
 

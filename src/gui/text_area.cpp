@@ -619,7 +619,7 @@ void TextArea::movePageHeadOneLine()
 	}
 }
 
-std::optional<view::Rect> TextArea::getLastActLineDrawRect() const
+std::optional<Rect> TextArea::getLastActLineDrawRect() const
 {
     const RowN row = editor_.lastActRow();
     const RowLoc loc = convertToRowLoc(row);
@@ -630,7 +630,7 @@ std::optional<view::Rect> TextArea::getLastActLineDrawRect() const
 
     const RowBound bound = getRowBound(loc);
 
-    view::Rect rect;
+    Rect rect;
     rect.setLeft(0);
     rect.setTop(bound.top());
     rect.setWidth(m_size.width());

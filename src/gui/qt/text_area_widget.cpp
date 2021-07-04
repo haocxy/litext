@@ -137,7 +137,7 @@ void TextAreaWidget::paintBackground(QPainter &p)
 
 void TextAreaWidget::paintLastActLine(QPainter &p)
 {
-    std::optional<view::Rect> r = view_.getLastActLineDrawRect();
+    std::optional<gui::Rect> r = view_.getLastActLineDrawRect();
     if (r) {
         p.fillRect(r->left(), r->top(), r->width(), r->height(), QColor(Qt::green).lighter(192));
     }
