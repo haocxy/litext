@@ -1,15 +1,12 @@
 #pragma once
 
-namespace view
-{
-class Font;
-}
 
+class Font;
 class QFont;
 
 namespace QtUtil
 {
 
-void fillQFont(const view::Font &font, QFont &qfont);
+void fillQFont(const Font &font, QFont &qfont);
 
 } // namespace QtUtil

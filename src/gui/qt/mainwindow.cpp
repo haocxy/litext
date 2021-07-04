@@ -20,8 +20,8 @@ static void setupConfig(view::TextAreaConfig &c)
     c.setShowLineNum(true);
     c.setLineNumOffset(1);
 
-    view::Font &f = c.rfont();
-	view::FontInfo fi;
+    Font &f = c.rfont();
+	FontInfo fi;
 	fi.family = kFontFamilyYaHei;
 	fi.size = 22;
 	fi.bold = false;

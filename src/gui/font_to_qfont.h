@@ -4,19 +4,16 @@
 #include <QFont>
 
 
-namespace view
+void fontToQFont(const Font &font, QFont &qfont)
 {
-    void fontToQFont(const view::Font & font, QFont & qfont)
-    {
-        qfont.setFamily(font.family().c_str());
-        qfont.setPointSize(font.size());
-        qfont.setBold(font.bold());
-    }
+	qfont.setFamily(font.family().c_str());
+	qfont.setPointSize(font.size());
+	qfont.setBold(font.bold());
+}
 
-    QFont fontToQFont(const view::Font & font)
-    {
-        QFont qfont;
-        fontToQFont(font, qfont);
-        return qfont;
-    }
+QFont fontToQFont(const Font &font)
+{
+	QFont qfont;
+	fontToQFont(font, qfont);
+	return qfont;
 }

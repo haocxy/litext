@@ -53,7 +53,7 @@ void RulerWidget::paintBackground(QPainter & p)
 
 void RulerWidget::paintLineNum(QPainter & p)
 {
-    const QFont font = view::fontToQFont(m_view.config().font());
+    const QFont font = fontToQFont(m_view.config().font());
     p.setFont(font);
     p.setPen(kNormalColor);
 

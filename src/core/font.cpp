@@ -1,11 +1,12 @@
 #include "font.h"
 
-int view::Font::charWidth(QChar c) const
+
+int Font::charWidth(QChar c) const
 {
     return m_metrics.horizontalAdvance(QChar(c));
 }
 
-void view::Font::setFont(const FontInfo & fi)
+void Font::setFont(const FontInfo & fi)
 {
     m_font.setFamily(fi.family.c_str());
     m_font.setPointSize(fi.size);

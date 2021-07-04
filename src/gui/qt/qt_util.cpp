@@ -7,7 +7,7 @@
 namespace QtUtil
 {
 
-void fillQFont(const view::Font &font, QFont &qfont)
+void fillQFont(const Font &font, QFont &qfont)
 {
 	qfont.setFamily(font.family().c_str());
 	qfont.setPointSize(font.size());

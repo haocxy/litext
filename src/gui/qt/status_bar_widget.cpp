@@ -35,7 +35,7 @@ QSize StatusBarWidget::sizeHint() const
 
 void StatusBarWidget::paintEvent(QPaintEvent * e)
 {
-	const view::Font &font = view_.config().font();
+	const Font &font = view_.config().font();
 
 	QPainter p(this);
 	p.setPen(Qt::blue);
