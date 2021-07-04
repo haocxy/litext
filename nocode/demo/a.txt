@@ -14,3 +14,8 @@ notesharp
 Visual Studio 2017
 Qt版本：5.10.1 vs2017_64
 vs插件：Qt Visual Studio Tools
+
+需要用两个UTF-16存储的特殊字符测试：
+第一个字符：123??abc
+第二个字符：123??abc
+连续两个字符：123????abc
