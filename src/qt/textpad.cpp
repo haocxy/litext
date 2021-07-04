@@ -33,7 +33,7 @@ namespace
     static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 }
 
-TextPad::TextPad(View *view, QWidget *parent)
+TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
     : QWidget(parent)
     , m_view(*view)
     , m_textBuff(kWidthHint, kHeightHint, kBuffImageFormat)
@@ -51,17 +51,17 @@ TextPad::TextPad(View *view, QWidget *parent)
     m_listenerHandleViewLocChange = m_view.addOnViewLocChangeListener([this] { m_dirtyBuffFlags.set(DBF_Text); });
 }
 
-TextPad::~TextPad()
+TextAreaWidget::~TextAreaWidget()
 {
 
 }
 
-QSize TextPad::sizeHint() const
+QSize TextAreaWidget::sizeHint() const
 {
     return kSizeHint;
 }
 
-void TextPad::paintEvent(QPaintEvent * e)
+void TextAreaWidget::paintEvent(QPaintEvent * e)
 {
     if (m_dirtyBuffFlags.test(DBF_Text))
     {
@@ -73,12 +73,12 @@ void TextPad::paintEvent(QPaintEvent * e)
     paintWidget(p);
 }
 
-void TextPad::showEvent(QShowEvent * e)
+void TextAreaWidget::showEvent(QShowEvent * e)
 {
 
 }
 
-void TextPad::resizeEvent(QResizeEvent * e)
+void TextAreaWidget::resizeEvent(QResizeEvent * e)
 {
     QSize sz(size());
 
@@ -93,7 +93,7 @@ void TextPad::resizeEvent(QResizeEvent * e)
     refresh();
 }
 
-void TextPad::keyPressEvent(QKeyEvent * e)
+void TextAreaWidget::keyPressEvent(QKeyEvent * e)
 {
     const int key = e->key();
 
@@ -124,7 +124,7 @@ void TextPad::keyPressEvent(QKeyEvent * e)
     }
 }
 
-void TextPad::mousePressEvent(QMouseEvent * e)
+void TextAreaWidget::mousePressEvent(QMouseEvent * e)
 {
     if (e->button() == Qt::LeftButton)
     {
@@ -133,12 +133,12 @@ void TextPad::mousePressEvent(QMouseEvent * e)
     }
 }
 
-void TextPad::paintBackground(QPainter & p)
+void TextAreaWidget::paintBackground(QPainter & p)
 {
     p.fillRect(rect(), Qt::white);
 }
 
-void TextPad::paintLastActLine(QPainter & p)
+void TextAreaWidget::paintLastActLine(QPainter & p)
 {
     std::optional<view::Rect> r = m_view.getLastActLineDrawRect();
     if (!r)
@@ -149,7 +149,7 @@ void TextPad::paintLastActLine(QPainter & p)
     p.fillRect(r->left(), r->top(), r->width(), r->height(), QColor(Qt::green).lighter(192));
 }
 
-void TextPad::prepareTextImage()
+void TextAreaWidget::prepareTextImage()
 {
     QPainter p(&m_textBuff);
     m_textBuff.fill(QColor(0, 0, 0, 0));
@@ -172,7 +172,7 @@ void TextPad::prepareTextImage()
     });
 }
 
-void TextPad::paintWidget(QPainter & p)
+void TextAreaWidget::paintWidget(QPainter & p)
 {
     paintBackground(p);
     paintLastActLine(p);
@@ -180,14 +180,14 @@ void TextPad::paintWidget(QPainter & p)
     paintCursor(p);
 }
 
-void TextPad::refresh()
+void TextAreaWidget::refresh()
 {
     // refresh这个函数里即使只调用了update，也要这样包装一层
     // 其他部分调用refresh，这样就便于以后需要时添加重绘相关的公用逻辑
     update();
 }
 
-void TextPad::paintCursor(QPainter & p)
+void TextAreaWidget::paintCursor(QPainter & p)
 {
     std::optional<draw::VerticalLine> vl = m_view.getNormalCursorDrawData();
 

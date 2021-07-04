@@ -3,7 +3,7 @@
 #include <QWidget>
 
 class LineNumBar;
-class TextPad;
+class TextAreaWidget;
 class View;
 class ViewStatusBar;
 
@@ -16,6 +16,6 @@ public:
 
 private:
     LineNumBar * m_lineNumBar = nullptr;
-    TextPad * m_textPad = nullptr;
+    TextAreaWidget * textArea_ = nullptr;
 	ViewStatusBar * m_viewStatusBar = nullptr;
 };

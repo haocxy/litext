@@ -8,13 +8,13 @@
 
 class View;
 
-class TextPad : public QWidget
+class TextAreaWidget : public QWidget
 {
     // Q_OBJECT
 
 public:
-    TextPad(View *view, QWidget *parent = nullptr);
-    ~TextPad();
+    TextAreaWidget(View *view, QWidget *parent = nullptr);
+    ~TextAreaWidget();
 
     virtual QSize sizeHint() const override;
     virtual void paintEvent(QPaintEvent *e) override;
