@@ -9,7 +9,7 @@
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "page.h"
-#include "view_loc.h"
+#include "loc.h"
 #include "rect.h"
 #include "vertical_line.h"
 #include "view_define.h"
