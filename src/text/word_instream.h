@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QString>
+#include "core/ustring.h"
 
 
 class WordInStream
@@ -8,5 +8,5 @@ class WordInStream
 public:
     virtual ~WordInStream() {}
 
-    virtual QString Next() = 0;
+    virtual UString Next() = 0;
 };

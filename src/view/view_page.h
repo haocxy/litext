@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <deque>
-#include <QChar>
 
+#include "core/uchar.h"
 #include "view/view_loc.h"
 
 namespace view
@@ -12,17 +12,17 @@ namespace view
     class Char
     {
     public:
-        QChar qchar() const { return m_unicode; }
+        UChar uchar() const { return m_unicode; }
         int x() const { return m_x; }
 
-        void setQChar(QChar unicode) { m_unicode = unicode; }
+        void setUChar(UChar unicode) { m_unicode = unicode; }
         void setX(int x) { m_x = x; }
 
         int width() const { return m_width; }
         void setWidth(int width) { m_width = width; }
 
     private:
-        QChar m_unicode = 0;
+        UChar m_unicode = 0;
         int m_x = 0;
         int m_width = 0;
     };

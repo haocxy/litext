@@ -16,15 +16,15 @@ public:
 
     virtual ~TxtWordStream() {}
 
-    virtual QString Next() override;
+    virtual UString Next() override;
 private:
-    QChar PopNextChar();
-    void PushBackChar(QChar c)
+    UChar PopNextChar();
+    void PushBackChar(UChar c)
     {
         m_buff.push_front(c);
     }
 
 private:
     CharInStream & m_charInStream;
-    std::deque<QChar> m_buff;
+    std::deque<UChar> m_buff;
 };

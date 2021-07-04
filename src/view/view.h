@@ -173,7 +173,7 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const view::RowBound & bound, bool isLastAct)> && action) const;
 
-    void drawEachChar(std::function<void(int x, int y, QChar c)> && action) const;
+    void drawEachChar(std::function<void(int x, int y, UChar c)> && action) const;
 
     
 

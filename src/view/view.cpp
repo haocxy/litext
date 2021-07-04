@@ -7,6 +7,7 @@
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
 
+
 View::View(Editor * editor, view::Config *config)
     : m_editor(*editor)
     , m_config(*config)
@@ -694,7 +695,7 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
     }
 }
 
-void View::drawEachChar(std::function<void(int x, int y, QChar c)>&& action) const
+void View::drawEachChar(std::function<void(int x, int y, UChar c)>&& action) const
 {
     const int rowCnt = m_page.size();
     if (rowCnt == 0)
@@ -715,7 +716,7 @@ void View::drawEachChar(std::function<void(int x, int y, QChar c)>&& action) con
 
         for (const view::Char & c : line)
         {
-            action(c.x(), baseline, c.qchar());
+            action(c.x(), baseline, c.uchar());
         }
 
         ++lineOffset;
@@ -731,7 +732,7 @@ void View::drawEachChar(std::function<void(int x, int y, QChar c)>&& action) con
 
             for (const view::Char & c : line)
             {
-                action(c.x(), baseline, c.qchar());
+                action(c.x(), baseline, c.uchar());
             }
 
             ++lineOffset;
@@ -982,15 +983,15 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
 
     while (true)
     {
-        const QString word = wordStream.Next();
-        if (word.isEmpty())
+        const UString word = wordStream.Next();
+        if (word.empty())
         {
             return;
         }
 
         if (vline->size() == 0)
         {
-            for (const QChar c : word)
+            for (const UChar c : word)
             {
                 const int charWidth = m_config.charWidth(c);
 
@@ -1001,7 +1002,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
                 }
 
                 view::Char &vc = vline->grow();
-                vc.setQChar(c);
+                vc.setUChar(c);
                 vc.setX(leftX);
                 vc.setWidth(charWidth);
 
@@ -1012,7 +1013,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
         else
         {
             int wordWidth = 0;
-            for (const QChar c : word)
+            for (const UChar c : word)
             {
                 wordWidth += m_config.charWidth(c);
                 wordWidth += hMargin;
@@ -1022,7 +1023,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
                 leftX = hGap;
                 vline = &vrow.grow();
             }
-            for (const QChar c : word)
+            for (const UChar c : word)
             {
                 const int charWidth = m_config.charWidth(c);
 
@@ -1033,7 +1034,7 @@ void View::makeVRowWithWrapLine(const Row & row, view::VRow & vrow) const
                 }
 
                 view::Char &vc = vline->grow();
-                vc.setQChar(c);
+                vc.setUChar(c);
                 vc.setX(leftX);
                 vc.setWidth(charWidth);
 
@@ -1058,11 +1059,11 @@ void View::makeVRowNoWrapLine(const Row & row, view::VRow & vrow) const
     const CharN cnt = row.charCnt();
     for (CharN i = 0; i < cnt; ++i)
     {
-        const QChar c = row.charAt(i);
+        const UChar c = row.charAt(i);
         const int charWidth = m_config.charWidth(c);
 
         view::Char &vchar = vline.grow();
-        vchar.setQChar(c);
+        vchar.setUChar(c);
         vchar.setX(leftX);
         vchar.setWidth(charWidth);
 
