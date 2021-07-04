@@ -1,6 +1,10 @@
 #pragma once
 
 
+namespace gui
+{
+
+
 class VerticalLine {
 public:
 	int x() const { return x_; }
@@ -14,3 +18,6 @@ private:
 	int top_ = 0;
 	int bottom_ = 0;
 };
+
+
+}
