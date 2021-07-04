@@ -3,15 +3,16 @@
 #include <QWidget>
 #include "util/callbacks.h"
 
+
 class View;
 class QPainter;
 
-class LineNumBarWidget : public QWidget
+class RulerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    LineNumBarWidget(View * view, QWidget * parent = nullptr);
-    virtual ~LineNumBarWidget();
+    RulerWidget(View * view, QWidget * parent = nullptr);
+    virtual ~RulerWidget();
 
     virtual void paintEvent(QPaintEvent *e) override;
 

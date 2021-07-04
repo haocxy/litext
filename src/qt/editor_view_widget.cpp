@@ -11,7 +11,7 @@
 EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
     : QWidget(parent)
 {
-    m_lineNumBar = new LineNumBarWidget(view);
+    ruler_ = new RulerWidget(view);
     textArea_ = new TextAreaWidget(view);
 	m_viewStatusBar = new ViewStatusBar(view);
 
@@ -22,7 +22,7 @@ EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
     QHBoxLayout * hlayout = new QHBoxLayout;
     hlayout->setMargin(0);
     hlayout->setSpacing(0);
-    hlayout->addWidget(m_lineNumBar);
+    hlayout->addWidget(ruler_);
     hlayout->addWidget(textArea_);
 
 	vlayout->addLayout(hlayout);
@@ -33,6 +33,6 @@ EditorViewWidget::EditorViewWidget(View * view, QWidget * parent)
 
 EditorViewWidget::~EditorViewWidget()
 {
-    m_lineNumBar = nullptr;
+    ruler_ = nullptr;
     textArea_ = nullptr;
 }
