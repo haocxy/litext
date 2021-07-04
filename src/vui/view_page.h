@@ -4,7 +4,7 @@
 #include <deque>
 
 #include "core/uchar.h"
-#include "gui/view_loc.h"
+#include "view_loc.h"
 
 
 namespace view

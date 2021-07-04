@@ -2,8 +2,8 @@
 
 #include <QPainter>
 
-#include "gui/text_area_view.h"
-#include "gui/font_to_qfont.h"
+#include "vui/text_area_view.h"
+#include "vui/font_to_qfont.h"
 #include "config/view_config.h"
 
 

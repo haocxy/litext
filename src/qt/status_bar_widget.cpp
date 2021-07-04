@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-#include "gui/text_area_view.h"
+#include "vui/text_area_view.h"
 #include "config/view_config.h"
 #include "qt_util.h"
 
