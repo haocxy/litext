@@ -15,22 +15,34 @@ class TextAreaWidget : public QWidget
 
 public:
     TextAreaWidget(View *view, QWidget *parent = nullptr);
+
     ~TextAreaWidget();
 
     virtual QSize sizeHint() const override;
+    
     virtual void paintEvent(QPaintEvent *e) override;
+    
     virtual void showEvent(QShowEvent *e) override;
+    
     virtual void resizeEvent(QResizeEvent *e) override;
+    
     virtual void keyPressEvent(QKeyEvent *e) override;
+    
     virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
     void paintBackground(QPainter &p);
+    
     void paintLastActLine(QPainter &p);
+    
     void paintCursor(QPainter &p);
+    
     void prepareTextImage();
+    
     void paintWidget(QPainter &p);
+    
     void refresh();
+
 private:
     class DirtyBuffFlag {
     public:

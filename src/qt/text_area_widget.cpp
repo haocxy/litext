@@ -15,14 +15,14 @@ namespace
 
 class AutoSaver {
 public:
-    explicit AutoSaver(QPainter &painter) : m_painter(painter) {
-        m_painter.save();
+    explicit AutoSaver(QPainter &painter) : painter_(painter) {
+        painter_.save();
     }
     ~AutoSaver() {
-        m_painter.restore();
+        painter_.restore();
     }
 private:
-    QPainter &m_painter;
+    QPainter &painter_;
 };
 
 static int kWidthHint = 800;
@@ -62,7 +62,7 @@ QSize TextAreaWidget::sizeHint() const
     return kSizeHint;
 }
 
-void TextAreaWidget::paintEvent(QPaintEvent * e)
+void TextAreaWidget::paintEvent(QPaintEvent *e)
 {
     if (dirtyBuffFlags_.has(DirtyBuffFlag::Text)) {
         prepareTextImage();
@@ -73,14 +73,14 @@ void TextAreaWidget::paintEvent(QPaintEvent * e)
     paintWidget(p);
 }
 
-void TextAreaWidget::showEvent(QShowEvent * e)
+void TextAreaWidget::showEvent(QShowEvent *e)
 {
 
 }
 
-void TextAreaWidget::resizeEvent(QResizeEvent * e)
+void TextAreaWidget::resizeEvent(QResizeEvent *e)
 {
-    QSize sz(size());
+    const QSize sz(size());
 
     if (e->oldSize().isValid() && sz != e->oldSize()) {
         textPaintBuff_ = std::move(QImage(sz, kBuffImageFormat));
@@ -92,7 +92,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent * e)
     refresh();
 }
 
-void TextAreaWidget::keyPressEvent(QKeyEvent * e)
+void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 {
     const int key = e->key();
 
@@ -123,7 +123,7 @@ void TextAreaWidget::keyPressEvent(QKeyEvent * e)
     }
 }
 
-void TextAreaWidget::mousePressEvent(QMouseEvent * e)
+void TextAreaWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
         view_.onPrimaryButtomPress(e->x(), e->y());
@@ -131,12 +131,12 @@ void TextAreaWidget::mousePressEvent(QMouseEvent * e)
     }
 }
 
-void TextAreaWidget::paintBackground(QPainter & p)
+void TextAreaWidget::paintBackground(QPainter &p)
 {
     p.fillRect(rect(), Qt::white);
 }
 
-void TextAreaWidget::paintLastActLine(QPainter & p)
+void TextAreaWidget::paintLastActLine(QPainter &p)
 {
     std::optional<view::Rect> r = view_.getLastActLineDrawRect();
     if (r) {
@@ -144,9 +144,9 @@ void TextAreaWidget::paintLastActLine(QPainter & p)
     }
 }
 
-static inline QString unicodeToUtf16SurrogatePairs(UChar c) {
-    QChar high = QChar::highSurrogate(c);
-    QChar low = QChar::lowSurrogate(c);
+static inline QString unicodeToUtf16SurrogatePairs(UChar unicode) {
+    QChar high = QChar::highSurrogate(unicode);
+    QChar low = QChar::lowSurrogate(unicode);
     QString surrogatedPairs;
     surrogatedPairs.push_back(high);
     surrogatedPairs.push_back(low);
@@ -171,7 +171,7 @@ void TextAreaWidget::prepareTextImage()
     });
 }
 
-void TextAreaWidget::paintWidget(QPainter & p)
+void TextAreaWidget::paintWidget(QPainter &p)
 {
     paintBackground(p);
     paintLastActLine(p);
@@ -186,7 +186,7 @@ void TextAreaWidget::refresh()
     update();
 }
 
-void TextAreaWidget::paintCursor(QPainter & p)
+void TextAreaWidget::paintCursor(QPainter &p)
 {
     std::optional<draw::VerticalLine> vl = view_.getNormalCursorDrawData();
     if (vl)
