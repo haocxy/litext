@@ -6,7 +6,6 @@
 
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
-#include "qt_util.h"
 
 
 namespace

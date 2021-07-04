@@ -4,7 +4,7 @@
 class Font;
 class QFont;
 
-namespace QtUtil
+namespace gui::qt
 {
 
 void fillQFont(const Font &font, QFont &qfont);

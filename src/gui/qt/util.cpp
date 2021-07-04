@@ -1,10 +1,10 @@
-#include "qt_util.h"
+#include "util.h"
 
 #include <QFont>
 #include "core/font.h"
 
 
-namespace QtUtil
+namespace gui::qt
 {
 
 void fillQFont(const Font &font, QFont &qfont)
