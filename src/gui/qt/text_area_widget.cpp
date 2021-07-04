@@ -5,7 +5,7 @@
 #include <QMouseEvent>
 
 #include "gui/text_area.h"
-#include "gui/view_config.h"
+#include "gui/text_area_config.h"
 #include "editor/editor.h"
 #include "qt_util.h"
 

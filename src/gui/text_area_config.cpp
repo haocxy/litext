@@ -1,4 +1,4 @@
-#include "view_config.h"
+#include "text_area_config.h"
 
 
 int view::Config::charWidth(QChar c) const

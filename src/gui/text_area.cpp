@@ -8,7 +8,7 @@
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
-#include "view_config.h"
+#include "text_area_config.h"
 
 
 TextArea::TextArea(Editor *editor, view::Config *config)
