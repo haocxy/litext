@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-#include "view/view.h"
+#include "view/text_area_view.h"
 #include "config/view_config.h"
 #include "editor/editor.h"
 #include "qt_util.h"

@@ -1,13 +1,14 @@
 #include "mainwindow.h"
 
-#include "view/view.h"
+#include "view/text_area_view.h"
 #include "config/view_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
 #include "editor_view_widget.h"
 
-const char *kFontFamilyTimes = "Times";
-const char *kFontFamilyYaHei = "Microsoft YaHei";
+
+static const char *kFontFamilyTimes = "Times";
+static const char *kFontFamilyYaHei = "Microsoft YaHei";
 
 static void setupConfig(view::Config &c)
 {
