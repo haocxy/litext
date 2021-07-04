@@ -1,4 +1,4 @@
-#include "text_area_view.h"
+#include "text_area.h"
 
 #include <cassert>
 

@@ -2,7 +2,7 @@
 
 #include <QPainter>
 
-#include "gui/text_area_view.h"
+#include "gui/text_area.h"
 #include "gui/font_to_qfont.h"
 #include "gui/view_config.h"
 
