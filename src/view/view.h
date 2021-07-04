@@ -235,7 +235,7 @@ private:
     void removeSpareRow();
 
 private:
-    Editor & m_editor;
+    Editor &editor_;
     const view::Config & m_config;
     view::Page m_page;
     view::Size m_size;

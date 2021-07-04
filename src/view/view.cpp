@@ -9,13 +9,13 @@
 
 
 View::View(Editor * editor, view::Config *config)
-    : m_editor(*editor)
+    : editor_(*editor)
     , m_config(*config)
 {
     assert(editor);
     assert(config);
    
-    m_listenerIdForLastActLineUpdate = m_editor.addOnLastActRowUpdateListener([this] {
+    m_listenerIdForLastActLineUpdate = editor_.addOnLastActRowUpdateListener([this] {
         m_onUpdateListeners.call();
     });
 }
@@ -112,14 +112,14 @@ view::RowLoc View::convertToRowLoc(RowN row) const
     const int vrowCnt = m_page.size();
     if (vrowIndex < 0 || vrowIndex >= vrowCnt)
     {
-        if (row >= m_editor.doc().rowCnt())
+        if (row >= editor_.doc().rowCnt())
         {
             return view::RowLoc::newRowLocAfterLastRow();
         }
         return view::RowLoc();
     }
 
-    if (row >= m_editor.doc().rowCnt())
+    if (row >= editor_.doc().rowCnt())
     {
         return view::RowLoc::newRowLocAfterLastRow();
     }
@@ -421,7 +421,7 @@ void View::ensureHasPrevLine(const view::LineLoc & curLineLoc)
             if (m_loc.row() > 0)
             {
                 view::VRow vrow;
-                makeVRow(m_editor.doc().rowAt(m_loc.row() - 1), vrow);
+                makeVRow(editor_.doc().rowAt(m_loc.row() - 1), vrow);
                 const int newRowSize = vrow.size();
                 m_page.pushFront(std::move(vrow));
 
@@ -450,7 +450,7 @@ bool View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 	}
 
 	// 当前坐标为文档最后一行则返回
-	const RowN docRowCnt = m_editor.doc().rowCnt();
+	const RowN docRowCnt = editor_.doc().rowCnt();
 	if (m_loc.row() + curLineLoc.row() >= docRowCnt - 1)
 	{
 		return false;
@@ -470,7 +470,7 @@ bool View::ensureHasNextLine(const view::LineLoc & curLineLoc)
 			return false;
 		}
 
-		const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
+		const Row & docRow = editor_.doc().rowAt(newDocRowIndex);
 		view::VRow vrow;
 		makeVRow(docRow, vrow);
 		m_page.pushBack(std::move(vrow));
@@ -506,15 +506,15 @@ void View::onDirUpKeyPress()
 
     // 第一步：确保上一行在视图内
     // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
-    const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+    const DocLoc & oldDocLoc = editor_.normalCursor().to();
     const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
     ensureHasPrevLine(oldCharLoc);
 
     // 第二步：使用第一步更新后的新的视图数据取目标位置
-    const DocLoc newLoc = getNextUpLoc(m_editor.normalCursor().to());
+    const DocLoc newLoc = getNextUpLoc(editor_.normalCursor().to());
     if (!newLoc.isNull())
     {
-        m_editor.setNormalCursor(newLoc);
+        editor_.setNormalCursor(newLoc);
     }
 
 	// 第三步：移除尾部多余的行
@@ -524,15 +524,15 @@ void View::onDirUpKeyPress()
 void View::onDirDownKeyPress()
 {
 	// 第一步，确保当前位置在视图中有下一行
-	const DocLoc & oldDocLoc = m_editor.normalCursor().to();
+	const DocLoc & oldDocLoc = editor_.normalCursor().to();
 	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
 	const bool shouldMovePageHead = ensureHasNextLine(oldCharLoc);
 
 	// 第二步，更新编辑器中的文档位置
-	const DocLoc newLoc = getNextDownLoc(m_editor.normalCursor().to());
+	const DocLoc newLoc = getNextDownLoc(editor_.normalCursor().to());
 	if (!newLoc.isNull() && !newLoc.isAfterLastRow())
 	{
-		m_editor.setNormalCursor(newLoc);
+        editor_.setNormalCursor(newLoc);
 	}
 
 	// 第三步，向下移动页面头部
@@ -544,17 +544,17 @@ void View::onDirDownKeyPress()
 
 void View::onDirLeftKeyPress()
 {
-    const DocLoc oldDocLoc = m_editor.normalCursor().to();
+    const DocLoc oldDocLoc = editor_.normalCursor().to();
     const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
     if (noPrevCharAtSameLine(oldCharLoc))
     {
         ensureHasPrevLine(oldCharLoc);
     }
 
-    const DocLoc newLoc = m_editor.getNextLeftLocByChar(oldDocLoc);
+    const DocLoc newLoc = editor_.getNextLeftLocByChar(oldDocLoc);
     if (!newLoc.isNull())
     {
-		m_editor.setNormalCursor(newLoc);
+        editor_.setNormalCursor(newLoc);
 
 		const view::CharLoc charLoc = convertToCharLoc(newLoc);
 		m_stable_x = getXByCharLoc(charLoc);
@@ -565,7 +565,7 @@ void View::onDirLeftKeyPress()
 
 void View::onDirRightKeyPress()
 {
-	const DocLoc oldDocLoc = m_editor.normalCursor().to();
+	const DocLoc oldDocLoc = editor_.normalCursor().to();
 	const view::CharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
 	bool needMoveHead = false;
 	if (needEnsureHasNextLine(oldCharLoc))
@@ -573,10 +573,10 @@ void View::onDirRightKeyPress()
 		needMoveHead = ensureHasNextLine(oldCharLoc);
 	}
 
-	const DocLoc newLoc = m_editor.getNextRightLocByChar(oldDocLoc);
+	const DocLoc newLoc = editor_.getNextRightLocByChar(oldDocLoc);
 	if (!newLoc.isNull())
 	{
-		m_editor.setNormalCursor(newLoc);
+        editor_.setNormalCursor(newLoc);
 
 		const view::CharLoc charLoc = convertToCharLoc(newLoc);
 		m_stable_x = getXByCharLoc(charLoc);
@@ -615,7 +615,7 @@ void View::movePageHeadOneLine()
 
 std::optional<view::Rect> View::getLastActLineDrawRect() const
 {
-    const RowN row = m_editor.lastActRow();
+    const RowN row = editor_.lastActRow();
     const view::RowLoc loc = convertToRowLoc(row);
     if (loc.isNull())
     {
@@ -637,7 +637,7 @@ std::optional<draw::VerticalLine> View::getNormalCursorDrawData() const
     enum { kHorizontalDelta = -1 };
     enum { kVerticalShrink = 2 };
 
-    const DocCursor & cursor = m_editor.normalCursor();
+    const DocCursor & cursor = editor_.normalCursor();
 
     if (cursor.isNull())
     {
@@ -685,7 +685,7 @@ void View::drawEachLineNum(std::function<void(RowN lineNum, int baseline, const 
         const view::RowLoc loc(r);
         const view::RowBound bound = getRowBound(loc);
         const RowN lineNum = m_loc.row() + r;
-        const RowN lastAct = m_editor.lastActRow();
+        const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
         const int baseline = getBaseLineByLineOffset(offset);
 
@@ -754,14 +754,14 @@ void View::onPrimaryButtomPress(int x, int y)
 {
     const view::CharLoc charLoc = getCharLocByPoint(x, y);
     const DocLoc docLoc = convertToDocLoc(charLoc);
-    m_editor.onPrimaryKeyPress(docLoc);
+    editor_.onPrimaryKeyPress(docLoc);
 
     m_stable_x = getXByCharLoc(charLoc);
 }
 
 bool View::moveDownByOneLine()
 {
-	const RowN docRowCnt = m_editor.doc().rowCnt();
+	const RowN docRowCnt = editor_.doc().rowCnt();
 
 	// 文档没有内容则不能移动
 	if (docRowCnt == 0)
@@ -782,7 +782,7 @@ bool View::moveDownByOneLine()
 		const RowN newDocRowIndex = m_loc.row() + m_page.size();
 		if (newDocRowIndex <= docRowCnt - 1)
 		{
-			const Row & docRow = m_editor.doc().rowAt(newDocRowIndex);
+			const Row & docRow = editor_.doc().rowAt(newDocRowIndex);
 			view::VRow vrow;
 			makeVRow(docRow, vrow);
 			m_page.pushBack(std::move(vrow));
@@ -932,7 +932,7 @@ void View::remakePage()
 {
     m_page.clear();
 
-    const RowN rowCnt = m_editor.doc().rowCnt();
+    const RowN rowCnt = editor_.doc().rowCnt();
 
     const int maxShownLineCnt = getMaxShownLineCnt();
 
@@ -946,7 +946,7 @@ void View::remakePage()
         }
 
         view::VRow vrow;
-        makeVRow(m_editor.doc().rowAt(i), vrow);
+        makeVRow(editor_.doc().rowAt(i), vrow);
         const int rowSize = vrow.size();
         m_page.pushBack(std::move(vrow));
 
