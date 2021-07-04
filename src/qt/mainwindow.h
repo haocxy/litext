@@ -6,7 +6,7 @@
 
 
 class EditorViewWidget;
-class View;
+class TextAreaView;
 class Editor;
 class SimpleDoc;
 namespace view
@@ -28,7 +28,7 @@ private:
 private:
     view::Config * m_viewConfig = nullptr;
     SimpleDoc * m_doc = nullptr;
-    View * m_view = nullptr;
+    TextAreaView * m_view = nullptr;
     Editor * m_editor = nullptr;
     EditorViewWidget * m_editorViewWidget = nullptr;
 };

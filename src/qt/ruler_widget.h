@@ -4,14 +4,14 @@
 #include "util/callbacks.h"
 
 
-class View;
+class TextAreaView;
 class QPainter;
 
 class RulerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    RulerWidget(View * view, QWidget * parent = nullptr);
+    RulerWidget(TextAreaView * view, QWidget * parent = nullptr);
     virtual ~RulerWidget();
 
     virtual void paintEvent(QPaintEvent *e) override;
@@ -21,7 +21,7 @@ private:
     void paintLineNum(QPainter & p);
 
 private:
-    View & m_view;
+    TextAreaView & m_view;
     CallbackHandle m_cbhUpdate;
 	CallbackHandle m_cbhViewLocChange;
 };

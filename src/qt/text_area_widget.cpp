@@ -31,7 +31,7 @@ static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 
 }
 
-TextAreaWidget::TextAreaWidget(View *view, QWidget *parent)
+TextAreaWidget::TextAreaWidget(TextAreaView *view, QWidget *parent)
     : QWidget(parent)
     , view_(*view)
     , textPaintBuff_(kSizeHint, kBuffImageFormat)

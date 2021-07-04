@@ -5,7 +5,7 @@
 
 class RulerWidget;
 class TextAreaWidget;
-class View;
+class TextAreaView;
 class StatusBarWidget;
 
 
@@ -13,7 +13,7 @@ class EditorViewWidget : public QWidget
 {
     Q_OBJECT
 public:
-    EditorViewWidget(View * view, QWidget * parent = nullptr);
+    EditorViewWidget(TextAreaView *view, QWidget * parent = nullptr);
     virtual ~EditorViewWidget();
 
 private:
