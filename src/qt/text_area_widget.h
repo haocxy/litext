@@ -1,10 +1,11 @@
 #pragma once
 
-#include <bitset>
 #include <QWidget>
 #include <QImage>
 
+#include "util/flagset.h"
 #include "util/callbacks.h"
+
 
 class View;
 
@@ -41,7 +42,7 @@ private:
 
 private:
     View &view_;
-    std::bitset<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
+    FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
     CallbackHandle cbhViewLocChanged_;
 };

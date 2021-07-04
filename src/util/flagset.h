@@ -4,7 +4,7 @@
 #include <cstring>
 
 
-template <int Bits>
+template <size_t Bits>
 class FlagSet
 {
 public:

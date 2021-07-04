@@ -64,9 +64,9 @@ QSize TextAreaWidget::sizeHint() const
 
 void TextAreaWidget::paintEvent(QPaintEvent * e)
 {
-    if (dirtyBuffFlags_.test(DirtyBuffFlag::Text)) {
+    if (dirtyBuffFlags_.has(DirtyBuffFlag::Text)) {
         prepareTextImage();
-        dirtyBuffFlags_.set(DirtyBuffFlag::Text, false);
+        dirtyBuffFlags_.unset(DirtyBuffFlag::Text);
     }
 
     QPainter p(this);
