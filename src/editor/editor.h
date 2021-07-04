@@ -2,7 +2,8 @@
 
 #include <vector>
 #include "cursor.h"
-#include "util/callbacks.h"
+#include "core/callbacks.h"
+
 
 class Doc;
 

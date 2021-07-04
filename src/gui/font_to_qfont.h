@@ -1,7 +1,8 @@
 #pragma once
 
-#include "util/font.h"
+#include "core/font.h"
 #include <QFont>
+
 
 namespace view
 {

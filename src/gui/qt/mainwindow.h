@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 
-#include "util/fs.h"
+#include "core/fs.h"
 
 
 class EditorViewWidget;

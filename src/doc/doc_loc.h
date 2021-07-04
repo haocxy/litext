@@ -1,7 +1,8 @@
 #pragma once
 
 #include "doc_define.h"
-#include "util/flagset.h"
+#include "core/flagset.h"
+
 
 class DocLoc
 {

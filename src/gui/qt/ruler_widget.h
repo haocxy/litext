@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "util/callbacks.h"
+#include "core/callbacks.h"
 
 
 class TextAreaView;

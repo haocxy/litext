@@ -2,7 +2,7 @@
 
 #include "doc/doc_define.h"
 #include "view_define.h"
-#include "util/flagset.h"
+#include "core/flagset.h"
 
 
 namespace view

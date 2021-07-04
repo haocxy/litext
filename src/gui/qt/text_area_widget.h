@@ -3,8 +3,8 @@
 #include <QWidget>
 #include <QImage>
 
-#include "util/flagset.h"
-#include "util/callbacks.h"
+#include "core/flagset.h"
+#include "core/callbacks.h"
 
 
 class TextAreaView;
