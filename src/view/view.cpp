@@ -1,5 +1,7 @@
+#include "text_area_view.h"
+
 #include <cassert>
-#include "view.h"
+
 #include "config/view_config.h"
 #include "doc/doc.h"
 #include "doc/doc_row.h"
