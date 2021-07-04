@@ -3,7 +3,8 @@
 #include <QApplication>
 #include <QDebug>
 
-#include "qt/mainwindow.h"
+#include "gui/qt/mainwindow.h"
+
 
 int main(int argc, char *argv[])
 {
