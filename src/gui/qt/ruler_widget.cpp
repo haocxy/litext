@@ -3,8 +3,8 @@
 #include <QPainter>
 
 #include "gui/text_area.h"
-#include "gui/font_to_qfont.h"
 #include "gui/text_area_config.h"
+#include "font_to_qfont.h"
 
 
 namespace
