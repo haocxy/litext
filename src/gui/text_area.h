@@ -136,7 +136,7 @@ private:
     Editor &editor_;
     const TextAreaConfig &config_;
     Page page_;
-    Size m_size;
+    Size size_;
     ViewLoc m_loc{ 0, 0 };
 
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置

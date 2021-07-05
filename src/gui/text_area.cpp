@@ -33,7 +33,7 @@ TextArea::~TextArea()
 
 void TextArea::initSize(const Size & size)
 {
-    m_size = size;
+    size_ = size;
 
     remakePage();
 
@@ -42,12 +42,12 @@ void TextArea::initSize(const Size & size)
 
 void TextArea::resize(const Size & size)
 {
-    if (m_size == size)
+    if (size_ == size)
     {
         return;
     }
 
-    m_size = size;
+    size_ = size;
 
     remakePage();
 
@@ -79,7 +79,7 @@ int TextArea::getLineOffsetByLineLoc(const VLineLoc & loc) const
 int TextArea::getMaxShownLineCnt() const
 {
     const int lineHeight = config_.lineHeight();
-    return (m_size.height() + lineHeight - 1) / lineHeight;
+    return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
 int TextArea::getLineOffsetByRowIndex(int row) const
@@ -633,7 +633,7 @@ std::optional<Rect> TextArea::getLastActLineDrawRect() const
     Rect rect;
     rect.setLeft(0);
     rect.setTop(bound.top());
-    rect.setWidth(m_size.width());
+    rect.setWidth(size_.width());
     rect.setHeight(bound.height());
     return rect;
 }
@@ -1001,7 +1001,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
             {
                 const int charWidth = config_.charWidth(c);
 
-                if (leftX + charWidth > m_size.width())
+                if (leftX + charWidth > size_.width())
                 {
                     leftX = hGap;
                     vline = &vrow.grow();
@@ -1024,7 +1024,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
                 wordWidth += config_.charWidth(c);
                 wordWidth += hMargin;
             }
-            if (leftX + wordWidth > m_size.width())
+            if (leftX + wordWidth > size_.width())
             {
                 leftX = hGap;
                 vline = &vrow.grow();
@@ -1033,7 +1033,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
             {
                 const int charWidth = config_.charWidth(c);
 
-                if (leftX + charWidth > m_size.width())
+                if (leftX + charWidth > size_.width())
                 {
                     leftX = hGap;
                     vline = &vrow.grow();
