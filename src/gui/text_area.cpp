@@ -59,7 +59,7 @@ int TextArea::getBaseLineByLineOffset(int off) const
     return (1 + off) * config_.lineHeight() - config_.font().descent();
 }
 
-int TextArea::getLineOffsetByLineLoc(const LineLoc & loc) const
+int TextArea::getLineOffsetByLineLoc(const VLineLoc & loc) const
 {
     int sum = loc.line();
 
@@ -101,7 +101,7 @@ int TextArea::getLineOffsetByRowIndex(int row) const
 CharLoc TextArea::getCharLocByPoint(int x, int y) const
 {
     const int lineOffset = getLineOffsetByY(y);
-    const LineLoc lineLoc = getLineLocByLineOffset(lineOffset);
+    const VLineLoc lineLoc = getLineLocByLineOffset(lineOffset);
     return getCharLocByLineLocAndX(lineLoc, x);
 }
 
@@ -156,7 +156,7 @@ CharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
 
     if (docLoc.isAfterLastChar())
     {
-        LineLoc lineLoc(r, vrow.size() - 1);
+        VLineLoc lineLoc(r, vrow.size() - 1);
         return CharLoc::newCharLocAfterLastChar(lineLoc);
     }
     
@@ -269,7 +269,7 @@ LineBound TextArea::getLineBoundByLineOffset(int lineOffset) const
     return LineBound(top, bottom);
 }
 
-LineBound TextArea::getLineBound(const LineLoc & lineLoc) const
+LineBound TextArea::getLineBound(const VLineLoc & lineLoc) const
 {
     if (lineLoc.isAfterLastRow())
     {
@@ -357,7 +357,7 @@ bool TextArea::needEnsureHasNextLine(const CharLoc & charLoc) const
 	}
 }
 
-bool TextArea::isLastLineOfRow(const LineLoc & lineLoc) const
+bool TextArea::isLastLineOfRow(const VLineLoc & lineLoc) const
 {
     return lineLoc.line() == m_page[lineLoc.row()].size() - 1;
 }
@@ -394,7 +394,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
         return DocLoc();
     }
 
-    const LineLoc upLineLoc = m_page.getNextUpLineLoc(charLoc);
+    const VLineLoc upLineLoc = m_page.getNextUpLineLoc(charLoc);
     const CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, m_stable_x);
 
     return convertToDocLoc(betterLocForVerticalMove(upCharLoc));
@@ -408,13 +408,13 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
         return DocLoc();
     }
 
-    const LineLoc downLineLoc = m_page.getNextDownLineLoc(charLoc);
+    const VLineLoc downLineLoc = m_page.getNextDownLineLoc(charLoc);
     const CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, m_stable_x);
 
     return convertToDocLoc(betterLocForVerticalMove(downCharLoc));
 }
 
-void TextArea::ensureHasPrevLine(const LineLoc & curLineLoc)
+void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
 {
     if (curLineLoc.row() == 0 && curLineLoc.line() <= m_loc.line())
     {
@@ -437,7 +437,7 @@ void TextArea::ensureHasPrevLine(const LineLoc & curLineLoc)
     }
 }
 
-bool TextArea::ensureHasNextLine(const LineLoc &curLineLoc)
+bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 {
 	const int maxShownLineCnt = getMaxShownLineCnt();
 
@@ -468,7 +468,7 @@ bool TextArea::ensureHasNextLine(const LineLoc &curLineLoc)
 
 	const int lineIndex = maxShownLineCnt - prevLineCnt - 1;
 
-	if (isLastLineOfRow(LineLoc(rowCnt - 1, lineIndex)))
+	if (isLastLineOfRow(VLineLoc(rowCnt - 1, lineIndex)))
 	{
 		const RowN newDocRowIndex = m_loc.row() + rowCnt;
 		if (newDocRowIndex > docRowCnt - 1)
@@ -608,7 +608,7 @@ void TextArea::setViewLoc(const ViewLoc & viewLoc)
 
 void TextArea::movePageHeadOneLine()
 {
-	if (isLastLineOfRow(LineLoc(0, m_loc.line())))
+	if (isLastLineOfRow(VLineLoc(0, m_loc.line())))
 	{
 		setViewLoc(ViewLoc(m_loc.row() + 1, 0));
 		m_page.popFront();
@@ -776,13 +776,13 @@ bool TextArea::moveDownByOneLine()
 	}
 
 	// 视图位于文档最后一个line
-	if (m_loc.row() == docRowCnt - 1 && isLastLineOfRow(LineLoc(m_page.size() - 1, m_loc.line())))
+	if (m_loc.row() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(m_page.size() - 1, m_loc.line())))
 	{
 		return false;
 	}
 
 	// 如果最后一个可视line是row中最后一个line，则需要新解析一个row的内容
-	const LineLoc shownLastLineLoc = getShownLastLineLoc();
+	const VLineLoc shownLastLineLoc = getShownLastLineLoc();
 	if (isLastLineOfRow(shownLastLineLoc))
 	{
 		const RowN newDocRowIndex = m_loc.row() + m_page.size();
@@ -805,7 +805,7 @@ int TextArea::getLineOffsetByY(int y) const
     return y / config_.lineHeight();
 }
 
-LineLoc TextArea::getLineLocByLineOffset(int offset) const
+VLineLoc TextArea::getLineLocByLineOffset(int offset) const
 {
     const int rowCnt = m_page.size();
 
@@ -820,25 +820,25 @@ LineLoc TextArea::getLineLocByLineOffset(int offset) const
 
             if (sum + lineCnt > offset)
             {
-                return LineLoc(i, offset - sum);
+                return VLineLoc(i, offset - sum);
             }
 
             sum += lineCnt;
         }
 
-        return LineLoc::newLineLocAfterLastRow();
+        return VLineLoc::newLineLocAfterLastRow();
     }
 
     if (rowCnt == 0)
     {
-        return LineLoc();
+        return VLineLoc();
     }
 
     const VRow & curRow = m_page[0];
     const int curRowSize = curRow.size();
     if (m_loc.line() + offset < curRowSize)
     {
-        return LineLoc(0, m_loc.line() + offset);
+        return VLineLoc(0, m_loc.line() + offset);
     }
 
     int sum = curRowSize - m_loc.line();
@@ -850,13 +850,13 @@ LineLoc TextArea::getLineLocByLineOffset(int offset) const
 
         if (sum + lineCnt > offset)
         {
-            return LineLoc(i, offset - sum);
+            return VLineLoc(i, offset - sum);
         }
 
         sum += lineCnt;
     }
 
-    return LineLoc::newLineLocAfterLastRow();
+    return VLineLoc::newLineLocAfterLastRow();
 }
 
 static inline int calcLeftBound(int x, int leftWidth, int margin)
@@ -880,7 +880,7 @@ static inline int calcRightBound(int x, int curWidth)
     }
 }
 
-CharLoc TextArea::getCharLocByLineLocAndX(const LineLoc & lineLoc, int x) const
+CharLoc TextArea::getCharLocByLineLocAndX(const VLineLoc & lineLoc, int x) const
 {
     if (lineLoc.isNull() || lineLoc.isAfterLastRow())
     {
@@ -1078,7 +1078,7 @@ void TextArea::makeVRowNoWrapLine(const Row &row, VRow &vrow) const
     }
 }
 
-LineLoc TextArea::getShownLastLineLoc() const
+VLineLoc TextArea::getShownLastLineLoc() const
 {
 	const int rowCnt = m_page.size();
 
@@ -1091,12 +1091,12 @@ LineLoc TextArea::getShownLastLineLoc() const
 	if (m_page.lineCnt() - m_loc.line() < maxShownLineCnt)
 	{
 		const int lastLineIndex = m_page.lineCnt() - m_loc.line() - prevLineCnt - 1;
-		return LineLoc(m_page.size() - 1, lastLineIndex);
+		return VLineLoc(m_page.size() - 1, lastLineIndex);
 	}
 	else
 	{
 		const int lastLineIndex = getMaxShownLineCnt() - prevLineCnt - 1;
-		return LineLoc(m_page.size() - 1, lastLineIndex);
+		return VLineLoc(m_page.size() - 1, lastLineIndex);
 	}
 }
 

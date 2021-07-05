@@ -7,7 +7,7 @@ namespace gui
 {
 
 
-class CharLoc : public LineLoc {
+class CharLoc : public VLineLoc {
 public:
 	static CharLoc newCharLocAfterLastRow()
 	{
@@ -17,7 +17,7 @@ public:
 		loc.setFlag(kAfterLastChar);
 		return loc;
 	}
-	static CharLoc newCharLocAfterLastChar(const LineLoc &lineLoc)
+	static CharLoc newCharLocAfterLastChar(const VLineLoc &lineLoc)
 	{
 		CharLoc loc(lineLoc, 0);
 		loc.setFlag(kAfterLastChar);
@@ -25,8 +25,8 @@ public:
 	}
 public:
 	CharLoc() = default;
-	CharLoc(const LineLoc &lineLoc, CharN col) : LineLoc(lineLoc), m_col(col) {}
-	CharLoc(int row, int line, CharN col) :LineLoc(row, line), m_col(col) {}
+	CharLoc(const VLineLoc &lineLoc, CharN col) : VLineLoc(lineLoc), m_col(col) {}
+	CharLoc(int row, int line, CharN col) : VLineLoc(row, line), m_col(col) {}
 	CharN col() const { return m_col; }
 	void setCol(CharN col) { m_col = col; }
 	bool isAfterLastChar() const { return hasFlag(kAfterLastChar); }

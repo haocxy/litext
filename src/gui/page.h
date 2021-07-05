@@ -110,9 +110,9 @@ namespace gui
         const VRow &operator[](int line) const { return m_rows[line]; }
         const_iterator begin() const { return m_rows.begin(); }
         const_iterator end() const { return m_rows.end(); }
-        LineLoc getNextUpLineLoc(const LineLoc & lineLoc) const;
-        LineLoc getNextDownLineLoc(const LineLoc & lineLoc) const;
-        const Line & getLine(const LineLoc & lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
+        VLineLoc getNextUpLineLoc(const VLineLoc & lineLoc) const;
+        VLineLoc getNextDownLineLoc(const VLineLoc & lineLoc) const;
+        const Line & getLine(const VLineLoc & lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
         void pushFront(VRow && row)
         {
             m_lineCnt += row.size();

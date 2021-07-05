@@ -82,10 +82,10 @@ public:
 private:
     int getMaxShownLineCnt() const;
     int getLineOffsetByRowIndex(int row) const;
-    int getLineOffsetByLineLoc(const LineLoc &loc) const;
+    int getLineOffsetByLineLoc(const VLineLoc &loc) const;
     int getLineOffsetByY(int y) const;
-    LineLoc getLineLocByLineOffset(int offset) const;
-    CharLoc getCharLocByLineLocAndX(const LineLoc &lineLoc, int x) const;
+    VLineLoc getLineLocByLineOffset(int offset) const;
+    CharLoc getCharLocByLineLocAndX(const VLineLoc &lineLoc, int x) const;
     CharLoc getCharLocByPoint(int x, int y) const;
     DocLoc getDocLocByPoint(int x, int y) const;
     VRowLoc convertToRowLoc(RowN row) const;
@@ -94,14 +94,14 @@ private:
     const Char &getChar(const CharLoc &charLoc) const;
     int getXByCharLoc(const CharLoc &charLoc) const;
     LineBound getLineBoundByLineOffset(int lineOffset) const;
-    LineBound getLineBound(const LineLoc &lineLoc) const;
+    LineBound getLineBound(const VLineLoc &lineLoc) const;
     RowBound getRowBound(const VRowLoc &rowLoc) const;
     bool hasPrevCharAtSameLine(const CharLoc &charLoc) const;
     bool noPrevCharAtSameLine(const CharLoc &charLoc) const;
     bool hasNextCharAtSameLine(const CharLoc &charLoc) const;
     bool noNextCharAtSameLine(const CharLoc &charLoc) const;
     bool needEnsureHasNextLine(const CharLoc &charLoc) const;
-    bool isLastLineOfRow(const LineLoc &lineLoc) const;
+    bool isLastLineOfRow(const VLineLoc &lineLoc) const;
     bool isEndOfVirtualLine(const CharLoc &charLoc) const;
     CharLoc betterLocForVerticalMove(const CharLoc &charLoc) const;
     DocLoc getNextUpLoc(const DocLoc &docLoc) const;
@@ -111,16 +111,16 @@ private:
     void makeVRowNoWrapLine(const Row &row, VRow &vrow) const;
 
     // 视图中最后一个可视line的LineLoc
-    LineLoc getShownLastLineLoc() const;
+    VLineLoc getShownLastLineLoc() const;
 
 private:
     // 调用这个函数后，需要在合适的时刻调用removeSpareRow
-    void ensureHasPrevLine(const LineLoc &curLineLoc);
+    void ensureHasPrevLine(const VLineLoc &curLineLoc);
 
     // 确保参数行有下一行
     // 如果需要把页面头部向后移动则返回true
     // 返回true则需要在合适的时刻调用movePageHeadOneLine
-    bool ensureHasNextLine(const LineLoc &curLineLoc);
+    bool ensureHasNextLine(const VLineLoc &curLineLoc);
 
     void setViewLoc(const ViewLoc &viewLoc);
 
