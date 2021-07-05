@@ -88,14 +88,14 @@ private:
     CharLoc getCharLocByLineLocAndX(const LineLoc &lineLoc, int x) const;
     CharLoc getCharLocByPoint(int x, int y) const;
     DocLoc getDocLocByPoint(int x, int y) const;
-    RowLoc convertToRowLoc(RowN row) const;
+    VRowLoc convertToRowLoc(RowN row) const;
     CharLoc convertToCharLoc(const DocLoc &docLoc) const;
     DocLoc convertToDocLoc(const CharLoc &charLoc) const;
     const Char &getChar(const CharLoc &charLoc) const;
     int getXByCharLoc(const CharLoc &charLoc) const;
     LineBound getLineBoundByLineOffset(int lineOffset) const;
     LineBound getLineBound(const LineLoc &lineLoc) const;
-    RowBound getRowBound(const RowLoc &rowLoc) const;
+    RowBound getRowBound(const VRowLoc &rowLoc) const;
     bool hasPrevCharAtSameLine(const CharLoc &charLoc) const;
     bool noPrevCharAtSameLine(const CharLoc &charLoc) const;
     bool hasNextCharAtSameLine(const CharLoc &charLoc) const;

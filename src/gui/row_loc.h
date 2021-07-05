@@ -7,19 +7,19 @@
 namespace gui
 {
 
-class RowLoc {
+class VRowLoc {
 public:
-	static RowLoc newRowLocAfterLastRow()
+	static VRowLoc newRowLocAfterLastRow()
 	{
-		RowLoc loc(0);
+		VRowLoc loc(0);
 		loc.setFlag(kAfterLastRow);
 		loc.setFlag(kAfterLastLine);
 		loc.setFlag(kAfterLastChar);
 		return loc;
 	}
 public:
-	RowLoc() :m_flag(kIsNull), m_row(0) {}
-	explicit RowLoc(RowN row) : m_row(row) {}
+	VRowLoc() :m_flag(kIsNull), m_row(0) {}
+	explicit VRowLoc(RowN row) : m_row(row) {}
 	RowN row() const { return m_row; }
 	void setRow(RowN row) { m_row = row; }
 	bool isNull() const { return hasFlag(kIsNull); }

@@ -8,7 +8,7 @@ namespace gui
 {
 
 
-class LineLoc : public RowLoc {
+class LineLoc : public VRowLoc {
 public:
 	static LineLoc newLineLocAfterLastRow()
 	{
@@ -20,7 +20,7 @@ public:
 	}
 public:
 	LineLoc() = default;
-	LineLoc(RowN row, LineN line) :RowLoc(row), m_line(line) {}
+	LineLoc(RowN row, LineN line) : VRowLoc(row), m_line(line) {}
 	LineN line() const { return m_line; }
 	void setLine(LineN line) { m_line = line; }
 private:

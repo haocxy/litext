@@ -112,7 +112,7 @@ DocLoc TextArea::getDocLocByPoint(int x, int y) const
     return docLoc;
 }
 
-RowLoc TextArea::convertToRowLoc(RowN row) const
+VRowLoc TextArea::convertToRowLoc(RowN row) const
 {
     const int vrowIndex = row - m_loc.row();
     const int vrowCnt = m_page.size();
@@ -120,17 +120,17 @@ RowLoc TextArea::convertToRowLoc(RowN row) const
     {
         if (row >= editor_.doc().rowCnt())
         {
-            return RowLoc::newRowLocAfterLastRow();
+            return VRowLoc::newRowLocAfterLastRow();
         }
-        return RowLoc();
+        return VRowLoc();
     }
 
     if (row >= editor_.doc().rowCnt())
     {
-        return RowLoc::newRowLocAfterLastRow();
+        return VRowLoc::newRowLocAfterLastRow();
     }
 
-    return RowLoc(vrowIndex);
+    return VRowLoc(vrowIndex);
 }
 
 CharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
@@ -279,7 +279,7 @@ LineBound TextArea::getLineBound(const LineLoc & lineLoc) const
     return getLineBoundByLineOffset(lineOffset);
 }
 
-RowBound TextArea::getRowBound(const RowLoc & rowLoc) const
+RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
 {
     if (rowLoc.isNull())
     {
@@ -622,7 +622,7 @@ void TextArea::movePageHeadOneLine()
 std::optional<Rect> TextArea::getLastActLineDrawRect() const
 {
     const RowN row = editor_.lastActRow();
-    const RowLoc loc = convertToRowLoc(row);
+    const VRowLoc loc = convertToRowLoc(row);
     if (loc.isNull())
     {
         return std::nullopt;
@@ -688,7 +688,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, co
 
     for (int r = 0; r < rowCnt; ++r)
     {
-        const RowLoc loc(r);
+        const VRowLoc loc(r);
         const RowBound bound = getRowBound(loc);
         const RowN lineNum = m_loc.row() + r;
         const RowN lastAct = editor_.lastActRow();
