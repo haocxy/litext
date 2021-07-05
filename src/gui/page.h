@@ -28,8 +28,6 @@ private:
     int m_width = 0;
 };
 
-typedef std::vector<VChar> VChars;
-
 
 class VLine {
 public:
@@ -53,10 +51,8 @@ public:
     VChar &last() { return m_chars.back(); }
 
 private:
-    VChars m_chars;
+    std::vector<VChar> m_chars;
 };
-
-typedef std::vector<VLine> Lines;
 
 
 class VRow {
@@ -77,10 +73,8 @@ public:
         return m_lines.back();
     }
 private:
-    Lines m_lines;
+    std::vector<VLine> m_lines;
 };
-
-typedef std::deque<VRow> VRows;
 
 
 class Page {
@@ -124,7 +118,7 @@ public:
     }
 
 private:
-    VRows m_rows;
+    std::deque<VRow> m_rows;
     int m_lineCnt = 0;
 };
 
