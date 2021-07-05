@@ -16,6 +16,8 @@
 #include "view_define.h"
 #include "declare_text_area_config.h"
 #include "size.h"
+#include "line_bound.h"
+#include "row_bound.h"
 
 
 class Row;
@@ -27,32 +29,6 @@ class Editor;
 namespace gui
 {
 
-
-class LineBound {
-public:
-    LineBound() = default;
-    LineBound(int top, int bottom) :m_top(top), m_bottom(bottom) {}
-    int top() const { return m_top; }
-    void setTop(int top) { m_top = top; }
-    int bottom() const { return m_bottom; }
-    void setBottom(int bottom) { m_bottom = bottom; }
-private:
-    int m_top = 0;
-    int m_bottom = 0;
-};
-
-class RowBound {
-public:
-    RowBound() = default;
-    RowBound(int top, int height) :m_top(top), m_height(height) {}
-    int top() const { return m_top; }
-    void setTop(int top) { m_top = top; }
-    int height() const { return m_height; }
-    void setHeight(int height) { m_height = height; }
-private:
-    int m_top = 0;
-    int m_height = 0;
-};
 
 class ViewLoc {
 public:
