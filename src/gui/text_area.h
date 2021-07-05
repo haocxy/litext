@@ -91,7 +91,7 @@ private:
     VRowLoc convertToRowLoc(RowN row) const;
     CharLoc convertToCharLoc(const DocLoc &docLoc) const;
     DocLoc convertToDocLoc(const CharLoc &charLoc) const;
-    const Char &getChar(const CharLoc &charLoc) const;
+    const VChar &getChar(const CharLoc &charLoc) const;
     int getXByCharLoc(const CharLoc &charLoc) const;
     LineBound getLineBoundByLineOffset(int lineOffset) const;
     LineBound getLineBound(const VLineLoc &lineLoc) const;

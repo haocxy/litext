@@ -169,7 +169,7 @@ CharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
 
     for (const Line &vline : vrow)
     {
-        for (const Char &vc : vline)
+        for (const VChar &vc : vline)
         {
             if (charIndex == col)
             {
@@ -229,7 +229,7 @@ DocLoc TextArea::convertToDocLoc(const CharLoc & charLoc) const
     return DocLoc(m_loc.row() + charLoc.row(), col);
 }
 
-const Char &TextArea::getChar(const CharLoc &charLoc) const
+const VChar &TextArea::getChar(const CharLoc &charLoc) const
 {
     return m_page[charLoc.row()][charLoc.line()][charLoc.col()];
 }
@@ -253,7 +253,7 @@ int TextArea::getXByCharLoc(const CharLoc &charLoc) const
         {
             return config_.hGap();
         }
-        const Char &vc = m_page[charLoc.row()][charLoc.line()].last();
+        const VChar &vc = m_page[charLoc.row()][charLoc.line()].last();
         return vc.x() + vc.width();
     }
 
@@ -720,7 +720,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
 
         const int baseline = getBaseLineByLineOffset(lineOffset);
 
-        for (const Char &c : line)
+        for (const VChar &c : line)
         {
             action(c.x(), baseline, c.uchar());
         }
@@ -736,7 +736,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
         {
             const int baseline = getBaseLineByLineOffset(lineOffset);
 
-            for (const Char & c : line)
+            for (const VChar & c : line)
             {
                 action(c.x(), baseline, c.uchar());
             }
@@ -899,7 +899,7 @@ CharLoc TextArea::getCharLocByLineLocAndX(const VLineLoc & lineLoc, int x) const
     const int margin = config_.hMargin();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
-    const Char & firstChar = line[0];
+    const VChar & firstChar = line[0];
     const int firstX = firstChar.x();
     const int firstWidth = firstChar.width();
     const int firstCharRightBound = calcRightBound(firstX, firstWidth);
@@ -913,7 +913,7 @@ CharLoc TextArea::getCharLocByLineLocAndX(const VLineLoc & lineLoc, int x) const
     while (left <= right)
     {
         const int mid = ((left + right) >> 1);
-        const Char & c = line[mid];
+        const VChar & c = line[mid];
         const int cx = c.x();
         const int a = calcLeftBound(cx, line[mid - 1].width(), margin);
         const int b = calcRightBound(cx, c.width());
@@ -1007,7 +1007,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
                     vline = &vrow.grow();
                 }
 
-                Char &vc = vline->grow();
+                VChar &vc = vline->grow();
                 vc.setUChar(c);
                 vc.setX(leftX);
                 vc.setWidth(charWidth);
@@ -1039,7 +1039,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
                     vline = &vrow.grow();
                 }
 
-                Char &vc = vline->grow();
+                VChar &vc = vline->grow();
                 vc.setUChar(c);
                 vc.setX(leftX);
                 vc.setWidth(charWidth);
@@ -1068,7 +1068,7 @@ void TextArea::makeVRowNoWrapLine(const Row &row, VRow &vrow) const
         const UChar c = row.charAt(i);
         const int charWidth = config_.charWidth(c);
 
-        Char &vchar = vline.grow();
+        VChar &vchar = vline.grow();
         vchar.setUChar(c);
         vchar.setX(leftX);
         vchar.setWidth(charWidth);

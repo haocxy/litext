@@ -11,7 +11,7 @@ namespace gui
 {
 
 
-class Char {
+class VChar {
 public:
     UChar uchar() const { return m_unicode; }
     int x() const { return m_x; }
@@ -28,7 +28,7 @@ private:
     int m_width = 0;
 };
 
-typedef std::vector<Char> Chars;
+typedef std::vector<VChar> Chars;
 
 
 class Line {
@@ -39,21 +39,21 @@ public:
 
     bool empty() const { return m_chars.empty(); }
     CharN size() const { return static_cast<CharN>(m_chars.size()); }
-    const Char &operator[](CharN line) const { return m_chars[line]; }
-    Char &operator[](CharN line) { return m_chars[line]; }
+    const VChar &operator[](CharN line) const { return m_chars[line]; }
+    VChar &operator[](CharN line) { return m_chars[line]; }
     const_iterator begin() const { return m_chars.begin(); }
     const_iterator end() const { return m_chars.end(); }
     iterator begin() { return m_chars.begin(); }
     iterator end() { return m_chars.end(); }
 
-    Char &grow()
+    VChar &grow()
     {
         m_chars.resize(m_chars.size() + 1);
         return m_chars.back();
     }
 
-    const Char &last() const { return m_chars.back(); }
-    Char &last() { return m_chars.back(); }
+    const VChar &last() const { return m_chars.back(); }
+    VChar &last() { return m_chars.back(); }
 
 private:
     Chars m_chars;
