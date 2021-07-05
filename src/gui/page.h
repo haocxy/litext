@@ -33,17 +33,15 @@ typedef std::vector<VChar> VChars;
 
 class Line {
 public:
-    typedef VChars::const_iterator const_iterator;
-    typedef VChars::iterator iterator;
 
     bool empty() const { return m_chars.empty(); }
     CharN size() const { return static_cast<CharN>(m_chars.size()); }
     const VChar &operator[](CharN line) const { return m_chars[line]; }
     VChar &operator[](CharN line) { return m_chars[line]; }
-    const_iterator begin() const { return m_chars.begin(); }
-    const_iterator end() const { return m_chars.end(); }
-    iterator begin() { return m_chars.begin(); }
-    iterator end() { return m_chars.end(); }
+    auto begin() const { return m_chars.begin(); }
+    auto end() const { return m_chars.end(); }
+    auto begin() { return m_chars.begin(); }
+    auto end() { return m_chars.end(); }
 
     VChar &grow()
     {
@@ -63,19 +61,16 @@ typedef std::vector<Line> Lines;
 
 class VRow {
 public:
-    typedef Lines::const_iterator const_iterator;
-    typedef Lines::iterator iterator;
-
     VRow() = default;
     VRow(VRow &&row) : m_lines(std::move(row.m_lines)) {}
     VRow &operator=(VRow &&row) { m_lines = std::move(row.m_lines); return *this; }
     int size() const { return static_cast<int>(m_lines.size()); }
     const Line &operator[](int line) const { return m_lines[line]; }
     Line &operator[](int line) { return m_lines[line]; }
-    const_iterator begin() const { return m_lines.begin(); }
-    const_iterator end() const { return m_lines.end(); }
-    iterator begin() { return m_lines.begin(); }
-    iterator end() { return m_lines.end(); }
+    auto begin() const { return m_lines.begin(); }
+    auto end() const { return m_lines.end(); }
+    auto begin() { return m_lines.begin(); }
+    auto end() { return m_lines.end(); }
     Line &grow()
     {
         m_lines.resize(m_lines.size() + 1);
@@ -90,9 +85,6 @@ typedef std::deque<VRow> VRows;
 
 class Page {
 public:
-    typedef VRows::const_iterator const_iterator;
-    typedef VRows::iterator iterator;
-
     void clear()
     {
         m_rows.clear();
@@ -101,8 +93,8 @@ public:
     int size() const { return static_cast<int>(m_rows.size()); }
     int lineCnt() const { return m_lineCnt; }
     const VRow &operator[](int line) const { return m_rows[line]; }
-    const_iterator begin() const { return m_rows.begin(); }
-    const_iterator end() const { return m_rows.end(); }
+    auto begin() const { return m_rows.begin(); }
+    auto end() const { return m_rows.end(); }
     VLineLoc getNextUpLineLoc(const VLineLoc &lineLoc) const;
     VLineLoc getNextDownLineLoc(const VLineLoc &lineLoc) const;
     const Line &getLine(const VLineLoc &lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
