@@ -4,4 +4,4 @@
 
 
 typedef int64_t RowN;
-typedef int32_t CharN;
+typedef int64_t CharN;

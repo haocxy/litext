@@ -33,7 +33,6 @@ typedef std::vector<VChar> VChars;
 
 class Line {
 public:
-    typedef int CharN;
     typedef VChars::const_iterator const_iterator;
     typedef VChars::iterator iterator;
 
