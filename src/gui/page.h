@@ -31,7 +31,7 @@ private:
 typedef std::vector<VChar> VChars;
 
 
-class Line {
+class VLine {
 public:
 
     bool empty() const { return m_chars.empty(); }
@@ -56,7 +56,7 @@ private:
     VChars m_chars;
 };
 
-typedef std::vector<Line> Lines;
+typedef std::vector<VLine> Lines;
 
 
 class VRow {
@@ -65,13 +65,13 @@ public:
     VRow(VRow &&row) : m_lines(std::move(row.m_lines)) {}
     VRow &operator=(VRow &&row) { m_lines = std::move(row.m_lines); return *this; }
     int size() const { return static_cast<int>(m_lines.size()); }
-    const Line &operator[](int line) const { return m_lines[line]; }
-    Line &operator[](int line) { return m_lines[line]; }
+    const VLine &operator[](int line) const { return m_lines[line]; }
+    VLine &operator[](int line) { return m_lines[line]; }
     auto begin() const { return m_lines.begin(); }
     auto end() const { return m_lines.end(); }
     auto begin() { return m_lines.begin(); }
     auto end() { return m_lines.end(); }
-    Line &grow()
+    VLine &grow()
     {
         m_lines.resize(m_lines.size() + 1);
         return m_lines.back();
@@ -97,7 +97,7 @@ public:
     auto end() const { return m_rows.end(); }
     VLineLoc getNextUpLineLoc(const VLineLoc &lineLoc) const;
     VLineLoc getNextDownLineLoc(const VLineLoc &lineLoc) const;
-    const Line &getLine(const VLineLoc &lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
+    const VLine &getLine(const VLineLoc &lineLoc) const { return m_rows[lineLoc.row()][lineLoc.line()]; }
     void pushFront(VRow &&row)
     {
         m_lineCnt += row.size();

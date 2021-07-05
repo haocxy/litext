@@ -167,7 +167,7 @@ CharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
 
     const CharN col = docLoc.col();
 
-    for (const Line &vline : vrow)
+    for (const VLine &vline : vrow)
     {
         for (const VChar &vc : vline)
         {
@@ -248,7 +248,7 @@ int TextArea::getXByCharLoc(const CharLoc &charLoc) const
 
     if (charLoc.isAfterLastChar())
     {
-        const Line & line = m_page[charLoc.row()][charLoc.line()];
+        const VLine & line = m_page[charLoc.row()][charLoc.line()];
         if (line.empty())
         {
             return config_.hGap();
@@ -331,7 +331,7 @@ bool TextArea::noNextCharAtSameLine(const CharLoc & charLoc) const
     }
     else
     {
-		const Line & line = m_page.getLine(charLoc);
+		const VLine & line = m_page.getLine(charLoc);
         return charLoc.col() == line.size();
     }
 }
@@ -343,7 +343,7 @@ bool TextArea::needEnsureHasNextLine(const CharLoc & charLoc) const
 		const VRow & vrow = m_page[charLoc.row()];
 		if (charLoc.line() < vrow.size() - 1)
 		{
-			const Line & line = vrow[charLoc.line()];
+			const VLine & line = vrow[charLoc.line()];
 			return charLoc.col() >= line.size() - 1;
 		}
 		else
@@ -375,7 +375,7 @@ CharLoc TextArea::betterLocForVerticalMove(const CharLoc & charLoc) const
         return charLoc;
     }
 
-    const Line & line = m_page.getLine(charLoc);
+    const VLine & line = m_page.getLine(charLoc);
     const CharN charCnt = line.size();
 
     if (charCnt != 0)
@@ -716,7 +716,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
 
     for (int i = m_loc.line(); i < curRowSize; ++i)
     {
-        const Line & line = curRow[i];
+        const VLine & line = curRow[i];
 
         const int baseline = getBaseLineByLineOffset(lineOffset);
 
@@ -732,7 +732,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
     {
         const VRow & row = m_page[r];
 
-        for (const Line & line : row)
+        for (const VLine & line : row)
         {
             const int baseline = getBaseLineByLineOffset(lineOffset);
 
@@ -887,7 +887,7 @@ CharLoc TextArea::getCharLocByLineLocAndX(const VLineLoc & lineLoc, int x) const
         return CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Line & line = m_page.getLine(lineLoc);
+    const VLine & line = m_page.getLine(lineLoc);
 
     const int charCnt = line.size();
 
@@ -980,7 +980,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
     const int hGap = config_.hGap();
     const int hMargin = config_.hMargin();
 
-    Line *vline = &vrow.grow();
+    VLine *vline = &vrow.grow();
 
     DocLineCharInStream charStream(row);
     TxtWordStream wordStream(charStream);
@@ -1058,7 +1058,7 @@ void TextArea::makeVRowNoWrapLine(const Row &row, VRow &vrow) const
     const int hGap = config_.hGap();
     const int hMargin = config_.hMargin();
 
-    Line &vline = vrow.grow();
+    VLine &vline = vrow.grow();
 
     int leftX = hGap;
 
