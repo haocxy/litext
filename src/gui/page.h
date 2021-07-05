@@ -28,14 +28,14 @@ private:
     int m_width = 0;
 };
 
-typedef std::vector<VChar> Chars;
+typedef std::vector<VChar> VChars;
 
 
 class Line {
 public:
     typedef int CharN;
-    typedef Chars::const_iterator const_iterator;
-    typedef Chars::iterator iterator;
+    typedef VChars::const_iterator const_iterator;
+    typedef VChars::iterator iterator;
 
     bool empty() const { return m_chars.empty(); }
     CharN size() const { return static_cast<CharN>(m_chars.size()); }
@@ -56,7 +56,7 @@ public:
     VChar &last() { return m_chars.back(); }
 
 private:
-    Chars m_chars;
+    VChars m_chars;
 };
 
 typedef std::vector<Line> Lines;
