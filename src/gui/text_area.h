@@ -135,7 +135,7 @@ private:
 private:
     Editor &editor_;
     const TextAreaConfig &config_;
-    Page m_page;
+    Page page_;
     Size m_size;
     ViewLoc m_loc{ 0, 0 };
 
