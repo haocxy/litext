@@ -71,7 +71,7 @@ int TextArea::getLineOffsetByLineLoc(const VLineLoc & loc) const
         sum += page_[i].size();
     }
 
-    sum -= m_loc.line();
+    sum -= vloc_.line();
     
     return sum;
 }
@@ -93,7 +93,7 @@ int TextArea::getLineOffsetByRowIndex(int row) const
         sum += page_[i].size();
     }
 
-    sum -= m_loc.line();
+    sum -= vloc_.line();
 
     return sum;
 }
@@ -114,7 +114,7 @@ DocLoc TextArea::getDocLocByPoint(int x, int y) const
 
 VRowLoc TextArea::convertToRowLoc(RowN row) const
 {
-    const int vrowIndex = row - m_loc.row();
+    const int vrowIndex = row - vloc_.row();
     const int vrowCnt = page_.size();
     if (vrowIndex < 0 || vrowIndex >= vrowCnt)
     {
@@ -145,7 +145,7 @@ CharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
         return CharLoc::newCharLocAfterLastRow();
     }
 
-    const int r = docLoc.row() - m_loc.row();
+    const int r = docLoc.row() - vloc_.row();
     const int rowCnt = page_.size();
     if (r < 0 || r >= rowCnt)
     {
@@ -203,7 +203,7 @@ DocLoc TextArea::convertToDocLoc(const CharLoc & charLoc) const
     {
         if (isLastLineOfRow(charLoc))
         {
-            return DocLoc::newDocLocAfterLastChar(m_loc.row() + charLoc.row());
+            return DocLoc::newDocLocAfterLastChar(vloc_.row() + charLoc.row());
         }
         else
         {
@@ -215,10 +215,10 @@ DocLoc TextArea::convertToDocLoc(const CharLoc & charLoc) const
     
     const VRow & vrow = page_[charLoc.row()];
     int lastLine = charLoc.line();
-    if (m_loc.row() == 0)
+    if (vloc_.row() == 0)
     {
         // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
-        lastLine += m_loc.line();
+        lastLine += vloc_.line();
     }
     CharN col = charLoc.col();
     for (int i = 0; i < lastLine; ++i)
@@ -226,7 +226,7 @@ DocLoc TextArea::convertToDocLoc(const CharLoc & charLoc) const
         col += vrow[i].size();
     }
 
-    return DocLoc(m_loc.row() + charLoc.row(), col);
+    return DocLoc(vloc_.row() + charLoc.row(), col);
 }
 
 const VChar &TextArea::getChar(const CharLoc &charLoc) const
@@ -416,22 +416,22 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
 
 void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
 {
-    if (curLineLoc.row() == 0 && curLineLoc.line() <= m_loc.line())
+    if (curLineLoc.row() == 0 && curLineLoc.line() <= vloc_.line())
     {
-        if (m_loc.line() > 0)
+        if (vloc_.line() > 0)
         {
-            setViewLoc(ViewLoc(m_loc.row(), m_loc.line() - 1));
+            setViewLoc(ViewLoc(vloc_.row(), vloc_.line() - 1));
         }
         else
         {
-            if (m_loc.row() > 0)
+            if (vloc_.row() > 0)
             {
                 VRow vrow;
-                makeVRow(editor_.doc().rowAt(m_loc.row() - 1), vrow);
+                makeVRow(editor_.doc().rowAt(vloc_.row() - 1), vrow);
                 const int newRowSize = vrow.size();
                 page_.pushFront(std::move(vrow));
 
-                setViewLoc(ViewLoc(m_loc.row() - 1, newRowSize - 1));
+                setViewLoc(ViewLoc(vloc_.row() - 1, newRowSize - 1));
             }
         }
     }
@@ -457,20 +457,20 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 
 	// 当前坐标为文档最后一行则返回
 	const RowN docRowCnt = editor_.doc().rowCnt();
-	if (m_loc.row() + curLineLoc.row() >= docRowCnt - 1)
+	if (vloc_.row() + curLineLoc.row() >= docRowCnt - 1)
 	{
 		return false;
 	}
 
 	const VRow &lastRow = page_[rowCnt - 1];
 
-	const int prevLineCnt = page_.lineCnt() - m_loc.line() - lastRow.size();
+	const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
 
 	const int lineIndex = maxShownLineCnt - prevLineCnt - 1;
 
 	if (isLastLineOfRow(VLineLoc(rowCnt - 1, lineIndex)))
 	{
-		const RowN newDocRowIndex = m_loc.row() + rowCnt;
+		const RowN newDocRowIndex = vloc_.row() + rowCnt;
 		if (newDocRowIndex > docRowCnt - 1)
 		{
 			return false;
@@ -489,7 +489,7 @@ void TextArea::removeSpareRow()
 {
     const int maxShownLineCnt = getMaxShownLineCnt();
 
-    int remainLineCnt = page_.lineCnt() - m_loc.line();
+    int remainLineCnt = page_.lineCnt() - vloc_.line();
 
     for (int r = page_.size() - 1; r >= 0; --r)
     {
@@ -596,26 +596,26 @@ void TextArea::onDirRightKeyPress()
 
 void TextArea::setViewLoc(const ViewLoc & viewLoc)
 {
-    if (m_loc == viewLoc)
+    if (vloc_ == viewLoc)
     {
         return;
     }
 
-    m_loc = viewLoc;
+    vloc_ = viewLoc;
 
     m_onViewLocChangeListeners.call();
 }
 
 void TextArea::movePageHeadOneLine()
 {
-	if (isLastLineOfRow(VLineLoc(0, m_loc.line())))
+	if (isLastLineOfRow(VLineLoc(0, vloc_.line())))
 	{
-		setViewLoc(ViewLoc(m_loc.row() + 1, 0));
+		setViewLoc(ViewLoc(vloc_.row() + 1, 0));
         page_.popFront();
 	}
 	else
 	{
-		setViewLoc(ViewLoc(m_loc.row(), m_loc.line() + 1));
+		setViewLoc(ViewLoc(vloc_.row(), vloc_.line() + 1));
 	}
 }
 
@@ -684,13 +684,13 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, co
 {
     const int rowCnt = page_.size();
 
-    int offset = -m_loc.line();
+    int offset = -vloc_.line();
 
     for (int r = 0; r < rowCnt; ++r)
     {
         const VRowLoc loc(r);
         const RowBound bound = getRowBound(loc);
-        const RowN lineNum = m_loc.row() + r;
+        const RowN lineNum = vloc_.row() + r;
         const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
         const int baseline = getBaseLineByLineOffset(offset);
@@ -714,7 +714,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
 
     int lineOffset = 0;
 
-    for (int i = m_loc.line(); i < curRowSize; ++i)
+    for (int i = vloc_.line(); i < curRowSize; ++i)
     {
         const VLine & line = curRow[i];
 
@@ -776,7 +776,7 @@ bool TextArea::moveDownByOneLine()
 	}
 
 	// 视图位于文档最后一个line
-	if (m_loc.row() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(page_.size() - 1, m_loc.line())))
+	if (vloc_.row() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(page_.size() - 1, vloc_.line())))
 	{
 		return false;
 	}
@@ -785,7 +785,7 @@ bool TextArea::moveDownByOneLine()
 	const VLineLoc shownLastLineLoc = getShownLastLineLoc();
 	if (isLastLineOfRow(shownLastLineLoc))
 	{
-		const RowN newDocRowIndex = m_loc.row() + page_.size();
+		const RowN newDocRowIndex = vloc_.row() + page_.size();
 		if (newDocRowIndex <= docRowCnt - 1)
 		{
 			const Row & docRow = editor_.doc().rowAt(newDocRowIndex);
@@ -809,7 +809,7 @@ VLineLoc TextArea::getLineLocByLineOffset(int offset) const
 {
     const int rowCnt = page_.size();
 
-    if (m_loc.line() == 0)
+    if (vloc_.line() == 0)
     {
         int sum = 0;
 
@@ -836,12 +836,12 @@ VLineLoc TextArea::getLineLocByLineOffset(int offset) const
 
     const VRow & curRow = page_[0];
     const int curRowSize = curRow.size();
-    if (m_loc.line() + offset < curRowSize)
+    if (vloc_.line() + offset < curRowSize)
     {
-        return VLineLoc(0, m_loc.line() + offset);
+        return VLineLoc(0, vloc_.line() + offset);
     }
 
-    int sum = curRowSize - m_loc.line();
+    int sum = curRowSize - vloc_.line();
 
     for (int i = 1; i < rowCnt; ++i)
     {
@@ -942,9 +942,9 @@ void TextArea::remakePage()
 
     const int maxShownLineCnt = getMaxShownLineCnt();
 
-    int h = -m_loc.line();
+    int h = -vloc_.line();
 
-    for (RowN i = m_loc.row(); i < rowCnt; ++i)
+    for (RowN i = vloc_.row(); i < rowCnt; ++i)
     {
         if (h >= maxShownLineCnt)
         {
@@ -1084,13 +1084,13 @@ VLineLoc TextArea::getShownLastLineLoc() const
 
 	const VRow & lastRow = page_[rowCnt - 1];
 
-	const int prevLineCnt = page_.lineCnt() - m_loc.line() - lastRow.size();
+	const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
 
 	const int maxShownLineCnt = getMaxShownLineCnt();
 
-	if (page_.lineCnt() - m_loc.line() < maxShownLineCnt)
+	if (page_.lineCnt() - vloc_.line() < maxShownLineCnt)
 	{
-		const int lastLineIndex = page_.lineCnt() - m_loc.line() - prevLineCnt - 1;
+		const int lastLineIndex = page_.lineCnt() - vloc_.line() - prevLineCnt - 1;
 		return VLineLoc(page_.size() - 1, lastLineIndex);
 	}
 	else
