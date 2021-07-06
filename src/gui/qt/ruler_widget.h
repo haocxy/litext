@@ -15,7 +15,7 @@ namespace gui::qt
 class RulerWidget : public QWidget {
     Q_OBJECT
 public:
-    RulerWidget(TextArea *view, QWidget *parent = nullptr);
+    RulerWidget(TextArea &view, QWidget *parent = nullptr);
     virtual ~RulerWidget();
 
     virtual void paintEvent(QPaintEvent *e) override;

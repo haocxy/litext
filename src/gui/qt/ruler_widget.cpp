@@ -19,9 +19,9 @@ namespace gui::qt
 {
 
 
-RulerWidget::RulerWidget(TextArea *view, QWidget *parent)
+RulerWidget::RulerWidget(TextArea &view, QWidget *parent)
     : QWidget(parent)
-    , m_view(*view)
+    , m_view(view)
 {
     QSizePolicy sizePolicy;
     sizePolicy.setHorizontalPolicy(QSizePolicy::Fixed);

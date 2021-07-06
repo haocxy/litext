@@ -36,13 +36,11 @@ namespace gui::qt
 {
 
 
-TextAreaWidget::TextAreaWidget(TextArea *view, QWidget *parent)
+TextAreaWidget::TextAreaWidget(TextArea &view, QWidget *parent)
     : QWidget(parent)
-    , view_(*view)
+    , view_(view)
     , textPaintBuff_(kSizeHint, kBuffImageFormat)
 {
-    assert(view);
-
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);

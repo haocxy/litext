@@ -42,7 +42,7 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
 
     m_editor = new Editor(m_doc);
     m_view = new TextArea(m_editor, m_viewConfig);
-    m_editorViewWidget = new EditorViewWidget(m_view);
+    m_editorViewWidget = new EditorViewWidget(*m_view);
 
 
     this->setCentralWidget(m_editorViewWidget);

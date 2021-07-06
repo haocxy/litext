@@ -23,12 +23,10 @@ namespace gui::qt
 {
 
 
-StatusBarWidget::StatusBarWidget(TextArea *view, QWidget *parent)
+StatusBarWidget::StatusBarWidget(TextArea &view, QWidget *parent)
 	: QWidget(parent)
-	, view_(*view)
+	, view_(view)
 {
-	assert(view);
-
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
 

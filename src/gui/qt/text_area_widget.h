@@ -16,7 +16,7 @@ class TextAreaWidget : public QWidget {
     Q_OBJECT
 
 public:
-    TextAreaWidget(TextArea *view, QWidget *parent = nullptr);
+    TextAreaWidget(TextArea &view, QWidget *parent = nullptr);
 
     ~TextAreaWidget();
 
