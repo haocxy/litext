@@ -123,6 +123,10 @@ private:
 
     void setViewLoc(const ViewLoc &viewLoc);
 
+    // 根据当前游标位置更新stableX
+    // 当视口大小调整时调用，视口大小调整时之前计算的stableX已经没有意义，需要重新计算
+    void updateStableXByCurrentCursor();
+
 private:
     void remakePage();
 

@@ -37,6 +37,8 @@ void TextArea::initSize(const Size & size)
 
     remakePage();
 
+    updateStableXByCurrentCursor();
+
     cbsShouldRepaint_.call();
 }
 
@@ -50,6 +52,8 @@ void TextArea::resize(const Size & size)
     size_ = size;
 
     remakePage();
+
+    updateStableXByCurrentCursor();
 
     cbsShouldRepaint_.call();
 }
@@ -932,6 +936,14 @@ CharLoc TextArea::getCharLocByLineLocAndX(const VLineLoc & lineLoc, int x) const
     }
 
     return CharLoc::newCharLocAfterLastChar(lineLoc);
+}
+
+void TextArea::updateStableXByCurrentCursor()
+{
+    const DocLoc docLoc = editor_.normalCursor().to();
+    const CharLoc vCharLoc = convertToCharLoc(docLoc);
+
+    stableX_ = getXByCharLoc(vCharLoc);
 }
 
 void TextArea::remakePage()
