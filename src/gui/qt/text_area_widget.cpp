@@ -53,6 +53,7 @@ TextAreaWidget::TextAreaWidget(TextArea *view, QWidget *parent)
 
     cbhViewLocChanged_ = view_.addAfterViewLocChangedCallback([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
+        update();
     });
 }
 
