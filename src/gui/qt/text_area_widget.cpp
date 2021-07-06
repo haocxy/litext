@@ -51,9 +51,9 @@ TextAreaWidget::TextAreaWidget(TextArea *view, QWidget *parent)
 
     prepareTextImage();
 
-    cbhViewLocChanged_ = view_.addOnViewLocChangeListener([this] {
+    cbhViewLocChanged_ = view_.addAfterViewLocChangedCallback([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
-        });
+    });
 }
 
 TextAreaWidget::~TextAreaWidget()

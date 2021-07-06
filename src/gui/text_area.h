@@ -76,7 +76,7 @@ public:
 public:
     CallbackHandle addShouldRepaintCallback(std::function<void()> &&action);
 
-    CallbackHandle addOnViewLocChangeListener(std::function<void()> &&action);
+    CallbackHandle addAfterViewLocChangedCallback(std::function<void()> &&action);
 
 private:
     int getMaxShownLineCnt() const;
@@ -144,7 +144,7 @@ private:
 
 private:
     Callbacks<void()> cbsShouldRepaint_;
-    Callbacks<void()> m_onViewLocChangeListeners;
+    Callbacks<void()> cbsAfterViewLocChanged_;
 
 private:
     CallbackHandle m_listenerIdForLastActLineUpdate;

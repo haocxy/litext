@@ -603,7 +603,7 @@ void TextArea::setViewLoc(const ViewLoc & viewLoc)
 
     vloc_ = viewLoc;
 
-    m_onViewLocChangeListeners.call();
+    cbsAfterViewLocChanged_.call();
 }
 
 void TextArea::movePageHeadOneLine()
@@ -751,9 +751,9 @@ CallbackHandle TextArea::addShouldRepaintCallback(std::function<void()>&& action
     return cbsShouldRepaint_.add(std::move(action));
 }
 
-CallbackHandle TextArea::addOnViewLocChangeListener(std::function<void()>&& action)
+CallbackHandle TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
 {
-    return m_onViewLocChangeListeners.add(std::move(action));
+    return cbsAfterViewLocChanged_.add(std::move(action));
 }
 
 void TextArea::onPrimaryButtomPress(int x, int y)
