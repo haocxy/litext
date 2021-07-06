@@ -61,8 +61,8 @@ public:
     VRow(VRow &&row) : m_lines(std::move(row.m_lines)) {}
     VRow &operator=(VRow &&row) { m_lines = std::move(row.m_lines); return *this; }
     int size() const { return static_cast<int>(m_lines.size()); }
-    const VLine &operator[](int line) const { return m_lines[line]; }
-    VLine &operator[](int line) { return m_lines[line]; }
+    const VLine &operator[](LineN line) const { return m_lines[line]; }
+    VLine &operator[](LineN line) { return m_lines[line]; }
     auto begin() const { return m_lines.begin(); }
     auto end() const { return m_lines.end(); }
     auto begin() { return m_lines.begin(); }

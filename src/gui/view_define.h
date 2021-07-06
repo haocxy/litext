@@ -1,13 +1,13 @@
 #pragma once
 
-#include <cstdint>
+#include "doc/doc_define.h"
 
 
 namespace gui
 {
 
 
-typedef std::int32_t LineN;
+typedef RowN LineN;
 
 
 }
