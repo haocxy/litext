@@ -395,7 +395,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc upLineLoc = page_.getNextUpLineLoc(charLoc);
-    const CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, m_stable_x);
+    const CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, stableX_);
 
     return convertToDocLoc(betterLocForVerticalMove(upCharLoc));
 }
@@ -409,7 +409,7 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc downLineLoc = page_.getNextDownLineLoc(charLoc);
-    const CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, m_stable_x);
+    const CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, stableX_);
 
     return convertToDocLoc(betterLocForVerticalMove(downCharLoc));
 }
@@ -563,7 +563,7 @@ void TextArea::onDirLeftKeyPress()
         editor_.setNormalCursor(newLoc);
 
 		const CharLoc charLoc = convertToCharLoc(newLoc);
-		m_stable_x = getXByCharLoc(charLoc);
+        stableX_ = getXByCharLoc(charLoc);
     }
     
 	removeSpareRow();
@@ -585,7 +585,7 @@ void TextArea::onDirRightKeyPress()
         editor_.setNormalCursor(newLoc);
 
 		const CharLoc charLoc = convertToCharLoc(newLoc);
-		m_stable_x = getXByCharLoc(charLoc);
+        stableX_ = getXByCharLoc(charLoc);
 	}
 
 	if (needMoveHead)
@@ -762,7 +762,7 @@ void TextArea::onPrimaryButtomPress(int x, int y)
     const DocLoc docLoc = convertToDocLoc(charLoc);
     editor_.onPrimaryKeyPress(docLoc);
 
-    m_stable_x = getXByCharLoc(charLoc);
+    stableX_ = getXByCharLoc(charLoc);
 }
 
 bool TextArea::moveDownByOneLine()
