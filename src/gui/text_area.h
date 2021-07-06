@@ -19,6 +19,7 @@
 #include "line_bound.h"
 #include "row_bound.h"
 #include "view_loc.h"
+#include "coordinate_converter.h"
 
 
 class Row;
@@ -80,7 +81,7 @@ public:
 
 private:
     int getMaxShownLineCnt() const;
-    int getLineOffsetByRowIndex(int row) const;
+
     int getLineOffsetByLineLoc(const VLineLoc &loc) const;
     int getLineOffsetByY(int y) const;
     VLineLoc getLineLocByLineOffset(int offset) const;
@@ -141,6 +142,7 @@ private:
     Page page_;
     Size size_;
     ViewLoc vloc_{ 0, 0 };
+    const CoordinateConverter cvt_;
 
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作

@@ -86,7 +86,7 @@ public:
     }
     int size() const { return static_cast<int>(m_rows.size()); }
     int lineCnt() const { return m_lineCnt; }
-    const VRow &operator[](int line) const { return m_rows[line]; }
+    const VRow &operator[](size_t line) const { return m_rows[line]; }
     auto begin() const { return m_rows.begin(); }
     auto end() const { return m_rows.end(); }
     VLineLoc getNextUpLineLoc(const VLineLoc &lineLoc) const;

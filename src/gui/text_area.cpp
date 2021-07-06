@@ -17,6 +17,7 @@ namespace gui
 TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
+    , cvt_(size_, page_, vloc_)
 {
     assert(editor);
     assert(config);
@@ -84,22 +85,6 @@ int TextArea::getMaxShownLineCnt() const
 {
     const int lineHeight = config_.lineHeight();
     return (size_.height() + lineHeight - 1) / lineHeight;
-}
-
-int TextArea::getLineOffsetByRowIndex(int row) const
-{
-    int sum = 0;
-
-    const int rowCnt = page_.size();
-
-    for (int i = 0; i < rowCnt && i < row; ++i)
-    {
-        sum += page_[i].size();
-    }
-
-    sum -= vloc_.line();
-
-    return sum;
 }
 
 CharLoc TextArea::getCharLocByPoint(int x, int y) const
@@ -298,7 +283,7 @@ RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
         return RowBound(top, lineHeight);
     }
 
-    const int lineOffset = getLineOffsetByRowIndex(rowLoc.row());
+    const LineN lineOffset = cvt_.lineOffset(rowLoc);
     const int lineHeight = config_.lineHeight();
     const int top = lineHeight * lineOffset;
     const int height = lineHeight * page_[rowLoc.row()].size();
