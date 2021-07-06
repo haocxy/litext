@@ -30,7 +30,7 @@ RulerWidget::RulerWidget(TextArea *view, QWidget *parent)
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
 
-    m_cbhUpdate = m_view.addOnUpdateListener([this] {
+    m_cbhUpdate = m_view.addShouldRepaintCallback([this] {
         update();
         });
 

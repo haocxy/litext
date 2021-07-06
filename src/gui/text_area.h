@@ -73,10 +73,9 @@ public:
 
     void drawEachChar(std::function<void(int x, int y, UChar c)> &&action) const;
 
-
-
 public:
-    CallbackHandle addOnUpdateListener(std::function<void()> &&action);
+    CallbackHandle addShouldRepaintCallback(std::function<void()> &&action);
+
     CallbackHandle addOnViewLocChangeListener(std::function<void()> &&action);
 
 private:
@@ -144,7 +143,7 @@ private:
     int stableX_ = 0;
 
 private:
-    Callbacks<void()> m_onUpdateListeners;
+    Callbacks<void()> cbsShouldRepaint_;
     Callbacks<void()> m_onViewLocChangeListeners;
 
 private:

@@ -22,7 +22,7 @@ TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     assert(config);
    
     m_listenerIdForLastActLineUpdate = editor_.addOnLastActRowUpdateListener([this] {
-        m_onUpdateListeners.call();
+        cbsShouldRepaint_.call();
     });
 }
 
@@ -37,7 +37,7 @@ void TextArea::initSize(const Size & size)
 
     remakePage();
 
-    m_onUpdateListeners.call();
+    cbsShouldRepaint_.call();
 }
 
 void TextArea::resize(const Size & size)
@@ -51,7 +51,7 @@ void TextArea::resize(const Size & size)
 
     remakePage();
 
-    m_onUpdateListeners.call();
+    cbsShouldRepaint_.call();
 }
 
 int TextArea::getBaseLineByLineOffset(int off) const
@@ -746,9 +746,9 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
     }
 }
 
-CallbackHandle TextArea::addOnUpdateListener(std::function<void()>&& action)
+CallbackHandle TextArea::addShouldRepaintCallback(std::function<void()>&& action)
 {
-    return m_onUpdateListeners.add(std::move(action));
+    return cbsShouldRepaint_.add(std::move(action));
 }
 
 CallbackHandle TextArea::addOnViewLocChangeListener(std::function<void()>&& action)
