@@ -44,9 +44,14 @@ LineOffset CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
     return sum;
 }
 
+LineOffset CoordinateConverter::toLineOffset(Pixel y) const
+{
+    return LineOffset(y.value() / config_.lineHeight().value());
+}
+
 Pixel CoordinateConverter::toBaselineY(LineOffset off) const
 {
-    return Pixel((1 + off.value()) * config_.lineHeight() - config_.font().descent());
+    return Pixel((1 + off.value()) * config_.lineHeight().value() - config_.font().descent());
 }
 
 }

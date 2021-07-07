@@ -45,8 +45,16 @@ public:                                                                 \
         return n_ < b.n_;                                               \
     }                                                                   \
                                                                         \
+    bool operator<=(const c &b) const {                                 \
+        return n_ <= b.n_;                                              \
+    }                                                                   \
+                                                                        \
     bool operator>(const c &b) const {                                  \
         return n_ > b.n_;                                               \
+    }                                                                   \
+                                                                        \
+    bool operator>=(const c &b) const {                                 \
+        return n_ >= b.n_;                                              \
     }                                                                   \
                                                                         \
     c operator++(int) {                                                 \

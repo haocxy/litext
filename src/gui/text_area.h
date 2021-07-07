@@ -47,7 +47,7 @@ public:
 
     void resize(const Size &size);
 
-    void onPrimaryButtomPress(int x, int y);
+    void onPrimaryButtomPress(Pixel x, Pixel y);
 
     void onDirUpKeyPress();
 
@@ -83,16 +83,15 @@ public:
 private:
     int getMaxShownLineCnt() const;
 
-    int getLineOffsetByY(int y) const;
     VLineLoc getLineLocByLineOffset(int offset) const;
-    CharLoc getCharLocByLineLocAndX(const VLineLoc &lineLoc, int x) const;
-    CharLoc getCharLocByPoint(int x, int y) const;
-    DocLoc getDocLocByPoint(int x, int y) const;
+    CharLoc getCharLocByLineLocAndX(const VLineLoc &lineLoc, Pixel x) const;
+    CharLoc getCharLocByPoint(Pixel x, Pixel y) const;
+    DocLoc getDocLocByPoint(Pixel x, Pixel y) const;
     VRowLoc convertToRowLoc(RowN row) const;
     CharLoc convertToCharLoc(const DocLoc &docLoc) const;
     DocLoc convertToDocLoc(const CharLoc &charLoc) const;
     const VChar &getChar(const CharLoc &charLoc) const;
-    int getXByCharLoc(const CharLoc &charLoc) const;
+    Pixel getXByCharLoc(const CharLoc &charLoc) const;
     LineBound getLineBoundByLineOffset(LineOffset lineOffset) const;
     LineBound getLineBound(const VLineLoc &lineLoc) const;
     RowBound getRowBound(const VRowLoc &rowLoc) const;
@@ -146,7 +145,7 @@ private:
 
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
-    int stableX_ = 0;
+    Pixel stableX_{ 0 };
 
 private:
     Callbacks<void()> cbsShouldRepaint_;

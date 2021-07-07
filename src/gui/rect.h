@@ -1,23 +1,25 @@
 #pragma once
 
+#include "pixel.h"
+
 
 namespace gui
 {
     class Rect
     {
     public:
-        int top() const { return m_top; }
-        void setTop(int top) { m_top = top; }
-        int left() const { return m_left; }
-        void setLeft(int left) { m_left = left; }
-        int width() const { return m_width; }
-        void setWidth(int width) { m_width = width; }
-        int height() const { return m_height; }
-        void setHeight(int height) { m_height = height; }
+        Pixel top() const { return m_top; }
+        void setTop(Pixel top) { m_top = top; }
+        Pixel left() const { return m_left; }
+        void setLeft(Pixel left) { m_left = left; }
+        Pixel width() const { return m_width; }
+        void setWidth(Pixel width) { m_width = width; }
+        Pixel height() const { return m_height; }
+        void setHeight(Pixel height) { m_height = height; }
     private:
-        int m_top = 0;
-        int m_left = 0;
-        int m_width = 0;
-        int m_height = 0;
+        Pixel m_top{ 0 };
+        Pixel m_left{ 0 };
+        Pixel m_width{ 0 };
+        Pixel m_height{ 0 };
     };
 }

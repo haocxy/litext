@@ -17,8 +17,8 @@ static const char *kFontFamilyYaHei = "Microsoft YaHei";
 static void setupConfig(TextAreaConfig &c)
 {
     c.setLineHeightFactor(1.f);
-    c.setHGap(2);
-    c.setHMargin(0);
+    c.setHGap(gui::Pixel(2));
+    c.setHMargin(gui::Pixel(0));
     c.setTabSize(4);
     c.setWrapLine(true);
     c.setShowLineNum(true);

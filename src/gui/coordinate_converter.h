@@ -34,6 +34,8 @@ public:
 
 	LineOffset toLineOffset(const VLineLoc &vLineLoc) const;
 
+	LineOffset toLineOffset(Pixel y) const;
+
 	// 视图内某行的文本基线纵坐标
 	Pixel toBaselineY(LineOffset lineOffset) const;
 
