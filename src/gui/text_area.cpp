@@ -242,7 +242,7 @@ LineBound TextArea::getLineBound(const VLineLoc & lineLoc) const
     {
         return getLineBoundByLineOffset(LineOffset(page_.lineCnt()));
     }
-    const LineOffset lineOffset = cvt_.lineOffset(lineLoc);
+    const LineOffset lineOffset = cvt_.toLineOffset(lineLoc);
     return getLineBoundByLineOffset(lineOffset);
 }
 

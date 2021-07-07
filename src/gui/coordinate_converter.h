@@ -31,7 +31,7 @@ public:
 
 	LineOffset toLineOffset(const VRowLoc &vRowLoc) const;
 
-	LineOffset lineOffset(const VLineLoc &vLineLoc) const;
+	LineOffset toLineOffset(const VLineLoc &vLineLoc) const;
 
 	// 视图内某行的文本基线纵坐标
 	int baselineY(LineOffset lineOffset) const;

@@ -28,7 +28,7 @@ LineOffset CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
     return sum;
 }
 
-LineOffset CoordinateConverter::lineOffset(const VLineLoc &vLineLoc) const
+LineOffset CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
 {
     LineOffset sum(vLineLoc.line());
 
