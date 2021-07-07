@@ -11,7 +11,7 @@ namespace gui
 
 
 
-LineOffset CoordinateConverter::lineOffset(const VRowLoc &vRowLoc) const
+LineOffset CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
 {
     const RowN row = vRowLoc.row();
 

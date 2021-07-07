@@ -29,7 +29,7 @@ public:
 	CoordinateConverter &operator=(const CoordinateConverter &) = delete;
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
-	LineOffset lineOffset(const VRowLoc &vRowLoc) const;
+	LineOffset toLineOffset(const VRowLoc &vRowLoc) const;
 
 	LineOffset lineOffset(const VLineLoc &vLineLoc) const;
 

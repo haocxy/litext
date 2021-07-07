@@ -261,7 +261,7 @@ RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
         return RowBound(top, lineHeight);
     }
 
-    const LineOffset lineOffset = cvt_.lineOffset(rowLoc);
+    const LineOffset lineOffset = cvt_.toLineOffset(rowLoc);
     const int lineHeight = config_.lineHeight();
     const int top = lineHeight * lineOffset.value();
     const int height = lineHeight * page_[rowLoc.row()].size();
