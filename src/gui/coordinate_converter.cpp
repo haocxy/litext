@@ -11,11 +11,11 @@ namespace gui
 
 
 
-LineN CoordinateConverter::lineOffset(const VRowLoc &vRowLoc) const
+LineOffset CoordinateConverter::lineOffset(const VRowLoc &vRowLoc) const
 {
     const RowN row = vRowLoc.row();
 
-    LineN sum = 0;
+    LineOffset sum(0);
 
     const RowN rowCnt = page_.size();
 

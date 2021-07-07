@@ -29,7 +29,7 @@ public:
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
 	// 视图内某段落vRowLoc前面的行数
-	LineN lineOffset(const VRowLoc &vRowLoc) const;
+	LineOffset lineOffset(const VRowLoc &vRowLoc) const;
 
 	// 视图内某行的文本基线纵坐标
 	int baselineY(LineOffset lineOffset) const;
