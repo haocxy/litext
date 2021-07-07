@@ -660,7 +660,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, co
         const RowN lineNum = vloc_.row() + r;
         const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
-        const int baseline = cvt_.baselineY(offset);
+        const int baseline = cvt_.toBaselineY(offset);
 
         action(lineNum, baseline, bound, isLastAct);
 
@@ -685,7 +685,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
     {
         const VLine & line = curRow[i];
 
-        const int baseline = cvt_.baselineY(lineOffset);
+        const int baseline = cvt_.toBaselineY(lineOffset);
 
         for (const VChar &c : line)
         {
@@ -701,7 +701,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
 
         for (const VLine & line : row)
         {
-            const int baseline = cvt_.baselineY(lineOffset);
+            const int baseline = cvt_.toBaselineY(lineOffset);
 
             for (const VChar & c : line)
             {
