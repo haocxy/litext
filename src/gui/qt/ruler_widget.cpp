@@ -60,14 +60,14 @@ void RulerWidget::paintLineNum(QPainter &p)
 
     const int32_t lineNumOffset = m_view.config().lineNumOffset();
 
-    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, int baseline, const RowBound &bound, bool isLastAct) {
+    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, Pixel baseline, const RowBound &bound, bool isLastAct) {
         const QString s = QString::number(lineNum + lineNumOffset);
 
         if (isLastAct) {
             p.setPen(kLastActColor);
         }
 
-        p.drawText(10, baseline, s);
+        p.drawText(10, baseline.value(), s);
 
         if (isLastAct) {
             p.setPen(kNormalColor);

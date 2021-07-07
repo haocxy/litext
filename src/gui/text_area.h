@@ -21,6 +21,7 @@
 #include "line_bound.h"
 #include "row_bound.h"
 #include "view_loc.h"
+#include "pixel.h"
 #include "coordinate_converter.h"
 
 
@@ -70,9 +71,9 @@ public:
 
     int getLineNumBarWidth() const;
 
-    void drawEachLineNum(std::function<void(RowN lineNum, int baseline, const RowBound &bound, bool isLastAct)> &&action) const;
+    void drawEachLineNum(std::function<void(RowN lineNum, Pixel baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
-    void drawEachChar(std::function<void(int x, int y, UChar c)> &&action) const;
+    void drawEachChar(std::function<void(Pixel x, Pixel y, UChar c)> &&action) const;
 
 public:
     CallbackHandle addShouldRepaintCallback(std::function<void()> &&action);

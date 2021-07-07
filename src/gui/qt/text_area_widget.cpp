@@ -164,11 +164,11 @@ void TextAreaWidget::prepareTextImage()
     fillQFont(view_.config().font(), qfont);
     p.setFont(qfont);
 
-    view_.drawEachChar([&p](int x, int y, UChar unicode) {
+    view_.drawEachChar([&p](Pixel x, Pixel y, UChar unicode) {
         if (!UCharUtil::needSurrogate(unicode)) {
-            p.drawText(x, y, QChar(unicode));
+            p.drawText(x.value(), y.value(), QChar(unicode));
         } else {
-            p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
+            p.drawText(x.value(), y.value(), unicodeToUtf16SurrogatePairs(unicode));
         }
         });
 }

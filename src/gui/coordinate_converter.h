@@ -5,6 +5,7 @@
 #include "view_loc.h"
 #include "line_loc.h"
 #include "line_offset.h"
+#include "pixel.h"
 #include "declare_text_area_config.h"
 
 
@@ -34,7 +35,7 @@ public:
 	LineOffset toLineOffset(const VLineLoc &vLineLoc) const;
 
 	// 视图内某行的文本基线纵坐标
-	int toBaselineY(LineOffset lineOffset) const;
+	Pixel toBaselineY(LineOffset lineOffset) const;
 
 private:
 	const Size &size_;
