@@ -59,9 +59,9 @@ void TextArea::resize(const Size & size)
     cbsShouldRepaint_.call();
 }
 
-int TextArea::getBaseLineByLineOffset(int off) const
+int TextArea::getBaseLineByLineOffset(LineOffset off) const
 {
-    return (1 + off) * config_.lineHeight() - config_.font().descent();
+    return (1 + off.value()) * config_.lineHeight() - config_.font().descent();
 }
 
 int TextArea::getLineOffsetByLineLoc(const VLineLoc & loc) const
@@ -673,7 +673,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, co
 {
     const int rowCnt = page_.size();
 
-    int offset = -vloc_.line();
+    LineOffset offset(-vloc_.line());
 
     for (int r = 0; r < rowCnt; ++r)
     {
@@ -701,7 +701,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
     const VRow &curRow = page_[0];
     const int curRowSize = curRow.size();
 
-    int lineOffset = 0;
+    LineOffset lineOffset(0);
 
     for (int i = vloc_.line(); i < curRowSize; ++i)
     {

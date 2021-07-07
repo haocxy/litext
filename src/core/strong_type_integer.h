@@ -21,7 +21,8 @@ class c                                                                 \
 public:                                                                 \
     c() : n_(t()) {}                                                    \
                                                                         \
-    explicit c(t n) : n_(n) {}                                          \
+    template <typename T>                                               \
+    explicit c(T n) : n_(n) {}                                          \
                                                                         \
     c(const c &b) : n_(b.n_) {}                                         \
                                                                         \
@@ -58,6 +59,44 @@ public:                                                                 \
         ++n_;                                                           \
         return *this;                                                   \
     }                                                                   \
+                                                                        \
+    c &operator+=(c obj) {                                              \
+        n_ += obj.n_;                                                   \
+        return *this;                                                   \
+    }                                                                   \
+                                                                        \
+    template <typename T>                                               \
+    c &operator+=(T d) {                                                \
+        n_ += d;                                                        \
+        return *this;                                                   \
+    }                                                                   \
+                                                                        \
+    c &operator-=(c obj) {                                              \
+        n_ -= obj.n_;                                                   \
+        return *this;                                                   \
+    }                                                                   \
+                                                                        \
+    template <typename T>                                               \
+    c &operator-=(T d) {                                                \
+        n_ -= d;                                                        \
+        return *this;                                                   \
+    }                                                                   \
+                                                                        \
+    c operator+(c obj) const {                                          \
+        return c(n_ + obj.n_);                                          \
+    }                                                                   \
+                                                                        \
+    c operator-(c obj) const {                                          \
+        return c(n_ - obj.n_);                                          \
+    }                                                                   \
+                                                                        \
+    c operator*(c obj) const {                                          \
+        return c(n_ * obj.n_);                                          \
+    }                                                                   \
+                                                                        \
+    c operator/(c obj) const {                                          \
+        return c(n_ / obj.n_);                                          \
+    }                                                                   \
 private:                                                                \
     t n_ = t();                                                         \
                                                                         \
@@ -71,4 +110,3 @@ private:                                                                \
         return s;                                                       \
     }                                                                   \
 }
-

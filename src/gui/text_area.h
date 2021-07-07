@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "core/callbacks.h"
+#include "core/strong_type_integer.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "page.h"
@@ -29,6 +30,8 @@ class Editor;
 
 namespace gui
 {
+
+DEFINE_STRONG_INT_TYPE(LineOffset, int);
 
 
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
@@ -62,7 +65,7 @@ public:
 
     const TextAreaConfig &config() const { return config_; }
 
-    int getBaseLineByLineOffset(int off) const;
+    int getBaseLineByLineOffset(LineOffset off) const;
 
     std::optional<Rect> getLastActLineDrawRect() const;
 
