@@ -11,6 +11,7 @@
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "page.h"
+#include "line_offset.h"
 #include "char_loc.h"
 #include "rect.h"
 #include "vertical_line.h"
@@ -30,8 +31,6 @@ class Editor;
 
 namespace gui
 {
-
-DEFINE_STRONG_INT_TYPE(LineOffset, int);
 
 
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
