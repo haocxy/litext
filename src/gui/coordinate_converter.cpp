@@ -28,6 +28,22 @@ LineOffset CoordinateConverter::lineOffset(const VRowLoc &vRowLoc) const
     return sum;
 }
 
+LineOffset CoordinateConverter::lineOffset(const VLineLoc &vLineLoc) const
+{
+    LineOffset sum(vLineLoc.line());
+
+    const RowN rowCnt = page_.size();
+    const RowN row = vLineLoc.row();
+
+    for (RowN i = 0; i < rowCnt && i < row; ++i) {
+        sum += page_[i].size();
+    }
+
+    sum -= vloc_.line();
+
+    return sum;
+}
+
 int CoordinateConverter::baselineY(LineOffset off) const
 {
     return (1 + off.value()) * config_.lineHeight() - config_.font().descent();

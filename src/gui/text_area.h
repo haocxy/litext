@@ -82,7 +82,6 @@ public:
 private:
     int getMaxShownLineCnt() const;
 
-    int getLineOffsetByLineLoc(const VLineLoc &loc) const;
     int getLineOffsetByY(int y) const;
     VLineLoc getLineLocByLineOffset(int offset) const;
     CharLoc getCharLocByLineLocAndX(const VLineLoc &lineLoc, int x) const;
@@ -93,7 +92,7 @@ private:
     DocLoc convertToDocLoc(const CharLoc &charLoc) const;
     const VChar &getChar(const CharLoc &charLoc) const;
     int getXByCharLoc(const CharLoc &charLoc) const;
-    LineBound getLineBoundByLineOffset(int lineOffset) const;
+    LineBound getLineBoundByLineOffset(LineOffset lineOffset) const;
     LineBound getLineBound(const VLineLoc &lineLoc) const;
     RowBound getRowBound(const VRowLoc &rowLoc) const;
     bool hasPrevCharAtSameLine(const CharLoc &charLoc) const;

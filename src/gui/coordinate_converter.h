@@ -3,6 +3,7 @@
 #include "size.h"
 #include "page.h"
 #include "view_loc.h"
+#include "line_loc.h"
 #include "line_offset.h"
 #include "declare_text_area_config.h"
 
@@ -10,9 +11,9 @@
 namespace gui
 {
 
-// °Ñ²»Í¬×ø±êÏµÖĞµÄÎ»ÖÃÏà»¥×ª»»
-// °üÀ¨µÄ×ø±êÏµ£ºÎÄµµ×ø±ê¡¢ÊÓÍ¼×ø±ê¡¢GUIÏñËØ×ø±ê
-// Õâ²¿·ÖÂß¼­ÊôÓÚTextArea£¬µ«ÊÇÒòÎªÀàËÆº¯ÊıÌ«¶àÇÒÊµÏÖ´úÂë½Ï³¤£¬ËùÒÔµ¥¶À·ÅÖÃ
+// æŠŠä¸åŒåæ ‡ç³»ä¸­çš„ä½ç½®ç›¸äº’è½¬æ¢
+// åŒ…æ‹¬çš„åæ ‡ç³»ï¼šæ–‡æ¡£åæ ‡ã€è§†å›¾åæ ‡ã€GUIåƒç´ åæ ‡
+// è¿™éƒ¨åˆ†é€»è¾‘å±äºTextAreaï¼Œä½†æ˜¯å› ä¸ºç±»ä¼¼å‡½æ•°å¤ªå¤šä¸”å®ç°ä»£ç è¾ƒé•¿ï¼Œæ‰€ä»¥å•ç‹¬æ”¾ç½®
 class CoordinateConverter {
 public:
 	CoordinateConverter(const Size &size, const Page &page, const ViewLoc &vloc, const TextAreaConfig &config)
@@ -28,10 +29,11 @@ public:
 	CoordinateConverter &operator=(const CoordinateConverter &) = delete;
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
-	// ÊÓÍ¼ÄÚÄ³¶ÎÂävRowLocÇ°ÃæµÄĞĞÊı
 	LineOffset lineOffset(const VRowLoc &vRowLoc) const;
 
-	// ÊÓÍ¼ÄÚÄ³ĞĞµÄÎÄ±¾»ùÏß×İ×ø±ê
+	LineOffset lineOffset(const VLineLoc &vLineLoc) const;
+
+	// è§†å›¾å†…æŸè¡Œçš„æ–‡æœ¬åŸºçº¿çºµåæ ‡
 	int baselineY(LineOffset lineOffset) const;
 
 private:

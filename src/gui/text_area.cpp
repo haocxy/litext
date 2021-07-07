@@ -59,23 +59,6 @@ void TextArea::resize(const Size & size)
     cbsShouldRepaint_.call();
 }
 
-int TextArea::getLineOffsetByLineLoc(const VLineLoc & loc) const
-{
-    int sum = loc.line();
-
-    const int rowCnt = page_.size();
-    const int row = loc.row();
-
-    for (int i = 0; i < rowCnt && i < row; ++i)
-    {
-        sum += page_[i].size();
-    }
-
-    sum -= vloc_.line();
-    
-    return sum;
-}
-
 int TextArea::getMaxShownLineCnt() const
 {
     const int lineHeight = config_.lineHeight();
@@ -244,10 +227,10 @@ int TextArea::getXByCharLoc(const CharLoc &charLoc) const
     return getChar(charLoc).x();
 }
 
-LineBound TextArea::getLineBoundByLineOffset(int lineOffset) const
+LineBound TextArea::getLineBoundByLineOffset(LineOffset lineOffset) const
 {
     const int lineHeight = config_.lineHeight();
-    const int top = lineHeight * lineOffset;
+    const int top = lineHeight * lineOffset.value();
     const int bottom = top + lineHeight;
 
     return LineBound(top, bottom);
@@ -257,9 +240,9 @@ LineBound TextArea::getLineBound(const VLineLoc & lineLoc) const
 {
     if (lineLoc.isAfterLastRow())
     {
-        return getLineBoundByLineOffset(page_.lineCnt());
+        return getLineBoundByLineOffset(LineOffset(page_.lineCnt()));
     }
-    const int lineOffset = getLineOffsetByLineLoc(lineLoc);
+    const LineOffset lineOffset = cvt_.lineOffset(lineLoc);
     return getLineBoundByLineOffset(lineOffset);
 }
 
