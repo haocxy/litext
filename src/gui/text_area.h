@@ -64,8 +64,6 @@ public:
 
     const TextAreaConfig &config() const { return config_; }
 
-    int getBaseLineByLineOffset(LineOffset off) const;
-
     std::optional<Rect> getLastActLineDrawRect() const;
 
     std::optional<VerticalLine> getNormalCursorDrawData() const;

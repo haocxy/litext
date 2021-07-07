@@ -3,6 +3,8 @@
 #include "size.h"
 #include "page.h"
 #include "view_loc.h"
+#include "line_offset.h"
+#include "declare_text_area_config.h"
 
 
 namespace gui
@@ -13,10 +15,11 @@ namespace gui
 // 这部分逻辑属于TextArea，但是因为类似函数太多且实现代码较长，所以单独放置
 class CoordinateConverter {
 public:
-	CoordinateConverter(const Size &size, const Page &page, const ViewLoc &vloc)
+	CoordinateConverter(const Size &size, const Page &page, const ViewLoc &vloc, const TextAreaConfig &config)
 		: size_(size)
 		, page_(page)
-		, vloc_(vloc) {
+		, vloc_(vloc)
+		, config_(config) {
 	}
 
 	CoordinateConverter() = delete;
@@ -28,10 +31,14 @@ public:
 	// 视图内某段落vRowLoc前面的行数
 	LineN lineOffset(const VRowLoc &vRowLoc) const;
 
+	// 视图内某行的文本基线纵坐标
+	int baselineY(LineOffset lineOffset) const;
+
 private:
 	const Size &size_;
 	const Page &page_;
 	const ViewLoc &vloc_;
+	const TextAreaConfig &config_;
 };
 
 

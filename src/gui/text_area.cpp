@@ -17,7 +17,7 @@ namespace gui
 TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
-    , cvt_(size_, page_, vloc_)
+    , cvt_(size_, page_, vloc_, config_)
 {
     assert(editor);
     assert(config);
@@ -57,11 +57,6 @@ void TextArea::resize(const Size & size)
     updateStableXByCurrentCursor();
 
     cbsShouldRepaint_.call();
-}
-
-int TextArea::getBaseLineByLineOffset(LineOffset off) const
-{
-    return (1 + off.value()) * config_.lineHeight() - config_.font().descent();
 }
 
 int TextArea::getLineOffsetByLineLoc(const VLineLoc & loc) const
@@ -682,7 +677,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, int baseline, co
         const RowN lineNum = vloc_.row() + r;
         const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
-        const int baseline = getBaseLineByLineOffset(offset);
+        const int baseline = cvt_.baselineY(offset);
 
         action(lineNum, baseline, bound, isLastAct);
 
@@ -707,7 +702,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
     {
         const VLine & line = curRow[i];
 
-        const int baseline = getBaseLineByLineOffset(lineOffset);
+        const int baseline = cvt_.baselineY(lineOffset);
 
         for (const VChar &c : line)
         {
@@ -723,7 +718,7 @@ void TextArea::drawEachChar(std::function<void(int x, int y, UChar c)>&& action)
 
         for (const VLine & line : row)
         {
-            const int baseline = getBaseLineByLineOffset(lineOffset);
+            const int baseline = cvt_.baselineY(lineOffset);
 
             for (const VChar & c : line)
             {
