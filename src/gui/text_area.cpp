@@ -69,7 +69,7 @@ CharLoc TextArea::getCharLocByPoint(Pixel x, Pixel y) const
 {
     const LineOffset lineOffset = cvt_.toLineOffset(y);
     const VLineLoc lineLoc = cvt_.toVLineLoc(lineOffset);
-    return getCharLocByLineLocAndX(lineLoc, x);
+    return cvt_.toCharLoc(lineLoc, x);
 }
 
 DocLoc TextArea::getDocLocByPoint(Pixel x, Pixel y) const
@@ -362,7 +362,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc upLineLoc = page_.getNextUpLineLoc(charLoc);
-    const CharLoc upCharLoc = getCharLocByLineLocAndX(upLineLoc, stableX_);
+    const CharLoc upCharLoc = cvt_.toCharLoc(upLineLoc, stableX_);
 
     return convertToDocLoc(betterLocForVerticalMove(upCharLoc));
 }
@@ -376,7 +376,7 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc downLineLoc = page_.getNextDownLineLoc(charLoc);
-    const CharLoc downCharLoc = getCharLocByLineLocAndX(downLineLoc, stableX_);
+    const CharLoc downCharLoc = cvt_.toCharLoc(downLineLoc, stableX_);
 
     return convertToDocLoc(betterLocForVerticalMove(downCharLoc));
 }
@@ -765,81 +765,6 @@ bool TextArea::moveDownByOneLine()
 	movePageHeadOneLine();
 
 	return true;
-}
-
-static inline Pixel calcLeftBound(Pixel x, Pixel leftWidth, Pixel margin)
-{
-    assert(leftWidth.value() > 0);
-
-    return Pixel(x.value() - (leftWidth.value() >> 1) - margin.value());
-}
-
-static inline Pixel calcRightBound(Pixel x, Pixel curWidth)
-{
-    assert(curWidth.value() > 0);
-
-    if ((curWidth.value() & 1) == 0)
-    {
-        return Pixel(x.value() + (curWidth.value() >> 1) - 1);
-    }
-    else
-    {
-        return Pixel(x.value() + (curWidth.value() >> 1));
-    }
-}
-
-CharLoc TextArea::getCharLocByLineLocAndX(const VLineLoc & lineLoc, Pixel x) const
-{
-    if (lineLoc.isNull() || lineLoc.isAfterLastRow())
-    {
-        return CharLoc::newCharLocAfterLastChar(lineLoc);
-    }
-
-    const VLine & line = page_.getLine(lineLoc);
-
-    const int charCnt = line.size();
-
-    if (charCnt == 0)
-    {
-        return CharLoc::newCharLocAfterLastChar(lineLoc);
-    }
-
-    const Pixel margin = config_.hMargin();
-
-    // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
-    const VChar & firstChar = line[0];
-    const Pixel firstX(firstChar.x());
-    const Pixel firstWidth(firstChar.width());
-    const Pixel firstCharRightBound = calcRightBound(firstX, firstWidth);
-    if (x <= firstCharRightBound)
-    {
-        return CharLoc(lineLoc, 0);
-    }
-
-    int left = 1;
-    int right = charCnt - 1;
-    while (left <= right)
-    {
-        const int mid = ((left + right) >> 1);
-        const VChar & c = line[mid];
-        const Pixel cx(c.x());
-        const Pixel a = calcLeftBound(cx, Pixel(line[mid - 1].width()), margin);
-        const Pixel b = calcRightBound(cx, Pixel(c.width()));
-        if (x < a)
-        {
-            right = mid - 1;
-        }
-        else if (x > b)
-        {
-            left = mid + 1;
-        }
-        else
-        {
-            return CharLoc(lineLoc, mid);
-        }
-    }
-
-    return CharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
 void TextArea::updateStableXByCurrentCursor()

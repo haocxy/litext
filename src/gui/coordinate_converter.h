@@ -6,6 +6,7 @@
 #include "line_loc.h"
 #include "line_offset.h"
 #include "pixel.h"
+#include "char_loc.h"
 #include "declare_text_area_config.h"
 
 
@@ -39,6 +40,8 @@ public:
 	Pixel toBaselineY(LineOffset lineOffset) const;
 
 	VLineLoc toVLineLoc(LineOffset lineOffset) const;
+
+	CharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
 
 private:
 	const Size &size_;
