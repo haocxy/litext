@@ -8,14 +8,14 @@ namespace gui
 class LineBound {
 public:
     LineBound() = default;
-    LineBound(Pixel top, Pixel bottom) :m_top(top), m_bottom(bottom) {}
-    Pixel top() const { return m_top; }
-    void setTop(Pixel top) { m_top = top; }
-    Pixel bottom() const { return m_bottom; }
-    void setBottom(Pixel bottom) { m_bottom = bottom; }
+    LineBound(Pixel::Raw top, Pixel::Raw bottom) :m_top(top), m_bottom(bottom) {}
+    Pixel::Raw top() const { return m_top; }
+    void setTop(Pixel::Raw top) { m_top = top; }
+    Pixel::Raw bottom() const { return m_bottom; }
+    void setBottom(Pixel::Raw bottom) { m_bottom = bottom; }
 private:
-    Pixel m_top{ 0 };
-    Pixel m_bottom{ 0 };
+    Pixel::Raw m_top = 0;
+    Pixel::Raw m_bottom = 0;
 };
 
 

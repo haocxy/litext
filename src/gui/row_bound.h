@@ -10,14 +10,14 @@ namespace gui
 class RowBound {
 public:
     RowBound() = default;
-    RowBound(Pixel top, Pixel height) :m_top(top), m_height(height) {}
-    Pixel top() const { return m_top; }
-    void setTop(Pixel top) { m_top = top; }
-    Pixel height() const { return m_height; }
-    void setHeight(Pixel height) { m_height = height; }
+    RowBound(Pixel::Raw top, Pixel::Raw height) :m_top(top), m_height(height) {}
+    Pixel::Raw top() const { return m_top; }
+    void setTop(Pixel::Raw top) { m_top = top; }
+    Pixel::Raw height() const { return m_height; }
+    void setHeight(Pixel::Raw height) { m_height = height; }
 private:
-    Pixel m_top{ 0 };
-    Pixel m_height{ 0 };
+    Pixel::Raw m_top{ 0 };
+    Pixel::Raw m_height{ 0 };
 };
 
 

@@ -23,13 +23,13 @@ public:
 	float lineHeightFactor() const { return lineHeightFactor_ / 1000.0; }
 	void setLineHeightFactor(float f) { lineHeightFactor_ = static_cast<int>(f * 1000); }
 
-	Pixel lineHeight() const { return Pixel(lineHeightFactor_ * font_.height() / 1000); }
+	Pixel::Raw lineHeight() const { return lineHeightFactor_ * font_.height() / 1000; }
 
-	Pixel hGap() const { return hGap_; }
-	void setHGap(Pixel hGap) { hGap_ = hGap; }
+	Pixel::Raw hGap() const { return hGap_; }
+	void setHGap(Pixel::Raw hGap) { hGap_ = hGap; }
 
-	Pixel hMargin() const { return hMargin_; }
-	void setHMargin(Pixel hMargin) { hMargin_ = hMargin; }
+	Pixel::Raw hMargin() const { return hMargin_; }
+	void setHMargin(Pixel::Raw hMargin) { hMargin_ = hMargin; }
 
 	int tabSize() const { return tabSize_; }
 	void setTabSize(int tabSize) { tabSize_ = tabSize; }
@@ -40,7 +40,7 @@ public:
 	Font &rfont() { return font_; }
 	const Font &font() const { return font_; }
 
-	Pixel charWidth(UChar c) const;
+	Pixel::Raw charWidth(UChar c) const;
 
 	bool showLineNum() const { return showLineNum_; }
 	void setShowLineNum(bool showLineNum) { showLineNum_ = showLineNum; }
@@ -53,8 +53,8 @@ public:
 
 private:
 	int lineHeightFactor_ = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
-	Pixel hGap_{ kDefaultHGap }; // 水平方向最左侧字符左边的空白
-	Pixel hMargin_{ kDefaultHMargin }; // 水平字符间距
+	Pixel::Raw hGap_{ kDefaultHGap }; // 水平方向最左侧字符左边的空白
+	Pixel::Raw hMargin_{ kDefaultHMargin }; // 水平字符间距
 	int tabSize_ = kDefaultTabSize; // 一个TAB的宽度为若干个空格
 	bool wrapLine_ = false;
 	bool showLineNum_ = false; // 是否显示行号

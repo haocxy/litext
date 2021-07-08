@@ -46,12 +46,12 @@ LineOffset CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
 
 LineOffset CoordinateConverter::toLineOffset(Pixel y) const
 {
-    return LineOffset(y.value() / config_.lineHeight().value());
+    return LineOffset(y.value() / config_.lineHeight());
 }
 
 Pixel CoordinateConverter::toBaselineY(LineOffset off) const
 {
-    return Pixel((1 + off.value()) * config_.lineHeight().value() - config_.font().descent());
+    return Pixel((1 + off.value()) * config_.lineHeight() - config_.font().descent());
 }
 
 VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
@@ -134,7 +134,7 @@ CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) co
         return CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Pixel::Raw margin = config_.hMargin().value();
+    const Pixel::Raw margin = config_.hMargin();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const VChar &firstChar = line[0];

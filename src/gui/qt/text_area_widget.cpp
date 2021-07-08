@@ -45,7 +45,7 @@ TextAreaWidget::TextAreaWidget(TextArea &view, QWidget *parent)
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
 
-    view_.initSize(Size(Pixel(textPaintBuff_.width()), Pixel(textPaintBuff_.height())));
+    view_.initSize(Size(textPaintBuff_.width(), textPaintBuff_.height()));
 
     prepareTextImage();
 
@@ -90,7 +90,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent *e)
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
     }
 
-    view_.resize({ Pixel(sz.width()), Pixel(sz.height()) });
+    view_.resize({ sz.width(), sz.height() });
 
     refresh();
 }
@@ -142,7 +142,7 @@ void TextAreaWidget::paintLastActLine(QPainter &p)
 {
     std::optional<Rect> r = view_.getLastActLineDrawRect();
     if (r) {
-        p.fillRect(r->left().value(), r->top().value(), r->width().value(), r->height().value(),
+        p.fillRect(r->left(), r->top(), r->width(), r->height(),
             QColor(Qt::green).lighter(192));
     }
 }
@@ -193,7 +193,7 @@ void TextAreaWidget::paintCursor(QPainter &p)
 {
     std::optional<VerticalLine> vl = view_.getNormalCursorDrawData();
     if (vl) {
-        p.drawLine(vl->x().value(), vl->top().value(), vl->x().value(), vl->bottom().value());
+        p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }
 }
 

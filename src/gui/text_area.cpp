@@ -61,8 +61,8 @@ void TextArea::resize(const Size & size)
 
 int TextArea::getMaxShownLineCnt() const
 {
-    const Pixel lineHeight = config_.lineHeight();
-    return (size_.height().value() + lineHeight.value() - 1) / lineHeight.value();
+    const Pixel::Raw lineHeight = config_.lineHeight();
+    return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
 CharLoc TextArea::getCharLocByPoint(Pixel x, Pixel y) const
@@ -201,11 +201,11 @@ const VChar &TextArea::getChar(const CharLoc &charLoc) const
     return page_[charLoc.row()][charLoc.line()][charLoc.col()];
 }
 
-Pixel TextArea::getXByCharLoc(const CharLoc &charLoc) const
+Pixel::Raw TextArea::getXByCharLoc(const CharLoc &charLoc) const
 {
     if (charLoc.isNull())
     {
-        return Pixel(0);
+        return 0;
     }
 
     if (charLoc.isAfterLastRow())
@@ -221,17 +221,17 @@ Pixel TextArea::getXByCharLoc(const CharLoc &charLoc) const
             return config_.hGap();
         }
         const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
-        return Pixel(vc.x() + vc.width());
+        return vc.x() + vc.width();
     }
 
-    return Pixel(getChar(charLoc).x());
+    return getChar(charLoc).x();
 }
 
 LineBound TextArea::getLineBoundByLineOffset(LineOffset lineOffset) const
 {
-    const Pixel lineHeight = config_.lineHeight();
-    const Pixel top(lineHeight.value() * lineOffset.value());
-    const Pixel bottom = top + lineHeight;
+    const Pixel::Raw lineHeight = config_.lineHeight();
+    const Pixel::Raw top = lineHeight * lineOffset.value();
+    const Pixel::Raw bottom = top + lineHeight;
 
     return LineBound(top, bottom);
 }
@@ -255,16 +255,16 @@ RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
 
     if (rowLoc.isAfterLastRow())
     {
-        const LineOffset lineOffset(page_.lineCnt());
-        const Pixel lineHeight = config_.lineHeight();
-        const Pixel top = Pixel(lineHeight.value() * lineOffset.value());
+        const LineOffset::Raw lineOffset = page_.lineCnt();
+        const Pixel::Raw lineHeight = config_.lineHeight();
+        const Pixel::Raw top = lineHeight * lineOffset;
         return RowBound(top, lineHeight);
     }
 
     const LineOffset lineOffset = cvt_.toLineOffset(rowLoc);
-    const Pixel lineHeight = config_.lineHeight();
-    const Pixel top(lineHeight.value() * lineOffset.value());
-    const Pixel height(lineHeight.value() * page_[rowLoc.row()].size());
+    const Pixel::Raw lineHeight = config_.lineHeight();
+    const Pixel::Raw top = lineHeight * lineOffset.value();
+    const Pixel::Raw height = lineHeight * page_[rowLoc.row()].size();
     return RowBound(top, height);
 }
 
@@ -362,7 +362,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc upLineLoc = page_.getNextUpLineLoc(charLoc);
-    const CharLoc upCharLoc = cvt_.toCharLoc(upLineLoc, stableX_);
+    const CharLoc upCharLoc = cvt_.toCharLoc(upLineLoc, Pixel(stableX_));
 
     return convertToDocLoc(betterLocForVerticalMove(upCharLoc));
 }
@@ -376,7 +376,7 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc downLineLoc = page_.getNextDownLineLoc(charLoc);
-    const CharLoc downCharLoc = cvt_.toCharLoc(downLineLoc, stableX_);
+    const CharLoc downCharLoc = cvt_.toCharLoc(downLineLoc, Pixel(stableX_));
 
     return convertToDocLoc(betterLocForVerticalMove(downCharLoc));
 }
@@ -598,7 +598,7 @@ std::optional<Rect> TextArea::getLastActLineDrawRect() const
     const RowBound bound = getRowBound(loc);
 
     Rect rect;
-    rect.setLeft(Pixel(0));
+    rect.setLeft(0);
     rect.setTop(bound.top());
     rect.setWidth(size_.width());
     rect.setHeight(bound.height());
@@ -633,12 +633,12 @@ std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
 
     const LineBound bound = getLineBound(charLoc);
 
-    const Pixel x = getXByCharLoc(charLoc) + Pixel(kHorizontalDelta);
+    const Pixel::Raw x = getXByCharLoc(charLoc) + kHorizontalDelta;
 
     VerticalLine vl;
     vl.setX(x);
-    vl.setTop(bound.top() + Pixel(kVerticalShrink));
-    vl.setBottom(bound.bottom() - Pixel(kVerticalShrink));
+    vl.setTop(bound.top() + kVerticalShrink);
+    vl.setBottom(bound.bottom() - kVerticalShrink);
     return vl;
 }
 
@@ -818,15 +818,15 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
 {
     assert(vrow.size() == 0);
 
-    const Pixel hGap = config_.hGap();
-    const Pixel hMargin = config_.hMargin();
+    const Pixel::Raw hGap = config_.hGap();
+    const Pixel::Raw hMargin = config_.hMargin();
 
     VLine *vline = &vrow.grow();
 
     DocLineCharInStream charStream(row);
     TxtWordStream wordStream(charStream);
 
-    Pixel leftX = hGap;
+    Pixel::Raw leftX = hGap;
 
     while (true)
     {
@@ -840,7 +840,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
         {
             for (const UChar c : word)
             {
-                const Pixel charWidth = config_.charWidth(c);
+                const Pixel::Raw charWidth = config_.charWidth(c);
 
                 if (leftX + charWidth > size_.width())
                 {
@@ -850,8 +850,8 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
 
                 VChar &vc = vline->grow();
                 vc.setUChar(c);
-                vc.setX(leftX.value());
-                vc.setWidth(charWidth.value());
+                vc.setX(leftX);
+                vc.setWidth(charWidth);
 
                 leftX += charWidth;
                 leftX += hMargin;
@@ -859,11 +859,11 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
         }
         else
         {
-            Pixel wordWidth(0);
+            Pixel::Raw wordWidth = 0;
             for (const UChar c : word)
             {
                 wordWidth += config_.charWidth(c);
-                wordWidth += hMargin.value();
+                wordWidth += hMargin;
             }
             if (leftX + wordWidth > size_.width())
             {
@@ -872,7 +872,7 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
             }
             for (const UChar c : word)
             {
-                const Pixel charWidth = config_.charWidth(c);
+                const Pixel::Raw charWidth = config_.charWidth(c);
 
                 if (leftX + charWidth > size_.width())
                 {
@@ -882,8 +882,8 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
 
                 VChar &vc = vline->grow();
                 vc.setUChar(c);
-                vc.setX(leftX.value());
-                vc.setWidth(charWidth.value());
+                vc.setX(leftX);
+                vc.setWidth(charWidth);
 
                 leftX += charWidth;
                 leftX += hMargin;
@@ -896,23 +896,23 @@ void TextArea::makeVRowNoWrapLine(const Row &row, VRow &vrow) const
 {
     assert(vrow.size() == 0);
 
-    const Pixel hGap = config_.hGap();
-    const Pixel hMargin = config_.hMargin();
+    const Pixel::Raw hGap = config_.hGap();
+    const Pixel::Raw hMargin = config_.hMargin();
 
     VLine &vline = vrow.grow();
 
-    Pixel leftX = hGap;
+    Pixel::Raw leftX = hGap;
 
     const CharN cnt = row.charCnt();
     for (CharN i = 0; i < cnt; ++i)
     {
         const UChar c = row.charAt(i);
-        const Pixel charWidth = config_.charWidth(c);
+        const Pixel::Raw charWidth = config_.charWidth(c);
 
         VChar &vchar = vline.grow();
         vchar.setUChar(c);
-        vchar.setX(leftX.value());
-        vchar.setWidth(charWidth.value());
+        vchar.setX(leftX);
+        vchar.setWidth(charWidth);
 
         leftX += charWidth;
         leftX += hMargin;
