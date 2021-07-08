@@ -193,6 +193,53 @@ VCharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
     return toCharLoc(lineLoc, x);
 }
 
+VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
+{
+    if (docLoc.isNull()) {
+        return VCharLoc();
+    }
+
+    if (docLoc.isAfterLastRow()) {
+        return VCharLoc::newCharLocAfterLastRow();
+    }
+
+    const int r = docLoc.row() - vloc_.row();
+    const int rowCnt = page_.size();
+    if (r < 0 || r >= rowCnt) {
+        return VCharLoc();
+    }
+
+    const VRow &vrow = page_[r];
+
+    if (docLoc.isAfterLastChar()) {
+        VLineLoc lineLoc(r, vrow.size() - 1);
+        return VCharLoc::newCharLocAfterLastChar(lineLoc);
+    }
+
+    int lineIndex = 0;
+    int charIndex = 0;
+
+    int prevLineCharCnt = 0;
+
+    const CharN col = docLoc.col();
+
+    for (const VLine &vline : vrow) {
+        for (const VChar &vc : vline) {
+            if (charIndex == col) {
+                return VCharLoc(r, lineIndex, col - prevLineCharCnt);
+            }
+
+            ++charIndex;
+        }
+
+        ++lineIndex;
+
+        prevLineCharCnt += vline.size();
+    }
+
+    return VCharLoc();
+}
+
 DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
 {
     if (charLoc.isNull()) {

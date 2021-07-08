@@ -65,60 +65,6 @@ int TextArea::getMaxShownLineCnt() const
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
-VCharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
-{
-    if (docLoc.isNull())
-    {
-        return VCharLoc();
-    }
-
-    if (docLoc.isAfterLastRow())
-    {
-        return VCharLoc::newCharLocAfterLastRow();
-    }
-
-    const int r = docLoc.row() - vloc_.row();
-    const int rowCnt = page_.size();
-    if (r < 0 || r >= rowCnt)
-    {
-        return VCharLoc();
-    }
-
-    const VRow & vrow = page_[r];
-
-    if (docLoc.isAfterLastChar())
-    {
-        VLineLoc lineLoc(r, vrow.size() - 1);
-        return VCharLoc::newCharLocAfterLastChar(lineLoc);
-    }
-    
-    int lineIndex = 0;
-    int charIndex = 0;
-
-    int prevLineCharCnt = 0;
-
-    const CharN col = docLoc.col();
-
-    for (const VLine &vline : vrow)
-    {
-        for (const VChar &vc : vline)
-        {
-            if (charIndex == col)
-            {
-                return VCharLoc(r, lineIndex, col - prevLineCharCnt);
-            }
-
-            ++charIndex;
-        }
-
-        ++lineIndex;
-
-        prevLineCharCnt += vline.size();
-    }
-
-    return VCharLoc();
-}
-
 const VChar &TextArea::getChar(const VCharLoc &charLoc) const
 {
     return page_[charLoc.row()][charLoc.line()][charLoc.col()];
@@ -278,7 +224,7 @@ VCharLoc TextArea::betterLocForVerticalMove(const VCharLoc & charLoc) const
 
 DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
 {
-    const VCharLoc charLoc = convertToCharLoc(docLoc);
+    const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
     if (charLoc.isNull())
     {
         return DocLoc();
@@ -292,7 +238,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
 
 DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
 {
-    const VCharLoc charLoc = convertToCharLoc(docLoc);
+    const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
     if (charLoc.isNull())
     {
         return DocLoc();
@@ -403,7 +349,7 @@ void TextArea::onDirUpKeyPress()
     // 第一步：确保上一行在视图内
     // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
     const DocLoc & oldDocLoc = editor_.normalCursor().to();
-    const VCharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+    const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
     ensureHasPrevLine(oldCharLoc);
 
     // 第二步：使用第一步更新后的新的视图数据取目标位置
@@ -421,7 +367,7 @@ void TextArea::onDirDownKeyPress()
 {
 	// 第一步，确保当前位置在视图中有下一行
 	const DocLoc & oldDocLoc = editor_.normalCursor().to();
-	const VCharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
 	const bool shouldMovePageHead = ensureHasNextLine(oldCharLoc);
 
 	// 第二步，更新编辑器中的文档位置
@@ -441,7 +387,7 @@ void TextArea::onDirDownKeyPress()
 void TextArea::onDirLeftKeyPress()
 {
     const DocLoc oldDocLoc = editor_.normalCursor().to();
-    const VCharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+    const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
     if (noPrevCharAtSameLine(oldCharLoc))
     {
         ensureHasPrevLine(oldCharLoc);
@@ -452,7 +398,7 @@ void TextArea::onDirLeftKeyPress()
     {
         editor_.setNormalCursor(newLoc);
 
-		const VCharLoc charLoc = convertToCharLoc(newLoc);
+		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
         stableX_ = getXByCharLoc(charLoc);
     }
     
@@ -462,7 +408,7 @@ void TextArea::onDirLeftKeyPress()
 void TextArea::onDirRightKeyPress()
 {
 	const DocLoc oldDocLoc = editor_.normalCursor().to();
-	const VCharLoc oldCharLoc = convertToCharLoc(oldDocLoc);
+	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
 	bool needMoveHead = false;
 	if (needEnsureHasNextLine(oldCharLoc))
 	{
@@ -474,7 +420,7 @@ void TextArea::onDirRightKeyPress()
 	{
         editor_.setNormalCursor(newLoc);
 
-		const VCharLoc charLoc = convertToCharLoc(newLoc);
+		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
         stableX_ = getXByCharLoc(charLoc);
 	}
 
@@ -547,7 +493,7 @@ std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
 
     const DocLoc & docLoc = cursor.loc();
 
-    const VCharLoc charLoc = convertToCharLoc(docLoc);
+    const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
 
     if (charLoc.isNull())
     {
@@ -693,7 +639,7 @@ bool TextArea::moveDownByOneLine()
 void TextArea::updateStableXByCurrentCursor()
 {
     const DocLoc docLoc = editor_.normalCursor().to();
-    const VCharLoc vCharLoc = convertToCharLoc(docLoc);
+    const VCharLoc vCharLoc = cvt_.toCharLoc(docLoc);
 
     stableX_ = getXByCharLoc(vCharLoc);
 }

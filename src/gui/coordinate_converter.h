@@ -56,6 +56,8 @@ public:
 
 	VCharLoc toCharLoc(Pixel x, Pixel y) const;
 
+	VCharLoc toCharLoc(const DocLoc &docLoc) const;
+
 	DocLoc toDocLoc(const VCharLoc &vCharLoc) const;
 
 	DocLoc toDocLoc(Pixel x, Pixel y) const;
