@@ -120,10 +120,10 @@ static inline Pixel::Raw calcRightBound(Pixel::Raw x, Pixel::Raw curWidth)
     }
 }
 
-CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) const
+VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) const
 {
     if (lineLoc.isNull() || lineLoc.isAfterLastRow()) {
-        return CharLoc::newCharLocAfterLastChar(lineLoc);
+        return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
     const VLine &line = page_.getLine(lineLoc);
@@ -131,7 +131,7 @@ CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) co
     const int charCnt = line.size();
 
     if (charCnt == 0) {
-        return CharLoc::newCharLocAfterLastChar(lineLoc);
+        return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
     const Pixel::Raw margin = config_.hMargin();
@@ -142,7 +142,7 @@ CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) co
     const Pixel::Raw firstWidth = firstChar.width();
     const Pixel::Raw firstCharRightBound = calcRightBound(firstX, firstWidth);
     if (x <= firstCharRightBound) {
-        return CharLoc(lineLoc, 0);
+        return VCharLoc(lineLoc, 0);
     }
 
     int left = 1;
@@ -158,14 +158,14 @@ CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) co
         } else if (x > b) {
             left = mid + 1;
         } else {
-            return CharLoc(lineLoc, mid);
+            return VCharLoc(lineLoc, mid);
         }
     }
 
-    return CharLoc::newCharLocAfterLastChar(lineLoc);
+    return VCharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
-CharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
+VCharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
 {
     const LineOffset::Raw lineOffset = toLineOffset(y);
     const VLineLoc lineLoc = toVLineLoc(LineOffset(lineOffset));

@@ -41,9 +41,9 @@ public:
 
 	VLineLoc toVLineLoc(LineOffset lineOffset) const;
 
-	CharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
+	VCharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
 
-	CharLoc toCharLoc(Pixel x, Pixel y) const;
+	VCharLoc toCharLoc(Pixel x, Pixel y) const;
 
 private:
 	const Size &size_;
