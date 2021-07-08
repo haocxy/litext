@@ -19,6 +19,8 @@
 class c                                                                 \
 {                                                                       \
 public:                                                                 \
+    using Raw = t;                                                      \
+                                                                        \
     c() : n_(t()) {}                                                    \
                                                                         \
     template <typename T>                                               \
