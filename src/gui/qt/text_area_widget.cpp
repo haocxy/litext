@@ -165,13 +165,13 @@ void TextAreaWidget::prepareTextImage()
     fillQFont(view_.config().font(), qfont);
     p.setFont(qfont);
 
-    view_.drawEachChar([&p](Pixel x, Pixel y, UChar unicode) {
+    view_.drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, UChar unicode) {
         if (!UCharUtil::needSurrogate(unicode)) {
-            p.drawText(x.value(), y.value(), QChar(unicode));
+            p.drawText(x, y, QChar(unicode));
         } else {
-            p.drawText(x.value(), y.value(), unicodeToUtf16SurrogatePairs(unicode));
+            p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
         }
-        });
+    });
 }
 
 void TextAreaWidget::paintWidget(QPainter &p)

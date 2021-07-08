@@ -11,11 +11,11 @@ namespace gui
 
 
 
-LineOffset CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
+LineOffset::Raw CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
 {
     const RowN row = vRowLoc.row();
 
-    LineOffset sum(0);
+    LineOffset::Raw sum = 0;
 
     const RowN rowCnt = page_.size();
 
@@ -28,9 +28,9 @@ LineOffset CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
     return sum;
 }
 
-LineOffset CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
+LineOffset::Raw CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
 {
-    LineOffset sum(vLineLoc.line());
+    LineOffset::Raw sum = vLineLoc.line();
 
     const RowN rowCnt = page_.size();
     const RowN row = vLineLoc.row();
@@ -44,14 +44,14 @@ LineOffset CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
     return sum;
 }
 
-LineOffset CoordinateConverter::toLineOffset(Pixel y) const
+LineOffset::Raw CoordinateConverter::toLineOffset(Pixel y) const
 {
-    return LineOffset(y.value() / config_.lineHeight());
+    return y.value() / config_.lineHeight();
 }
 
-Pixel CoordinateConverter::toBaselineY(LineOffset off) const
+Pixel::Raw CoordinateConverter::toBaselineY(LineOffset off) const
 {
-    return Pixel((1 + off.value()) * config_.lineHeight() - config_.font().descent());
+    return (1 + off.value()) * config_.lineHeight() - config_.font().descent();
 }
 
 VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const

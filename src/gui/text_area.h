@@ -71,9 +71,9 @@ public:
 
     int getLineNumBarWidth() const;
 
-    void drawEachLineNum(std::function<void(RowN lineNum, Pixel baseline, const RowBound &bound, bool isLastAct)> &&action) const;
+    void drawEachLineNum(std::function<void(RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
-    void drawEachChar(std::function<void(Pixel x, Pixel y, UChar c)> &&action) const;
+    void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)> &&action) const;
 
 public:
     CallbackHandle addShouldRepaintCallback(std::function<void()> &&action);

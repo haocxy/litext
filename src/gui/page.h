@@ -5,6 +5,7 @@
 
 #include "core/uchar.h"
 #include "line_loc.h"
+#include "pixel.h"
 
 
 namespace gui
@@ -14,18 +15,18 @@ namespace gui
 class VChar {
 public:
     UChar uchar() const { return m_unicode; }
-    int x() const { return m_x; }
+    Pixel::Raw x() const { return m_x; }
 
     void setUChar(UChar unicode) { m_unicode = unicode; }
-    void setX(int x) { m_x = x; }
+    void setX(Pixel::Raw x) { m_x = x; }
 
-    int width() const { return m_width; }
-    void setWidth(int width) { m_width = width; }
+    Pixel::Raw width() const { return m_width; }
+    void setWidth(Pixel::Raw width) { m_width = width; }
 
 private:
     UChar m_unicode = 0;
-    int m_x = 0;
-    int m_width = 0;
+    Pixel::Raw m_x = 0;
+    Pixel::Raw m_width = 0;
 };
 
 

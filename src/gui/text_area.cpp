@@ -67,8 +67,8 @@ int TextArea::getMaxShownLineCnt() const
 
 CharLoc TextArea::getCharLocByPoint(Pixel x, Pixel y) const
 {
-    const LineOffset lineOffset = cvt_.toLineOffset(y);
-    const VLineLoc lineLoc = cvt_.toVLineLoc(lineOffset);
+    const LineOffset::Raw lineOffset = cvt_.toLineOffset(y);
+    const VLineLoc lineLoc = cvt_.toVLineLoc(LineOffset(lineOffset));
     return cvt_.toCharLoc(lineLoc, x);
 }
 
@@ -242,8 +242,8 @@ LineBound TextArea::getLineBound(const VLineLoc & lineLoc) const
     {
         return getLineBoundByLineOffset(LineOffset(page_.lineCnt()));
     }
-    const LineOffset lineOffset = cvt_.toLineOffset(lineLoc);
-    return getLineBoundByLineOffset(lineOffset);
+    const LineOffset::Raw lineOffset = cvt_.toLineOffset(lineLoc);
+    return getLineBoundByLineOffset(LineOffset(lineOffset));
 }
 
 RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
@@ -261,9 +261,9 @@ RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
         return RowBound(top, lineHeight);
     }
 
-    const LineOffset lineOffset = cvt_.toLineOffset(rowLoc);
+    const LineOffset::Raw lineOffset = cvt_.toLineOffset(rowLoc);
     const Pixel::Raw lineHeight = config_.lineHeight();
-    const Pixel::Raw top = lineHeight * lineOffset.value();
+    const Pixel::Raw top = lineHeight * lineOffset;
     const Pixel::Raw height = lineHeight * page_[rowLoc.row()].size();
     return RowBound(top, height);
 }
@@ -647,7 +647,7 @@ int TextArea::getLineNumBarWidth() const
     return 100;
 }
 
-void TextArea::drawEachLineNum(std::function<void(RowN lineNum, Pixel baseline, const RowBound &bound, bool isLastAct)> && action) const
+void TextArea::drawEachLineNum(std::function<void(RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct)> && action) const
 {
     const int rowCnt = page_.size();
 
@@ -660,7 +660,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, Pixel baseline, 
         const RowN lineNum = vloc_.row() + r;
         const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
-        const Pixel baseline = cvt_.toBaselineY(offset);
+        const Pixel::Raw baseline = cvt_.toBaselineY(offset);
 
         action(lineNum, baseline, bound, isLastAct);
 
@@ -668,7 +668,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, Pixel baseline, 
     }
 }
 
-void TextArea::drawEachChar(std::function<void(Pixel x, Pixel y, UChar c)>&& action) const
+void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)>&& action) const
 {
     const int rowCnt = page_.size();
     if (rowCnt == 0)
@@ -685,11 +685,11 @@ void TextArea::drawEachChar(std::function<void(Pixel x, Pixel y, UChar c)>&& act
     {
         const VLine & line = curRow[i];
 
-        const Pixel baseline = cvt_.toBaselineY(lineOffset);
+        const Pixel::Raw baseline = cvt_.toBaselineY(lineOffset);
 
         for (const VChar &c : line)
         {
-            action(Pixel(c.x()), baseline, c.uchar());
+            action(c.x(), baseline, c.uchar());
         }
 
         ++lineOffset;
@@ -701,11 +701,11 @@ void TextArea::drawEachChar(std::function<void(Pixel x, Pixel y, UChar c)>&& act
 
         for (const VLine & line : row)
         {
-            const Pixel baseline = cvt_.toBaselineY(lineOffset);
+            const Pixel::Raw baseline = cvt_.toBaselineY(lineOffset);
 
             for (const VChar & c : line)
             {
-                action(Pixel(c.x()), baseline, c.uchar());
+                action(c.x(), baseline, c.uchar());
             }
 
             ++lineOffset;

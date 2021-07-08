@@ -31,13 +31,13 @@ public:
 	CoordinateConverter &operator=(const CoordinateConverter &) = delete;
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
-	LineOffset toLineOffset(const VRowLoc &vRowLoc) const;
+	LineOffset::Raw toLineOffset(const VRowLoc &vRowLoc) const;
 
-	LineOffset toLineOffset(const VLineLoc &vLineLoc) const;
+	LineOffset::Raw toLineOffset(const VLineLoc &vLineLoc) const;
 
-	LineOffset toLineOffset(Pixel y) const;
+	LineOffset::Raw toLineOffset(Pixel y) const;
 
-	Pixel toBaselineY(LineOffset lineOffset) const;
+	Pixel::Raw toBaselineY(LineOffset lineOffset) const;
 
 	VLineLoc toVLineLoc(LineOffset lineOffset) const;
 
