@@ -19,7 +19,7 @@
 class c                                                                 \
 {                                                                       \
 public:                                                                 \
-    using Raw = t;                                                      \
+    typedef t Raw;                                                      \
                                                                         \
     c() : n_(t()) {}                                                    \
                                                                         \

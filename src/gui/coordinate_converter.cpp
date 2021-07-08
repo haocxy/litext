@@ -102,45 +102,45 @@ VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
     return VLineLoc::newLineLocAfterLastRow();
 }
 
-static inline Pixel calcLeftBound(Pixel x, Pixel leftWidth, Pixel margin)
+static inline Pixel::Raw calcLeftBound(Pixel::Raw x, Pixel::Raw leftWidth, Pixel::Raw margin)
 {
-    assert(leftWidth.value() > 0);
+    assert(leftWidth > 0);
 
-    return Pixel(x.value() - (leftWidth.value() >> 1) - margin.value());
+    return x - (leftWidth >> 1) - margin;
 }
 
-static inline Pixel calcRightBound(Pixel x, Pixel curWidth)
+static inline Pixel::Raw calcRightBound(Pixel::Raw x, Pixel::Raw curWidth)
 {
-    assert(curWidth.value() > 0);
+    assert(curWidth > 0);
 
-    if ((curWidth.value() & 1) == 0) {
-        return Pixel(x.value() + (curWidth.value() >> 1) - 1);
+    if ((curWidth & 1) == 0) {
+        return x + (curWidth >> 1) - 1;
     } else {
-        return Pixel(x.value() + (curWidth.value() >> 1));
+        return x + (curWidth >> 1);
     }
 }
 
-CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel x) const
+CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) const
 {
     if (lineLoc.isNull() || lineLoc.isAfterLastRow()) {
         return CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
     const VLine &line = page_.getLine(lineLoc);
-
+    const Pixel::Raw x = xPixel.value();
     const int charCnt = line.size();
 
     if (charCnt == 0) {
         return CharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Pixel margin = config_.hMargin();
+    const Pixel::Raw margin = config_.hMargin().value();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const VChar &firstChar = line[0];
-    const Pixel firstX(firstChar.x());
-    const Pixel firstWidth(firstChar.width());
-    const Pixel firstCharRightBound = calcRightBound(firstX, firstWidth);
+    const Pixel::Raw firstX = firstChar.x();
+    const Pixel::Raw firstWidth = firstChar.width();
+    const Pixel::Raw firstCharRightBound = calcRightBound(firstX, firstWidth);
     if (x <= firstCharRightBound) {
         return CharLoc(lineLoc, 0);
     }
@@ -150,9 +150,9 @@ CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel x) const
     while (left <= right) {
         const int mid = ((left + right) >> 1);
         const VChar &c = line[mid];
-        const Pixel cx(c.x());
-        const Pixel a = calcLeftBound(cx, Pixel(line[mid - 1].width()), margin);
-        const Pixel b = calcRightBound(cx, Pixel(c.width()));
+        const Pixel::Raw cx = c.x();
+        const Pixel::Raw a = calcLeftBound(cx, line[mid - 1].width(), margin);
+        const Pixel::Raw b = calcRightBound(cx, c.width());
         if (x < a) {
             right = mid - 1;
         } else if (x > b) {
