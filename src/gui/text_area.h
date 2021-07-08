@@ -83,7 +83,6 @@ public:
 private:
     int getMaxShownLineCnt() const;
 
-    VLineLoc getLineLocByLineOffset(int offset) const;
     CharLoc getCharLocByLineLocAndX(const VLineLoc &lineLoc, Pixel x) const;
     CharLoc getCharLocByPoint(Pixel x, Pixel y) const;
     DocLoc getDocLocByPoint(Pixel x, Pixel y) const;

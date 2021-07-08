@@ -68,7 +68,7 @@ int TextArea::getMaxShownLineCnt() const
 CharLoc TextArea::getCharLocByPoint(Pixel x, Pixel y) const
 {
     const LineOffset lineOffset = cvt_.toLineOffset(y);
-    const VLineLoc lineLoc = getLineLocByLineOffset(lineOffset.value());
+    const VLineLoc lineLoc = cvt_.toVLineLoc(lineOffset);
     return getCharLocByLineLocAndX(lineLoc, x);
 }
 
@@ -765,60 +765,6 @@ bool TextArea::moveDownByOneLine()
 	movePageHeadOneLine();
 
 	return true;
-}
-
-VLineLoc TextArea::getLineLocByLineOffset(int offset) const
-{
-    const int rowCnt = page_.size();
-
-    if (vloc_.line() == 0)
-    {
-        int sum = 0;
-
-        for (int i = 0; i < rowCnt; ++i)
-        {
-            const VRow &row = page_[i];
-            const int lineCnt = row.size();
-
-            if (sum + lineCnt > offset)
-            {
-                return VLineLoc(i, offset - sum);
-            }
-
-            sum += lineCnt;
-        }
-
-        return VLineLoc::newLineLocAfterLastRow();
-    }
-
-    if (rowCnt == 0)
-    {
-        return VLineLoc();
-    }
-
-    const VRow & curRow = page_[0];
-    const int curRowSize = curRow.size();
-    if (vloc_.line() + offset < curRowSize)
-    {
-        return VLineLoc(0, vloc_.line() + offset);
-    }
-
-    int sum = curRowSize - vloc_.line();
-
-    for (int i = 1; i < rowCnt; ++i)
-    {
-        const VRow &row = page_[i];
-        const int lineCnt = row.size();
-
-        if (sum + lineCnt > offset)
-        {
-            return VLineLoc(i, offset - sum);
-        }
-
-        sum += lineCnt;
-    }
-
-    return VLineLoc::newLineLocAfterLastRow();
 }
 
 static inline Pixel calcLeftBound(Pixel x, Pixel leftWidth, Pixel margin)
