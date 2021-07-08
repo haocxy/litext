@@ -172,4 +172,50 @@ VCharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
     return toCharLoc(lineLoc, x);
 }
 
+DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
+{
+    if (charLoc.isNull()) {
+        return DocLoc();
+    }
+
+    if (charLoc.isAfterLastRow()) {
+        return DocLoc::newDocLocAfterLastRow();
+    }
+
+    if (charLoc.isAfterLastChar()) {
+        if (isLastLineOfRow(charLoc)) {
+            return DocLoc::newDocLocAfterLastChar(vloc_.row() + charLoc.row());
+        } else {
+            // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
+            return toDocLoc(VCharLoc(charLoc.row(), charLoc.line() + 1, 0));
+        }
+    }
+
+
+    const VRow &vrow = page_[charLoc.row()];
+    int lastLine = charLoc.line();
+    if (vloc_.row() == 0) {
+        // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
+        lastLine += vloc_.line();
+    }
+    CharN col = charLoc.col();
+    for (int i = 0; i < lastLine; ++i) {
+        col += vrow[i].size();
+    }
+
+    return DocLoc(vloc_.row() + charLoc.row(), col);
+}
+
+DocLoc CoordinateConverter::toDocLoc(Pixel x, Pixel y) const
+{
+    const VCharLoc charLoc = toCharLoc(x, y);
+    const DocLoc docLoc = toDocLoc(charLoc);
+    return docLoc;
+}
+
+bool CoordinateConverter::isLastLineOfRow(const VLineLoc &lineLoc) const
+{
+    return lineLoc.line() == page_[lineLoc.row()].size() - 1;
+}
+
 }

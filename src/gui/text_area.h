@@ -83,10 +83,8 @@ public:
 private:
     int getMaxShownLineCnt() const;
 
-    DocLoc getDocLocByPoint(Pixel x, Pixel y) const;
     VRowLoc convertToRowLoc(RowN row) const;
     VCharLoc convertToCharLoc(const DocLoc &docLoc) const;
-    DocLoc convertToDocLoc(const VCharLoc &charLoc) const;
     const VChar &getChar(const VCharLoc &charLoc) const;
     Pixel::Raw getXByCharLoc(const VCharLoc &charLoc) const;
     LineBound getLineBoundByLineOffset(LineOffset lineOffset) const;

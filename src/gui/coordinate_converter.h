@@ -1,12 +1,13 @@
 #pragma once
 
+#include "doc/doc_loc.h"
 #include "size.h"
 #include "page.h"
 #include "view_loc.h"
 #include "line_loc.h"
+#include "char_loc.h"
 #include "line_offset.h"
 #include "pixel.h"
-#include "char_loc.h"
 #include "declare_text_area_config.h"
 
 
@@ -44,6 +45,13 @@ public:
 	VCharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
 
 	VCharLoc toCharLoc(Pixel x, Pixel y) const;
+
+	DocLoc toDocLoc(const VCharLoc &vCharLoc) const;
+
+	DocLoc toDocLoc(Pixel x, Pixel y) const;
+
+private:
+	bool isLastLineOfRow(const VLineLoc &lineLoc) const;
 
 private:
 	const Size &size_;

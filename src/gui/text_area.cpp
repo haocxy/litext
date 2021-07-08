@@ -65,13 +65,6 @@ int TextArea::getMaxShownLineCnt() const
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
-DocLoc TextArea::getDocLocByPoint(Pixel x, Pixel y) const
-{
-    const VCharLoc charLoc = cvt_.toCharLoc(x, y);
-    const DocLoc docLoc = convertToDocLoc(charLoc);
-    return docLoc;
-}
-
 VRowLoc TextArea::convertToRowLoc(RowN row) const
 {
     const int vrowIndex = row - vloc_.row();
@@ -145,48 +138,6 @@ VCharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
     }
 
     return VCharLoc();
-}
-
-DocLoc TextArea::convertToDocLoc(const VCharLoc & charLoc) const
-{
-    if (charLoc.isNull())
-    {
-        return DocLoc();
-    }
-
-    if (charLoc.isAfterLastRow())
-    {
-        return DocLoc::newDocLocAfterLastRow();
-    }
-
-    if (charLoc.isAfterLastChar())
-    {
-        if (isLastLineOfRow(charLoc))
-        {
-            return DocLoc::newDocLocAfterLastChar(vloc_.row() + charLoc.row());
-        }
-        else
-        {
-            // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
-            return convertToDocLoc(VCharLoc(charLoc.row(), charLoc.line() + 1, 0));
-        }
-    }
-
-    
-    const VRow & vrow = page_[charLoc.row()];
-    int lastLine = charLoc.line();
-    if (vloc_.row() == 0)
-    {
-        // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
-        lastLine += vloc_.line();
-    }
-    CharN col = charLoc.col();
-    for (int i = 0; i < lastLine; ++i)
-    {
-        col += vrow[i].size();
-    }
-
-    return DocLoc(vloc_.row() + charLoc.row(), col);
 }
 
 const VChar &TextArea::getChar(const VCharLoc &charLoc) const
@@ -357,7 +308,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
     const VLineLoc upLineLoc = page_.getNextUpLineLoc(charLoc);
     const VCharLoc upCharLoc = cvt_.toCharLoc(upLineLoc, Pixel(stableX_));
 
-    return convertToDocLoc(betterLocForVerticalMove(upCharLoc));
+    return cvt_.toDocLoc(betterLocForVerticalMove(upCharLoc));
 }
 
 DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
@@ -371,7 +322,7 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
     const VLineLoc downLineLoc = page_.getNextDownLineLoc(charLoc);
     const VCharLoc downCharLoc = cvt_.toCharLoc(downLineLoc, Pixel(stableX_));
 
-    return convertToDocLoc(betterLocForVerticalMove(downCharLoc));
+    return cvt_.toDocLoc(betterLocForVerticalMove(downCharLoc));
 }
 
 void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
@@ -719,7 +670,7 @@ CallbackHandle TextArea::addAfterViewLocChangedCallback(std::function<void()>&& 
 void TextArea::onPrimaryButtomPress(Pixel x, Pixel y)
 {
     const VCharLoc charLoc = cvt_.toCharLoc(x, y);
-    const DocLoc docLoc = convertToDocLoc(charLoc);
+    const DocLoc docLoc = cvt_.toDocLoc(charLoc);
     editor_.onPrimaryKeyPress(docLoc);
 
     stableX_ = getXByCharLoc(charLoc);
