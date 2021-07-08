@@ -1,11 +1,13 @@
 #pragma once
 
 #include "doc/doc_loc.h"
+#include "editor/declare_editor.h"
 #include "size.h"
 #include "page.h"
 #include "view_loc.h"
 #include "line_loc.h"
 #include "char_loc.h"
+#include "row_offset.h"
 #include "line_offset.h"
 #include "pixel.h"
 #include "declare_text_area_config.h"
@@ -19,8 +21,14 @@ namespace gui
 // 这部分逻辑属于TextArea，但是因为类似函数太多且实现代码较长，所以单独放置
 class CoordinateConverter {
 public:
-	CoordinateConverter(const Size &size, const Page &page, const ViewLoc &vloc, const TextAreaConfig &config)
-		: size_(size)
+	CoordinateConverter(
+		const Editor &editor,
+		const Size &size,
+		const Page &page,
+		const ViewLoc &vloc,
+		const TextAreaConfig &config)
+		: editor_(editor)
+		, size_(size)
 		, page_(page)
 		, vloc_(vloc)
 		, config_(config) {
@@ -40,6 +48,8 @@ public:
 
 	Pixel::Raw toBaselineY(LineOffset lineOffset) const;
 
+	VRowLoc toRowLoc(VRowOffset vRowOffset) const;
+
 	VLineLoc toVLineLoc(LineOffset lineOffset) const;
 
 	VCharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
@@ -54,6 +64,7 @@ private:
 	bool isLastLineOfRow(const VLineLoc &lineLoc) const;
 
 private:
+	const Editor &editor_;
 	const Size &size_;
 	const Page &page_;
 	const ViewLoc &vloc_;

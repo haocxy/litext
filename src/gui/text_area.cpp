@@ -17,7 +17,7 @@ namespace gui
 TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
-    , cvt_(size_, page_, vloc_, config_)
+    , cvt_(editor_, size_, page_, vloc_, config_)
 {
     assert(editor);
     assert(config);
@@ -63,27 +63,6 @@ int TextArea::getMaxShownLineCnt() const
 {
     const Pixel::Raw lineHeight = config_.lineHeight();
     return (size_.height() + lineHeight - 1) / lineHeight;
-}
-
-VRowLoc TextArea::convertToRowLoc(RowN row) const
-{
-    const int vrowIndex = row - vloc_.row();
-    const int vrowCnt = page_.size();
-    if (vrowIndex < 0 || vrowIndex >= vrowCnt)
-    {
-        if (row >= editor_.doc().rowCnt())
-        {
-            return VRowLoc::newRowLocAfterLastRow();
-        }
-        return VRowLoc();
-    }
-
-    if (row >= editor_.doc().rowCnt())
-    {
-        return VRowLoc::newRowLocAfterLastRow();
-    }
-
-    return VRowLoc(vrowIndex);
 }
 
 VCharLoc TextArea::convertToCharLoc(const DocLoc & docLoc) const
@@ -533,7 +512,7 @@ void TextArea::movePageHeadOneLine()
 std::optional<Rect> TextArea::getLastActLineDrawRect() const
 {
     const RowN row = editor_.lastActRow();
-    const VRowLoc loc = convertToRowLoc(row);
+    const VRowLoc loc = cvt_.toRowLoc(VRowOffset(row));
     if (loc.isNull())
     {
         return std::nullopt;

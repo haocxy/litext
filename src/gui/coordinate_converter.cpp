@@ -1,5 +1,7 @@
 #include "coordinate_converter.h"
 
+#include "doc/doc.h"
+#include "editor/editor.h"
 #include "text_area_config.h"
 
 
@@ -52,6 +54,25 @@ LineOffset::Raw CoordinateConverter::toLineOffset(Pixel y) const
 Pixel::Raw CoordinateConverter::toBaselineY(LineOffset off) const
 {
     return (1 + off.value()) * config_.lineHeight() - config_.font().descent();
+}
+
+VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const
+{
+    const VRowOffset::Raw row = vRowOffset.value();
+    const int vrowIndex = row - vloc_.row();
+    const int vrowCnt = page_.size();
+    if (vrowIndex < 0 || vrowIndex >= vrowCnt) {
+        if (row >= editor_.doc().rowCnt()) {
+            return VRowLoc::newRowLocAfterLastRow();
+        }
+        return VRowLoc();
+    }
+
+    if (row >= editor_.doc().rowCnt()) {
+        return VRowLoc::newRowLocAfterLastRow();
+    }
+
+    return VRowLoc(vrowIndex);
 }
 
 VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const

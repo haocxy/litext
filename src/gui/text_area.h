@@ -83,7 +83,6 @@ public:
 private:
     int getMaxShownLineCnt() const;
 
-    VRowLoc convertToRowLoc(RowN row) const;
     VCharLoc convertToCharLoc(const DocLoc &docLoc) const;
     const VChar &getChar(const VCharLoc &charLoc) const;
     Pixel::Raw getXByCharLoc(const VCharLoc &charLoc) const;
