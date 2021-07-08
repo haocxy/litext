@@ -43,6 +43,8 @@ public:
 
 	CharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
 
+	CharLoc toCharLoc(Pixel x, Pixel y) const;
+
 private:
 	const Size &size_;
 	const Page &page_;

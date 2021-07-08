@@ -65,16 +65,9 @@ int TextArea::getMaxShownLineCnt() const
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
-CharLoc TextArea::getCharLocByPoint(Pixel x, Pixel y) const
-{
-    const LineOffset::Raw lineOffset = cvt_.toLineOffset(y);
-    const VLineLoc lineLoc = cvt_.toVLineLoc(LineOffset(lineOffset));
-    return cvt_.toCharLoc(lineLoc, x);
-}
-
 DocLoc TextArea::getDocLocByPoint(Pixel x, Pixel y) const
 {
-    const CharLoc charLoc = getCharLocByPoint(x, y);
+    const CharLoc charLoc = cvt_.toCharLoc(x, y);
     const DocLoc docLoc = convertToDocLoc(charLoc);
     return docLoc;
 }
@@ -725,7 +718,7 @@ CallbackHandle TextArea::addAfterViewLocChangedCallback(std::function<void()>&& 
 
 void TextArea::onPrimaryButtomPress(Pixel x, Pixel y)
 {
-    const CharLoc charLoc = getCharLocByPoint(x, y);
+    const CharLoc charLoc = cvt_.toCharLoc(x, y);
     const DocLoc docLoc = convertToDocLoc(charLoc);
     editor_.onPrimaryKeyPress(docLoc);
 

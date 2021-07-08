@@ -165,4 +165,11 @@ CharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) co
     return CharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
+CharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
+{
+    const LineOffset::Raw lineOffset = toLineOffset(y);
+    const VLineLoc lineLoc = toVLineLoc(LineOffset(lineOffset));
+    return toCharLoc(lineLoc, x);
+}
+
 }
