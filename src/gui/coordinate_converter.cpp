@@ -51,6 +51,28 @@ LineOffset::Raw CoordinateConverter::toLineOffset(Pixel y) const
     return y.value() / config_.lineHeight();
 }
 
+Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
+{
+    if (charLoc.isNull()) {
+        return 0;
+    }
+
+    if (charLoc.isAfterLastRow()) {
+        return config_.hGap();
+    }
+
+    if (charLoc.isAfterLastChar()) {
+        const VLine &line = page_[charLoc.row()][charLoc.line()];
+        if (line.empty()) {
+            return config_.hGap();
+        }
+        const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
+        return vc.x() + vc.width();
+    }
+
+    return page_[charLoc.row()][charLoc.line()][charLoc.col()].x();
+}
+
 Pixel::Raw CoordinateConverter::toBaselineY(LineOffset off) const
 {
     return (1 + off.value()) * config_.lineHeight() - config_.font().descent();

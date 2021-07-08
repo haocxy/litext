@@ -65,37 +65,6 @@ int TextArea::getMaxShownLineCnt() const
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
-const VChar &TextArea::getChar(const VCharLoc &charLoc) const
-{
-    return page_[charLoc.row()][charLoc.line()][charLoc.col()];
-}
-
-Pixel::Raw TextArea::getXByCharLoc(const VCharLoc &charLoc) const
-{
-    if (charLoc.isNull())
-    {
-        return 0;
-    }
-
-    if (charLoc.isAfterLastRow())
-    {
-        return config_.hGap();
-    }
-
-    if (charLoc.isAfterLastChar())
-    {
-        const VLine & line = page_[charLoc.row()][charLoc.line()];
-        if (line.empty())
-        {
-            return config_.hGap();
-        }
-        const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
-        return vc.x() + vc.width();
-    }
-
-    return getChar(charLoc).x();
-}
-
 LineBound TextArea::getLineBoundByLineOffset(LineOffset lineOffset) const
 {
     const Pixel::Raw lineHeight = config_.lineHeight();
@@ -399,7 +368,7 @@ void TextArea::onDirLeftKeyPress()
         editor_.setNormalCursor(newLoc);
 
 		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
-        stableX_ = getXByCharLoc(charLoc);
+        stableX_ = cvt_.toX(charLoc);
     }
     
 	removeSpareRow();
@@ -421,7 +390,7 @@ void TextArea::onDirRightKeyPress()
         editor_.setNormalCursor(newLoc);
 
 		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
-        stableX_ = getXByCharLoc(charLoc);
+        stableX_ = cvt_.toX(charLoc);
 	}
 
 	if (needMoveHead)
@@ -502,7 +471,7 @@ std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
 
     const LineBound bound = getLineBound(charLoc);
 
-    const Pixel::Raw x = getXByCharLoc(charLoc) + kHorizontalDelta;
+    const Pixel::Raw x = cvt_.toX(charLoc) + kHorizontalDelta;
 
     VerticalLine vl;
     vl.setX(x);
@@ -598,7 +567,7 @@ void TextArea::onPrimaryButtomPress(Pixel x, Pixel y)
     const DocLoc docLoc = cvt_.toDocLoc(charLoc);
     editor_.onPrimaryKeyPress(docLoc);
 
-    stableX_ = getXByCharLoc(charLoc);
+    stableX_ = cvt_.toX(charLoc);
 }
 
 bool TextArea::moveDownByOneLine()
@@ -641,7 +610,7 @@ void TextArea::updateStableXByCurrentCursor()
     const DocLoc docLoc = editor_.normalCursor().to();
     const VCharLoc vCharLoc = cvt_.toCharLoc(docLoc);
 
-    stableX_ = getXByCharLoc(vCharLoc);
+    stableX_ = cvt_.toX(vCharLoc);
 }
 
 void TextArea::remakePage()

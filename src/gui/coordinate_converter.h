@@ -46,6 +46,8 @@ public:
 
 	LineOffset::Raw toLineOffset(Pixel y) const;
 
+	Pixel::Raw toX(const VCharLoc &charLoc) const;
+
 	Pixel::Raw toBaselineY(LineOffset lineOffset) const;
 
 	VRowLoc toRowLoc(VRowOffset vRowOffset) const;
