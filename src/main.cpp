@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
 
 #include <QApplication>
 #include <QDebug>
@@ -13,24 +14,32 @@
 #include "doc/charset_detect_util.h"
 
 
-static int charset(const std::vector<std::string> &args)
+class CmdLine {
+public:
+    CmdLine(const std::vector<std::string> &args) : args_(args) {}
+
+    template <typename T>
+    CmdLine &arg(T &obj) {
+        if (current_ < args_.size()) {
+            std::istringstream ss(args_[current_++]);
+            ss >> obj;
+        }
+        return *this;
+    }
+
+private:
+    std::vector<std::string> args_;
+    int current_ = 0;
+};
+
+
+static int charset(CmdLine &cmd)
 {
     std::string path;
     size_t offset = 0;
     size_t len = 0;
-    if (args.empty()) {
-        std::cerr << "bad argument count" << std::endl;
-        return 1;
-    }
-    if (args.size() > 0) {
-        path = args[0];
-    }
-    if (args.size() > 1) {
-        offset = std::stoi(args[1]);
-    }
-    if (args.size() > 2) {
-        len = std::stoi(args[2]);
-    }
+    cmd.arg(path).arg(offset).arg(len);
+
     ElapsedTime elapsedTime;
     std::string charset = doc::CharsetDetectUtil::detectCharsetOfFile(path, offset, len);
     ElapsedTime::MilliSec usage = elapsedTime.milliSec();
@@ -42,10 +51,30 @@ static int charset(const std::vector<std::string> &args)
     return 0;
 }
 
+static int quickCharset(CmdLine &cmd)
+{
+    std::string path;
+    cmd.arg(path);
+
+    ElapsedTime elapsedTime;
+    std::string charset = doc::CharsetDetectUtil::quickDetectCharset(path);
+    ElapsedTime::MilliSec usage = elapsedTime.milliSec();
+    std::cout << "path: " << path << std::endl;
+    std::cout << "file size: " << fs::file_size(path) << std::endl;
+    std::cout << "charset: " << charset << std::endl;
+    std::cout << "time usage: " << usage << "ms" << std::endl;
+    std::cout << std::endl;
+    return 0;
+}
+
 static int chooseDebug(const std::string &cmd, const std::vector<std::string> &args)
 {
+    CmdLine cmdLine(args);
     if (cmd == "charset") {
-        return charset(args);
+        return charset(cmdLine);
+    }
+    if (cmd == "quick-charset") {
+        return quickCharset(cmdLine);
     }
 
     std::cerr << "unknow cmd: [" << cmd << "]" << std::endl;
