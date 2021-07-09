@@ -56,7 +56,7 @@ std::string quickDetectCharset(const fs::path &path)
 
 	const uintmax_t pageCount = fileSize / pageSize;
 
-	// 如果页的数量超过了处理器数量的2倍，则限制检测的片段数为处理器数量的2倍
+	// 如果页的数量超过了处理器数量，则限制检测的片段数为处理器数量
 	const uintmax_t partCount = std::min(pageCount, static_cast<uintmax_t>(processerCount()));
 
 	// 确定好线程数threadCount后，把文件分为threadCount个大小partSize的部分
