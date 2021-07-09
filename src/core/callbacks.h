@@ -34,6 +34,8 @@ public:
 
     CallbackHandle & operator=(CallbackHandle && cbh)
     {
+        clear();
+
         m_callbacks = cbh.m_callbacks;
         cbh.m_callbacks = nullptr;
 
@@ -45,8 +47,11 @@ public:
 
     ~CallbackHandle()
     {
-        if (m_callbacks && m_callbackId)
-        {
+        clear();
+    }
+
+    void clear() {
+        if (m_callbacks && m_callbackId) {
             m_callbacks->remove(m_callbackId);
             m_callbacks = nullptr;
             m_callbackId = nullptr;

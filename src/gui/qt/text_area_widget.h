@@ -16,7 +16,7 @@ class TextAreaWidget : public MyWidget {
     Q_OBJECT
 
 public:
-    TextAreaWidget(TextArea &view, QWidget *parent = nullptr);
+    TextAreaWidget(QWidget *parent = nullptr);
 
     ~TextAreaWidget();
 
@@ -32,6 +32,8 @@ public:
 
     virtual void mousePressEvent(QMouseEvent *e) override;
 
+    void setTextArea(TextArea *area);
+
 private:
     void paintBackground(QPainter &p);
 
@@ -45,6 +47,8 @@ private:
 
     void refresh();
 
+    void dumpToFile(const char *path);
+
 private:
     class DirtyBuffFlag {
     public:
@@ -55,7 +59,7 @@ private:
     };
 
 private:
-    TextArea &view_;
+    TextArea *area_ = nullptr;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
     CallbackHandle cbhViewLocChanged_;
