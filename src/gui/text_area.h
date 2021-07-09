@@ -42,9 +42,6 @@ public:
     ~TextArea();
 
 public:
-
-    void initSize(const Size &size);
-
     void resize(const Size &size);
 
     void onPrimaryButtomPress(Pixel x, Pixel y);

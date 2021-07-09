@@ -32,17 +32,6 @@ TextArea::~TextArea()
 
 }
 
-void TextArea::initSize(const Size & size)
-{
-    size_ = size;
-
-    remakePage();
-
-    updateStableXByCurrentCursor();
-
-    cbsShouldRepaint_.call();
-}
-
 void TextArea::resize(const Size & size)
 {
     if (size_ == size)

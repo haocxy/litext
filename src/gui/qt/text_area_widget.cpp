@@ -1,10 +1,8 @@
 #include "text_area_widget.h"
 
-#include <set>
 #include <cassert>
 #include <QPainter>
 #include <QMouseEvent>
-#include <QFile>
 
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
@@ -200,8 +198,6 @@ void TextAreaWidget::prepareTextImage()
     }
 
     QPainter p(&textPaintBuff_);
-    int w = textPaintBuff_.width();
-    int h = textPaintBuff_.height();
     textPaintBuff_.fill(QColor(0, 0, 0, 0));
 
     QFont qfont;
@@ -230,23 +226,6 @@ void TextAreaWidget::refresh()
     // refresh这个函数里即使只调用了update，也要这样包装一层
     // 其他部分调用refresh，这样就便于以后需要时添加重绘相关的公用逻辑
     update();
-}
-
-void TextAreaWidget::dumpToFile(const char *path)
-{
-    return;
-
-    if (!path) {
-        return;
-    }
-
-    static std::set<std::string> dumped;
-    if (dumped.find(path) != dumped.end()) {
-        return;
-    }
-
-    textPaintBuff_.save(path, "PNG");
-    dumped.insert(path);
 }
 
 void TextAreaWidget::paintCursor(QPainter &p)

@@ -47,8 +47,6 @@ private:
 
     void refresh();
 
-    void dumpToFile(const char *path);
-
 private:
     class DirtyBuffFlag {
     public:
