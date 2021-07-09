@@ -3,6 +3,7 @@
 #include <fstream>
 #include <algorithm>
 
+#include "core/heap_array.h"
 #include "charset_detector.h"
 
 
@@ -26,8 +27,7 @@ std::string detectCharsetOfFile(const fs::path &path, size_t offset, size_t len)
 	const size_t remain = fileSize - offset;
 	const size_t realLen = len > 0 ? std::min(remain, len) : remain;
 
-	std::string buff;
-	buff.resize(realLen);
+	HeapArray buff(realLen);
 
 	ifs.seekg(offset);
 	ifs.read(buff.data(), realLen);
