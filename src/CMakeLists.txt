@@ -1,7 +1,7 @@
 set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(${root_dir})
-include_directories(${CMAKE_SOURCE_DIR}/third/uchardet-0.0.7/src)
+include_directories(${CMAKE_SOURCE_DIR})
 
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
