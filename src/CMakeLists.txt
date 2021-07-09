@@ -16,4 +16,4 @@ source_group(TREE "${root_dir}/.." FILES ${src_files})
 
 target_link_libraries(notesharp
     Qt5::Widgets
-    libuchardet)
+    libuchardet_static)
