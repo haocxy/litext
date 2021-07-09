@@ -58,8 +58,8 @@ std::string quickDetectCharset(const fs::path &path)
 	std::vector<std::future<std::string>> futures;
 	for (uintmax_t i = 0; i < threadCount; ++i) {
 		const uintmax_t partBegin = i * partSize;
-		// 因为不知道具体编码，所以需要取不同的起点尝试，假设编码最长的字符用
-		constexpr int maxEncodedByteCount = 4;
+		// 因为不知道具体编码，所以需要取不同的起点尝试，假设未知的编码可能最多用maxEncodedByteCount个字节
+		constexpr int maxEncodedByteCount = 6;
 		for (int off = 0; off < maxEncodedByteCount; ++off) {
 			futures.push_back(std::async(std::launch::async, [path, partBegin, off, page]()->std::string {
 				return detectCharsetOfFile(path, partBegin + off, page);
