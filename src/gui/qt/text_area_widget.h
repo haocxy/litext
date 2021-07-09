@@ -1,18 +1,18 @@
 #pragma once
 
-#include <QWidget>
 #include <QImage>
 
 #include "core/flagset.h"
 #include "core/callbacks.h"
 #include "gui/declare_text_area.h"
+#include "my_widget.h"
 
 
 namespace gui::qt
 {
 
 
-class TextAreaWidget : public QWidget {
+class TextAreaWidget : public MyWidget {
     Q_OBJECT
 
 public:

@@ -37,7 +37,7 @@ namespace gui::qt
 
 
 TextAreaWidget::TextAreaWidget(TextArea &view, QWidget *parent)
-    : QWidget(parent)
+    : MyWidget(parent)
     , view_(view)
     , textPaintBuff_(kSizeHint, kBuffImageFormat)
 {

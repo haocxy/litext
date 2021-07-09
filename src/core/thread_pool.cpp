@@ -22,13 +22,13 @@ ThreadPool::~ThreadPool()
 	for (std::thread &th : threads_) {
 		try {
 			th.join();
-		} catch (...) {} // TODO ÔİÊ±ºöÂÔËùÓĞµÄjoinÒì³££¬ÒÔºó¿´¿´¾ßÌåÔõÃ´´¦Àí¸üÓÅÑÅ
+		} catch (...) {} // TODO æš‚æ—¶å¿½ç•¥æ‰€æœ‰çš„joinå¼‚å¸¸ï¼Œä»¥åçœ‹çœ‹å…·ä½“æ€ä¹ˆå¤„ç†æ›´ä¼˜é›…
 	}
 }
 
-bool ThreadPool::post(std::function<void()> &&work)
+void ThreadPool::post(std::function<void()> &&work)
 {
-	return workQueue_.push(std::move(work));
+	workQueue_.push(std::move(work));
 }
 
 void ThreadPool::threadLoop()

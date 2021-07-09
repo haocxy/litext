@@ -5,16 +5,17 @@
 #include <thread>
 #include <functional>
 
+#include "worker.h"
 #include "block_queue.h"
 
 
-class ThreadPool {
+class ThreadPool : public Worker {
 public:
 	ThreadPool(size_t maxThreadCount);
 
 	~ThreadPool();
 
-	bool post(std::function<void()> &&work);
+	virtual void post(std::function<void()> &&work) override;
 
 private:
 	void threadLoop();
