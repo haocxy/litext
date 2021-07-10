@@ -1,9 +1,10 @@
 #pragma once
 
+#include "core/fs.h"
 #include "core/ustring.h"
-#include "core/worker.h"
+#include "core/thread_pool.h"
 #include "core/declare_thread_pool.h"
-#include "doc_server.h"
+#include "declare_doc_server.h"
 #include "row_range.h"
 
 
@@ -27,9 +28,9 @@ public:
 	void queryRowCount(std::function<void(RowN rowCount)> &&cb);
 
 private:
+	ThreadPool docServerThread_{ 1 };
 	Worker &cbWorker_;
-	DocServer docServer_;
-	ThreadPool *docServerWorker_ = nullptr;
+	DocServer *docServer_ = nullptr;
 };
 
 
