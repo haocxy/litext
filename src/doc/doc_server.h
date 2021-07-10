@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "core/fs.h"
 #include "core/ustring.h"
 #include "row_range.h"
