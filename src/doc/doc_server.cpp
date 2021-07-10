@@ -15,6 +15,11 @@ DocServer::~DocServer() {
 
 }
 
+std::vector<UString> DocServer::loadRows(const RowRange &range)
+{
+	return std::vector<UString>(); // TODO
+}
+
 
 
 

@@ -1,11 +1,17 @@
 #include "editor.h"
 
 #include <assert.h>
+
+#include "core/worker.h"
 #include "doc/doc.h"
 #include "doc/doc_row.h"
+#include "doc/async_doc_server.h"
 
-Editor::Editor(Doc * model)
-    : m_model(*model)
+
+Editor::Editor(Worker &ownerWorker, Doc *model, doc::AsyncDocServer &docServer)
+    : ownerWorker_(ownerWorker)
+    , m_model(*model)
+    , docServer_(docServer)
 {
     assert(model);
 }
@@ -125,6 +131,15 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
     {
         return DocLoc::newDocLocAfterLastChar(loc.row());
     }
+}
+
+void Editor::loadRows(const doc::RowRange &range, std::function<void(std::vector<UString> &&rows)> &&cb)
+{
+    docServer_.loadRows(range, [this, cb = std::move(cb)](std::vector<UString> &&rows) mutable {
+        ownerWorker_.post([cb = std::move(cb), rows = std::move(rows)] () mutable {
+            cb(std::move(rows));
+        });
+    });
 }
 
 CallbackHandle Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)

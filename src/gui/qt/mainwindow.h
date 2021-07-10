@@ -3,9 +3,12 @@
 #include <QMainWindow>
 
 #include "core/fs.h"
+#include "core/worker.h"
+#include "doc/declare_async_doc_server.h"
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
 #include "declare_editor_view_widget.h"
+#include "my_widget.h"
 
 
 class Editor;
@@ -32,6 +35,9 @@ private:
     TextArea *m_view = nullptr;
     Editor *m_editor = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
+    MyWidget m_receiver;
+    Worker *m_objWorker = nullptr;
+    doc::AsyncDocServer *m_docServer = nullptr;
 };
 
 

@@ -16,7 +16,12 @@ class EditorViewWidget : public QWidget {
     Q_OBJECT
 public:
     EditorViewWidget(TextArea &view, QWidget *parent = nullptr);
+
     virtual ~EditorViewWidget();
+
+    TextAreaWidget *textAreaWidget() {
+        return textArea_;
+    }
 
 private:
     RulerWidget *ruler_ = nullptr;
