@@ -11,9 +11,14 @@ namespace doc
 AsyncDocServer::AsyncDocServer(Worker &cbWorker, const fs::path &filePath)
 	: cbWorker_(cbWorker) {
 
-	docServerThread_.post([this, filePath] {
+	BlockDoor door;
+
+	docServerThread_.post([this, filePath, &door] {
 		docServer_ = new DocServer(filePath);
+		door.open();
 	});
+
+	door.waitOpened();
 }
 
 AsyncDocServer::~AsyncDocServer()
