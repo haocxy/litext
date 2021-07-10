@@ -142,6 +142,15 @@ void Editor::loadRows(const doc::RowRange &range, std::function<void(std::vector
     });
 }
 
+void Editor::queryRowCount(std::function<void(RowN)> &&cb)
+{
+    docServer_.queryRowCount([this, cb = std::move(cb)](RowN rowCount) mutable {
+        ownerWorker_.post([cb = std::move(cb), rowCount] {
+            cb(rowCount);
+        });
+    });
+}
+
 CallbackHandle Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
 {
     return m_lastActRowUpdateListeners.add(std::move(action));

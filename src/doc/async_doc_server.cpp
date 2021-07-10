@@ -26,5 +26,12 @@ void AsyncDocServer::loadRows(const doc::RowRange &range, std::function<void(std
 	});
 }
 
+void AsyncDocServer::queryRowCount(std::function<void(RowN rowCount)> &&cb)
+{
+	docServerWorker_->post([this, cb = std::move(cb)]{
+		cb(docServer_.rowCount());
+	});
+}
+
 
 }

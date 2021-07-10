@@ -20,6 +20,8 @@ public:
 
 	std::vector<UString> loadRows(const RowRange &range);
 
+	RowN rowCount();
+
 private:
 	const fs::path filePath_;
 

@@ -28,6 +28,8 @@ public:
 
 	void loadRows(const doc::RowRange &range, std::function<void(std::vector<UString> &&rows)> &&cb);
 
+	void queryRowCount(std::function<void(RowN rowCount)> &&cb);
+
 private:
 	DocServer docServer_;
 	ThreadPool *docServerWorker_ = nullptr;

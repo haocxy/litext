@@ -20,6 +20,11 @@ std::vector<UString> DocServer::loadRows(const RowRange &range)
 	return std::vector<UString>(); // TODO
 }
 
+RowN DocServer::rowCount()
+{
+	return RowN(); // TODO
+}
+
 
 
 
