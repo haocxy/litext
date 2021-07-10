@@ -8,14 +8,14 @@ namespace gui::qt
 {
 
 
-bool MyWidget::event(QEvent *ev) {
-	if (ev->type() == RunOnQObjectEvent::g_type) {
-		RunOnQObjectEvent *e = static_cast<RunOnQObjectEvent *>(ev);
+bool RunInGuiThreadEventReceiver::event(QEvent *ev) {
+	if (ev->type() == RunInGuiThreadEvent::g_type) {
+		RunInGuiThreadEvent *e = static_cast<RunInGuiThreadEvent *>(ev);
 		e->call();
 		return true;
+	} else {
+		return false;
 	}
-
-	return QWidget::event(ev);
 }
 
 

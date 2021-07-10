@@ -1,20 +1,29 @@
 #pragma once
 
-#include <QEvent>
+#include <cassert>
 #include <functional>
+
+#include <QEvent>
 
 
 namespace gui::qt
 {
 
 
-class RunOnQObjectEvent : public QEvent {
+class RunInGuiThreadEvent : public QEvent {
 public:
 	static QEvent::Type g_type;
 
-	RunOnQObjectEvent(std::function<void()> &&action)
+	RunInGuiThreadEvent(std::function<void()> &&action)
 		: QEvent(g_type)
-		, action_(std::move(action)) {}
+		, action_(std::move(action)) {
+
+		assert(g_type != QEvent::None);
+	}
+
+	virtual ~RunInGuiThreadEvent() {
+
+	}
 
 	void call() {
 		if (action_) {

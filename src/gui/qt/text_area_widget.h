@@ -1,11 +1,11 @@
 #pragma once
 
+#include <QWidget>
 #include <QImage>
 
 #include "core/flagset.h"
 #include "core/callbacks.h"
 #include "gui/declare_text_area.h"
-#include "my_widget.h"
 #include "object_worker.h"
 
 
@@ -13,7 +13,7 @@ namespace gui::qt
 {
 
 
-class TextAreaWidget : public MyWidget {
+class TextAreaWidget : public QWidget {
     Q_OBJECT
 
 public:

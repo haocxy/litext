@@ -4,7 +4,7 @@
 namespace gui::qt
 {
 
-QEvent::Type RunOnQObjectEvent::g_type = QEvent::None;
+QEvent::Type RunInGuiThreadEvent::g_type = QEvent::None;
 
 
 

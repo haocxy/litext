@@ -11,7 +11,7 @@ namespace gui::qt
 
 void ObjectWorker::post(std::function<void()> &&action)
 {
-	QCoreApplication::sendEvent(&receiver_, new RunOnQObjectEvent(std::move(action)));
+	QCoreApplication::sendEvent(&receiver_, new RunInGuiThreadEvent(std::move(action)));
 }
 
 

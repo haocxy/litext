@@ -1,17 +1,17 @@
 #pragma once
 
-#include <QWidget>
+#include <QObject>
 
 
 namespace gui::qt
 {
 
-class MyWidget : public QWidget {
+class RunInGuiThreadEventReceiver : public QObject {
 	Q_OBJECT
 public:
-	explicit MyWidget(QWidget *parent = nullptr) : QWidget(parent) {}
+	explicit RunInGuiThreadEventReceiver(QObject *parent = nullptr) : QObject(parent) {}
 
-	virtual ~MyWidget() {}
+	virtual ~RunInGuiThreadEventReceiver() {}
 
 	virtual bool event(QEvent *ev) override;
 };

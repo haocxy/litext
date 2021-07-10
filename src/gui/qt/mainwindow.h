@@ -35,7 +35,7 @@ private:
     TextArea *m_view = nullptr;
     Editor *m_editor = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
-    MyWidget m_receiver;
+    RunInGuiThreadEventReceiver m_receiver;
     Worker *m_objWorker = nullptr;
     doc::AsyncDocServer *m_docServer = nullptr;
 };
