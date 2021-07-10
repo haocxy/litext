@@ -7,11 +7,10 @@
 #include <QApplication>
 #include <QDebug>
 
-#include "gui/qt/run_on_qobject_event.h"
-#include "gui/qt/mainwindow.h"
-
 #include "core/time_util.h"
 #include "doc/charset_detect_util.h"
+#include "gui/qt/run_in_gui_thread_event.h"
+#include "gui/qt/mainwindow.h"
 
 
 class CmdLine {

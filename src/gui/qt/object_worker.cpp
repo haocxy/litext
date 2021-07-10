@@ -2,7 +2,7 @@
 
 #include <QCoreApplication>
 
-#include "run_on_qobject_event.h"
+#include "run_in_gui_thread_event.h"
 
 
 namespace gui::qt
