@@ -1,4 +1,4 @@
-#include "qobject_worker.h"
+#include "object_worker.h"
 
 #include <QCoreApplication>
 
@@ -9,7 +9,7 @@ namespace gui::qt
 {
 
 
-void QObjectWorker::post(std::function<void()> &&action)
+void ObjectWorker::post(std::function<void()> &&action)
 {
 	QCoreApplication::sendEvent(&receiver_, new RunOnQObjectEvent(std::move(action)));
 }

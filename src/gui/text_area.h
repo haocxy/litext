@@ -8,6 +8,7 @@
 
 #include "core/callbacks.h"
 #include "core/strong_type_integer.h"
+#include "core/worker.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "page.h"
@@ -57,6 +58,8 @@ public:
     // 向后移动一个line，移动成功则返回true，移动失败则返回false
     // 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
     bool moveDownByOneLine();
+
+    void setGuiWorker(Worker *guiWorker);
 
 public:
 
@@ -124,6 +127,7 @@ private:
     void removeSpareRow();
 
 private:
+    Worker *guiWorker_;
     Editor &editor_;
     const TextAreaConfig &config_;
     Page page_;

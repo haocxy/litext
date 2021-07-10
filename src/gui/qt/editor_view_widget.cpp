@@ -17,7 +17,7 @@ EditorViewWidget::EditorViewWidget(TextArea &view, QWidget *parent)
 {
     ruler_ = new RulerWidget(view);
     textArea_ = new TextAreaWidget;
-    textArea_->setTextArea(&view);
+    textArea_->bind(&view);
     statusBar_ = new StatusBarWidget(view);
 
     QVBoxLayout *vlayout = new QVBoxLayout;

@@ -10,12 +10,12 @@ namespace gui::qt
 {
 
 
-class QObjectWorker : public Worker {
+class ObjectWorker : public Worker {
 public:
-	QObjectWorker(QObject &receiver)
+	ObjectWorker(QObject &receiver)
 		: receiver_(receiver) {}
 
-	virtual ~QObjectWorker() {}
+	virtual ~ObjectWorker() {}
 
 	virtual void post(std::function<void()> &&action) override;
 

@@ -6,6 +6,7 @@
 #include "core/callbacks.h"
 #include "gui/declare_text_area.h"
 #include "my_widget.h"
+#include "object_worker.h"
 
 
 namespace gui::qt
@@ -32,7 +33,9 @@ public:
 
     virtual void mousePressEvent(QMouseEvent *e) override;
 
-    void setTextArea(TextArea *area);
+    void bind(TextArea *area);
+
+    void unbind();
 
 private:
     void paintBackground(QPainter &p);
@@ -57,6 +60,7 @@ private:
     };
 
 private:
+    ObjectWorker worker_;
     TextArea *area_ = nullptr;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;

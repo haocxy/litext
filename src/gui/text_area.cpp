@@ -594,6 +594,11 @@ bool TextArea::moveDownByOneLine()
 	return true;
 }
 
+void TextArea::setGuiWorker(Worker *guiWorker)
+{
+    guiWorker_ = guiWorker;
+}
+
 void TextArea::updateStableXByCurrentCursor()
 {
     const DocLoc docLoc = editor_.normalCursor().to();
