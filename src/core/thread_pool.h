@@ -13,7 +13,7 @@ class ThreadPool : public Worker {
 public:
 	ThreadPool(size_t maxThreadCount);
 
-	~ThreadPool();
+	virtual ~ThreadPool();
 
 	virtual void post(std::function<void()> &&work) override;
 
