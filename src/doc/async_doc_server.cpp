@@ -11,19 +11,13 @@ namespace doc
 AsyncDocServer::AsyncDocServer(Worker &cbWorker, const fs::path &filePath)
 	: cbWorker_(cbWorker) {
 
-	BlockDoor door;
-
-	docServerThread_.post([this, filePath, &door] {
+	docServerThread_.post([this, filePath] {
 		docServer_ = new DocServer(filePath);
-		door.open();
 	});
-
-	door.waitOpened();
 }
 
 AsyncDocServer::~AsyncDocServer()
 {
-	// 确保docServerWorker_在其所属线程内被析构完成后才析构本对象
 	BlockDoor door;
 
 	docServerThread_.post([this, &door] {
