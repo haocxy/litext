@@ -5,6 +5,12 @@
 #include "core/worker.h"
 
 
+struct QtGuiFuncWrapper {
+	std::function<void()> f;
+};
+
+Q_DECLARE_METATYPE(QtGuiFuncWrapper)
+
 
 namespace gui::qt
 {
@@ -20,10 +26,10 @@ public:
 	virtual void post(std::function<void()> &&action) override;
 
 private slots:
-	void runMyFunction(void *ptr);
+	void runMyFunction(QtGuiFuncWrapper wrapper);
 
 signals:
-	void postMyFunction(void *ptr);
+	void postMyFunction(QtGuiFuncWrapper wrapper);
 };
 
 

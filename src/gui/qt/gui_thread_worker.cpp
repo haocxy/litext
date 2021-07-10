@@ -1,28 +1,34 @@
 #include "gui_thread_worker.h"
 
-#include <memory>
+#include <mutex>
 
 
 namespace gui::qt
 {
 
+static std::once_flag g_RegisterOnceFlag;
+
 
 GuiThreadWorker::GuiThreadWorker()
 {
+	std::call_once(g_RegisterOnceFlag, []() {
+		qRegisterMetaType<QtGuiFuncWrapper>("QtGuiFuncWrapper");
+	});
+
 	QObject::connect(this, &GuiThreadWorker::postMyFunction, this, &GuiThreadWorker::runMyFunction);
 }
 
 void GuiThreadWorker::post(std::function<void()> &&action)
 {
-	// 若要投递std::function<void()>类型需要有比较繁琐的注册逻辑，直接在堆内存拷贝函数对象并投递其指针
-	emit postMyFunction(new std::function<void()>(std::move(action)));
+	QtGuiFuncWrapper wrapper;
+	wrapper.f = std::move(action);
+	emit postMyFunction(wrapper);
 }
 
-void GuiThreadWorker::runMyFunction(void *ptr)
+void GuiThreadWorker::runMyFunction(QtGuiFuncWrapper wrapper)
 {
-	std::unique_ptr<std::function<void()>> f(reinterpret_cast<std::function<void()> *>(ptr));
-	if (f && (*f)) {
-		(*f)();
+	if (wrapper.f) {
+		wrapper.f();
 	}
 }
 
