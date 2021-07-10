@@ -13,6 +13,7 @@ AsyncDocServer::AsyncDocServer(Worker &cbWorker, const fs::path &filePath)
 
 	docServerThread_.post([this, filePath] {
 		docServer_ = new DocServer(filePath);
+		detectCharset();
 	});
 }
 
@@ -45,6 +46,22 @@ void AsyncDocServer::queryRowCount(std::function<void(RowN rowCount)> &&cb)
 		RowN rowCount = docServer_->rowCount();
 		cbWorker_.post([rowCount, cb = std::move(cb)]{
 			cb(rowCount);
+		});
+	});
+}
+
+CallbackHandle AsyncDocServer::addCharsetDetectedCallback(std::function<void(Charset charset)> &&action)
+{
+	return cbsCharsetDetected_.add(std::move(action));
+}
+
+void AsyncDocServer::detectCharset()
+{
+	docServerThread_.post([this] {
+		docServer_->detectCharset();
+		const Charset charset = docServer_->charset();
+		cbWorker_.post([this, charset]() {
+			cbsCharsetDetected_.call(charset);
 		});
 	});
 }

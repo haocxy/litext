@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include <iostream> // TODO for debug
+
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
@@ -45,6 +47,10 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     m_editor = new Editor(m_doc, *m_docServer);
     m_view = new TextArea(m_editor, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(*m_view);
+
+    cbhOnCharsetDetected_ = m_editor->server().addCharsetDetectedCallback([](doc::Charset charset) {
+        std::cout << "charset detected" << std::endl;
+    });
 
     this->setCentralWidget(m_editorViewWidget);
 }

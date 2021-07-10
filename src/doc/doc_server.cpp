@@ -7,13 +7,18 @@ namespace doc
 {
 
 DocServer::DocServer(const fs::path &filePath)
-	: filePath_(filePath)
-	, charset_(CharsetDetectUtil::quickDetectCharset(filePath)) {
+	: filePath_(filePath) {
 
 }
 
 DocServer::~DocServer() {
 
+}
+
+void DocServer::detectCharset()
+{
+	const std::string charsetStr = CharsetDetectUtil::quickDetectCharset(filePath_);
+	charset_ = CharsetUtil::strToCharset(charsetStr);
 }
 
 std::vector<UString> DocServer::loadRows(const RowRange &range)

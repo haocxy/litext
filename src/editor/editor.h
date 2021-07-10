@@ -25,6 +25,8 @@ public:
 
     const Doc & doc() const { return m_model; }
 
+    doc::AsyncDocServer &server() { return docServer_; }
+
     const DocCursor &normalCursor() { return m_normalCursor; }
 
     RowN lastActRow() { return m_lastActRow; }

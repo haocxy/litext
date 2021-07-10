@@ -2,9 +2,11 @@
 
 #include "core/fs.h"
 #include "core/ustring.h"
+#include "core/callbacks.h"
 #include "core/thread_pool.h"
 #include "core/declare_thread_pool.h"
 #include "declare_doc_server.h"
+#include "charset.h"
 #include "row_range.h"
 
 
@@ -27,8 +29,14 @@ public:
 
 	void queryRowCount(std::function<void(RowN rowCount)> &&cb);
 
+	CallbackHandle addCharsetDetectedCallback(std::function<void(Charset charset)> &&action);
+
+private:
+	void detectCharset();
+
 private:
 	ThreadPool docServerThread_{ 1 };
+	Callbacks<void(Charset charset)> cbsCharsetDetected_;
 	Worker &cbWorker_;
 	DocServer *docServer_ = nullptr;
 };

@@ -4,6 +4,7 @@
 
 #include "core/fs.h"
 #include "core/worker.h"
+#include "core/callbacks.h"
 #include "doc/declare_async_doc_server.h"
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
@@ -36,8 +37,8 @@ private:
     TextArea *m_view = nullptr;
     Editor *m_editor = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
-    RunInGuiThreadEventReceiver m_receiver;
     doc::AsyncDocServer *m_docServer = nullptr;
+    CallbackHandle cbhOnCharsetDetected_;
 };
 
 

@@ -5,6 +5,7 @@
 #include "core/fs.h"
 #include "core/ustring.h"
 #include "row_range.h"
+#include "charset.h"
 
 
 namespace doc
@@ -20,13 +21,19 @@ public:
 
 	~DocServer();
 
+	void detectCharset();
+
+	Charset charset() const {
+		return charset_;
+	}
+
 	std::vector<UString> loadRows(const RowRange &range);
 
 	RowN rowCount();
 
 private:
 	const fs::path filePath_;
-	const std::string charset_;
+	Charset charset_ = Charset::Unknown;
 };
 
 
