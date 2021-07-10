@@ -60,7 +60,7 @@ private:
     };
 
 private:
-    ObjectWorker worker_;
+    GuiThreadWorker worker_;
     TextArea *area_ = nullptr;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;

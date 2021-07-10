@@ -42,8 +42,8 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(filePath.generic_string());
 
-    m_objWorker = new ObjectWorker(m_receiver);
-    m_docServer = new doc::AsyncDocServer(*m_objWorker, filePath);
+    m_guiThreadWorker = new GuiThreadWorker(m_receiver);
+    m_docServer = new doc::AsyncDocServer(*m_guiThreadWorker, filePath);
     m_editor = new Editor(m_doc, *m_docServer);
     m_view = new TextArea(m_editor, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(*m_view);
@@ -54,8 +54,8 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete m_objWorker;
-    m_objWorker = nullptr;
+    delete m_guiThreadWorker;
+    m_guiThreadWorker = nullptr;
 
     delete m_docServer;
     m_docServer = nullptr;

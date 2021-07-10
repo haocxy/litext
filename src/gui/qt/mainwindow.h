@@ -36,7 +36,7 @@ private:
     Editor *m_editor = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
     RunInGuiThreadEventReceiver m_receiver;
-    Worker *m_objWorker = nullptr;
+    Worker *m_guiThreadWorker = nullptr;
     doc::AsyncDocServer *m_docServer = nullptr;
 };
 
