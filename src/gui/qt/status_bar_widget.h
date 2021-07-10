@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+#include "core/callbacks.h"
 #include "gui/declare_text_area.h"
 
 
@@ -15,10 +16,15 @@ public:
 	explicit StatusBarWidget(TextArea &view, QWidget *parent = nullptr);
 
 	virtual QSize sizeHint() const override;
+
 	virtual void paintEvent(QPaintEvent *e) override;
+
+	void setContent(QString &&content);
 
 private:
 	TextArea &view_;
+	QString content_;
+	CallbackHandle cbhCharsetDetected_;
 };
 
 

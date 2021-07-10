@@ -48,10 +48,6 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     m_view = new TextArea(m_editor, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(*m_view);
 
-    cbhOnCharsetDetected_ = m_editor->server().addCharsetDetectedCallback([](doc::Charset charset) {
-        std::cout << "charset detected" << std::endl;
-    });
-
     this->setCentralWidget(m_editorViewWidget);
 }
 

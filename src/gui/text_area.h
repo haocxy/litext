@@ -60,6 +60,7 @@ public:
     bool moveDownByOneLine();
 
 public:
+    Editor &editor() { return editor_; }
 
     const TextAreaConfig &config() const { return config_; }
 
