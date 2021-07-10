@@ -8,7 +8,7 @@
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
 #include "declare_editor_view_widget.h"
-#include "run_in_gui_thread_event_receiver.h"
+#include "gui_thread_worker.h"
 
 
 class Editor;
@@ -30,13 +30,13 @@ private:
     void initMenuBar();
 
 private:
+    GuiThreadWorker m_guiThreadWorker;
     TextAreaConfig *m_viewConfig = nullptr;
     SimpleDoc *m_doc = nullptr;
     TextArea *m_view = nullptr;
     Editor *m_editor = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
     RunInGuiThreadEventReceiver m_receiver;
-    Worker *m_guiThreadWorker = nullptr;
     doc::AsyncDocServer *m_docServer = nullptr;
 };
 

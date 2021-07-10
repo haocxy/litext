@@ -59,8 +59,6 @@ public:
     // 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
     bool moveDownByOneLine();
 
-    void setGuiWorker(Worker *guiWorker);
-
 public:
 
     const TextAreaConfig &config() const { return config_; }
@@ -127,7 +125,6 @@ private:
     void removeSpareRow();
 
 private:
-    Worker *guiWorker_;
     Editor &editor_;
     const TextAreaConfig &config_;
     Page page_;

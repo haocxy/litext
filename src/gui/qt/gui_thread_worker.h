@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/worker.h"
+#include "run_in_gui_thread_event_receiver.h"
 
 
 class QObject;
@@ -12,15 +13,14 @@ namespace gui::qt
 
 class GuiThreadWorker : public Worker {
 public:
-	GuiThreadWorker(QObject &receiver)
-		: receiver_(receiver) {}
+	GuiThreadWorker() {}
 
 	virtual ~GuiThreadWorker() {}
 
 	virtual void post(std::function<void()> &&action) override;
 
 private:
-	QObject &receiver_;
+	RunInGuiThreadEventReceiver receiver_;
 };
 
 

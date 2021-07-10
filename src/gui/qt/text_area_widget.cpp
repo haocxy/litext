@@ -38,7 +38,6 @@ namespace gui::qt
 
 TextAreaWidget::TextAreaWidget(QWidget *parent)
     : QWidget(parent)
-    , worker_(*this)
     , textPaintBuff_(kSizeHint, kBuffImageFormat)
 {
     setCursor(Qt::IBeamCursor);
@@ -154,8 +153,6 @@ void TextAreaWidget::bind(TextArea *area)
         return;
     }
 
-    area_->setGuiWorker(&worker_);
-
     cbhViewLocChanged_ = area_->addAfterViewLocChangedCallback([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
         refresh();
@@ -169,7 +166,6 @@ void TextAreaWidget::bind(TextArea *area)
 void TextAreaWidget::unbind()
 {
     if (area_) {
-        area_->setGuiWorker(nullptr);
         area_ = nullptr;
     }
 
