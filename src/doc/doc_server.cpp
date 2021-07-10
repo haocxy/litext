@@ -1,6 +1,5 @@
 #include "doc_server.h"
 
-#include "core/thread_pool.h"
 
 
 namespace doc
