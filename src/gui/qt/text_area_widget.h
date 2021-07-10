@@ -6,7 +6,7 @@
 #include "core/flagset.h"
 #include "core/callbacks.h"
 #include "gui/declare_text_area.h"
-#include "object_worker.h"
+#include "gui_thread_worker.h"
 
 
 namespace gui::qt

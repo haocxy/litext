@@ -1,4 +1,4 @@
-#include "object_worker.h"
+#include "gui_thread_worker.h"
 
 #include <QCoreApplication>
 

@@ -6,7 +6,7 @@
 #include "doc/simple_doc.h"
 #include "doc/async_doc_server.h"
 #include "editor_view_widget.h"
-#include "object_worker.h"
+#include "gui_thread_worker.h"
 
 
 namespace gui::qt
