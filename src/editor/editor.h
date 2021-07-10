@@ -21,8 +21,7 @@ class Editor
 {
 public:
 
-    // ownerWorker: 当前Editor对象所在的线程，需要保证调用当前对象的所有线程都和ownerWorker是同一线程
-    Editor(Worker &ownerWorker, Doc * model, doc::AsyncDocServer &docServer);
+    Editor(Doc * model, doc::AsyncDocServer &docServer);
 
     const Doc & doc() const { return m_model; }
 
@@ -53,8 +52,6 @@ private:
     void setLastActRow(RowN row);
 
 private:
-    Worker &ownerWorker_;
-
     Doc & m_model;
 
     doc::AsyncDocServer &docServer_;

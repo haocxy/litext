@@ -8,9 +8,8 @@
 #include "doc/async_doc_server.h"
 
 
-Editor::Editor(Worker &ownerWorker, Doc *model, doc::AsyncDocServer &docServer)
-    : ownerWorker_(ownerWorker)
-    , m_model(*model)
+Editor::Editor(Doc *model, doc::AsyncDocServer &docServer)
+    : m_model(*model)
     , docServer_(docServer)
 {
     assert(model);
@@ -135,19 +134,15 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
 
 void Editor::loadRows(const doc::RowRange &range, std::function<void(std::vector<UString> &&rows)> &&cb)
 {
-    docServer_.loadRows(range, [this, cb = std::move(cb)](std::vector<UString> &&rows) mutable {
-        ownerWorker_.post([cb = std::move(cb), rows = std::move(rows)] () mutable {
-            cb(std::move(rows));
-        });
+    docServer_.loadRows(range, [this, cb = std::move(cb)](std::vector<UString> &&rows) {
+        cb(std::move(rows));
     });
 }
 
 void Editor::queryRowCount(std::function<void(RowN)> &&cb)
 {
-    docServer_.queryRowCount([this, cb = std::move(cb)](RowN rowCount) mutable {
-        ownerWorker_.post([cb = std::move(cb), rowCount] {
-            cb(rowCount);
-        });
+    docServer_.queryRowCount([this, cb = std::move(cb)](RowN rowCount) {
+        cb(rowCount);
     });
 }
 
