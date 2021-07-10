@@ -8,7 +8,7 @@
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
 #include "declare_editor_view_widget.h"
-#include "my_widget.h"
+#include "run_in_gui_thread_event_receiver.h"
 
 
 class Editor;

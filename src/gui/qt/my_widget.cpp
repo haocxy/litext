@@ -1,4 +1,4 @@
-#include "my_widget.h"
+#include "run_in_gui_thread_event_receiver.h"
 
 #include <QEvent>
 
