@@ -1,12 +1,14 @@
 #include "doc_server.h"
 
+#include "charset_detect_util.h"
 
 
 namespace doc
 {
 
 DocServer::DocServer(const fs::path &filePath)
-	: filePath_(filePath) {
+	: filePath_(filePath)
+	, charset_(CharsetDetectUtil::quickDetectCharset(filePath)) {
 
 }
 

@@ -65,7 +65,15 @@ std::string quickDetectCharset(const fs::path &path)
 
 	// 异步地检测每个片段
 	std::vector<std::future<std::string>> futures;
-	for (uintmax_t i = 0; i < partCount; ++i) {
+
+	// 开始部分特殊处理，这是因为开始部分不需要考虑边界不确定的情况
+	const std::string firstPartCharset = detectCharsetOfFile(path, 0, pageSize);
+	if (firstPartCharset != "ASCII") {
+		return firstPartCharset;
+	}
+
+	// 文档非开始的部分，需要考虑边界不确定的情况
+	for (uintmax_t i = 1; i < partCount; ++i) {
 		const uintmax_t partBegin = i * partSize;
 		// 因为不知道具体编码，所以需要取不同的起点尝试，假设未知的编码可能最多用maxEncodedByteCount个字节
 		constexpr int maxEncodedByteCount = 6;

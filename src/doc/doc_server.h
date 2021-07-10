@@ -26,7 +26,7 @@ public:
 
 private:
 	const fs::path filePath_;
-
+	const std::string charset_;
 };
 
 
