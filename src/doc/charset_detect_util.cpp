@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 
+#include "core/system_util.h"
 #include "core/heap_array.h"
 #include "charset_detector.h"
 
@@ -41,7 +42,7 @@ std::string detectCharsetOfFile(const fs::path &path, size_t offset, size_t len)
 }
 
 static int processerCount() {
-	return 4;
+	return SystemUtil::processorCount();
 }
 
 std::string quickDetectCharset(const fs::path &path)

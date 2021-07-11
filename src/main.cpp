@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QDebug>
 
+#include "core/system_util.h"
 #include "core/time_util.h"
 #include "doc/charset_detect_util.h"
 #include "gui/qt/mainwindow.h"
@@ -101,6 +102,8 @@ static int cmdTool(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    std::cout << "Processor Count: " << SystemUtil::processorCount() << std::endl;
+
     if (argc > 2 && std::string(argv[1]) == "cmd") {
         return cmdTool(argc, argv);
     }
