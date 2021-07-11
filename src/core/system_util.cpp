@@ -15,6 +15,9 @@ namespace
 
 class Initer {
 public:
+	Initer() {
+		init();
+	}
 
 	size_t pageSize() const {
 		return pageSize_;

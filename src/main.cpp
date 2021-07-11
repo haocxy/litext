@@ -102,6 +102,7 @@ static int cmdTool(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+    std::cout << "Page Size: " << SystemUtil::pageSize() << std::endl;
     std::cout << "Processor Count: " << SystemUtil::processorCount() << std::endl;
 
     if (argc > 2 && std::string(argv[1]) == "cmd") {
