@@ -36,7 +36,7 @@ private:
 	}
 #else
 	void init() {
-		pageSize_ = sysconf(PAGESIZE);
+		pageSize_ = sysconf(_SC_PAGE_SIZE);
 		procCount_ = get_nprocs();
 	}
 #endif
