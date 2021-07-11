@@ -30,14 +30,14 @@ private:
 	void init() {
 		SYSTEM_INFO systemInfo;
 		std::memset(&systemInfo, 0, sizeof(systemInfo));
-		::GetSystemInfo(&systemInfo);
+		GetSystemInfo(&systemInfo);
 		pageSize_ = systemInfo.dwPageSize;
 		procCount_ = systemInfo.dwNumberOfProcessors;
 	}
 #else
 	void init() {
-		pageSize_ = ::sysconf(PAGESIZE);
-		procCount_ = ::get_nprocs();
+		pageSize_ = sysconf(PAGESIZE);
+		procCount_ = get_nprocs();
 	}
 #endif
 
