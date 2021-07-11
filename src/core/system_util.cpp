@@ -2,42 +2,51 @@
 
 #include <cstring>
 
-#if __has_include(<Windows.h>)
+#if defined(WIN32)
 #include <Windows.h>
-#elif __has_include(<sys/sysinfo.h>)
-#include <sys/sysinfo.h>
 #else
-#error "unsupported platform"
+#include <unistd.h>
+#include <sys/sysinfo.h>
 #endif
 
 
 namespace
 {
 
-class ProcCountIniter {
+class Initer {
 public:
-	ProcCountIniter()
-		: procCount_(getProcCountBySystemAPI()) {}
 
-#if __has_include(<Windows.h>)
-	static int getProcCountBySystemAPI() {
+	size_t pageSize() const {
+		return pageSize_;
+	}
+
+	int procCount() const {
+		return procCount_;
+	}
+
+private:
+
+#if defined(WIN32)
+	void init() {
 		SYSTEM_INFO systemInfo;
 		std::memset(&systemInfo, 0, sizeof(systemInfo));
 		::GetSystemInfo(&systemInfo);
-		return systemInfo.dwNumberOfProcessors;
-	}
-#elif __has_include(<sys/sysinfo.h>)
-	static int getProcCountBySystemAPI() {
-		return ::get_nprocs();
+		pageSize_ = systemInfo.dwPageSize;
+		procCount_ = systemInfo.dwNumberOfProcessors;
 	}
 #else
-	#error "unsupported platform"
+	void init() {
+		pageSize_ = ::sysconf(PAGESIZE);
+		procCount_ = ::get_nprocs();
+	}
 #endif
 
-	const int procCount_;
+private:
+	size_t pageSize_ = 0;
+	int procCount_ = 0;
 };
 
-static ProcCountIniter g_procCountIniter;
+static const Initer g_initer;
 
 }
 
@@ -45,8 +54,13 @@ static ProcCountIniter g_procCountIniter;
 namespace SystemUtil
 {
 
+size_t pageSize()
+{
+	return g_initer.pageSize();
+}
+
 int processorCount() {
-	return g_procCountIniter.procCount_;
+	return g_initer.procCount();
 }
 
 }
