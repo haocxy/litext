@@ -1,5 +1,6 @@
 #include "charset_detect_util.h"
 
+#include <cassert>
 #include <fstream>
 #include <algorithm>
 #include <future>
@@ -41,24 +42,22 @@ std::string detectCharsetOfFile(const fs::path &path, size_t offset, size_t len)
 	return detector.charset();
 }
 
-static int processerCount() {
-	return SystemUtil::processorCount();
-}
-
 std::string quickDetectCharset(const fs::path &path)
 {
+	namespace sys = SystemUtil;
+
 	const uintmax_t fileSize = fs::file_size(path);
 
-	// 每次检测文件片段的字节数，在此称为“页”
-	constexpr uintmax_t pageSize = 10 * 1024 * 1024;
-	if (fileSize <= pageSize) {
+	// 每次检测文件片段的字节数
+	const uintmax_t blockSize = sys::pageSize() * 1024;
+	if (fileSize <= blockSize) {
 		return detectCharsetOfFile(path);
 	}
 
-	const uintmax_t pageCount = fileSize / pageSize;
+	const uintmax_t blockCount = fileSize / blockSize;
 
 	// 如果页的数量超过了处理器数量，则限制检测的片段数为处理器数量
-	const uintmax_t partCount = std::min(pageCount, static_cast<uintmax_t>(processerCount()));
+	const uintmax_t partCount = std::min(blockCount, static_cast<uintmax_t>(sys::processorCount()));
 
 	// 确定好线程数threadCount后，把文件分为threadCount个大小partSize的部分
 	// 异步处理每个partSize部分的前page个字节
@@ -68,20 +67,21 @@ std::string quickDetectCharset(const fs::path &path)
 	std::vector<std::future<std::string>> futures;
 
 	// 开始部分特殊处理，这是因为开始部分不需要考虑边界不确定的情况
-	const std::string firstPartCharset = detectCharsetOfFile(path, 0, pageSize);
+	const std::string firstPartCharset = detectCharsetOfFile(path, 0, blockSize);
 	if (firstPartCharset != "ASCII") {
 		return firstPartCharset;
 	}
+
+	constexpr int maxEncodedByteCount = 6;
+	assert(maxEncodedByteCount < blockSize);
 
 	// 文档非开始的部分，需要考虑边界不确定的情况
 	for (uintmax_t i = 1; i < partCount; ++i) {
 		const uintmax_t partBegin = i * partSize;
 		// 因为不知道具体编码，所以需要取不同的起点尝试，假设未知的编码可能最多用maxEncodedByteCount个字节
-		constexpr int maxEncodedByteCount = 6;
-		static_assert(maxEncodedByteCount < pageSize);
 		for (int off = 0; off < maxEncodedByteCount; ++off) {
-			futures.push_back(std::async(std::launch::async, [path, partBegin, off, pageSize]()->std::string {
-				return detectCharsetOfFile(path, partBegin + off, pageSize);
+			futures.push_back(std::async(std::launch::async, [path, partBegin, off, blockSize]()->std::string {
+				return detectCharsetOfFile(path, partBegin + off, blockSize);
 			}));
 		}
 	}
