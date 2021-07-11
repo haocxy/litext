@@ -12,6 +12,8 @@
 #include "doc/charset_detect_util.h"
 #include "gui/qt/mainwindow.h"
 
+#include "tool/big_file_maker.h"
+
 
 class CmdLine {
 public:
@@ -66,6 +68,12 @@ static int quickCharset(CmdLine &cmd)
     return 0;
 }
 
+static int makeBigFile(const std::vector<std::string> &args)
+{
+    tool::BigFileMaker maker;
+    return maker.exec(args);
+}
+
 static int chooseDebug(const std::string &cmd, const std::vector<std::string> &args)
 {
     CmdLine cmdLine(args);
@@ -74,6 +82,9 @@ static int chooseDebug(const std::string &cmd, const std::vector<std::string> &a
     }
     if (cmd == "quick-charset") {
         return quickCharset(cmdLine);
+    }
+    if (cmd == "make-big-file") {
+        return makeBigFile(args);
     }
 
     std::cerr << "unknow cmd: [" << cmd << "]" << std::endl;

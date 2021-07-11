@@ -10,8 +10,11 @@ namespace tool
 
 class CmdArgs {
 public:
-	CmdArgs(const std::vector<std::string> &args)
-		: args_(args) {}
+	CmdArgs() {}
+
+	void setArgs(const std::vector<std::string> &args) {
+		args_ = args;
+	}
 
 	size_t size() const {
 		return args_.size();

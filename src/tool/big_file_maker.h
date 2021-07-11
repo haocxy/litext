@@ -1,10 +1,18 @@
 #pragma once
 
-#include <string>
 #include <cstdint>
+#include <string>
+#include <fstream>
+
+#include <QString>
+#include <QByteArray>
 
 #include "core/fs.h"
+#include "doc/charset.h"
 #include "tool.h"
+
+
+class QTextEncoder;
 
 
 namespace tool
@@ -13,14 +21,39 @@ namespace tool
 
 class BigFileMaker : public Tool {
 public:
-	virtual ~BigFileMaker() {}
+	BigFileMaker() {}
+
+	virtual ~BigFileMaker();
+
+	virtual void execute() override;
 
 protected:
-	virtual void fillArgs() override;
+	virtual void init() override;
 
 private:
+	void printLine(uintmax_t lineIndex);
+
+private:
+	doc::Charset charset_ = doc::Charset::Unknown;
+
 	uintmax_t sizeHint_ = 0;
+
 	fs::path path_;
+
+	// 编码后的文字内容片段
+	QByteArray part_;
+
+	// 编码后的句号
+	QByteArray period_;
+
+	// 编码后的换行符
+	QByteArray lineEnd_;
+
+	QByteArray beforeLineNumber_;
+
+	QTextEncoder *encoder_ = nullptr;
+
+	std::ofstream ofs_;
 };
 
 
