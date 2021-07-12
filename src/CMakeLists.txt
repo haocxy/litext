@@ -193,6 +193,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
     "${root_dir}/*.cpp"
+    "${root_dir}/*.txt"
 )
 
 add_executable(notesharp
