@@ -100,7 +100,7 @@ function(generate_cpp_file_for_asset ${head_file} ${cpp_file} ${asset_file})
     string(REGEX REPLACE ".." "0x\\0, " cpp_hex_asset_data ${hex_asset_data})
 
     file(APPEND ${cpp_file} "    const unsigned char ${var_name}[] = {\n")
-    file(APPEND ${cpp_file} "        ${cpp_hex_asset_data}0x00\n")
+    file(APPEND ${cpp_file} "        ${cpp_hex_asset_data}\n")
     file(APPEND ${cpp_file} "    };\n")
     file(APPEND ${cpp_file} "}\n")
     file(APPEND ${cpp_file} "\n")
