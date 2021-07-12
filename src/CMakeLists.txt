@@ -1,6 +1,28 @@
 set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 
+function(remove_useless_files_generated_for_assets)
+    file(GLOB_RECURSE head_files "asset.*.h")
+    foreach(head_file ${head_files})
+        string(LENGTH ${head_file} len)
+        math(EXPR len "${len} - 2")
+        string(SUBSTRING ${head_file} 0 ${len} asset_file)
+        if(NOT EXISTS ${asset_file})
+            file(REMOVE ${head_file})
+        endif()
+    endforeach()
+    file(GLOB_RECURSE cpp_files "asset.*.cpp")
+    foreach(cpp_file ${cpp_files})
+        string(LENGTH ${cpp_file} len)
+        math(EXPR len "${len} - 4")
+        string(SUBSTRING ${cpp_file} 0 ${len} asset_file)
+        if(NOT EXISTS ${asset_file})
+            file(REMOVE ${cpp_file})
+        endif()
+    endforeach()
+endfunction()
+
+
 function(check_should_generate_src_file_for_asset output_var asset_file src_file)
     if(NOT EXISTS ${asset_file})
         set(${output_var} FALSE PARENT_SCOPE)
@@ -162,6 +184,7 @@ function(generate_src_file_for_all_assets)
 endfunction()
 
 
+remove_useless_files_generated_for_assets()
 generate_src_file_for_all_assets()
 
 include_directories(${root_dir})
