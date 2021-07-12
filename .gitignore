@@ -262,3 +262,6 @@ __pycache__/
 
 
 /build/
+
+asset.*.h
+asset.*.cpp
