@@ -7,8 +7,14 @@
 #include <stdexcept>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <map>
 
 #include <QTextEncoder>
+#include <QTextStream>
+
+#include "asset.big_file_maker_kv.txt.h"
+#include "asset.big_file_maker_mat.txt.h"
 
 
 namespace tool
@@ -113,7 +119,7 @@ void BigFileMaker::execute()
 			if (!firstProgressPrint) {
 				std::cout << "\r";
 			}
-			std::cout << "progress: " << currProgress << "%" << std::flush;
+			std::cout << "progress: " << std::min(currProgress, 100) << "%" << std::flush;
 		}
 		prevProgress = currProgress;
 		firstProgressPrint = false;
@@ -122,13 +128,6 @@ void BigFileMaker::execute()
 	std::cout << std::endl;
 	std::cout << "progress: Done" << std::endl;
 }
-
-static const char *const gUtf8StrPart = " 这a是b一c段d用于测试E的文字， ";
-
-static const char *const gUtf8Period = ".";
-
-static const char *const gUtf8BeforeLineNumber = "row index: ";
-
 
 void BigFileMaker::init() {
 	std::string sCharset;
@@ -155,17 +154,10 @@ void BigFileMaker::init() {
 		throw std::runtime_error(ss.str());
 	}
 
-	const QString sPart = QString::fromUtf8(gUtf8StrPart);
-	part_ = encoder_->fromUnicode(sPart);
-
-	const QString sPeriod = QString::fromUtf8(gUtf8Period);
-	period_ = encoder_->fromUnicode(sPeriod);
+	loadAssets();
 
 	const QString sLineEnd = QString::fromUtf8("\r\n");
 	lineEnd_ = encoder_->fromUnicode(sLineEnd);
-
-	const QString sBeforeLineNumber = QString::fromUtf8(gUtf8BeforeLineNumber);
-	beforeLineNumber_ = encoder_->fromUnicode(sBeforeLineNumber);
 
 	std::srand(std::time(nullptr));
 }
@@ -177,12 +169,69 @@ static int randBetween(int a, int b) {
 	return left + std::rand() % (len + 1);
 }
 
+void BigFileMaker::loadAssets()
+{
+	loadKeyValueAsset();
+	loadParagraphMaterialAsset();
+}
+
+static void getKeyAndValInLine(const QString &line, QString &key, QString &val)
+{
+	const int size = line.size();
+	for (int i = 0; i < size; ++i) {
+		QChar ch = line[i];
+		if (ch == ':') {
+			key = line.mid(0, i);
+			val = line.mid(i + 1);
+			return;
+		}
+	}
+}
+
+void BigFileMaker::loadKeyValueAsset()
+{
+	std::map<QString, QString> kv;
+	QString content = QString::fromUtf8(
+		reinterpret_cast<const char *>(Asset::Data::big_file_maker_kv__txt),
+		static_cast<int>(Asset::Len::big_file_maker_kv__txt)
+	);
+
+	QTextStream stream(&content);
+	QString line;
+	while (stream.readLineInto(&line)) {
+		const int size = line.size();
+		QString key;
+		QString val;
+		getKeyAndValInLine(line, key, val);
+		kv[key] = val;
+	}
+
+	period_ = encoder_->fromUnicode(kv["period"]);
+
+	beforeLineNumber_ = encoder_->fromUnicode(kv["beforeLineN"]);
+
+	afterLineNumber_ = encoder_->fromUnicode(kv["afterLineN"]);
+}
+
+void BigFileMaker::loadParagraphMaterialAsset()
+{
+	QString content = QString::fromUtf8(
+		reinterpret_cast<const char *>(Asset::Data::big_file_maker_mat__txt),
+		static_cast<int>(Asset::Len::big_file_maker_mat__txt)
+	);
+
+	QTextStream stream(&content);
+	QString line;
+	while (stream.readLineInto(&line)) {
+		materials_.push_back(encoder_->fromUnicode(line));
+	}
+}
+
 void BigFileMaker::printLine(uintmax_t lineIndex)
 {
-	const int repeatCount = randBetween(1, 10);
-
-	for (int i = 0; i < repeatCount; ++i) {
-		ofs_.write(part_.data(), part_.size());
+	if (!materials_.empty()) {
+		const QByteArray &paragraph = materials_[std::rand() % materials_.size()];
+		ofs_.write(paragraph.data(), paragraph.size());
 	}
 
 	ofs_.write(beforeLineNumber_.data(), beforeLineNumber_.size());
@@ -190,6 +239,8 @@ void BigFileMaker::printLine(uintmax_t lineIndex)
 	QString sLineNumber = QString("%1").arg(lineIndex + 1);
 	QByteArray bLineNumber = encoder_->fromUnicode(sLineNumber);
 	ofs_.write(bLineNumber.data(), bLineNumber.size());
+
+	ofs_.write(afterLineNumber_.data(), afterLineNumber_.size());
 
 	ofs_.write(period_.data(), period_.size());
 	ofs_.write(lineEnd_.data(), lineEnd_.size());

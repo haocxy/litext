@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include <QString>
 #include <QByteArray>
@@ -31,6 +32,12 @@ protected:
 	virtual void init() override;
 
 private:
+	void loadAssets();
+
+	void loadKeyValueAsset();
+
+	void loadParagraphMaterialAsset();
+
 	void printLine(uintmax_t lineIndex);
 
 private:
@@ -40,9 +47,6 @@ private:
 
 	fs::path path_;
 
-	// 编码后的文字内容片段
-	QByteArray part_;
-
 	// 编码后的句号
 	QByteArray period_;
 
@@ -50,6 +54,10 @@ private:
 	QByteArray lineEnd_;
 
 	QByteArray beforeLineNumber_;
+
+	QByteArray afterLineNumber_;
+
+	std::vector<QByteArray> materials_;
 
 	QTextEncoder *encoder_ = nullptr;
 
