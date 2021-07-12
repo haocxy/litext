@@ -10,29 +10,28 @@ function(check_should_generate_src_file_for_asset output_var asset_file src_file
         set(${output_var} TRUE PARENT_SCOPE)
         return()
     endif()
+
     file(TIMESTAMP ${asset_file} ts_asset_file "%s")
     file(TIMESTAMP ${src_file} ts_src_file "%s")
+    file(TIMESTAMP ${CMAKE_CURRENT_LIST_FILE} ts_list_file "%s")
+
     if(${ts_asset_file} GREATER_EQUAL ${ts_src_file})
         set(${output_var} TRUE PARENT_SCOPE)
-    else()
-        set(${output_var} FALSE PARENT_SCOPE)
+        return()
     endif()
+
+    # 如果当前CMakeLists.txt文件是新的，可能逻辑有变化，也需要为资源文件重新生成C++文件
+    if(${ts_list_file} GREATER_EQUAL ${ts_src_file})
+        set(${output_var} TRUE PARENT_SCOPE)
+        return()
+    endif()
+
+    set(${output_var} FALSE PARENT_SCOPE)
 endfunction()
 
 
 function(make_cpp_ns_name_for_asset output_var ${asset_file})
-    string(LENGTH ${CMAKE_CURRENT_SOURCE_DIR} dir_len)
-    string(SUBSTRING ${asset_file} ${dir_len} -1 relative_path)
-    while(${relative_path} MATCHES "^(\\\\|/).*$")
-        string(SUBSTRING ${relative_path} 1 -1 relative_path)
-    endwhile()
-
-    get_filename_component(relative_dir ${relative_path} DIRECTORY)
-    # TODO 这里逻辑需要强化下，现在先假设CMake提供的路径在所有平台都用 / 分割，且路径中的目录名均为有效的C++标识符
-    message(WARNING "The logic should be optimized, please look at comment in cmake file")
-    string(REPLACE "/" "::" ns_name ${relative_dir})
-    string(APPEND ns_name "::Asset")
-    set(${output_var} ${ns_name} PARENT_SCOPE)
+    set(${output_var} "Asset" PARENT_SCOPE)
 endfunction()
 
 
@@ -55,7 +54,7 @@ endfunction()
 
 
 function(generate_head_file_for_asset ${head_file} ${asset_file})
-    message(STATUS "Generate head file [${head_file}] for asset file [${asset_file}]")
+    message(STATUS "Generate head file [${head_file}]")
 
     file(REMOVE ${head_file})
     make_cpp_ns_name_for_asset(ns_name ${asset_file})
@@ -80,7 +79,7 @@ endfunction()
 
 
 function(generate_cpp_file_for_asset ${head_file} ${cpp_file} ${asset_file})
-    message(STATUS "Generate cpp file [${cpp_file}] for asset file [${asset_file}]")
+    message(STATUS "Generate cpp file [${cpp_file}]")
 
     file(REMOVE ${cpp_file})
     make_cpp_ns_name_for_asset(ns_name ${asset_file})
