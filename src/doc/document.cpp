@@ -1,14 +1,25 @@
 #include "document.h"
 
+#include <future>
+
+
+
 namespace doc
 {
 
-Document::Document(const fs::path &file, Worker &ownerThread)
-	: file_(file)
+Document::Document(const fs::path &path, Worker &ownerThread)
+	: path_(path)
+	, fstream_(path, std::ios::binary)
 	, ownerThread_(ownerThread)
-	, server_(ownerThread, file)
 {
+	asyncLoadOnePart();
+}
 
+void Document::asyncLoadOnePart()
+{
+	asyncHandleFile([](std::fstream &f) {
+
+	});
 }
 
 Document::~Document()
