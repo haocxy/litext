@@ -52,7 +52,7 @@ private:
 		std::async(std::launch::async, [this, self, action = std::move(action), done = std::move(done), fstream = std::move(fstream_)]() mutable {
 			action(fstream);
 			std::fstream file = std::move(fstream);
-			auto lam = [this, self, done = std::move(done)]() mutable {};
+			auto lam = [this, self, done = std::move(done), file = std::move(file)]() mutable {};
 			ownerThread_.post(std::move(lam));
 		});
 	}
