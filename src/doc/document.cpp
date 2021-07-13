@@ -16,4 +16,29 @@ Document::~Document()
 
 }
 
+void Document::bind(DocumentListener &listener)
+{
+	listener_ = &listener;
+}
+
+void Document::unbind()
+{
+	listener_ = nullptr;
+}
+
+bool Document::loaded() const
+{
+	return loaded_;
+}
+
+RowN Document::loadedRowCount() const
+{
+	return loadedRowCount_;
+}
+
+Charset Document::charset() const
+{
+	return charset_;
+}
+
 }
