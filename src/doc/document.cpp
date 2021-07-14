@@ -9,7 +9,7 @@ namespace doc::detail
 
 DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 	: path_(path)
-	, ifs_(new std::ifstream(path, std::ios::binary))
+	, asyncComponents_(new AsyncComponents(path, path / ".notesharp.db"))
 	, ownerThread_(ownerThread)
 {
 	asyncLoadOnePart();
@@ -17,8 +17,31 @@ DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 
 void DocumentImpl::asyncLoadOnePart()
 {
-	asyncHandleFile([](std::ifstream &f) {
+	async([](AsyncComponents &comps) {
+		
+	});
+}
 
+void DocumentImpl::async(std::function<void(AsyncComponents &comps)> &&action, std::function<void()> &&done) {
+	if (!asyncComponents_) {
+		throw std::logic_error("bad logic, [asyncComponents_] is null");
+	}
+	if (!action) {
+		throw std::logic_error("bad logic, [action] is null");
+	}
+	if (!done) {
+		throw std::logic_error("bad logic, [done] is null");
+	}
+
+	auto self(shared_from_this());
+	std::async(std::launch::async, [this, self, done = std::move(done), action = std::move(action), comps = asyncComponents_]() mutable {
+		if (comps) {
+			action(*comps);
+			ownerThread_.post([this, self, done = std::move(done), comps]{
+				asyncComponents_ = comps;
+				done();
+			});
+		}
 	});
 }
 

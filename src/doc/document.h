@@ -7,7 +7,7 @@
 
 #include "core/fs.h"
 #include "core/worker.h"
-
+#include "sqlite3_wrapper/database.h"
 #include "charset.h"
 #include "doc_define.h"
 #include "declare_document_listener.h"
@@ -17,6 +17,106 @@ namespace doc::detail
 {
 
 class DocumentImpl : std::enable_shared_from_this<DocumentImpl> {
+private:
+
+	using Db = sqlite3_wrapper::Database;
+
+	// 需要异步处理的组件都放在这个类中
+	class AsyncComponents {
+	public:
+		AsyncComponents(const fs::path &filePath, const fs::path &dbPath)
+			: ifs_(filePath, std::ios::binary)
+			, db_(dbPath) {}
+
+		std::ifstream &ifs() {
+			return ifs_;
+		}
+
+		Db &db() {
+			return db_;
+		}
+
+	private:
+		std::ifstream ifs_;
+		Db db_;
+	};
+
+	// 用于把异步组件AsyncComponents的对象在不同的线程中移动，以确保只有一个线程能够处理这些组件。
+	// 这个类会在任何拷贝语义和移动语义时转移内部指针的所有，本质上是为了解决使用lambda时遇到的一些问题。
+	//
+	// 问：为什么不使用std::unique_ptr ？
+	// 答：std::unique_ptr 移动对象的能力基于对于移动语义的适配，但是目前发现lambda的捕获列表无法很好地支持移动语义
+	//
+	// 问：为什么不直接使用原始的指针 ？
+	// 答：在移动的过程中，如果其所在的函数对象丢失，则会导致对象丢失，不再被任何逻辑管理，进一步导致内存泄露及其它可能的问题
+	//
+	// 问：为什么不把这个类实现为模板类？
+	// 答：这里的处理方式是不得以而为之，是很不好的。
+	// 
+	class AsyncComponentsMovePointer {
+	public:
+		AsyncComponentsMovePointer() {}
+
+		AsyncComponentsMovePointer(AsyncComponents *ptr) : ptr_(ptr) {}
+
+		AsyncComponentsMovePointer(const AsyncComponentsMovePointer &other) {
+			if (this != &other && ptr_ != other.ptr_) {
+				ptr_ = other.ptr_;
+				mute(other).ptr_ = nullptr;
+			}
+		}
+
+		AsyncComponentsMovePointer(AsyncComponentsMovePointer &&other) noexcept {
+			if (this != &other && ptr_ != other.ptr_) {
+				ptr_ = other.ptr_;
+				other.ptr_ = nullptr;
+			}
+		}
+
+		~AsyncComponentsMovePointer() {
+			delete ptr_;
+			ptr_ = nullptr;
+		}
+
+		AsyncComponentsMovePointer &operator=(const AsyncComponentsMovePointer &other) {
+			if (this != &other && ptr_ != other.ptr_) {
+				delete ptr_;
+				ptr_ = other.ptr_;
+				mute(other).ptr_ = nullptr;
+			}
+			return *this;
+		}
+
+		AsyncComponentsMovePointer &operator=(AsyncComponentsMovePointer &&other) noexcept {
+			if (this != &other && ptr_ != other.ptr_) {
+				delete ptr_;
+				ptr_ = other.ptr_;
+				other.ptr_ = nullptr;
+			}
+			return *this;
+		}
+
+		operator bool() const {
+			return ptr_;
+		}
+
+		AsyncComponents &operator*() {
+			return *ptr_;
+		}
+
+		AsyncComponents *operator->() {
+			return ptr_;
+		}
+
+	private:
+		AsyncComponentsMovePointer &mute(const AsyncComponentsMovePointer &other) {
+			return const_cast<AsyncComponentsMovePointer &>(other);
+		}
+
+	private:
+		AsyncComponents *ptr_ = nullptr;
+	};
+
 public:
 
 	using Pointer = std::shared_ptr<DocumentImpl>;
@@ -38,40 +138,10 @@ public:
 private:
 	void asyncLoadOnePart();
 
-	void asyncHandleFile(std::function<void(std::ifstream &ifs)> &&action, std::function<void()> &&done) {
-		if (!ifs_) {
-			throw std::logic_error("bad logic, [ifs_] is null");
-		}
-		if (!action) {
-			throw std::logic_error("bad logic, [action] is null");
-		}
-		if (!done) {
-			throw std::logic_error("bad logic, [done] is null");
-		}
+	void async(std::function<void(AsyncComponents &comps)> &&action, std::function<void()> &&done);
 
-		auto self(shared_from_this());
-		std::ifstream *ifs = ifs_;
-		ifs_ = nullptr;
-		std::async(std::launch::async, [this, self, action = std::move(action), done = std::move(done), ifs]() mutable {
-			action(*ifs);
-			ownerThread_.post([this, self, done = std::move(done), ifs]{
-				ifs_ = ifs;
-				done();
-			});
-		});
-	}
-
-	void asyncHandleFile(std::function<void(std::ifstream &ifs)> &&action) {
-		asyncHandleFile(std::move(action), [] {});
-	}
-
-	void async(std::function<void(Pointer self)> &&f) {
-		if (f) {
-			auto self(shared_from_this());
-			std::async(std::launch::async, [self, f = std::move(f)]{
-				f(self);
-			});
-		}
+	void async(std::function<void(AsyncComponents &comps)> &&action) {
+		async(std::move(action), [] {});
 	}
 
 	static void sync(Pointer self, std::function<void()> &&f) {
@@ -84,7 +154,7 @@ private:
 
 private:
 	const fs::path path_;
-	std::ifstream *ifs_;
+	AsyncComponentsMovePointer asyncComponents_;
 	Worker &ownerThread_;
 	DocumentListener *listener_ = nullptr;
 
