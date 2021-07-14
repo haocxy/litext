@@ -1,5 +1,7 @@
 set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
+set(CMAKE_AUTOMOC ON)
+
 
 function(remove_useless_files_generated_for_assets)
     file(GLOB_RECURSE head_files "asset.*.h")
