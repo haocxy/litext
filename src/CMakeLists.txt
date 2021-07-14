@@ -204,7 +204,15 @@ add_executable(notesharp
 
 source_group(TREE "${root_dir}/.." FILES ${src_files})
 
-target_link_libraries(notesharp
+set(dependencies
     Qt5::Widgets
     libuchardet_static
-    libsqlite3_static)
+    libsqlite3_static
+)
+
+if(NOT MSVC)
+    list(APPEND dependencies dl)
+endif()
+
+target_link_libraries(notesharp
+    ${dependencies})
