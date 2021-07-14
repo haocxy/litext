@@ -15,6 +15,15 @@
 namespace doc::CharsetDetectUtil
 {
 
+std::string detectCharset(const void *data, size_t len)
+{
+	CharsetDetector detector;
+	if (!detector.feed(data, len)) {
+		return "";
+	}
+	detector.end();
+	return detector.charset();
+}
 
 std::string detectCharsetOfFile(const fs::path &path, size_t offset, size_t len)
 {

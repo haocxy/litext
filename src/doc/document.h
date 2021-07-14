@@ -100,11 +100,11 @@ private:
 			return ptr_;
 		}
 
-		AsyncComponents &operator*() {
+		AsyncComponents &operator*() const {
 			return *ptr_;
 		}
 
-		AsyncComponents *operator->() {
+		AsyncComponents *operator->() const {
 			return ptr_;
 		}
 

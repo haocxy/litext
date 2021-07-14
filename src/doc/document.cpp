@@ -2,6 +2,9 @@
 
 #include <future>
 
+#include "core/heap_array.h"
+#include "core/system_util.h"
+#include "charset_detect_util.h"
 
 
 namespace doc::detail
@@ -17,7 +20,17 @@ DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 
 void DocumentImpl::asyncLoadOnePart()
 {
-	async([](AsyncComponents &comps) {
+	auto self(shared_from_this());
+	std::async(std::launch::async, [this, self, comps = asyncComponents_]{
+		std::ifstream &ifs = comps->ifs();
+		const uintmax_t remain = fs::file_size(path_) - ifs.tellg();
+		const uintmax_t readn = std::min(remain, SystemUtil::pageSize() * 1024);
+		HeapArray buff(readn);
+		if (!ifs.read(buff.data(), buff.size())) {
+			throw std::logic_error("TODO: ifs.read() failed"); // TODO
+		}
+		const std::string scharset = CharsetDetectUtil::detectCharset(buff.data(), buff.size());
+		const Charset charset = CharsetUtil::strToCharset(scharset);
 		
 	});
 }

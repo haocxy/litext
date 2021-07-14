@@ -7,6 +7,8 @@
 namespace doc::CharsetDetectUtil
 {
 
+std::string detectCharset(const void *data, size_t len);
+
 
 // 检测文件的字符集
 // path 文件路径
