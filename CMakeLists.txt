@@ -25,6 +25,8 @@ find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 if(MSVC)
     # 关闭有关源代码字符集的警告
     add_compile_options(/wd4819)
+else()
+    add_link_options(-ldl)
 endif()
 
 
