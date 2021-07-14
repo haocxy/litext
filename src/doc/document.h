@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <fstream>
 #include <memory>
 #include <future>
@@ -12,25 +13,17 @@
 #include "declare_document_listener.h"
 
 
-namespace doc
+namespace doc::detail
 {
 
-class Document : std::enable_shared_from_this<Document> {
+class DocumentImpl : std::enable_shared_from_this<DocumentImpl> {
 public:
 
-	using Pointer = std::shared_ptr<Document>;
+	using Pointer = std::shared_ptr<DocumentImpl>;
 
-	// 使用Document::create(...)函数创建对象，确保每个对象都被shared_ptr管理，
-// 以使得shared_from_this正常工作
-	Document(const fs::path &file, Worker &ownerThread);
+	DocumentImpl(const fs::path &file, Worker &ownerThread);
 
-	// 这个类的对象会利用shared_from_this来确保自身在lambda的生命周期中不会被释放，
-	// 必须却保该类的每一个对象都是通过shared_ptr创建的
-	static Pointer create(const fs::path &path, Worker &ownerThread) {
-		return std::make_shared<Document>(path, ownerThread);
-	}
-
-	~Document();
+	~DocumentImpl();
 
 	void bind(DocumentListener &listener);
 
@@ -43,21 +36,32 @@ public:
 	RowN loadedRowCount() const;
 
 private:
-
-
 	void asyncLoadOnePart();
 
-	void asyncHandleFile(std::function<void(std::fstream &fstream)> &&action, std::function<void()> &&done) {
+	void asyncHandleFile(std::function<void(std::ifstream &ifs)> &&action, std::function<void()> &&done) {
+		if (!ifs_) {
+			throw std::logic_error("bad logic, [ifs_] is null");
+		}
+		if (!action) {
+			throw std::logic_error("bad logic, [action] is null");
+		}
+		if (!done) {
+			throw std::logic_error("bad logic, [done] is null");
+		}
+
 		auto self(shared_from_this());
-		std::async(std::launch::async, [this, self, action = std::move(action), done = std::move(done), fstream = std::move(fstream_)]() mutable {
-			action(fstream);
-			std::fstream file = std::move(fstream);
-			auto lam = [this, self, done = std::move(done), file = std::move(file)]() mutable {};
-			ownerThread_.post(std::move(lam));
+		std::ifstream *ifs = ifs_;
+		ifs_ = nullptr;
+		std::async(std::launch::async, [this, self, action = std::move(action), done = std::move(done), ifs]() mutable {
+			action(*ifs);
+			ownerThread_.post([this, self, done = std::move(done), ifs]{
+				ifs_ = ifs;
+				done();
+			});
 		});
 	}
 
-	void asyncHandleFile(std::function<void(std::fstream &fstream)> &&action) {
+	void asyncHandleFile(std::function<void(std::ifstream &ifs)> &&action) {
 		asyncHandleFile(std::move(action), [] {});
 	}
 
@@ -80,7 +84,7 @@ private:
 
 private:
 	const fs::path path_;
-	std::fstream fstream_;
+	std::ifstream *ifs_;
 	Worker &ownerThread_;
 	DocumentListener *listener_ = nullptr;
 
@@ -88,6 +92,54 @@ private:
 	Charset charset_ = Charset::Unknown;
 	bool loaded_ = false;
 	RowN loadedRowCount_ = 0;
+};
+
+}
+
+
+namespace doc
+{
+
+class Document {
+public:
+	Document(const fs::path &file, Worker &ownerThread)
+		: ptr_(std::make_shared<detail::DocumentImpl>(file, ownerThread)) {}
+
+	~Document() {
+		assert(ptr_);
+		ptr_->unbind();
+
+		// 这一句很重要，这不是普通的指针
+		ptr_ = nullptr;
+	}
+
+	void bind(DocumentListener &listener) {
+		assert(ptr_);
+		ptr_->bind(listener);
+	}
+
+	void unbind() {
+		assert(ptr_);
+		ptr_->unbind();
+	}
+
+	Charset charset() const {
+		assert(ptr_);
+		return ptr_->charset();
+	}
+
+	bool loaded() const {
+		assert(ptr_);
+		return ptr_->loaded();
+	}
+
+	RowN loadedRowCount() const {
+		assert(ptr_);
+		return ptr_->loadedRowCount();
+	}
+
+private:
+	std::shared_ptr<detail::DocumentImpl> ptr_;
 };
 
 }

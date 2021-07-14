@@ -4,50 +4,50 @@
 
 
 
-namespace doc
+namespace doc::detail
 {
 
-Document::Document(const fs::path &path, Worker &ownerThread)
+DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 	: path_(path)
-	, fstream_(path, std::ios::binary)
+	, ifs_(new std::ifstream(path, std::ios::binary))
 	, ownerThread_(ownerThread)
 {
 	asyncLoadOnePart();
 }
 
-void Document::asyncLoadOnePart()
+void DocumentImpl::asyncLoadOnePart()
 {
-	asyncHandleFile([](std::fstream &f) {
+	asyncHandleFile([](std::ifstream &f) {
 
 	});
 }
 
-Document::~Document()
+DocumentImpl::~DocumentImpl()
 {
 
 }
 
-void Document::bind(DocumentListener &listener)
+void DocumentImpl::bind(DocumentListener &listener)
 {
 	listener_ = &listener;
 }
 
-void Document::unbind()
+void DocumentImpl::unbind()
 {
 	listener_ = nullptr;
 }
 
-bool Document::loaded() const
+bool DocumentImpl::loaded() const
 {
 	return loaded_;
 }
 
-RowN Document::loadedRowCount() const
+RowN DocumentImpl::loadedRowCount() const
 {
 	return loadedRowCount_;
 }
 
-Charset Document::charset() const
+Charset DocumentImpl::charset() const
 {
 	return charset_;
 }
