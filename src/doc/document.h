@@ -7,6 +7,7 @@
 
 #include "core/fs.h"
 #include "core/worker.h"
+#include "core/direct_file_reader.h"
 #include "sqlite3_wrapper/database.h"
 #include "charset.h"
 #include "doc_define.h"
@@ -24,21 +25,15 @@ private:
 	// 需要异步处理的组件都放在这个类中
 	class AsyncComponents {
 	public:
-		AsyncComponents(const fs::path &filePath, const fs::path &dbPath)
-			: ifs_(filePath, std::ios::binary)
-			, db_(dbPath) {}
+		AsyncComponents(const fs::path &filePath)
+			: reader_(filePath) {}
 
-		std::ifstream &ifs() {
-			return ifs_;
-		}
-
-		Db &db() {
-			return db_;
+		DirectFileReader &reader() {
+			return reader_;
 		}
 
 	private:
-		std::ifstream ifs_;
-		Db db_;
+		DirectFileReader reader_;
 	};
 
 	// 用于把异步组件AsyncComponents的对象在不同的线程中移动，以确保只有一个线程能够处理这些组件。
@@ -155,6 +150,7 @@ private:
 private:
 	const fs::path path_;
 	AsyncComponentsMovePointer asyncComponents_;
+	Db db_;
 	Worker &ownerThread_;
 	DocumentListener *listener_ = nullptr;
 

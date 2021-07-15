@@ -12,23 +12,26 @@ namespace doc::detail
 
 DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 	: path_(path)
-	, asyncComponents_(new AsyncComponents(path, path / ".notesharp.db"))
+	, asyncComponents_(new AsyncComponents(path))
+	, db_(path / ".notesharp.db")
 	, ownerThread_(ownerThread)
 {
 	asyncLoadOnePart();
+}
+
+static uintmax_t partSize() {
+	return SystemUtil::pageSize() * 1024;
 }
 
 void DocumentImpl::asyncLoadOnePart()
 {
 	auto self(shared_from_this());
 	std::async(std::launch::async, [this, self, comps = asyncComponents_]{
-		std::ifstream &ifs = comps->ifs();
-		const uintmax_t remain = fs::file_size(path_) - ifs.tellg();
-		const uintmax_t readn = std::min(remain, SystemUtil::pageSize() * 1024);
-		HeapArray buff(readn);
-		if (!ifs.read(buff.data(), buff.size())) {
-			throw std::logic_error("TODO: ifs.read() failed"); // TODO
-		}
+		DirectFileReader &reader = comps->reader();
+		const uintmax_t remain = fs::file_size(path_) - reader.tell();
+		const uintmax_t readn = std::min(remain, partSize());
+		HeapArray buff(partSize());
+		size_t readCount = reader.read(buff.data(), buff.size());
 		const std::string scharset = CharsetDetectUtil::detectCharset(buff.data(), buff.size());
 		const Charset charset = CharsetUtil::strToCharset(scharset);
 		
