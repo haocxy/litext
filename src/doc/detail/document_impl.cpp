@@ -1,5 +1,6 @@
 #include "document_impl.h"
 
+#include <iostream>
 #include <future>
 
 #include "core/heap_array.h"
@@ -30,6 +31,8 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
 
 DocumentImpl::LoadOnePartResult DocumentImpl::doLoadOnePartSync(AsyncComponents &comps)
 {
+	std::cout << "doLoadOnePartSync, tellg: " << comps.ifs().tellg() << std::endl;
+
 	std::ifstream &ifs = comps.ifs();
 	std::vector<unsigned char> &buff = comps.buff();
 	CharsetDetector &charsetDetector = comps.charsetDetector();
@@ -64,8 +67,8 @@ void DocumentImpl::asyncLoadOnePart()
 		doLoadOnePartSync(*comps);
 		ownerThread_.post([this, self, comps] {
 			asyncComponents_ = comps;
-			});
 		});
+	});
 }
 
 void DocumentImpl::async(std::function<void(AsyncComponents &comps)> &&action, std::function<void()> &&done) {
@@ -86,7 +89,7 @@ void DocumentImpl::async(std::function<void(AsyncComponents &comps)> &&action, s
 			ownerThread_.post([this, self, done = std::move(done), comps]{
 				asyncComponents_ = comps;
 				done();
-				});
+			});
 		}
 	});
 }
