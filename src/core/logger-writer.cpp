@@ -1,5 +1,6 @@
 #include "logger-writer.h"
 
+#include <cstring>
 #include <sstream>
 
 
@@ -12,14 +13,6 @@ static void safeLocalTime(std::tm &tm, std::time_t sec) {
 #else
     localtime_r(&sec, &tm);
 #endif
-}
-
-static std::time_t calcTomorrowStart() {
-    std::time_t now = std::time(nullptr);
-    std::tm tm;
-    std::memset(&tm, 0, sizeof(tm));
-    safeLocalTime(tm, now);
-    
 }
 
 Writer::Writer(const fs::path &dir, const std::string &basename)
