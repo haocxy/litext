@@ -14,7 +14,7 @@
 namespace doc::detail
 {
 
-class DocumentImpl : std::enable_shared_from_this<DocumentImpl> {
+class DocumentImpl : public std::enable_shared_from_this<DocumentImpl> {
 private:
 
 	using Db = sqlite3_wrapper::Database;
@@ -126,6 +126,8 @@ public:
 	DocumentImpl(const fs::path &file, Worker &ownerThread);
 
 	~DocumentImpl();
+
+	void start();
 
 	void bind(DocumentListener &listener);
 

@@ -134,6 +134,7 @@ int main(int argc, char *argv[])
     gui::qt::GuiThreadWorker guiThread;
 
     doc::Document doc(argv[1], guiThread);
+    //doc.start();
 
     //gui::qt::MainWindow mainWindow(argv[1]);
     //mainWindow.show();

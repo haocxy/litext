@@ -12,10 +12,9 @@ namespace doc::detail
 DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 	: path_(path)
 	, asyncComponents_(new AsyncComponents(path))
-	, db_(path / ".notesharp.db")
+	, db_(path.generic_string() + ".notesharp.db")
 	, ownerThread_(ownerThread)
 {
-	asyncLoadOnePart();
 }
 
 static uintmax_t partSize() {
@@ -47,6 +46,7 @@ DocumentImpl::LoadOnePartResult DocumentImpl::doLoadOnePartSync(AsyncComponents 
 	}
 
 	charsetDetector.feed(buff.data(), gcount);
+	charsetDetector.end();
 
 	const std::string scharset = charsetDetector.charset();
 	const Charset charset = CharsetUtil::strToCharset(scharset);
@@ -94,6 +94,11 @@ void DocumentImpl::async(std::function<void(AsyncComponents &comps)> &&action, s
 DocumentImpl::~DocumentImpl()
 {
 
+}
+
+void DocumentImpl::start()
+{
+	asyncLoadOnePart();
 }
 
 void DocumentImpl::bind(DocumentListener &listener)
