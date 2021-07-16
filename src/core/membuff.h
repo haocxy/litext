@@ -4,9 +4,6 @@
 #include <cstring>
 
 
-namespace mem
-{
-
 class MemBuff
 {
 public:
@@ -103,4 +100,3 @@ private:
     size_t capacity_ = 0;
 };
 
-}

@@ -1,9 +1,6 @@
 #include "membuff.h"
 
 
-namespace mem
-{
-
 void MemBuff::resize(size_t len) {
     ensureCapacity(len);
     size_ = len;
@@ -89,6 +86,4 @@ void MemBuff::realloc(size_t newcapacity) {
     std::memcpy(ptr, beg_, size_);
     delete beg_;
     beg_ = ptr;
-}
-
 }
