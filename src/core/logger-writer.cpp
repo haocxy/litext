@@ -2,14 +2,28 @@
 
 #include <sstream>
 
-#include "util/timeutil.h"
-
 
 namespace logger
 {
 
+static void safeLocalTime(std::tm &tm, std::time_t sec) {
+#ifdef WIN32
+    localtime_s(&tm, &sec);
+#else
+    localtime_r(&sec, &tm);
+#endif
+}
+
+static std::time_t calcTomorrowStart() {
+    std::time_t now = std::time(nullptr);
+    std::tm tm;
+    std::memset(&tm, 0, sizeof(tm));
+    safeLocalTime(tm, now);
+    
+}
+
 Writer::Writer(const fs::path &dir, const std::string &basename)
-    : base_(fs::absolute(dir / basename).normalize()) {
+    : base_(fs::absolute(dir / basename).lexically_normal()) {
 
     if (dir.empty()) {
         throw PathCheckError("dir is empty string");
@@ -35,26 +49,23 @@ Writer::Writer(const fs::path &dir, const std::string &basename)
         throw PathCheckError(ss.str().c_str());
     }
 
-    const ptime now = posix_time::microsec_clock::local_time();
-    tomorrowStart_ = ptime(pdate(now.date().day_count() + 1));
+    std::memset(&lastTime_, 0, sizeof(lastTime_));
 }
 
-static std::string makeFilePath(const std::string &basePath, const ptime &now) {
+static std::string makeFilePath(const std::string &basePath, const std::tm &tm) {
     std::ostringstream ss;
     ss << basePath << '-';
-    const pdate d = now.date();
-    ss << std::setw(4) << std::setfill('0') << d.year();
+    ss << std::setw(4) << std::setfill('0') << tm.tm_year + 1900;
     ss << '-';
-    ss << std::setw(2) << std::setfill('0') << d.month().as_number();
+    ss << std::setw(2) << std::setfill('0') << tm.tm_mon + 1;
     ss << '-';
-    ss << std::setw(2) << std::setfill('0') << d.day().as_number();
+    ss << std::setw(2) << std::setfill('0') << tm.tm_mday;
     ss << '_';
-    const auto t = now.time_of_day();
-    ss << std::setw(2) << std::setfill('0') << t.hours();
+    ss << std::setw(2) << std::setfill('0') << tm.tm_hour;
     ss << '-';
-    ss << std::setw(2) << std::setfill('0') << t.minutes();
+    ss << std::setw(2) << std::setfill('0') << tm.tm_min;
     ss << '-';
-    ss << std::setw(2) << std::setfill('0') << t.seconds();
+    ss << std::setw(2) << std::setfill('0') << tm.tm_sec;
     ss << ".log";
     return ss.str();
 }
@@ -63,13 +74,16 @@ void Writer::write(const void *data, size_t len) {
     if (!data || len == 0) {
         return;
     }
-    const ptime now = posix_time::second_clock::local_time();
-    if (now >= tomorrowStart_) {
+    const std::time_t now = std::time(nullptr);
+    std::tm tm;
+    std::memset(&tm, 0, sizeof(tm));
+    safeLocalTime(tm, now);
+    if (tm.tm_year != lastTime_.tm_year || tm.tm_mon != lastTime_.tm_mon || tm.tm_mday != lastTime_.tm_mday) {
         out_.close();
-        tomorrowStart_ = ptime(pdate(tomorrowStart_.date().day_count() + 1));
     }
+    lastTime_ = tm;
     if (!out_) {
-        out_.open(makeFilePath(base_.generic_string(), now), std::ios::binary);
+        out_.open(makeFilePath(base_.generic_string(), tm), std::ios::binary);
     }
     out_.write(reinterpret_cast<const char *>(data), len);
 }

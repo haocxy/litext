@@ -3,6 +3,7 @@
 #include <iostream>
 #include <future>
 
+#include "core/logger.h"
 #include "core/heap_array.h"
 #include "core/system_util.h"
 
@@ -31,7 +32,7 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
 
 void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
-	std::cout << "loadDocument" << std::endl;
+	LOGD << "loadDocument()";
 
 	std::ifstream &ifs = comps.ifs();
 	std::vector<unsigned char> &buff = comps.buff();

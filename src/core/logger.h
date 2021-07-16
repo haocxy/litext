@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 
-#include "util/fs-declare.h"
+#include "fs.h"
 
 #include "logger-level.h"
 

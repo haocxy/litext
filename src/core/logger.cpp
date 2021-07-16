@@ -1,13 +1,12 @@
 #include "logger.h"
 
+#include <ctime>
 #include <cstdio>
 #include <sstream>
 #include <mutex>
+#include <thread>
 
-#include "util/fs.h"
-#include "util/ptime.h"
-#include "util/thread-util.h"
-#include "util/timeutil.h"
+#include "fs.h"
 
 #include "logger-control.h"
 #include "logger-writer.h"
@@ -41,15 +40,33 @@ static bool shouldFlush(logger::Level level) {
     }
 }
 
+static void safeLocalTime(std::tm &tm, std::time_t sec) {
+#ifdef WIN32
+    localtime_s(&tm, &sec);
+#else
+    localtime_r(&sec, &tm);
+#endif
+}
+
 static std::string makeContent(logger::Level level, const LogDebugInfo &info, const std::string &content) {
-    const ptime now = posix_time::microsec_clock::local_time();
-    const auto t = now.time_of_day();
+    std::timespec ts;
+    std::memset(&ts, 0, sizeof(ts));
+    if (TIME_UTC != std::timespec_get(&ts, TIME_UTC)) {
+        std::ostringstream ss;
+        ss << "std::timespec_get() error: " << std::strerror(errno);
+        throw std::runtime_error(ss.str());
+    }
+    std::tm tm;
+    std::memset(&tm, 0, sizeof(tm));
+    safeLocalTime(tm, ts.tv_sec);
+    //const ptime now = posix_time::microsec_clock::local_time();
+    //const auto t = now.time_of_day();
     std::ostringstream buffer;
     buffer << logger::tostr(level) << '|';
-    const int64_t h = static_cast<int64_t>(t.hours());
-    const int64_t m = static_cast<int64_t>(t.minutes());
-    const int64_t s = static_cast<int64_t>(t.seconds());
-    const int64_t ms = t.total_milliseconds() - h * 3600 * 1000 - m * 60 * 1000 - s * 1000;
+    const int64_t h = tm.tm_hour; //static_cast<int64_t>(t.hours());
+    const int64_t m = tm.tm_min; //static_cast<int64_t>(t.minutes());
+    const int64_t s = tm.tm_sec; //static_cast<int64_t>(t.seconds());
+    const int64_t ms = ts.tv_nsec / 1'000'000;
     buffer << std::setw(2) << std::setfill('0') << h;
     buffer << ':';
     buffer << std::setw(2) << std::setfill('0') << m;
@@ -58,7 +75,7 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
     buffer << '.';
     buffer << std::setw(3) << std::setfill('0') << ms;
     buffer << '|';
-    buffer << 't' << thread_util::currentThreadShortId();
+    buffer << 't' << std::this_thread::get_id();
     buffer << '|';
     buffer << ' ' << content;
     buffer << '\n';

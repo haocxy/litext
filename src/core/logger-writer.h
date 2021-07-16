@@ -1,12 +1,11 @@
 #pragma once
 
+#include <ctime>
 #include <stdexcept>
 #include <string>
 #include <fstream>
 
-#include "util/fs.h"
-#include "util/timeutil.h"
-#include "util/ptime.h"
+#include "fs.h"
 
 
 namespace logger
@@ -34,7 +33,7 @@ public:
 private:
     const fs::path base_;
     std::ofstream out_;
-    ptime tomorrowStart_;
+    std::tm lastTime_;
 };
 
 } // namespace logger
