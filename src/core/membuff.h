@@ -43,7 +43,12 @@ public:
         return *this;
     }
 
-    ~MemBuff() { delete[] beg_; }
+    ~MemBuff() {
+        delete[] beg_;
+        beg_ = nullptr;
+        size_ = 0;
+        capacity_ = 0;
+    }
 
     void clear() { size_ = 0; }
 
