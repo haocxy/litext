@@ -140,13 +140,9 @@ public:
 	RowN loadedRowCount() const;
 
 private:
-	void asyncLoadOnePart();
+	void asyncLoadDocument();
 
-	enum class LoadOnePartResult {
-		FileEnd, FileNotEnd,
-	};
-
-	static LoadOnePartResult doLoadOnePartSync(AsyncComponents &comps);
+	static void loadDocument(AsyncComponents &comps);
 
 private:
 	const fs::path path_;

@@ -29,9 +29,9 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
 
 }
 
-DocumentImpl::LoadOnePartResult DocumentImpl::doLoadOnePartSync(AsyncComponents &comps)
+void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
-	std::cout << "doLoadOnePartSync, tellg: " << comps.ifs().tellg() << std::endl;
+	std::cout << "loadDocument" << std::endl;
 
 	std::ifstream &ifs = comps.ifs();
 	std::vector<unsigned char> &buff = comps.buff();
@@ -45,7 +45,7 @@ DocumentImpl::LoadOnePartResult DocumentImpl::doLoadOnePartSync(AsyncComponents 
 	ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
 	const uintmax_t gcount = ifs.gcount();
 	if (gcount == 0) {
-		return LoadOnePartResult::FileEnd;
+		return;
 	}
 
 	charsetDetector.feed(buff.data(), gcount);
@@ -57,14 +57,13 @@ DocumentImpl::LoadOnePartResult DocumentImpl::doLoadOnePartSync(AsyncComponents 
 	moveFileStreamPosToAfterNewLine(charset, ifs, buff);
 
 	buff.clear();
-	return LoadOnePartResult::FileNotEnd;
 }
 
-void DocumentImpl::asyncLoadOnePart()
+void DocumentImpl::asyncLoadDocument()
 {
 	auto self(shared_from_this());
 	std::async(std::launch::async, [this, self, comps = asyncComponents_] {
-		doLoadOnePartSync(*comps);
+		loadDocument(*comps);
 		ownerThread_.post([this, self, comps] {
 			asyncComponents_ = comps;
 		});
@@ -78,7 +77,7 @@ DocumentImpl::~DocumentImpl()
 
 void DocumentImpl::start()
 {
-	asyncLoadOnePart();
+	asyncLoadDocument();
 }
 
 void DocumentImpl::bind(DocumentListener &listener)
