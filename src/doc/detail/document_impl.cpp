@@ -90,12 +90,15 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 	CharsetDetector &charsetDetector = comps.charsetDetector();
 
 	const uintmax_t partLen = partSize();
+
+	uintmax_t partLenSum = 0;
 	
 	for (uintmax_t partIndex = 0; ifs; ++partIndex) {
 
-		buff.resize(partLen);
-		ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
+		buff.reverse(partLen);
+		ifs.read(reinterpret_cast<char *>(buff.data()), partLen);
 		const uintmax_t gcount = ifs.gcount();
+		buff.resize(gcount);
 
 		charsetDetector.feed(buff.data(), gcount);
 		charsetDetector.end();
@@ -107,10 +110,12 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 
 		LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
 
+		partLenSum += buff.size();
+
 		buff.clear();
 	}
 
-	LOGD << title << "end, time usage: " << elapsedTime.milliSec() << "ms";
+	LOGD << title << "end, part len sum: [" << partLenSum << "], time usage: " << elapsedTime.milliSec() << "ms";
 }
 
 void DocumentImpl::asyncLoadDocument()
