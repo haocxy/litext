@@ -5,8 +5,8 @@
 #include <cstring>
 #include <sstream>
 #include <mutex>
-#include <thread>
 
+#include "thread_util.h"
 #include "fs.h"
 
 #include "logger-control.h"
@@ -60,13 +60,11 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
     std::tm tm;
     std::memset(&tm, 0, sizeof(tm));
     safeLocalTime(tm, ts.tv_sec);
-    //const ptime now = posix_time::microsec_clock::local_time();
-    //const auto t = now.time_of_day();
     std::ostringstream buffer;
     buffer << logger::tostr(level) << '|';
-    const int64_t h = tm.tm_hour; //static_cast<int64_t>(t.hours());
-    const int64_t m = tm.tm_min; //static_cast<int64_t>(t.minutes());
-    const int64_t s = tm.tm_sec; //static_cast<int64_t>(t.seconds());
+    const int64_t h = tm.tm_hour;
+    const int64_t m = tm.tm_min;
+    const int64_t s = tm.tm_sec;
     const int64_t ms = ts.tv_nsec / 1'000'000;
     buffer << std::setw(2) << std::setfill('0') << h;
     buffer << ':';
@@ -76,7 +74,7 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
     buffer << '.';
     buffer << std::setw(3) << std::setfill('0') << ms;
     buffer << '|';
-    buffer << 't' << std::this_thread::get_id();
+    buffer << 't' << ThreadUtil::currentThreadShortId();
     buffer << '|';
     buffer << ' ' << content;
     buffer << '\n';
