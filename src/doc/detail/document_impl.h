@@ -148,20 +148,6 @@ private:
 
 	static LoadOnePartResult doLoadOnePartSync(AsyncComponents &comps);
 
-	void async(std::function<void(AsyncComponents &comps)> &&action, std::function<void()> &&done);
-
-	void async(std::function<void(AsyncComponents &comps)> &&action) {
-		async(std::move(action), [] {});
-	}
-
-	static void sync(Pointer self, std::function<void()> &&f) {
-		if (self && f) {
-			self->ownerThread_.post([self, f = std::move(f)]{
-				f();
-				});
-		}
-	}
-
 private:
 	const fs::path path_;
 	AsyncComponentsMovePointer asyncComponents_;

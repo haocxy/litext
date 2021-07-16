@@ -71,29 +71,6 @@ void DocumentImpl::asyncLoadOnePart()
 	});
 }
 
-void DocumentImpl::async(std::function<void(AsyncComponents &comps)> &&action, std::function<void()> &&done) {
-	if (!asyncComponents_) {
-		throw std::logic_error("bad logic, [asyncComponents_] is null");
-	}
-	if (!action) {
-		throw std::logic_error("bad logic, [action] is null");
-	}
-	if (!done) {
-		throw std::logic_error("bad logic, [done] is null");
-	}
-
-	auto self(shared_from_this());
-	std::async(std::launch::async, [this, self, done = std::move(done), action = std::move(action), comps = asyncComponents_]() mutable {
-		if (comps) {
-			action(*comps);
-			ownerThread_.post([this, self, done = std::move(done), comps]{
-				asyncComponents_ = comps;
-				done();
-			});
-		}
-	});
-}
-
 DocumentImpl::~DocumentImpl()
 {
 
