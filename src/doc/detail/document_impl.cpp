@@ -24,9 +24,57 @@ static uintmax_t partSize() {
 	return SystemUtil::pageSize() * 1024;
 }
 
-static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, MemBuff &buff)
+static void skipRowEndForAscii(std::ifstream &ifs, std::vector<unsigned char> &skipBuff) {
+	constexpr char eof = std::ifstream::traits_type::eof();
+	char ch = 0;
+	while ((ch = ifs.get()) != eof) {
+		skipBuff.push_back(ch);
+		if (ch == '\r') {
+			char next = 0;
+			if ((next = ifs.get()) != eof) {
+				if (next == '\n') {
+					skipBuff.push_back(next);
+					return;
+				} else {
+					ifs.unget();
+					continue;
+				}
+			} else {
+				return;
+			}
+		} else if (ch == '\n') {
+			return;
+		} else {
+			continue;
+		}
+	}
+}
+
+static void skipRowEndForUnknown(std::ifstream &ifs, std::vector<unsigned char> &skipBuff) {
+	skipRowEndForAscii(ifs, skipBuff);
+}
+
+// 把文件流ifs定位到换行字节组之后的下一个字节
+static void skipRowEnd(std::ifstream &ifs, Charset charset, std::vector<unsigned char> &skipBuff) {
+	switch (charset) {
+	case Charset::Ascii:
+	case Charset::UTF_8:
+	case Charset::GB18030:
+		skipRowEndForAscii(ifs, skipBuff);
+		return;
+	default:
+		skipRowEndForUnknown(ifs, skipBuff);
+		return;
+	}
+}
+
+static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, MemBuff &partBuff)
 {
-	
+	std::vector<unsigned char> skipBuff;
+	skipRowEnd(ifs, charset, skipBuff);
+	if (!skipBuff.empty()) {
+		partBuff.append(skipBuff.data(), skipBuff.size());
+	}
 }
 
 void DocumentImpl::loadDocument(AsyncComponents &comps)
@@ -49,8 +97,6 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 		ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
 		const uintmax_t gcount = ifs.gcount();
 
-		LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "]";
-
 		charsetDetector.feed(buff.data(), gcount);
 		charsetDetector.end();
 
@@ -58,6 +104,8 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 		const Charset charset = CharsetUtil::strToCharset(scharset);
 
 		moveFileStreamPosToAfterNewLine(charset, ifs, buff);
+
+		LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
 
 		buff.clear();
 	}
