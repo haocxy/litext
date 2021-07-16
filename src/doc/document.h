@@ -27,7 +27,7 @@ private:
 	class AsyncComponents {
 	public:
 		AsyncComponents(const fs::path &filePath)
-			: ifs_(filePath) {}
+			: ifs_(filePath, std::ios::binary) {}
 
 		std::ifstream &ifs() {
 			return ifs_;
