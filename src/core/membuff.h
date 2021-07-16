@@ -86,7 +86,7 @@ private:
     static_assert(sizeof(unsigned char) == 1);
     static_assert(sizeof(byte) == 1);
 
-    static size_t CalcRealNewCapacity(
+    static size_t calcRealNewCapacity(
         size_t curCapacity,
         size_t newCapacity);
 
@@ -94,7 +94,7 @@ private:
         if (capacity_ >= required) {
             return;
         }
-        realloc(CalcRealNewCapacity(capacity_, required));
+        realloc(calcRealNewCapacity(capacity_, required));
     }
 
     void realloc(size_t newcapacity);

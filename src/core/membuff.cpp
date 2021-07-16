@@ -67,17 +67,13 @@ void MemBuff::append(const void *from, size_t len) {
     size_ = newbytecount;
 }
 
-size_t MemBuff::CalcRealNewCapacity(size_t curCapacity, size_t newCapacity) {
-    constexpr size_t kInit = 256;
-    if (curCapacity != 0) {
-        size_t n = curCapacity;
-        while (n < newCapacity) {
-            n *= 2;
-        }
-        return n;
-    } else {
-        return kInit;
-    }
+size_t MemBuff::calcRealNewCapacity(size_t curCapacity, size_t newCapacity) {
+	constexpr size_t kInit = 256;
+	size_t n = curCapacity == 0 ? kInit : curCapacity;
+	while (n < newCapacity) {
+		n *= 2;
+	}
+	return n;
 }
 
 void MemBuff::realloc(size_t newcapacity) {

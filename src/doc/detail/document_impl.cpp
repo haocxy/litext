@@ -24,7 +24,7 @@ static uintmax_t partSize() {
 	return SystemUtil::pageSize() * 1024;
 }
 
-static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, std::vector<unsigned char> &buff)
+static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, MemBuff &buff)
 {
 	
 }
@@ -38,13 +38,14 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 	LOGD << title << "start";
 
 	std::ifstream &ifs = comps.ifs();
-	std::vector<unsigned char> &buff = comps.buff();
+	MemBuff &buff = comps.buff();
 	CharsetDetector &charsetDetector = comps.charsetDetector();
 
 	while (true) {
 
 		buff.resize(partSize());
 		ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
+		int n = 0;
 		if (ifs.eof()) {
 			break;
 		}

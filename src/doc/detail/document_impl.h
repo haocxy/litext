@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "core/worker.h"
+#include "core/membuff.h"
 #include "doc/doc_define.h"
 #include "doc/charset.h"
 #include "doc/charset_detector.h"
@@ -29,7 +30,7 @@ private:
 			return ifs_;
 		}
 
-		std::vector<unsigned char> &buff() {
+		MemBuff &buff() {
 			return buff_;
 		}
 
@@ -39,7 +40,7 @@ private:
 
 	private:
 		std::ifstream ifs_;
-		std::vector<unsigned char> buff_;
+		MemBuff buff_;
 		CharsetDetector charsetDetector_;
 	};
 
