@@ -10,7 +10,9 @@
 #include "core/system_util.h"
 #include "core/time_util.h"
 #include "doc/charset_detect_util.h"
+#include "doc/document.h"
 #include "gui/qt/mainwindow.h"
+#include "gui/qt/gui_thread_worker.h"
 
 #include "tool/big_file_maker.h"
 
@@ -120,6 +122,8 @@ int main(int argc, char *argv[])
         return cmdTool(argc, argv);
     }
 
+    
+
     if (argc < 2) {
         std::cerr << "Error: file path require, give it by commond line argument" << std::endl;
         return 1;
@@ -127,8 +131,12 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
-    gui::qt::MainWindow mainWindow(argv[1]);
-    mainWindow.show();
+    gui::qt::GuiThreadWorker guiThread;
+
+    doc::Document doc(argv[1], guiThread);
+
+    //gui::qt::MainWindow mainWindow(argv[1]);
+    //mainWindow.show();
 
     return app.exec();
 }

@@ -20,7 +20,7 @@ Database::Database(const fs::path &path)
 		std::ostringstream ss;
 		ss << "cannot open SQLite3 database by file path: [" << path.generic_string() << "] ";
 		ss << "because [" << sqlite3_errstr(n) << "]";
-		throw std::runtime_error(ss.str());
+		throw std::logic_error(ss.str());
 	}
 
 	db_ = db;

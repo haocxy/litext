@@ -8,6 +8,7 @@
 #include "simple_doc_row.h"
 #include "doc.h"
 
+
 class SimpleDoc : public Doc
 {
 public:
