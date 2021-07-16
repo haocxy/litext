@@ -4,10 +4,11 @@
 #include <fstream>
 #include <memory>
 #include <future>
+#include <vector>
 
 #include "core/fs.h"
 #include "core/worker.h"
-#include "core/direct_file_reader.h"
+#include "doc/charset_detector.h"
 #include "sqlite3_wrapper/database.h"
 #include "charset.h"
 #include "doc_define.h"
@@ -26,14 +27,24 @@ private:
 	class AsyncComponents {
 	public:
 		AsyncComponents(const fs::path &filePath)
-			: reader_(filePath) {}
+			: ifs_(filePath) {}
 
-		DirectFileReader &reader() {
-			return reader_;
+		std::ifstream &ifs() {
+			return ifs_;
+		}
+
+		std::vector<unsigned char> &buff() {
+			return buff_;
+		}
+
+		CharsetDetector &charsetDetector() {
+			return charsetDetector_;
 		}
 
 	private:
-		DirectFileReader reader_;
+		std::ifstream ifs_;
+		std::vector<unsigned char> buff_;
+		CharsetDetector charsetDetector_;
 	};
 
 	// 用于把异步组件AsyncComponents的对象在不同的线程中移动，以确保只有一个线程能够处理这些组件。
@@ -132,6 +143,12 @@ public:
 
 private:
 	void asyncLoadOnePart();
+
+	enum class LoadOnePartResult {
+		FileEnd, FileNotEnd,
+	};
+
+	static LoadOnePartResult doLoadOnePartSync(AsyncComponents &comps);
 
 	void async(std::function<void(AsyncComponents &comps)> &&action, std::function<void()> &&done);
 

@@ -23,18 +23,49 @@ static uintmax_t partSize() {
 	return SystemUtil::pageSize() * 1024;
 }
 
+static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, std::vector<unsigned char> &buff) {
+	if (buff.size() != partSize()) {
+		throw std::logic_error("buff.size() should equal to partSize() when call moveFileStreamPosToAfterNewLine()");
+	}
+
+}
+
+DocumentImpl::LoadOnePartResult DocumentImpl::doLoadOnePartSync(AsyncComponents &comps)
+{
+	std::ifstream &ifs = comps.ifs();
+	std::vector<unsigned char> &buff = comps.buff();
+	CharsetDetector &charsetDetector = comps.charsetDetector();
+
+	if (!buff.empty()) {
+		throw std::logic_error("buff should be empty before handle file part");
+	}
+
+	buff.resize(partSize());
+	ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
+	const uintmax_t gcount = ifs.gcount();
+	if (gcount == 0) {
+		return LoadOnePartResult::FileEnd;
+	}
+
+	charsetDetector.feed(buff.data(), gcount);
+
+	const std::string scharset = charsetDetector.charset();
+	const Charset charset = CharsetUtil::strToCharset(scharset);
+
+	moveFileStreamPosToAfterNewLine(charset, ifs, buff);
+
+	buff.clear();
+	return LoadOnePartResult::FileNotEnd;
+}
+
 void DocumentImpl::asyncLoadOnePart()
 {
 	auto self(shared_from_this());
-	std::async(std::launch::async, [this, self, comps = asyncComponents_]{
-		DirectFileReader &reader = comps->reader();
-		const uintmax_t remain = fs::file_size(path_) - reader.tell();
-		const uintmax_t readn = std::min(remain, partSize());
-		HeapArray buff(partSize());
-		size_t readCount = reader.read(buff.data(), buff.size());
-		const std::string scharset = CharsetDetectUtil::detectCharset(buff.data(), buff.size());
-		const Charset charset = CharsetUtil::strToCharset(scharset);
-		
+	std::async(std::launch::async, [this, self, comps = asyncComponents_] {
+		doLoadOnePartSync(*comps);
+		ownerThread_.post([this, self, comps] {
+			asyncComponents_ = comps;
+		});
 	});
 }
 
