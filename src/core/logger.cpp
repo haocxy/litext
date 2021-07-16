@@ -2,6 +2,7 @@
 
 #include <ctime>
 #include <cstdio>
+#include <cstring>
 #include <sstream>
 #include <mutex>
 #include <thread>
