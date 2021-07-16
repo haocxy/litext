@@ -41,16 +41,15 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 	MemBuff &buff = comps.buff();
 	CharsetDetector &charsetDetector = comps.charsetDetector();
 
-	while (true) {
+	const uintmax_t partLen = partSize();
+	
+	for (uintmax_t partIndex = 0; ifs; ++partIndex) {
 
-		buff.resize(partSize());
+		buff.resize(partLen);
 		ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
-		int n = 0;
-		if (ifs.eof()) {
-			break;
-		}
-
 		const uintmax_t gcount = ifs.gcount();
+
+		LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "]";
 
 		charsetDetector.feed(buff.data(), gcount);
 		charsetDetector.end();
