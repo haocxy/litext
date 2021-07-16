@@ -143,6 +143,8 @@ public:
 private:
 	void asyncLoadDocument();
 
+	static void loadPart(AsyncComponents &comps, const MemBuff &data);
+
 	static void loadDocument(AsyncComponents &comps);
 
 private:

@@ -77,6 +77,11 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
 	}
 }
 
+void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data)
+{
+
+}
+
 void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
 	static const char *title = "DocumentImpl::loadDocument() ";
@@ -107,6 +112,8 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 		const Charset charset = CharsetUtil::strToCharset(scharset);
 
 		moveFileStreamPosToAfterNewLine(charset, ifs, buff);
+
+		loadPart(comps, buff);
 
 		LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
 
