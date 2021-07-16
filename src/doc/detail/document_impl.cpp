@@ -4,7 +4,7 @@
 #include <future>
 
 #include "core/logger.h"
-#include "core/heap_array.h"
+#include "core/time_util.h"
 #include "core/system_util.h"
 
 
@@ -17,47 +17,52 @@ DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
 	, db_(path.generic_string() + ".notesharp.db")
 	, ownerThread_(ownerThread)
 {
+	LOGD << "DocumentImpl::DocumentImpl(...) for [" << path << "]";
 }
 
 static uintmax_t partSize() {
 	return SystemUtil::pageSize() * 1024;
 }
 
-static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, std::vector<unsigned char> &buff) {
-	if (buff.size() != partSize()) {
-		throw std::logic_error("buff.size() should equal to partSize() when call moveFileStreamPosToAfterNewLine()");
-	}
-
+static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, std::vector<unsigned char> &buff)
+{
+	
 }
 
 void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
-	LOGD << "loadDocument()";
+	static const char *title = "DocumentImpl::loadDocument() ";
+
+	ElapsedTime elapsedTime;
+
+	LOGD << title << "start";
 
 	std::ifstream &ifs = comps.ifs();
 	std::vector<unsigned char> &buff = comps.buff();
 	CharsetDetector &charsetDetector = comps.charsetDetector();
 
-	if (!buff.empty()) {
-		throw std::logic_error("buff should be empty before handle file part");
+	while (true) {
+
+		buff.resize(partSize());
+		ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
+		if (ifs.eof()) {
+			break;
+		}
+
+		const uintmax_t gcount = ifs.gcount();
+
+		charsetDetector.feed(buff.data(), gcount);
+		charsetDetector.end();
+
+		const std::string scharset = charsetDetector.charset();
+		const Charset charset = CharsetUtil::strToCharset(scharset);
+
+		moveFileStreamPosToAfterNewLine(charset, ifs, buff);
+
+		buff.clear();
 	}
 
-	buff.resize(partSize());
-	ifs.read(reinterpret_cast<char *>(buff.data()), buff.size());
-	const uintmax_t gcount = ifs.gcount();
-	if (gcount == 0) {
-		return;
-	}
-
-	charsetDetector.feed(buff.data(), gcount);
-	charsetDetector.end();
-
-	const std::string scharset = charsetDetector.charset();
-	const Charset charset = CharsetUtil::strToCharset(scharset);
-
-	moveFileStreamPosToAfterNewLine(charset, ifs, buff);
-
-	buff.clear();
+	LOGD << title << "end, time usage: " << elapsedTime.milliSec() << "ms";
 }
 
 void DocumentImpl::asyncLoadDocument()
