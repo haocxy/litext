@@ -19,6 +19,7 @@ class DocumentImpl : public std::enable_shared_from_this<DocumentImpl> {
 private:
 
     using Db = sqlite::Database;
+    using Statement = sqlite::Statement;
 
     // 需要异步处理的组件都放在这个类中
     class AsyncComponents {
@@ -42,11 +43,16 @@ private:
             return charsetDetector_;
         }
 
+        Statement &saveDataStatement() {
+            return saveDataStatement_;
+        }
+
     private:
         std::ifstream ifs_;
         MemBuff readBuff_;
         MemBuff decodeBuff_;
         CharsetDetector charsetDetector_;
+        Statement saveDataStatement_;
     };
 
     // 用于把异步组件AsyncComponents的对象在不同的线程中移动，以确保只有一个线程能够处理这些组件。
@@ -157,6 +163,8 @@ private:
     void loadPart(AsyncComponents &comps, const LoadingPartInfo &info);
 
     bool prepareDatabase();
+
+    bool prepareSaveDataStatement(Statement &stmt);
 
     void loadDocument(AsyncComponents &comps);
 

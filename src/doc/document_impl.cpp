@@ -95,6 +95,16 @@ void DocumentImpl::loadPart(AsyncComponents &comps, const LoadingPartInfo &info)
 
     converter.convert(comps.readBuff(), decodeBuff);
 
+    Statement &saveDataStmt = comps.saveDataStatement();
+    saveDataStmt.reset();
+
+    saveDataStmt.bindNull(1);
+    saveDataStmt.bind(2, info.off);
+    saveDataStmt.bind(3, info.len);
+    saveDataStmt.bind(4, decodeBuff.data(), decodeBuff.size());
+
+    saveDataStmt.step();
+
     LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset
         << "], time usage[" << elapsedTime.milliSec() << " ms]";
 }
@@ -137,11 +147,33 @@ bool DocumentImpl::prepareDatabase()
     }
 }
 
+bool DocumentImpl::prepareSaveDataStatement(Statement &stmt)
+{
+    try {
+
+        stmt.open(db_, "INSERT INTO doc VALUES(?,?,?,?);");
+
+        return true;
+    }
+    catch (std::exception &e) {
+        LOGE << "DocumentImpl::prepareSaveDataStatement() failed because" << ": " << e.what();
+        return false;
+    }
+    catch (...) {
+        LOGE << "DocumentImpl::prepareSaveDataStatement() failed because" << "unknown exception";
+        return false;
+    }
+}
+
 void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
     static const char *title = "DocumentImpl::loadDocument() ";
 
     if (!prepareDatabase()) {
+        return;
+    }
+
+    if (!prepareSaveDataStatement(comps.saveDataStatement())) {
         return;
     }
 

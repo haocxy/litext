@@ -175,11 +175,8 @@ void Statement::open(Database &db, const std::string &sql)
     sqlite3_stmt *stmt = nullptr;
 
     const int n = sqlite3_prepare_v2(db.db_, sql.c_str(), static_cast<int>(sql.size()), &stmt, nullptr);
-
     if (n != SQLITE_OK) {
-        std::ostringstream ss;
-        ss << "sqlite::Statement::open() failed because: [" << sqlite3_errstr(n) << "]";
-        throw std::logic_error(ss.str());
+        throwError("open", n);
     }
 
     stmt_ = stmt;
@@ -191,9 +188,18 @@ void Statement::reset()
 
     const int n = sqlite3_reset(stmt_);
     if (n != SQLITE_OK) {
-        std::ostringstream ss;
-        ss << "sqlite::Statement::reset() failed because: [" << sqlite3_errstr(n) << "]";
-        throw std::logic_error(ss.str());
+        throwError("reset", n);
+    }
+}
+
+void Statement::bindNull(int pos)
+{
+    if (pos > 0) {
+        assertOpened();
+        const int n = sqlite3_bind_null(stmt_, pos);
+        if (n != SQLITE_OK) {
+            throwError("bindNull", n);
+        }
     }
 }
 
@@ -201,14 +207,29 @@ void Statement::bind(int pos, const void *data, size_t len)
 {
     if (pos > 0 && data != nullptr && len > 0) {
         assertOpened();
-
         const int n = sqlite3_bind_blob(stmt_, pos, data, static_cast<int>(len), SQLITE_TRANSIENT);
         if (n != SQLITE_OK) {
-            std::ostringstream ss;
-            ss << "sqlite::Statement::bind() failed because: [" << sqlite3_errstr(n) << "]";
-            throw std::logic_error(ss.str());
+            throwError("bind", n);
         }
     }
+}
+
+void Statement::bind(int pos, int64_t value)
+{
+    if (pos > 0) {
+        assertOpened();
+        const int n = sqlite3_bind_int64(stmt_, pos, value);
+        if (n != SQLITE_OK) {
+            throwError("bind", n);
+        }
+    }
+}
+
+void Statement::step()
+{
+    assertOpened();
+    const int n = sqlite3_step(stmt_);
+    // TODO step 返回值不是简单地非对即错，需要详细处理
 }
 
 void Statement::close()
@@ -235,6 +256,13 @@ void Statement::assertOpened() const
     if (!stmt_) {
         throw std::logic_error("sqlite::Statement not opened");
     }
+}
+
+void Statement::throwError(const char *func, int err)
+{
+    std::ostringstream ss;
+    ss << "sqlite::Statement::" << func << "() failed because: [" << sqlite3_errstr(err) << "]";
+    throw std::logic_error(ss.str());
 }
 
 }

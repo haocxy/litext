@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 
 #include "core/fs.h"
 
@@ -55,7 +56,13 @@ public:
 
     void reset();
 
+    void bindNull(int pos);
+
     void bind(int pos, const void *data, size_t len);
+
+    void bind(int pos, int64_t value);
+
+    void step();
 
     void close();
 
@@ -63,6 +70,8 @@ private:
     bool isOpened() const;
 
     void assertOpened() const;
+
+    static void throwError(const char *func, int err);
 
 private:
     sqlite3_stmt *stmt_ = nullptr;
