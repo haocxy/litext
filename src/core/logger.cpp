@@ -5,6 +5,7 @@
 #include <cstring>
 #include <sstream>
 #include <mutex>
+#include <atomic>
 
 #include "fs.h"
 
