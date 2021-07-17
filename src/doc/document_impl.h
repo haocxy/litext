@@ -143,9 +143,9 @@ public:
 private:
 	void asyncLoadDocument();
 
-	static void loadPart(AsyncComponents &comps, const MemBuff &data);
+	void loadPart(AsyncComponents &comps, const MemBuff &data) const;
 
-	static void loadDocument(AsyncComponents &comps);
+	void loadDocument(AsyncComponents &comps) const;
 
 private:
 	const fs::path path_;

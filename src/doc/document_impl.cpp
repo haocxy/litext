@@ -77,18 +77,18 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
 	}
 }
 
-void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data)
+void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data) const
 {
 
 }
 
-void DocumentImpl::loadDocument(AsyncComponents &comps)
+void DocumentImpl::loadDocument(AsyncComponents &comps) const
 {
 	static const char *title = "DocumentImpl::loadDocument() ";
 
 	ElapsedTime elapsedTime;
 
-	LOGD << title << "start";
+	LOGD << title << "start for file [" << path_ << "]";
 
 	std::ifstream &ifs = comps.ifs();
 	MemBuff &buff = comps.buff();
@@ -122,7 +122,8 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 		buff.clear();
 	}
 
-	LOGD << title << "end, part len sum: [" << partLenSum << "], time usage: " << elapsedTime.milliSec() << "ms";
+	LOGD << title << "end for file [" << path_ << "]";
+	LOGD << "part len sum : [" << partLenSum << "] , time usage : " << elapsedTime.milliSec() << "ms";
 }
 
 void DocumentImpl::asyncLoadDocument()
