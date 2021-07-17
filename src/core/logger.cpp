@@ -151,9 +151,9 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
     return buffer.str();
 }
 
-void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &content) {
-    static std::mutex g_writeLogMutex;
+static std::mutex g_writeLogMutex;
 
+void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &content) {
     std::string data = makeContent(level, info, content);
 
     std::lock_guard<std::mutex> lock(g_writeLogMutex);
@@ -181,7 +181,7 @@ void LogLine::printPath(const fs::path &p) {
 namespace logger::control
 {
 
-static const char *const kDefaultBaseName = "abc-server-log";
+static const char *const kDefaultBaseName = "notesharp-log";
 
 static std::string normalizeBaseName(const std::string &basename) {
     if (basename.empty()) {
