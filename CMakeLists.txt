@@ -29,7 +29,7 @@ if(MSVC)
     add_compile_options(/wd4834)
 else()
     # 关闭丢弃掉标有 [nodiscard] 的函数的返回值的编译警告
-    add_compile_options(-Wunused-result)
+    add_compile_options(-Wno-unused-result)
     add_link_options(-ldl)
 endif()
 
