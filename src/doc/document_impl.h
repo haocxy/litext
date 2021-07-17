@@ -143,12 +143,15 @@ public:
 private:
     void asyncLoadDocument();
 
-    void loadPart(AsyncComponents &comps, const MemBuff &data) const;
+    void loadPart(AsyncComponents &comps, const MemBuff &data);
 
-    void loadDocument(AsyncComponents &comps) const;
+    void prepareDatabase();
+
+    void loadDocument(AsyncComponents &comps);
 
 private:
     const fs::path path_;
+    const fs::path dbPath_;
     AsyncComponentsMovePointer asyncComponents_;
     Db db_;
     Worker &ownerThread_;

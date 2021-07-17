@@ -8,6 +8,8 @@
 #include "core/system_util.h"
 #include "core/readable_size_util.h"
 
+#include "sql/asset.prepare_db.sql.h"
+
 
 namespace doc::detail
 {
@@ -15,7 +17,7 @@ namespace doc::detail
 DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
     : path_(path)
     , asyncComponents_(new AsyncComponents(path))
-    , db_(path.generic_string() + ".notesharp.db")
+    , dbPath_(path.generic_string() + ".notesharp.db")
     , ownerThread_(ownerThread)
 {
     LOGD << "DocumentImpl::DocumentImpl(...) for [" << path << "]";
@@ -78,14 +80,52 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
     }
 }
 
-void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data) const
+void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data)
 {
 
 }
 
-void DocumentImpl::loadDocument(AsyncComponents &comps) const
+static bool isDatabaseEmpty(const fs::path &dbPath)
+{
+    if (!fs::exists(dbPath)) {
+        return true;
+    }
+    if (fs::file_size(dbPath) == 0) {
+        return true;
+    }
+    return false;
+}
+
+void DocumentImpl::prepareDatabase()
+{
+    // const bool isDbEmpty = isDatabaseEmpty(dbPath_);
+
+    try {
+
+        {
+            // TODO 开发时为了方便每次清空旧数据文件
+            std::ofstream ofs(dbPath_, std::ios::binary);
+        }
+
+        db_.open(dbPath_);
+
+        db_.exec(reinterpret_cast<const char *>(Asset::Data::prepare_db__sql));
+
+    }
+    catch (const std::exception &e) {
+        LOGE << "DocumentImpl::prepareDatabase() error: " << e.what();
+        throw;
+    }
+    catch (...) {
+        throw;
+    }
+}
+
+void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
     static const char *title = "DocumentImpl::loadDocument() ";
+
+    prepareDatabase();
 
     ElapsedTime elapsedTime;
 

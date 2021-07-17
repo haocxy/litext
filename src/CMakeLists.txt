@@ -196,6 +196,7 @@ file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
     "${root_dir}/*.cpp"
     "${root_dir}/*.txt"
+    "${root_dir}/*.sql"
 )
 
 add_executable(notesharp

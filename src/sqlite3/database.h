@@ -24,9 +24,16 @@ public:
 
 	Database &operator=(Database &&) = delete;
 
+    bool isOpened() const;
+
 	void open(const fs::path &path);
 
 	void close();
+
+    void exec(const std::string &sql);
+
+private:
+    void assertOpened() const;
 
 private:
 	fs::path path_;
