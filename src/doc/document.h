@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "detail/document_impl.h"
+#include "document_impl.h"
 
 
 namespace doc
