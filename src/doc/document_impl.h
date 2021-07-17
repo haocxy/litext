@@ -143,7 +143,18 @@ public:
 private:
     void asyncLoadDocument();
 
-    void loadPart(AsyncComponents &comps, const MemBuff &data);
+    struct LoadingPartInfo {
+
+        LoadingPartInfo() {}
+
+        LoadingPartInfo(uintmax_t off, uintmax_t len)
+            : off(off), len(len) {}
+
+        uintmax_t off = 0;
+        uintmax_t len = 0;
+    };
+
+    void loadPart(AsyncComponents &comps, const MemBuff &data, const LoadingPartInfo &info);
 
     bool prepareDatabase();
 

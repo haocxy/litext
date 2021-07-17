@@ -80,9 +80,11 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
     }
 }
 
-void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data)
+void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data, const LoadingPartInfo &info)
 {
+    const char *title = "DocumentImpl::loadPart() ";
 
+    LOGD << title << "begin for part: [off:" << info.off << ",len:" << info.len << "]";
 }
 
 static bool isDatabaseEmpty(const fs::path &dbPath)
@@ -145,6 +147,8 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 
     for (uintmax_t partIndex = 0; ifs; ++partIndex) {
 
+        const uintmax_t offset = ifs.tellg();
+
         buff.reverse(partLen);
         ifs.read(reinterpret_cast<char *>(buff.data()), partLen);
         const uintmax_t gcount = ifs.gcount();
@@ -158,9 +162,13 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 
         moveFileStreamPosToAfterNewLine(charset, ifs, buff);
 
-        loadPart(comps, buff);
+        LoadingPartInfo info;
+        info.off = offset;
+        info.len = buff.size();
 
-        LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
+        loadPart(comps, buff, info);
+
+        //LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
 
         partLenSum += buff.size();
 
