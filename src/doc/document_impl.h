@@ -6,10 +6,10 @@
 #include "core/worker.h"
 #include "core/membuff.h"
 #include "core/charset.h"
+#include "core/sqlite.h"
 #include "doc/doc_define.h"
 #include "doc/charset_detector.h"
 #include "doc/declare_document_listener.h"
-#include "sqlite3/database.h"
 
 
 namespace doc::detail
