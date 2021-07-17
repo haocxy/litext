@@ -124,8 +124,8 @@ void DocumentImpl::loadDocument(AsyncComponents &comps) const
 	}
 
 	LOGD << title << "end for file [" << path_ << "]";
-	LOGD << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
-	LOGD << "time usage : " << elapsedTime.milliSec() << "ms";
+	LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
+	LOGD << title << "time usage : " << elapsedTime.milliSec() << "ms";
 }
 
 void DocumentImpl::asyncLoadDocument()
