@@ -30,8 +30,12 @@ private:
             return ifs_;
         }
 
-        MemBuff &buff() {
-            return buff_;
+        MemBuff &readBuff() {
+            return readBuff_;
+        }
+
+        MemBuff &decodeBuff() {
+            return decodeBuff_;
         }
 
         CharsetDetector &charsetDetector() {
@@ -40,7 +44,8 @@ private:
 
     private:
         std::ifstream ifs_;
-        MemBuff buff_;
+        MemBuff readBuff_;
+        MemBuff decodeBuff_;
         CharsetDetector charsetDetector_;
     };
 
@@ -144,17 +149,12 @@ private:
     void asyncLoadDocument();
 
     struct LoadingPartInfo {
-
-        LoadingPartInfo() {}
-
-        LoadingPartInfo(uintmax_t off, uintmax_t len)
-            : off(off), len(len) {}
-
         uintmax_t off = 0;
         uintmax_t len = 0;
+        Charset charset = Charset::Unknown;
     };
 
-    void loadPart(AsyncComponents &comps, const MemBuff &data, const LoadingPartInfo &info);
+    void loadPart(AsyncComponents &comps, const LoadingPartInfo &info);
 
     bool prepareDatabase();
 

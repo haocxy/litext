@@ -7,6 +7,7 @@
 #include "core/time_util.h"
 #include "core/system_util.h"
 #include "core/readable_size_util.h"
+#include "core/charset_converter.h"
 
 #include "sql/asset.prepare_db.sql.h"
 
@@ -80,11 +81,22 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
     }
 }
 
-void DocumentImpl::loadPart(AsyncComponents &comps, const MemBuff &data, const LoadingPartInfo &info)
+void DocumentImpl::loadPart(AsyncComponents &comps, const LoadingPartInfo &info)
 {
     const char *title = "DocumentImpl::loadPart() ";
 
-    LOGD << title << "begin for part: [off:" << info.off << ",len:" << info.len << "]";
+    ElapsedTime elapsedTime;
+
+    CharsetConverter converter;
+    converter.open(info.charset, Charset::UTF_8);
+
+    MemBuff &decodeBuff = comps.decodeBuff();
+    decodeBuff.clear();
+
+    converter.convert(comps.readBuff(), decodeBuff);
+
+    LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset
+        << "], time usage[" << elapsedTime.milliSec() << " ms]";
 }
 
 static bool isDatabaseEmpty(const fs::path &dbPath)
@@ -138,7 +150,7 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
     LOGD << title << "start for file [" << path_ << "]";
 
     std::ifstream &ifs = comps.ifs();
-    MemBuff &buff = comps.buff();
+    MemBuff &readBuff = comps.readBuff();
     CharsetDetector &charsetDetector = comps.charsetDetector();
 
     const uintmax_t partLen = partSize();
@@ -149,31 +161,35 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 
         const uintmax_t offset = ifs.tellg();
 
-        buff.reverse(partLen);
-        ifs.read(reinterpret_cast<char *>(buff.data()), partLen);
+        readBuff.reverse(partLen);
+        ifs.read(reinterpret_cast<char *>(readBuff.data()), partLen);
         const uintmax_t gcount = ifs.gcount();
-        buff.resize(gcount);
+        readBuff.resize(gcount);
 
-        charsetDetector.feed(buff.data(), gcount);
+        charsetDetector.feed(readBuff.data(), gcount);
         charsetDetector.end();
 
         const std::string scharset = charsetDetector.charset();
         const Charset charset = CharsetUtil::strToCharset(scharset);
 
-        moveFileStreamPosToAfterNewLine(charset, ifs, buff);
+        moveFileStreamPosToAfterNewLine(charset, ifs, readBuff);
 
         LoadingPartInfo info;
         info.off = offset;
-        info.len = buff.size();
+        info.len = readBuff.size();
+        info.charset = charset;
 
-        loadPart(comps, buff, info);
+        loadPart(comps, info);
 
         //LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
 
-        partLenSum += buff.size();
+        partLenSum += readBuff.size();
 
-        buff.clear();
+        readBuff.clear();
     }
+
+    comps.readBuff().clear();
+    comps.decodeBuff().clear();
 
     LOGD << title << "end for file [" << path_ << "]";
     LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";

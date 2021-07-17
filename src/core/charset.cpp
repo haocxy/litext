@@ -21,7 +21,7 @@ Charset strToCharset(const std::string &s)
 	return Charset::Unknown;
 }
 
-std::string charsetToStr(Charset charset)
+const char *charsetToStr(Charset charset)
 {
 	switch (charset) {
 	case Charset::Ascii:
@@ -31,7 +31,7 @@ std::string charsetToStr(Charset charset)
 	case Charset::GB18030:
 		return "GB18030";
 	default:
-		return std::string();
+		return "";
 	}
 }
 
