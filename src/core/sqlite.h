@@ -1,9 +1,11 @@
 #pragma once
 
+#include <cstddef>
+
 #include "core/fs.h"
 
 struct sqlite3;
-
+struct sqlite3_stmt;
 
 namespace sqlite
 {
@@ -38,6 +40,32 @@ private:
 private:
 	fs::path path_;
 	sqlite3 *db_ = nullptr;
+
+    friend class Statement;
+};
+
+
+class Statement {
+public:
+    Statement();
+
+    ~Statement();
+
+    void open(Database &db, const std::string &sql);
+
+    void reset();
+
+    void bind(int pos, const void *data, size_t len);
+
+    void close();
+
+private:
+    bool isOpened() const;
+
+    void assertOpened() const;
+
+private:
+    sqlite3_stmt *stmt_ = nullptr;
 };
 
 }
