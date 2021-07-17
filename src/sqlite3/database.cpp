@@ -8,7 +8,7 @@
 #include <third/sqlite3/sqlite3.h>
 
 
-namespace sqlite3_wrapper
+namespace sqlite3ns
 {
 
 

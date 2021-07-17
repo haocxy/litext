@@ -5,7 +5,7 @@
 struct sqlite3;
 
 
-namespace sqlite3_wrapper
+namespace sqlite3ns
 {
 
 class Database {
