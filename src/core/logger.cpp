@@ -6,7 +6,6 @@
 #include <sstream>
 #include <mutex>
 
-#include "thread_util.h"
 #include "fs.h"
 
 
@@ -22,6 +21,12 @@ static void safeLocalTime(std::tm &tm, std::time_t sec) {
 #else
     localtime_r(&sec, &tm);
 #endif
+}
+
+static uint32_t currentThreadShortId() {
+    static std::atomic<uint32_t> s_nextShortId = 1;
+    thread_local uint32_t tl_curThreadShortId = s_nextShortId++;
+    return tl_curThreadShortId;
 }
 
 
@@ -138,7 +143,7 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
     buffer << '.';
     buffer << std::setw(3) << std::setfill('0') << ms;
     buffer << '|';
-    buffer << 't' << ThreadUtil::currentThreadShortId();
+    buffer << 't' << currentThreadShortId();
     buffer << '|';
     buffer << ' ' << content;
     buffer << '\n';
