@@ -96,7 +96,7 @@ static bool isDatabaseEmpty(const fs::path &dbPath)
     return false;
 }
 
-void DocumentImpl::prepareDatabase()
+bool DocumentImpl::prepareDatabase()
 {
     // const bool isDbEmpty = isDatabaseEmpty(dbPath_);
 
@@ -111,13 +111,15 @@ void DocumentImpl::prepareDatabase()
 
         db_.exec(reinterpret_cast<const char *>(Asset::Data::prepare_db__sql));
 
+        return true;
     }
     catch (const std::exception &e) {
-        LOGE << "DocumentImpl::prepareDatabase() error: " << e.what();
-        throw;
+        LOGE << "DocumentImpl::prepareDatabase() failed because" << ": " << e.what();
+        return false;
     }
     catch (...) {
-        throw;
+        LOGE << "DocumentImpl::prepareDatabase() failed because" << "unknown exception";
+        return false;
     }
 }
 
@@ -125,7 +127,9 @@ void DocumentImpl::loadDocument(AsyncComponents &comps)
 {
     static const char *title = "DocumentImpl::loadDocument() ";
 
-    prepareDatabase();
+    if (!prepareDatabase()) {
+        return;
+    }
 
     ElapsedTime elapsedTime;
 

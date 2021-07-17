@@ -145,7 +145,7 @@ private:
 
     void loadPart(AsyncComponents &comps, const MemBuff &data);
 
-    void prepareDatabase();
+    bool prepareDatabase();
 
     void loadDocument(AsyncComponents &comps);
 
