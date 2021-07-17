@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "core/system_util.h"
-#include "core/heap_array.h"
+#include "core/membuff.h"
 #include "charset_detector.h"
 
 
@@ -37,10 +37,11 @@ std::string detectCharsetOfFile(const fs::path &path, size_t offset, size_t len)
 	const size_t remain = fileSize - offset;
 	const size_t realLen = len > 0 ? std::min(remain, len) : remain;
 
-	HeapArray buff(realLen);
+	MemBuff buff;
+	buff.resize(realLen);
 	std::ifstream ifs(path, std::ios::binary);
 	ifs.seekg(offset);
-	ifs.read(buff.data(), realLen);
+	ifs.read(reinterpret_cast<char *>(buff.data()), realLen);
 
 	if (!detector.feed(buff.data(), buff.size())) {
 		return "";
