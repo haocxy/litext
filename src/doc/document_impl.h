@@ -18,7 +18,7 @@ namespace doc::detail
 class DocumentImpl : public std::enable_shared_from_this<DocumentImpl> {
 private:
 
-    using Db = sqlite3ns::Database;
+    using Db = sqlite::Database;
 
     // 需要异步处理的组件都放在这个类中
     class AsyncComponents {

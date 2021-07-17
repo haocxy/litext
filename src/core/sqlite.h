@@ -5,7 +5,7 @@
 struct sqlite3;
 
 
-namespace sqlite3ns
+namespace sqlite
 {
 
 class Database {

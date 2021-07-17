@@ -35,7 +35,7 @@ private:
 }
 
 
-namespace sqlite3ns
+namespace sqlite
 {
 
 Database::Database()
