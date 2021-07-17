@@ -3,10 +3,6 @@
 #include <string>
 
 
-namespace doc
-{
-
-
 enum class Charset {
 	Unknown = 0,
 	Ascii,
@@ -20,7 +16,5 @@ namespace CharsetUtil
 Charset strToCharset(const std::string &s);
 
 std::string charsetToStr(Charset charset);
-
-}
 
 }

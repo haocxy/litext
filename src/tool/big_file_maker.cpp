@@ -132,7 +132,7 @@ void BigFileMaker::execute()
 void BigFileMaker::init() {
 	std::string sCharset;
 	arg(sCharset);
-	charset_ = doc::CharsetUtil::strToCharset(sCharset);
+	charset_ = CharsetUtil::strToCharset(sCharset);
 
 	std::string sSizeHint;
 	arg(sSizeHint);

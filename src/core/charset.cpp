@@ -1,7 +1,7 @@
 #include "charset.h"
 
 
-namespace doc::CharsetUtil
+namespace CharsetUtil
 {
 
 Charset strToCharset(const std::string &s)

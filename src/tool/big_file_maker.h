@@ -41,7 +41,7 @@ private:
 	void printLine(uintmax_t lineIndex);
 
 private:
-	doc::Charset charset_ = doc::Charset::Unknown;
+	Charset charset_ = Charset::Unknown;
 
 	uintmax_t sizeHint_ = 0;
 
