@@ -9,7 +9,7 @@
 #include <QByteArray>
 
 #include "core/fs.h"
-#include "doc/charset.h"
+#include "core/charset.h"
 #include "tool.h"
 
 

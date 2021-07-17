@@ -5,8 +5,8 @@
 
 #include "core/worker.h"
 #include "core/membuff.h"
+#include "core/charset.h"
 #include "doc/doc_define.h"
-#include "doc/charset.h"
 #include "doc/charset_detector.h"
 #include "doc/declare_document_listener.h"
 #include "sqlite3_wrapper/database.h"
