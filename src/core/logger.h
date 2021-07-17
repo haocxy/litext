@@ -2,19 +2,105 @@
 
 #include <string>
 #include <sstream>
-#include <vector>
+#include <fstream>
 
 #include "fs.h"
-
-#include "logger-level.h"
 
 
 namespace logger
 {
 
+enum class Level {
+    All,
+    Debug,
+    Info,
+    Warn,
+    Error,
+    Off,
+};
+
+inline const char *tostr(Level level) {
+    switch (level) {
+    case Level::Debug:
+        return "d";
+    case Level::Info:
+        return "i";
+    case Level::Warn:
+        return "w";
+    case Level::Error:
+        return "e";
+    default:
+        return "?";
+    }
+}
+
 bool shouldLog(logger::Level level);
 
+class Writer {
+public:
+
+    Writer(const fs::path &dir, const std::string &basename);
+
+    void write(const void *data, size_t len);
+
+    void flush() {
+        out_.flush();
+    }
+
+private:
+    const fs::path base_;
+    std::ofstream out_;
+    std::tm lastTime_;
+};
+
 } // namespace logger
+
+
+
+namespace logger::control
+{
+
+class Option {
+public:
+    Option() {}
+
+    Level level() const {
+        return level_;
+    }
+
+    void setLevel(Level level) {
+        level_ = level;
+    }
+
+    void setLevel(const std::string &str);
+
+    const fs::path &dir() const {
+        return dir_;
+    }
+
+    void setDir(const fs::path &dir) {
+        dir_ = dir;
+    }
+
+    const std::string &basename() const {
+        return basename_;
+    }
+
+    void setBasename(const std::string &basename) {
+        basename_ = basename;
+    }
+
+private:
+    Level level_ = Level::Info;
+    fs::path dir_;
+    std::string basename_;
+};
+
+void init(const Option &opt);
+
+}
+
+
 
 class LogDebugInfo
 {
@@ -56,23 +142,6 @@ public:
     LogLine &operator<<(const T &obj) {
         if (shouldLog_) {
             buffer_ << obj;
-        }
-        return *this;
-    }
-
-    template <typename E>
-    LogLine &operator<<(const std::vector<E> &vec) {
-        if (shouldLog_) {
-            buffer_ << '[';
-            bool first = true;
-            for (const E &e : vec) {
-                if (!first) {
-                    buffer_ << ',';
-                }
-                buffer_ << e;
-                first = false;
-            }
-            buffer_ << ']';
         }
         return *this;
     }
