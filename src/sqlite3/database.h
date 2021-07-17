@@ -10,6 +10,8 @@ namespace sqlite3ns
 
 class Database {
 public:
+	Database();
+
 	Database(const fs::path &path);
 
 	~Database();
@@ -22,8 +24,12 @@ public:
 
 	Database &operator=(Database &&) = delete;
 
+	void open(const fs::path &path);
+
+	void close();
+
 private:
-	const fs::path path_;
+	fs::path path_;
 	sqlite3 *db_ = nullptr;
 };
 
