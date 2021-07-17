@@ -1,12 +1,9 @@
 #include "mainwindow.h"
 
-#include <iostream> // TODO for debug
-
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
-#include "doc/async_doc_server.h"
 #include "editor_view_widget.h"
 
 
@@ -43,8 +40,7 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(filePath.generic_string());
 
-    m_docServer = new doc::AsyncDocServer(m_guiThreadWorker, filePath);
-    m_editor = new Editor(m_doc, *m_docServer);
+    m_editor = new Editor(m_doc);
     m_view = new TextArea(m_editor, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(*m_view);
 
@@ -54,9 +50,6 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete m_docServer;
-    m_docServer = nullptr;
-
     delete m_viewConfig;
     m_viewConfig = nullptr;
 

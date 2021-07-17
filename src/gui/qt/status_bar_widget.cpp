@@ -4,7 +4,6 @@
 
 #include <QPainter>
 
-#include "doc/async_doc_server.h"
 #include "editor/editor.h"
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
@@ -30,11 +29,6 @@ StatusBarWidget::StatusBarWidget(TextArea &view, QWidget *parent)
 	, view_(view)
 {
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-
-	doc::AsyncDocServer &server = view.editor().server();
-	cbhCharsetDetected_ = server.addCharsetDetectedCallback([this](doc::Charset charset) {
-		setContent(tr("charset detected: %1").arg(QString::fromStdString(doc::CharsetUtil::charsetToStr(charset))));
-	});
 }
 
 QSize StatusBarWidget::sizeHint() const

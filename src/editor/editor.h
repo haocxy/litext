@@ -5,7 +5,6 @@
 #include "core/callbacks.h"
 #include "core/ustring.h"
 #include "core/worker.h"
-#include "doc/declare_async_doc_server.h"
 #include "doc/row_range.h"
 #include "cursor.h"
 
@@ -21,11 +20,9 @@ class Editor
 {
 public:
 
-    Editor(Doc * model, doc::AsyncDocServer &docServer);
+    Editor(Doc * model);
 
     const Doc & doc() const { return m_model; }
-
-    doc::AsyncDocServer &server() { return docServer_; }
 
     const DocCursor &normalCursor() { return m_normalCursor; }
 
@@ -43,10 +40,6 @@ public:
     // 以字符为单位，获得向右移动光标时的下一个字符位置
     DocLoc getNextRightLocByChar(const DocLoc & loc) const;
 
-    void loadRows(const doc::RowRange &range, std::function<void(std::vector<UString> &&rows)> &&cb);
-
-    void queryRowCount(std::function<void(RowN)> &&cb);
-
 public:
     CallbackHandle addOnLastActRowUpdateListener(std::function<void()> && action);
 
@@ -55,8 +48,6 @@ private:
 
 private:
     Doc & m_model;
-
-    doc::AsyncDocServer &docServer_;
 
     // 普通模式光标
     DocCursor m_normalCursor;
