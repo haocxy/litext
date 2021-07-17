@@ -6,6 +6,7 @@
 #include "core/logger.h"
 #include "core/time_util.h"
 #include "core/system_util.h"
+#include "core/readable_size_util.h"
 
 
 namespace doc::detail
@@ -123,7 +124,8 @@ void DocumentImpl::loadDocument(AsyncComponents &comps) const
 	}
 
 	LOGD << title << "end for file [" << path_ << "]";
-	LOGD << "part len sum : [" << partLenSum << "] , time usage : " << elapsedTime.milliSec() << "ms";
+	LOGD << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
+	LOGD << "time usage : " << elapsedTime.milliSec() << "ms";
 }
 
 void DocumentImpl::asyncLoadDocument()
