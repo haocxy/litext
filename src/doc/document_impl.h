@@ -134,12 +134,9 @@ private:
     };
 
 public:
-
-    using Pointer = std::shared_ptr<DocumentImpl>;
-
     DocumentImpl(const fs::path &file, Worker &ownerThread);
 
-    ~DocumentImpl();
+    virtual ~DocumentImpl();
 
     void start();
 
