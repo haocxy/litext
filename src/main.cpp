@@ -139,13 +139,14 @@ int main(int argc, char *argv[])
         args.push_back(argv[i]);
     }
 
+    QApplication app(argc, argv);
+
     if (argc > 2 && args[1] == "test") {
         test(args[2]);
-        return 0;
+        return app.exec();
+    } else {
+        gui::qt::MainWindow mainWindow(argv[1]);
+        mainWindow.show();
+        return app.exec();
     }
-
-    QApplication app(argc, argv);
-    gui::qt::MainWindow mainWindow(argv[1]);
-    mainWindow.show();
-    return app.exec();
 }
