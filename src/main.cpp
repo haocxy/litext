@@ -9,7 +9,6 @@
 
 #include "core/system_util.h"
 #include "core/time_util.h"
-#include "doc/charset_detect_util.h"
 #include "doc/document.h"
 #include "gui/qt/mainwindow.h"
 #include "gui/qt/gui_thread_worker.h"
@@ -35,41 +34,6 @@ private:
     int current_ = 0;
 };
 
-
-static int charset(CmdLine &cmd)
-{
-    std::string path;
-    size_t offset = 0;
-    size_t len = 0;
-    cmd.arg(path).arg(offset).arg(len);
-
-    ElapsedTime elapsedTime;
-    std::string charset = doc::CharsetDetectUtil::detectCharsetOfFile(path, offset, len);
-    ElapsedTime::MilliSec usage = elapsedTime.milliSec();
-    std::cout << "path: " << path << std::endl;
-    std::cout << "range: " << offset << "," << len << std::endl;
-    std::cout << "charset: " << charset << std::endl;
-    std::cout << "time usage: " << usage << "ms" << std::endl;
-    std::cout << std::endl;
-    return 0;
-}
-
-static int quickCharset(CmdLine &cmd)
-{
-    std::string path;
-    cmd.arg(path);
-
-    ElapsedTime elapsedTime;
-    std::string charset = doc::CharsetDetectUtil::quickDetectCharset(path);
-    ElapsedTime::MilliSec usage = elapsedTime.milliSec();
-    std::cout << "path: " << path << std::endl;
-    std::cout << "file size: " << fs::file_size(path) << std::endl;
-    std::cout << "charset: " << charset << std::endl;
-    std::cout << "time usage: " << usage << "ms" << std::endl;
-    std::cout << std::endl;
-    return 0;
-}
-
 static int makeBigFile(const std::vector<std::string> &args)
 {
     tool::BigFileMaker maker;
@@ -79,12 +43,6 @@ static int makeBigFile(const std::vector<std::string> &args)
 static int chooseCommand(const std::string &cmd, const std::vector<std::string> &args)
 {
     CmdLine cmdLine(args);
-    if (cmd == "charset") {
-        return charset(cmdLine);
-    }
-    if (cmd == "quick-charset") {
-        return quickCharset(cmdLine);
-    }
     if (cmd == "make-big-file") {
         return makeBigFile(args);
     }
