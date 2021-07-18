@@ -1,7 +1,8 @@
 #pragma once
 
 #include <QWidget>
-#include "core/callbacks.h"
+
+#include "core/signal.h"
 #include "gui/declare_text_area.h"
 
 

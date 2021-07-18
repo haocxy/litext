@@ -6,7 +6,7 @@
 #include <bitset>
 #include <optional>
 
-#include "core/callbacks.h"
+#include "core/signal.h"
 #include "core/strong_type_integer.h"
 #include "core/worker.h"
 #include "doc/doc_define.h"

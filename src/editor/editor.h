@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "core/callbacks.h"
+#include "core/signal.h"
 #include "core/ustring.h"
 #include "core/worker.h"
 #include "doc/row_range.h"
