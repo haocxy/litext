@@ -15,7 +15,7 @@
 namespace doc::detail
 {
 
-DocumentImpl::DocumentImpl(IOContextStrand::Pool &pool, const fs::path &path)
+DocumentImpl::DocumentImpl(StrandPool &pool, const fs::path &path)
     : path_(path)
     , textDb_(path.generic_string(), pool)
 {

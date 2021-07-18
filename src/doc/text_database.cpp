@@ -14,11 +14,11 @@
 namespace doc::detail
 {
 
-TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath, IOContextStrand::Pool &pool)
+TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath, StrandPool &pool)
     : docPath_(docPath)
     , dbPath_(docPath.generic_string() + ".sqlite3db")
     , ifs_(docPath, std::ios::binary)
-    , worker_(pool, "TextDatabase")
+    , worker_(pool.allocate("TextDatabase"))
 {
 
 }

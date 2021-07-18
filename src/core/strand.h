@@ -2,10 +2,10 @@
 
 #include <functional>
 
+#include "worker.h"
 
-class Strand {
+
+class Strand : public Worker {
 public:
 	virtual ~Strand() {}
-
-	virtual void post(std::function<void()> &&work) = 0;
 };

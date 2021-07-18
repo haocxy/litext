@@ -9,7 +9,7 @@
 #include "core/membuff.h"
 #include "core/charset.h"
 #include "core/sqlite.h"
-#include "core/io_context_strand.h"
+#include "core/strand_pool.h"
 #include "core/charset_detector.h"
 #include "doc/doc_define.h"
 #include "text_database.h"
@@ -20,7 +20,7 @@ namespace doc::detail
 
 class DocumentImpl : public std::enable_shared_from_this<DocumentImpl> {
 public:
-    DocumentImpl(IOContextStrand::Pool &pool, const fs::path &file);
+    DocumentImpl(StrandPool &pool, const fs::path &file);
 
     virtual ~DocumentImpl();
 
@@ -48,7 +48,7 @@ namespace doc
 
 class Document {
 public:
-    Document(IOContextStrand::Pool &pool, const fs::path &file)
+    Document(StrandPool &pool, const fs::path &file)
         : ptr_(std::make_shared<detail::DocumentImpl>(pool, file)) {}
 
     ~Document() {}

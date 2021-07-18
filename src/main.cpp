@@ -9,7 +9,8 @@
 
 #include "core/system_util.h"
 #include "core/time_util.h"
-#include "core/io_context_strand.h"
+#include "core/single_thread_strand.h"
+#include "core/single_thread_strand_pool.h"
 #include "core/logger.h"
 #include "doc/document.h"
 #include "gui/qt/mainwindow.h"
@@ -95,7 +96,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     if (argc > 2 && args[1] == "test") {
-        IOContextStrand::Pool pool;
+        SingleThreadStrandPool pool;
         doc::Document doc(pool, args[2]);
         return app.exec();
     } else {

@@ -7,7 +7,7 @@
 #include "core/charset.h"
 #include "core/sqlite.h"
 #include "core/membuff.h"
-#include "core/io_context_strand.h"
+#include "core/strand_pool.h"
 
 
 namespace doc
@@ -22,7 +22,7 @@ public:
 
     using Statement = sqlite::Statement;
 
-    TextDatabaseImpl(const fs::path &docPath, IOContextStrand::Pool &pool);
+    TextDatabaseImpl(const fs::path &docPath, StrandPool &pool);
 
     virtual ~TextDatabaseImpl();
 
@@ -49,7 +49,7 @@ private:
     const fs::path docPath_;
     const fs::path dbPath_;
     std::ifstream ifs_;
-    IOContextStrand worker_;
+    Strand &worker_;
     Db db_;
     Statement saveDataStmt_;
 };
@@ -58,7 +58,9 @@ private:
 
 class TextDatabase {
 public:
-    TextDatabase(const fs::path &docPath, IOContextStrand::Pool &pool) : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath, pool)) {
+    TextDatabase(const fs::path &docPath, StrandPool &pool)
+        : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath, pool))
+    {
         impl_->start();
     }
 
