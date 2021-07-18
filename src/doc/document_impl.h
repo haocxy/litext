@@ -172,7 +172,6 @@ private:
 
 private:
     const fs::path path_;
-    const fs::path dbPath_;
     AsyncComponentsMovePointer asyncComponents_;
     Db db_;
     Worker &ownerThread_;

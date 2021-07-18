@@ -18,7 +18,6 @@ namespace doc::detail
 DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
     : path_(path)
     , asyncComponents_(new AsyncComponents(path))
-    , dbPath_(path.generic_string() + ".notesharp.db")
     , ownerThread_(ownerThread)
 {
     LOGD << "DocumentImpl::DocumentImpl(...) for [" << path << "]";
@@ -126,12 +125,14 @@ bool DocumentImpl::prepareDatabase()
 
     try {
 
+        const fs::path dbPath = path_.generic_string() + ".notesharp.db";
+
         {
             // TODO 开发时为了方便每次清空旧数据文件
-            std::ofstream ofs(dbPath_, std::ios::binary);
+            std::ofstream ofs(dbPath, std::ios::binary);
         }
 
-        db_.open(dbPath_);
+        db_.open(dbPath);
 
         db_.exec(reinterpret_cast<const char *>(Asset::Data::prepare_db__sql));
 
