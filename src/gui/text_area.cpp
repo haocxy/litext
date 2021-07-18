@@ -540,12 +540,12 @@ void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar
     }
 }
 
-CallbackHandle TextArea::addShouldRepaintCallback(std::function<void()>&& action)
+Slot TextArea::addShouldRepaintCallback(std::function<void()>&& action)
 {
     return cbsShouldRepaint_.connect(std::move(action));
 }
 
-CallbackHandle TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
+Slot TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
 {
     return cbsAfterViewLocChanged_.connect(std::move(action));
 }

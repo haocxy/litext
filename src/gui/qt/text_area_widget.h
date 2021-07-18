@@ -62,7 +62,7 @@ private:
     TextArea *area_ = nullptr;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
-    CallbackHandle cbhViewLocChanged_;
+    Slot cbhViewLocChanged_;
 };
 
 

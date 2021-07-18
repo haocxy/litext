@@ -26,8 +26,8 @@ private:
 
 private:
     TextArea &m_view;
-    CallbackHandle m_cbhUpdate;
-    CallbackHandle m_cbhViewLocChange;
+    Slot m_cbhUpdate;
+    Slot m_cbhViewLocChange;
 };
 
 

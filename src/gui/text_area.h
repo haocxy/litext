@@ -75,9 +75,9 @@ public:
     void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)> &&action) const;
 
 public:
-    CallbackHandle addShouldRepaintCallback(std::function<void()> &&action);
+    Slot addShouldRepaintCallback(std::function<void()> &&action);
 
-    CallbackHandle addAfterViewLocChangedCallback(std::function<void()> &&action);
+    Slot addAfterViewLocChangedCallback(std::function<void()> &&action);
 
 private:
     int getMaxShownLineCnt() const;
@@ -138,11 +138,11 @@ private:
     Pixel::Raw stableX_ = 0;
 
 private:
-    Callbacks<void()> cbsShouldRepaint_;
-    Callbacks<void()> cbsAfterViewLocChanged_;
+    Signal<void()> cbsShouldRepaint_;
+    Signal<void()> cbsAfterViewLocChanged_;
 
 private:
-    CallbackHandle m_listenerIdForLastActLineUpdate;
+    Slot m_listenerIdForLastActLineUpdate;
 };
 
 

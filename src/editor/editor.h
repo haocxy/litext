@@ -41,7 +41,7 @@ public:
     DocLoc getNextRightLocByChar(const DocLoc & loc) const;
 
 public:
-    CallbackHandle addOnLastActRowUpdateListener(std::function<void()> && action);
+    Slot addOnLastActRowUpdateListener(std::function<void()> && action);
 
 private:
     void setLastActRow(RowN row);
@@ -56,5 +56,5 @@ private:
     RowN m_lastActRow = -1;
 
 private:
-    Callbacks<void()> m_lastActRowUpdateListeners;
+    Signal<void()> m_lastActRowUpdateListeners;
 };

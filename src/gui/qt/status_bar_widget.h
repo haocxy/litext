@@ -24,7 +24,7 @@ public:
 private:
 	TextArea &view_;
 	QString content_;
-	CallbackHandle cbhCharsetDetected_;
+	Slot cbhCharsetDetected_;
 };
 
 
