@@ -1,4 +1,4 @@
-#include "document_impl.h"
+#include "document.h"
 
 #include <iostream>
 #include <future>
