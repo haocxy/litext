@@ -9,6 +9,8 @@
 
 #include "core/system_util.h"
 #include "core/time_util.h"
+#include "core/io_context_strand.h"
+#include "core/logger.h"
 #include "doc/document.h"
 #include "gui/qt/mainwindow.h"
 #include "gui/qt/gui_thread_worker.h"
@@ -80,17 +82,21 @@ static void test(const std::string &path)
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Page Size: " << SystemUtil::pageSize() << std::endl;
-    std::cout << "Processor Count: " << SystemUtil::processorCount() << std::endl;
+    LOGI << "Page Size: " << SystemUtil::pageSize();
+    LOGI << "Processor Count: " << SystemUtil::processorCount();
 
     if (argc > 2 && std::string(argv[1]) == "cmd") {
         return cmdTool(argc, argv);
     }
 
     if (argc < 2) {
-        std::cerr << "Error: file path require, give it by commond line argument" << std::endl;
+        LOGE << "Error: file path require, give it by commond line argument";
         return 1;
     }
+
+    IOContextStrand::Pool pool;
+    IOContextStrand strand1(pool, "StrandA");
+    IOContextStrand strand2(pool, "StrandB");
 
     std::vector<std::string> args;
     for (int i = 0; i < argc; ++i) {

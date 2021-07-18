@@ -5,16 +5,62 @@
 
 #include <boost/asio/io_context.hpp>
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
+
+
 #include "logger.h"
+
+
+static void setNameForCurrentThread(const std::string &name)
+{
+    if (name.empty()) {
+        return;
+    }
+#ifdef WIN32
+    std::wstring widestr;
+    constexpr UINT page = CP_UTF8;
+    constexpr DWORD flags = MB_PRECOMPOSED;
+    const char *mbstr = name.c_str();
+    const int mblen = static_cast<int>(name.size());
+    const int wstrlen = MultiByteToWideChar(page, flags, mbstr, mblen, nullptr, 0);
+    if (wstrlen <= 0) {
+        std::ostringstream ss;
+        ss << "MultiByteToWideChar() failed because [" << GetLastError() << "]";
+        throw std::logic_error(ss.str());
+    }
+    std::wstring wstr;
+    wstr.resize(wstrlen);
+    const int n = MultiByteToWideChar(page, flags, mbstr, mblen, wstr.data(), static_cast<int>(wstr.size()));
+    if (n <= 0) {
+        std::ostringstream ss;
+        ss << "MultiByteToWideChar() failed because [" << GetLastError() << "]";
+        throw std::logic_error(ss.str());
+    }
+
+    SetThreadDescription(GetCurrentThread(), wstr.c_str());
+#endif
+}
 
 
 namespace detail
 {
 
+static std::string makeName(const std::string &name) {
+    std::ostringstream ss;
+    ss << "IOContext(" << name << ")";
+    return ss.str();
+}
+
 class IOContextImpl {
 public:
-    IOContextImpl(const std::string &name) {
+    IOContextImpl(const std::string &name)
+        : name_(makeName(name))
+    {
         thread_ = std::thread([this]{
+            setNameForCurrentThread(name_);
             loop();
         });
         LOGD << "IOContext [" << name_ << "] constructed";
