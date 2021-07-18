@@ -142,7 +142,7 @@ private:
     Signal<void()> cbsAfterViewLocChanged_;
 
 private:
-    Slot m_listenerIdForLastActLineUpdate;
+    Slot slotOnLastActLineUpdated_;
 };
 
 

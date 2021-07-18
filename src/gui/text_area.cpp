@@ -22,7 +22,7 @@ TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     assert(editor);
     assert(config);
    
-    m_listenerIdForLastActLineUpdate = editor_.addOnLastActRowUpdateListener([this] {
+    slotOnLastActLineUpdated_ = editor_.onLastActRowUpdated([this] {
         cbsShouldRepaint_();
     });
 }

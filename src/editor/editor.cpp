@@ -130,9 +130,9 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
     }
 }
 
-Slot Editor::addOnLastActRowUpdateListener(std::function<void()>&& action)
+Slot Editor::onLastActRowUpdated(std::function<void()>&& action)
 {
-    return m_lastActRowUpdateListeners.connect(std::move(action));
+    return onLastActRowUpdated_.connect(std::move(action));
 }
 
 void Editor::setLastActRow(RowN row)
@@ -142,7 +142,7 @@ void Editor::setLastActRow(RowN row)
 
     if (old != m_lastActRow)
     {
-        m_lastActRowUpdateListeners();
+        onLastActRowUpdated_();
     }
 }
 
