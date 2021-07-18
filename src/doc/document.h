@@ -11,7 +11,6 @@
 #include "core/sqlite.h"
 #include "doc/doc_define.h"
 #include "doc/charset_detector.h"
-#include "doc/declare_document_listener.h"
 
 
 namespace doc::detail
@@ -140,10 +139,6 @@ public:
 
     void start();
 
-    void bind(DocumentListener &listener);
-
-    void unbind();
-
     Charset charset() const;
 
     bool loaded() const;
@@ -172,7 +167,6 @@ private:
     AsyncComponentsMovePointer asyncComponents_;
     Db db_;
     Strand &ownerThread_;
-    DocumentListener *listener_ = nullptr;
 
 private:
     Charset charset_ = Charset::Unknown;
@@ -196,23 +190,7 @@ public:
         ptr_->start();
     }
 
-    ~Document() {
-        assert(ptr_);
-        ptr_->unbind();
-
-        // 这一句很重要，这不是普通的指针
-        ptr_ = nullptr;
-    }
-
-    void bind(DocumentListener &listener) {
-        assert(ptr_);
-        ptr_->bind(listener);
-    }
-
-    void unbind() {
-        assert(ptr_);
-        ptr_->unbind();
-    }
+    ~Document() {}
 
     Charset charset() const {
         assert(ptr_);

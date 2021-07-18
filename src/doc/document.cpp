@@ -250,16 +250,6 @@ void DocumentImpl::start()
     asyncLoadDocument();
 }
 
-void DocumentImpl::bind(DocumentListener &listener)
-{
-    listener_ = &listener;
-}
-
-void DocumentImpl::unbind()
-{
-    listener_ = nullptr;
-}
-
 bool DocumentImpl::loaded() const
 {
     return loaded_;
