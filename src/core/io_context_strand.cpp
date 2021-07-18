@@ -21,6 +21,11 @@ void IOContextStrand::post(std::function<void()> &&f)
     }
 }
 
+IOContextStrand::Pool::~Pool()
+{
+
+}
+
 IOContext *IOContextStrand::Pool::allocate(const std::string &name)
 {
     std::unique_lock<std::mutex> lock(mtx_);

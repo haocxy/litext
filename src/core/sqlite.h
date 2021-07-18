@@ -29,6 +29,10 @@ public:
 
     bool isOpened() const;
 
+    const fs::path &path() const {
+        return path_;
+    }
+
 	void open(const fs::path &path);
 
 	void close();

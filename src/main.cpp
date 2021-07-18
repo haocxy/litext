@@ -73,13 +73,6 @@ static int cmdTool(int argc, char *argv[])
     return chooseCommand(argv[2], args);
 }
 
-static void test(const std::string &path)
-{
-    gui::qt::GuiThreadWorker guiThread;
-
-    doc::Document doc(path, guiThread);
-}
-
 int main(int argc, char *argv[])
 {
     LOGI << "Page Size: " << SystemUtil::pageSize();
@@ -102,7 +95,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     if (argc > 2 && args[1] == "test") {
-        test(args[2]);
+        IOContextStrand::Pool pool;
+        doc::Document doc(pool, args[2]);
         return app.exec();
     } else {
         gui::qt::MainWindow mainWindow(argv[1]);
