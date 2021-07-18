@@ -30,5 +30,6 @@ public:
     virtual void post(std::function<void()> &&f) override;
 
 private:
+    // 析构时不对这个指针delete
     IOContext *context_ = nullptr;
 };

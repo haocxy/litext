@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <functional>
 
 
@@ -16,6 +17,8 @@ class io_context;
 class IOContext {
 public:
     IOContext();
+
+    IOContext(const std::string &name);
 
     ~IOContext();
 
