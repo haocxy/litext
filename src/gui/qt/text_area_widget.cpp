@@ -169,7 +169,7 @@ void TextAreaWidget::unbind()
         area_ = nullptr;
     }
 
-    cbhViewLocChanged_.clear();
+    cbhViewLocChanged_.disconnect();
 }
 
 void TextAreaWidget::paintBackground(QPainter &p)

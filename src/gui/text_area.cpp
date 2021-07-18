@@ -23,7 +23,7 @@ TextArea::TextArea(Editor *editor, TextAreaConfig *config)
     assert(config);
    
     m_listenerIdForLastActLineUpdate = editor_.addOnLastActRowUpdateListener([this] {
-        cbsShouldRepaint_.call();
+        cbsShouldRepaint_();
     });
 }
 
@@ -45,7 +45,7 @@ void TextArea::resize(const Size & size)
 
     updateStableXByCurrentCursor();
 
-    cbsShouldRepaint_.call();
+    cbsShouldRepaint_();
 }
 
 int TextArea::getMaxShownLineCnt() const
@@ -397,7 +397,7 @@ void TextArea::setViewLoc(const ViewLoc & viewLoc)
 
     vloc_ = viewLoc;
 
-    cbsAfterViewLocChanged_.call();
+    cbsAfterViewLocChanged_();
 }
 
 void TextArea::movePageHeadOneLine()
@@ -542,12 +542,12 @@ void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar
 
 CallbackHandle TextArea::addShouldRepaintCallback(std::function<void()>&& action)
 {
-    return cbsShouldRepaint_.add(std::move(action));
+    return cbsShouldRepaint_.connect(std::move(action));
 }
 
 CallbackHandle TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
 {
-    return cbsAfterViewLocChanged_.add(std::move(action));
+    return cbsAfterViewLocChanged_.connect(std::move(action));
 }
 
 void TextArea::onPrimaryButtomPress(Pixel x, Pixel y)
