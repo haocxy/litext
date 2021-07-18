@@ -2,7 +2,7 @@ set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Boost 1.72 REQUIRED)
+find_package(Boost 1.71 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
 
