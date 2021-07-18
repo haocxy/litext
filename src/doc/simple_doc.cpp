@@ -59,7 +59,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
 
     const QByteArray ba = file.readAll();
 
-    doc::CharsetDetector charsetDetector;
+    CharsetDetector charsetDetector;
     charsetDetector.feed(ba.constData(), ba.size());
     charsetDetector.end();
 

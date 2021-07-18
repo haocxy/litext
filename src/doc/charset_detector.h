@@ -3,11 +3,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "third/uchardet-0.0.7/src/uchardet.h"
-
-
-namespace doc
-{
+#include <third/uchardet-0.0.7/src/uchardet.h>
 
 
 class CharsetDetector {
@@ -54,6 +50,3 @@ public:
 private:
 	uchardet_t handle_ = nullptr;
 };
-
-
-}
