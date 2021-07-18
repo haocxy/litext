@@ -3,6 +3,8 @@
 #include <memory>
 #include <fstream>
 
+#include <boost/signals2.hpp>
+
 #include "core/worker.h"
 #include "core/membuff.h"
 #include "core/charset.h"

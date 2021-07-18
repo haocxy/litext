@@ -2,6 +2,9 @@ set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_AUTOMOC ON)
 
+find_package(Boost 1.72 REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
 
 function(remove_useless_files_generated_for_assets)
     file(GLOB_RECURSE head_files "asset.*.h")
