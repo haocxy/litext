@@ -9,8 +9,8 @@
 #include "core/membuff.h"
 #include "core/charset.h"
 #include "core/sqlite.h"
+#include "core/charset_detector.h"
 #include "doc/doc_define.h"
-#include "doc/charset_detector.h"
 
 
 namespace doc::detail

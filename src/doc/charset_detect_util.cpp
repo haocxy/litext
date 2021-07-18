@@ -9,7 +9,7 @@
 
 #include "core/system_util.h"
 #include "core/membuff.h"
-#include "charset_detector.h"
+#include "core/charset_detector.h"
 
 
 namespace doc::CharsetDetectUtil

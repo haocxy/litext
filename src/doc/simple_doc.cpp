@@ -9,7 +9,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 
-#include "charset_detector.h"
+#include "core/charset_detector.h"
 
 
 static UString toUString(const QString &qstr)
