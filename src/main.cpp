@@ -76,7 +76,7 @@ static int makeBigFile(const std::vector<std::string> &args)
     return maker.exec(args);
 }
 
-static int chooseDebug(const std::string &cmd, const std::vector<std::string> &args)
+static int chooseCommand(const std::string &cmd, const std::vector<std::string> &args)
 {
     CmdLine cmdLine(args);
     if (cmd == "charset") {
@@ -110,7 +110,14 @@ static int cmdTool(int argc, char *argv[])
         args.push_back(std::string(argv[i]));
     }
 
-    return chooseDebug(argv[2], args);
+    return chooseCommand(argv[2], args);
+}
+
+static void test(const std::string &path)
+{
+    gui::qt::GuiThreadWorker guiThread;
+
+    doc::Document doc(path, guiThread);
 }
 
 int main(int argc, char *argv[])
@@ -122,21 +129,23 @@ int main(int argc, char *argv[])
         return cmdTool(argc, argv);
     }
 
-    
-
     if (argc < 2) {
         std::cerr << "Error: file path require, give it by commond line argument" << std::endl;
         return 1;
     }
 
+    std::vector<std::string> args;
+    for (int i = 0; i < argc; ++i) {
+        args.push_back(argv[i]);
+    }
+
+    if (argc > 2 && args[1] == "test") {
+        test(args[2]);
+        return 0;
+    }
+
     QApplication app(argc, argv);
-
-    gui::qt::GuiThreadWorker guiThread;
-
-    doc::Document doc(argv[1], guiThread);
-
-    //gui::qt::MainWindow mainWindow(argv[1]);
-    //mainWindow.show();
-
+    gui::qt::MainWindow mainWindow(argv[1]);
+    mainWindow.show();
     return app.exec();
 }

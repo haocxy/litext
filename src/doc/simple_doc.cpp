@@ -9,6 +9,8 @@
 #include <QTextStream>
 #include <QTextCodec>
 
+#include "charset_detector.h"
+
 
 static UString toUString(const QString &qstr)
 {
@@ -55,11 +57,17 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
         return false;
     }
 
+    const QByteArray ba = file.readAll();
+
+    doc::CharsetDetector charsetDetector;
+    charsetDetector.feed(ba.constData(), ba.size());
+    charsetDetector.end();
+
     // QTextCodec 对象不需要由用户释放
-    const char *encoding = "utf-8";
-    QTextCodec *codec = QTextCodec::codecForName(encoding);
+    const std::string charset = charsetDetector.charset();
+    QTextCodec *codec = QTextCodec::codecForName(charset.c_str());
     if (!codec) {
-        std::cerr << "cannot find codec for: " << encoding;
+        std::cerr << "cannot find codec for: " << charset;
         return false;
     }
 
@@ -69,7 +77,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
         return false;
     }
 
-    QString content = decoder->toUnicode(file.readAll());
+    QString content = decoder->toUnicode(ba);
 
     enum State { ST_Normal, ST_CR };
 
