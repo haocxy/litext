@@ -94,10 +94,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    IOContextStrand::Pool pool;
-    IOContextStrand strand1(pool, "StrandA");
-    IOContextStrand strand2(pool, "StrandB");
-
     std::vector<std::string> args;
     for (int i = 0; i < argc; ++i) {
         args.push_back(argv[i]);
