@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-#include "core/worker.h"
+#include "core/strand.h"
 
 
 struct QtGuiFuncWrapper {
@@ -16,7 +16,7 @@ namespace gui::qt
 {
 
 
-class GuiThreadWorker : public QObject, public Worker {
+class GuiThreadWorker : public QObject, public Strand {
 	Q_OBJECT
 public:
 	GuiThreadWorker();

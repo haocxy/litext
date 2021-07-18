@@ -3,7 +3,7 @@
 #include <QMainWindow>
 
 #include "core/fs.h"
-#include "core/worker.h"
+#include "core/strand.h"
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
 #include "declare_editor_view_widget.h"

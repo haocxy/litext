@@ -15,7 +15,7 @@
 namespace doc::detail
 {
 
-DocumentImpl::DocumentImpl(const fs::path &path, Worker &ownerThread)
+DocumentImpl::DocumentImpl(const fs::path &path, Strand &ownerThread)
     : path_(path)
     , asyncComponents_(new AsyncComponents(path))
     , ownerThread_(ownerThread)

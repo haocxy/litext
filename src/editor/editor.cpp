@@ -2,7 +2,6 @@
 
 #include <assert.h>
 
-#include "core/worker.h"
 #include "doc/doc.h"
 #include "doc/doc_row.h"
 

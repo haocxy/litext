@@ -4,7 +4,7 @@
 
 #include "core/signal.h"
 #include "core/ustring.h"
-#include "core/worker.h"
+#include "core/strand.h"
 #include "doc/row_range.h"
 #include "cursor.h"
 

@@ -5,7 +5,7 @@
 
 #include <boost/signals2.hpp>
 
-#include "core/worker.h"
+#include "core/strand.h"
 #include "core/membuff.h"
 #include "core/charset.h"
 #include "core/sqlite.h"
@@ -134,7 +134,7 @@ private:
     };
 
 public:
-    DocumentImpl(const fs::path &file, Worker &ownerThread);
+    DocumentImpl(const fs::path &file, Strand &ownerThread);
 
     virtual ~DocumentImpl();
 
@@ -171,7 +171,7 @@ private:
     const fs::path path_;
     AsyncComponentsMovePointer asyncComponents_;
     Db db_;
-    Worker &ownerThread_;
+    Strand &ownerThread_;
     DocumentListener *listener_ = nullptr;
 
 private:

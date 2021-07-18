@@ -10,7 +10,7 @@ namespace doc
 
 class Document {
 public:
-    Document(const fs::path &file, Worker &ownerThread)
+    Document(const fs::path &file, Strand &ownerThread)
         : ptr_(std::make_shared<detail::DocumentImpl>(file, ownerThread)) {
 
         // 只有ptr_初始化完成后才能启动需要使用shared_from_this的逻辑，

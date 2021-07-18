@@ -8,7 +8,7 @@
 
 #include "core/signal.h"
 #include "core/strong_type_integer.h"
-#include "core/worker.h"
+#include "core/strand.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "page.h"

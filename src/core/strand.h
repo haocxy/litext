@@ -3,9 +3,9 @@
 #include <functional>
 
 
-class Worker {
+class Strand {
 public:
-	virtual ~Worker() {}
+	virtual ~Strand() {}
 
 	virtual void post(std::function<void()> &&work) = 0;
 };
