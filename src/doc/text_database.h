@@ -10,6 +10,8 @@
 #include "core/membuff.h"
 #include "core/strand_pool.h"
 
+#include "load_progress.h"
+
 
 namespace doc
 {
@@ -31,6 +33,10 @@ public:
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
+    }
+
+    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+        return sigPartLoaded_;
     }
 
     Signal<void()> &sigAllLoaded() {
@@ -64,6 +70,7 @@ private:
     Db db_;
     Statement saveDataStmt_;
     Signal<void(Charset)> sigCharsetDetected_;
+    Signal<void(const LoadProgress &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 };
 
@@ -81,6 +88,10 @@ public:
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return impl_->sigCharsetDetected();
+    }
+
+    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+        return impl_->sigPartLoaded();
     }
 
     Signal<void()> &sigAllLoaded() {

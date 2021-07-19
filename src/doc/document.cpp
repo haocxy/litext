@@ -30,6 +30,8 @@ void Document::init()
         sigCharsetDetected_(charset);
     });
 
+    textDbSlotPartLoaded_ = textDb_.sigPartLoaded().connect(sigPartLoaded_);
+
     textDbSlotAllLoaded_ = textDb_.sigAllLoaded().connect(sigAllLoaded_);
 }
 

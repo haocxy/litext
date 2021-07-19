@@ -27,6 +27,10 @@ public:
         return sigCharsetDetected_;
     }
 
+    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+        return sigPartLoaded_;
+    }
+
     Signal<void()> &sigAllLoaded() {
         return sigAllLoaded_;
     }
@@ -36,10 +40,12 @@ private:
     Strand &ownerThread_;
     TextDatabase textDb_;
     Slot textDbSlotCharsetDetected_;
+    Slot textDbSlotPartLoaded_;
     Slot textDbSlotAllLoaded_;
     Charset charset_ = Charset::Unknown;
 
     Signal<void(Charset)> sigCharsetDetected_;
+    Signal<void(const LoadProgress &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 
 };
@@ -60,6 +66,10 @@ public:
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return ptr_->sigCharsetDetected();
+    }
+
+    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+        return ptr_->sigPartLoaded();
     }
 
     Signal<void()> &sigAllLoaded() {

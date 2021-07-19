@@ -25,19 +25,20 @@ private:
 private:
 signals:
     void qtSigCharsetDetected(const QString &charset);
-    void qtSigAllLoaded();
+    void qtSigUpdateStatus(const QString &status);
 
 private slots:
     void qtSlotCharsetDetect(const QString &charset);
-    void qtSlotAllLoaded();
+    void qtSlotUpdateStatus(const QString &status);
 
 private:
 	TextArea &textArea_;
-    QString status_{"loading"};
+    QString status_{"Loading"};
     QString charset_;
     QString filesize_;
 	QString content_;
     Slot slotCharsetDetected_;
+    Slot slotPartLoaded_;
     Slot slotAllLoaded_;
 };
 

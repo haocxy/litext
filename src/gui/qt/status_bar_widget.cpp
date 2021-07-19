@@ -35,14 +35,20 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea, QWidget *parent)
 
     updateContent();
 
-    connect(this, &StatusBarWidget::qtSigCharsetDetected, &StatusBarWidget::qtSlotCharsetDetect);
+    connect(this, &StatusBarWidget::qtSigCharsetDetected, this, &StatusBarWidget::qtSlotCharsetDetect);
+    connect(this, &StatusBarWidget::qtSigUpdateStatus, this, &StatusBarWidget::qtSlotUpdateStatus);
+
     slotCharsetDetected_ = document.sigCharsetDetected().connect([this](Charset charset) {
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
     });
 
-    connect(this, &StatusBarWidget::qtSigAllLoaded, this, &StatusBarWidget::qtSlotAllLoaded);
+    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::LoadProgress &progress) {
+        const int percent = progress.percent();
+        emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", percent));
+    });
+
     slotAllLoaded_ = document.sigAllLoaded().connect([this]{
-        emit qtSigAllLoaded();
+        emit qtSigUpdateStatus("All Loaded");
     });
 }
 
@@ -93,9 +99,9 @@ void StatusBarWidget::qtSlotCharsetDetect(const QString &charset)
     updateContent();
 }
 
-void StatusBarWidget::qtSlotAllLoaded()
+void StatusBarWidget::qtSlotUpdateStatus(const QString &status)
 {
-    status_ = "All loaded";
+    status_ = status;
     updateContent();
 }
 
