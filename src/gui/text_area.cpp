@@ -18,7 +18,7 @@ namespace gui
 TextArea::TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
-    , lineCounter_(pool)
+    , lineCounter_(pool, editor->document())
     , cvt_(editor_, size_, page_, vloc_, config_)
 {
     assert(editor);

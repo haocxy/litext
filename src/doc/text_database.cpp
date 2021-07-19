@@ -158,12 +158,12 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, co
     LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset
         << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
-    LoadProgress progress;
-    progress.setFileSize(fs::file_size(docPath_));
-    progress.setPartOffset(info.off);
-    progress.setPartSize(info.len);
+    PartLoadedEvent e;
+    e.setFileSize(fs::file_size(docPath_));
+    e.setPartOffset(info.off);
+    e.setPartSize(info.len);
 
-    sigPartLoaded_(progress);
+    sigPartLoaded_(e);
 }
 
 void TextDatabaseImpl::loadAll()

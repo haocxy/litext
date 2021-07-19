@@ -42,8 +42,8 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea, QWidget *parent)
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
     });
 
-    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::LoadProgress &progress) {
-        const int percent = progress.percent();
+    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::PartLoadedEvent &progress) {
+        const int percent = progress.fileSize() == 0 ? 100 : (progress.partOffset() + progress.partSize()) * 100 / progress.fileSize();
         emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", percent));
     });
 

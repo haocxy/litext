@@ -35,7 +35,7 @@ public:
         return sigCharsetDetected_;
     }
 
-    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return sigPartLoaded_;
     }
 
@@ -70,7 +70,7 @@ private:
     Db db_;
     Statement saveDataStmt_;
     Signal<void(Charset)> sigCharsetDetected_;
-    Signal<void(const LoadProgress &)> sigPartLoaded_;
+    Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 };
 
@@ -90,7 +90,7 @@ public:
         return impl_->sigCharsetDetected();
     }
 
-    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return impl_->sigPartLoaded();
     }
 

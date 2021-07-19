@@ -88,21 +88,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    std::vector<std::string> args;
-    for (int i = 0; i < argc; ++i) {
-        args.push_back(argv[i]);
-    }
-
     QApplication app(argc, argv);
 
-    if (argc > 2 && args[1] == "test") {
-        SingleThreadStrandPool pool;
-        gui::qt::GuiStrand guiStrand;
-        doc::Document doc(pool, args[2], guiStrand);
-        return app.exec();
-    } else {
-        gui::qt::MainWindow mainWindow(argv[1]);
-        mainWindow.show();
-        return app.exec();
-    }
+    gui::qt::MainWindow mainWindow(argv[1]);
+    mainWindow.show();
+    return app.exec();
 }

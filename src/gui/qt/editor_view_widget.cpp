@@ -26,7 +26,7 @@ EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
 
     vScrollBar_ = new QScrollBar;
     vScrollBar_->setRange(0, 0);
-    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::LoadProgress &p) {
+    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::PartLoadedEvent &p) {
         const double loaded = static_cast<double>(p.partOffset()) + static_cast<double>(p.partSize());
         const double total = static_cast<double>(p.fileSize());
         emit qtSigPartLoaded(loaded / total);

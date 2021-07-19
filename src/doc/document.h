@@ -27,7 +27,7 @@ public:
         return sigCharsetDetected_;
     }
 
-    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return sigPartLoaded_;
     }
 
@@ -45,7 +45,7 @@ private:
     Charset charset_ = Charset::Unknown;
 
     Signal<void(Charset)> sigCharsetDetected_;
-    Signal<void(const LoadProgress &)> sigPartLoaded_;
+    Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 
 };
@@ -62,13 +62,11 @@ public:
 
     virtual ~Document() {}
 
-    void init();
-
     Signal<void(Charset)> &sigCharsetDetected() {
         return ptr_->sigCharsetDetected();
     }
 
-    Signal<void(const LoadProgress &)> &sigPartLoaded() {
+    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return ptr_->sigPartLoaded();
     }
 
