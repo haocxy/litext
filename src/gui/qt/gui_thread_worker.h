@@ -16,12 +16,12 @@ namespace gui::qt
 {
 
 
-class GuiThreadWorker : public QObject, public Strand {
+class GuiStrand : public QObject, public Strand {
 	Q_OBJECT
 public:
-	GuiThreadWorker();
+    GuiStrand();
 
-	virtual ~GuiThreadWorker() {}
+	virtual ~GuiStrand() {}
 
 	virtual void post(std::function<void()> &&action) override;
 

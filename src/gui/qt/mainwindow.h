@@ -30,7 +30,7 @@ private:
     void initMenuBar();
 
 private:
-    GuiThreadWorker guiStrand_;
+    GuiStrand guiStrand_;
     SingleThreadStrandPool strandPool_;
     TextAreaConfig *m_viewConfig = nullptr;
     SimpleDoc *m_doc = nullptr;
