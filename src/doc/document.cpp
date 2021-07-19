@@ -1,45 +1,20 @@
 #include "document.h"
 
-#include <iostream>
-#include <future>
 
-#include "core/logger.h"
-#include "core/time_util.h"
-#include "core/system_util.h"
-#include "core/readable_size_util.h"
-#include "core/charset_converter.h"
-
-#include "sql/asset.prepare_db.sql.h"
-
-
-namespace doc::detail
+namespace doc
 {
 
-DocumentImpl::DocumentImpl(StrandPool &pool, const fs::path &path)
+Document::Document(StrandPool &pool, const fs::path &path, Strand &ownerThread)
     : path_(path)
+    , ownerThread_(ownerThread)
     , textDb_(path.generic_string(), pool)
 {
-
+    slotTextDatabaseAllLoaded_ = textDb_.sigAllLoaded().connect(sigAllLoaded_);
 }
 
-DocumentImpl::~DocumentImpl()
+Document::~Document()
 {
 
-}
-
-bool DocumentImpl::loaded() const
-{
-    return loaded_;
-}
-
-RowN DocumentImpl::loadedRowCount() const
-{
-    return loadedRowCount_;
-}
-
-Charset DocumentImpl::charset() const
-{
-    return charset_;
 }
 
 }

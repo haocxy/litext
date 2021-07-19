@@ -12,14 +12,14 @@ namespace gui::qt
 {
 
 
-EditorViewWidget::EditorViewWidget(TextArea &view, QWidget *parent)
+EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
     : QWidget(parent)
 {
-    ruler_ = new RulerWidget(view);
+    ruler_ = new RulerWidget(textArea);
     textArea_ = new TextAreaWidget;
-    textArea_->bind(&view);
+    textArea_->bind(&textArea);
     vScrollBar_ = new QScrollBar;
-    statusBar_ = new StatusBarWidget(view);
+    statusBar_ = new StatusBarWidget(textArea);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(0);

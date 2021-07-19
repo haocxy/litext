@@ -1,75 +1,32 @@
 #pragma once
 
-#include <memory>
-#include <fstream>
-
-#include <boost/signals2.hpp>
-
-#include "core/strand.h"
-#include "core/membuff.h"
+#include "core/signal.h"
 #include "core/charset.h"
-#include "core/sqlite.h"
 #include "core/strand_pool.h"
-#include "core/charset_detector.h"
 #include "doc/doc_define.h"
 #include "text_database.h"
 
-
-namespace doc::detail
-{
-
-class DocumentImpl : public std::enable_shared_from_this<DocumentImpl> {
-public:
-    DocumentImpl(StrandPool &pool, const fs::path &file);
-
-    virtual ~DocumentImpl();
-
-    Charset charset() const;
-
-    bool loaded() const;
-
-    RowN loadedRowCount() const;
-
-private:
-    const fs::path path_;
-    TextDatabase textDb_;
-
-private:
-    Charset charset_ = Charset::Unknown;
-    bool loaded_ = false;
-    RowN loadedRowCount_ = 0;
-};
-
-
-}
 
 namespace doc
 {
 
 class Document {
 public:
-    Document(StrandPool &pool, const fs::path &file)
-        : ptr_(std::make_shared<detail::DocumentImpl>(pool, file)) {}
+    Document(StrandPool &pool, const fs::path &file, Strand &ownerThread);
 
-    ~Document() {}
+    ~Document();
 
-    Charset charset() const {
-        assert(ptr_);
-        return ptr_->charset();
-    }
-
-    bool loaded() const {
-        assert(ptr_);
-        return ptr_->loaded();
-    }
-
-    RowN loadedRowCount() const {
-        assert(ptr_);
-        return ptr_->loadedRowCount();
+    Signal<void()> &sigAllLoaded() {
+        return sigAllLoaded_;
     }
 
 private:
-    std::shared_ptr<detail::DocumentImpl> ptr_;
+    const fs::path path_;
+    Strand &ownerThread_;
+    TextDatabase textDb_;
+
+    Signal<void()> sigAllLoaded_;
+    Slot slotTextDatabaseAllLoaded_;
 };
 
 }

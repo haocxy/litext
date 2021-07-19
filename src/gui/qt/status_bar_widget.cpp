@@ -24,11 +24,20 @@ namespace gui::qt
 {
 
 
-StatusBarWidget::StatusBarWidget(TextArea &view, QWidget *parent)
+StatusBarWidget::StatusBarWidget(TextArea &textArea, QWidget *parent)
 	: QWidget(parent)
-	, view_(view)
+	, textArea_(textArea)
 {
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    connect(this, &StatusBarWidget::qtSigAllLoaded, this, &StatusBarWidget::qtSlotAllLoaded);
+
+    Editor &editor = textArea.editor();
+    doc::Document &document = editor.document();
+
+    slotAllLoaded_ = document.sigAllLoaded().connect([this]{
+        emit qtSigAllLoaded();
+    });
 }
 
 QSize StatusBarWidget::sizeHint() const
@@ -47,11 +56,16 @@ void StatusBarWidget::paintEvent(QPaintEvent *e)
 	p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), content_);
 }
 
-void StatusBarWidget::setContent(QString &&content)
+void StatusBarWidget::updateContent(QString &&content)
 {
 	content_ = std::move(content);
 
 	update();
+}
+
+void StatusBarWidget::qtSlotAllLoaded()
+{
+    updateContent(tr("all loaded"));
 }
 
 

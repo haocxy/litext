@@ -221,6 +221,8 @@ void TextDatabaseImpl::loadAll()
     LOGD << title << "end for file [" << dbPath_ << "]";
     LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
     LOGD << title << "time usage : " << elapsedTime.milliSec() << "ms";
+
+    sigAllLoaded_();
 }
 
 void TextDatabaseImpl::asyncLoadAll()

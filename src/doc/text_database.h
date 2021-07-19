@@ -4,6 +4,7 @@
 #include <fstream>
 
 #include "core/fs.h"
+#include "core/signal.h"
 #include "core/charset.h"
 #include "core/sqlite.h"
 #include "core/membuff.h"
@@ -28,6 +29,10 @@ public:
 
     void start();
 
+    Signal<void()> &sigAllLoaded() {
+        return sigAllLoaded_;
+    }
+
 private:
     bool prepareDatabase();
 
@@ -45,6 +50,8 @@ private:
 
     void asyncLoadAll();
 
+    
+
 private:
     const fs::path docPath_;
     const fs::path dbPath_;
@@ -52,6 +59,7 @@ private:
     Strand &worker_;
     Db db_;
     Statement saveDataStmt_;
+    Signal<void()> sigAllLoaded_;
 };
 
 }
@@ -65,6 +73,10 @@ public:
     }
 
     ~TextDatabase() {}
+
+    Signal<void()> &sigAllLoaded() {
+        return impl_->sigAllLoaded();
+    }
 
 private:
     std::shared_ptr<detail::TextDatabaseImpl> impl_;

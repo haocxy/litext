@@ -97,7 +97,8 @@ int main(int argc, char *argv[])
 
     if (argc > 2 && args[1] == "test") {
         SingleThreadStrandPool pool;
-        doc::Document doc(pool, args[2]);
+        gui::qt::GuiThreadWorker guiStrand;
+        doc::Document doc(pool, args[2], guiStrand);
         return app.exec();
     } else {
         gui::qt::MainWindow mainWindow(argv[1]);

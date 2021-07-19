@@ -40,11 +40,11 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(filePath.generic_string());
 
-    m_editor = new Editor(m_doc);
-    m_view = new TextArea(m_editor, m_viewConfig);
+    editor_ = new Editor(m_doc, strandPool_, filePath, guiStrand_);
+    m_view = new TextArea(editor_, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(*m_view);
 
-    this->setCentralWidget(m_editorViewWidget);
+    setCentralWidget(m_editorViewWidget);
 }
 
 
@@ -59,8 +59,8 @@ MainWindow::~MainWindow()
     delete m_view;
     m_view = nullptr;
 
-    delete m_editor;
-    m_editor = nullptr;
+    delete editor_;
+    editor_ = nullptr;
 
     delete m_editorViewWidget;
     m_editorViewWidget = nullptr;

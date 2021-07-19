@@ -51,6 +51,14 @@ static UString toUString(const QString &qstr)
 
 bool SimpleDoc::LoadFromFile(const std::string &path)
 {
+    bool useSimpleDoc = false;
+    if (!useSimpleDoc) {
+        SimpleRow row;
+        row.setRowEnd(RowEnd::NO);
+        m_lines.push_back(std::move(row));
+        return true;
+    }
+
     QFile file(QString::fromStdString(path));
     if (!file.open(QIODevice::ReadOnly)) {
         std::cerr << "cannot open file: " << path << ", msg: " << file.errorString().toStdString() << std::endl;

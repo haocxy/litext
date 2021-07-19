@@ -19,12 +19,19 @@ public:
 
 	virtual void paintEvent(QPaintEvent *e) override;
 
-	void setContent(QString &&content);
+	void updateContent(QString &&content);
 
 private:
-	TextArea &view_;
+signals:
+    void qtSigAllLoaded();
+
+private slots:
+    void qtSlotAllLoaded();
+
+private:
+	TextArea &textArea_;
 	QString content_;
-	Slot cbhCharsetDetected_;
+    Slot slotAllLoaded_;
 };
 
 

@@ -4,6 +4,7 @@
 
 #include "core/fs.h"
 #include "core/strand.h"
+#include "core/single_thread_strand_pool.h"
 #include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
 #include "declare_editor_view_widget.h"
@@ -29,11 +30,12 @@ private:
     void initMenuBar();
 
 private:
-    GuiThreadWorker m_guiThreadWorker;
+    GuiThreadWorker guiStrand_;
+    SingleThreadStrandPool strandPool_;
     TextAreaConfig *m_viewConfig = nullptr;
     SimpleDoc *m_doc = nullptr;
     TextArea *m_view = nullptr;
-    Editor *m_editor = nullptr;
+    Editor *editor_ = nullptr;
     EditorViewWidget *m_editorViewWidget = nullptr;
 };
 
