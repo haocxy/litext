@@ -3,6 +3,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include "gui/text_area.h"
+#include "editor/editor.h"
 #include "ruler_widget.h"
 #include "text_area_widget.h"
 #include "status_bar_widget.h"
@@ -11,14 +13,25 @@
 namespace gui::qt
 {
 
+static const int ProgressTotal = 1000000;
 
 EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
     : QWidget(parent)
 {
+    doc::Document &document = textArea.editor().document();
+
     ruler_ = new RulerWidget(textArea);
     textArea_ = new TextAreaWidget;
     textArea_->bind(&textArea);
+
     vScrollBar_ = new QScrollBar;
+    vScrollBar_->setRange(0, 0);
+    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::LoadProgress &p) {
+        const double loaded = static_cast<double>(p.partOffset()) + static_cast<double>(p.partSize());
+        const double total = static_cast<double>(p.fileSize());
+        emit qtSigPartLoaded(loaded / total);
+    });
+
     statusBar_ = new StatusBarWidget(textArea);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
@@ -46,5 +59,9 @@ EditorViewWidget::~EditorViewWidget()
     statusBar_ = nullptr;
 }
 
+void EditorViewWidget::qtSlotPartLoaded(double percent)
+{
+
+}
 
 }
