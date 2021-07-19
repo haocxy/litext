@@ -11,6 +11,7 @@
 #include "core/strand.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
+
 #include "page.h"
 #include "line_offset.h"
 #include "char_loc.h"
@@ -24,6 +25,7 @@
 #include "view_loc.h"
 #include "pixel.h"
 #include "coordinate_converter.h"
+#include "line_counter.h"
 
 
 class Row;
@@ -38,7 +40,7 @@ namespace gui
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
-    TextArea(Editor *editor, TextAreaConfig *config);
+    TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config);
 
     ~TextArea();
 
@@ -128,6 +130,7 @@ private:
 private:
     Editor &editor_;
     const TextAreaConfig &config_;
+    LineCounter lineCounter_;
     Page page_;
     Size size_;
     ViewLoc vloc_{ 0, 0 };

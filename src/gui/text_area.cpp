@@ -15,9 +15,10 @@
 namespace gui
 {
 
-TextArea::TextArea(Editor *editor, TextAreaConfig *config)
+TextArea::TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config)
     : editor_(*editor)
     , config_(*config)
+    , lineCounter_(pool)
     , cvt_(editor_, size_, page_, vloc_, config_)
 {
     assert(editor);

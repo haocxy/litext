@@ -41,7 +41,7 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
     m_doc->LoadFromFile(filePath.generic_string());
 
     editor_ = new Editor(m_doc, strandPool_, filePath, guiStrand_);
-    m_view = new TextArea(editor_, m_viewConfig);
+    m_view = new TextArea(strandPool_, editor_, m_viewConfig);
     m_editorViewWidget = new EditorViewWidget(*m_view);
 
     setCentralWidget(m_editorViewWidget);
