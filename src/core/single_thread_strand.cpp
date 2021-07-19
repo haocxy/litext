@@ -47,6 +47,8 @@ SingleThreadStrand::SingleThreadStrand(const std::string &name)
 SingleThreadStrand::~SingleThreadStrand()
 {
     running_ = false;
+    queue_.wakeupProducer();
+    queue_.wakeupConsumer();
     thread_.join();
 }
 
