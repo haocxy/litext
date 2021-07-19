@@ -10,7 +10,7 @@
 #include "core/membuff.h"
 #include "core/strand_pool.h"
 
-#include "load_progress.h"
+#include "part_loaded_event.h"
 
 
 namespace doc

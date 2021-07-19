@@ -4,7 +4,7 @@
 #include <QScrollBar>
 
 #include "core/signal.h"
-#include "doc/load_progress.h"
+#include "doc/part_loaded_event.h"
 #include "gui/declare_text_area.h"
 #include "declare_ruler_widget.h"
 #include "declare_text_area_widget.h"
