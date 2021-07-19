@@ -25,6 +25,8 @@ public:
 
 	virtual void post(std::function<void()> &&action) override;
 
+    virtual bool isStopping() const override;
+
 private slots:
 	void runMyFunction(QtGuiFuncWrapper wrapper);
 

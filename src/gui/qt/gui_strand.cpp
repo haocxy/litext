@@ -25,6 +25,11 @@ void GuiStrand::post(std::function<void()> &&action)
 	emit postMyFunction(wrapper);
 }
 
+bool GuiStrand::isStopping() const
+{
+	return false; // TODO 目前还不需要查询GUI线程正在停止，将来考虑下怎么处理
+}
+
 void GuiStrand::runMyFunction(QtGuiFuncWrapper wrapper)
 {
 	if (wrapper.f) {

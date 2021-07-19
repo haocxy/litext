@@ -25,6 +25,7 @@ TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath, StrandPool &pool)
 
 TextDatabaseImpl::~TextDatabaseImpl()
 {
+
 }
 
 void TextDatabaseImpl::start()
@@ -191,7 +192,7 @@ void TextDatabaseImpl::loadAll()
 
     uintmax_t partLenSum = 0;
 
-    for (uintmax_t partIndex = 0; ifs_; ++partIndex) {
+    for (uintmax_t partIndex = 0; (!worker_.isStopping()) && ifs_; ++partIndex) {
 
         const uintmax_t offset = ifs_.tellg();
 

@@ -46,7 +46,7 @@ SingleThreadStrand::SingleThreadStrand(const std::string &name)
 
 SingleThreadStrand::~SingleThreadStrand()
 {
-    running_ = false;
+    stopping_ = true;
     queue_.wakeupProducer();
     queue_.wakeupConsumer();
     thread_.join();
@@ -57,11 +57,16 @@ void SingleThreadStrand::post(std::function<void()> &&f)
     queue_.push(std::move(f));
 }
 
+bool SingleThreadStrand::isStopping() const
+{
+    return stopping_;
+}
+
 void SingleThreadStrand::loop()
 {
     setNameForCurrentThread(name_);
 
-    while (running_) {
+    while (!stopping_) {
         std::optional<std::function<void()>> f = queue_.pop();
         if (f) {
             (*f)();

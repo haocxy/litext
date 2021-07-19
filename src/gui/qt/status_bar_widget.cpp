@@ -68,7 +68,6 @@ void StatusBarWidget::paintEvent(QPaintEvent *e)
 	p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), content_);
 }
 
-static const QString partNameStatus = "Status: ";
 static const QString partNameCharset = "Charset: ";
 
 static const QString sep = "  |  ";
@@ -77,7 +76,6 @@ void StatusBarWidget::updateContent()
 {
     content_.clear();
     if (!status_.isEmpty()) {
-        content_.append(partNameStatus);
         content_.append(status_);
     }
     if (!charset_.isEmpty()) {
