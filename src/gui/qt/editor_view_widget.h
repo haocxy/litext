@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidget>
+#include <QScrollBar>
 
 #include "gui/declare_text_area.h"
 #include "declare_ruler_widget.h"
@@ -26,6 +27,7 @@ public:
 private:
     RulerWidget *ruler_ = nullptr;
     TextAreaWidget *textArea_ = nullptr;
+    QScrollBar *vScrollBar_ = nullptr;
     StatusBarWidget *statusBar_ = nullptr;
 };
 
