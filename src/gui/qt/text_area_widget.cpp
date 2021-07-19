@@ -7,7 +7,7 @@
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
-#include "util.h"
+#include "font_to_qfont.h"
 
 
 namespace
@@ -209,7 +209,7 @@ void TextAreaWidget::prepareTextImage()
     textPaintBuff_.fill(QColor(0, 0, 0, 0));
 
     QFont qfont;
-    fillQFont(area_->config().font(), qfont);
+    fontToQFont(area_->config().font(), qfont);
     p.setFont(qfont);
 
     area_->drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, UChar unicode) {
