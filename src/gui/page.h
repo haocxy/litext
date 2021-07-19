@@ -3,31 +3,12 @@
 #include <vector>
 #include <deque>
 
-#include "core/uchar.h"
 #include "line_loc.h"
-#include "pixel.h"
+#include "view_char.h"
 
 
 namespace gui
 {
-
-
-class VChar {
-public:
-    UChar uchar() const { return m_unicode; }
-    Pixel::Raw x() const { return m_x; }
-
-    void setUChar(UChar unicode) { m_unicode = unicode; }
-    void setX(Pixel::Raw x) { m_x = x; }
-
-    Pixel::Raw width() const { return m_width; }
-    void setWidth(Pixel::Raw width) { m_width = width; }
-
-private:
-    UChar m_unicode = 0;
-    Pixel::Raw m_x = 0;
-    Pixel::Raw m_width = 0;
-};
 
 
 class VLine {
@@ -46,6 +27,10 @@ public:
     {
         m_chars.resize(m_chars.size() + 1);
         return m_chars.back();
+    }
+
+    void append(const VChar &ch) {
+        m_chars.push_back(ch);
     }
 
     const VChar &last() const { return m_chars.back(); }
@@ -71,6 +56,9 @@ public:
     VLine &grow()
     {
         m_lines.resize(m_lines.size() + 1);
+        return m_lines.back();
+    }
+    VLine &back() {
         return m_lines.back();
     }
 private:

@@ -1,7 +1,7 @@
 #include "text_area.h"
 
 #include <cassert>
-
+#include <stdexcept>
 
 #include "doc/doc.h"
 #include "doc/doc_row.h"
@@ -9,6 +9,7 @@
 #include "text/txt_word_instream.h"
 #include "editor/editor.h"
 #include "text_area_config.h"
+#include "row_walker.h"
 
 
 namespace gui
@@ -645,78 +646,25 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
 {
     assert(vrow.size() == 0);
 
-    const Pixel::Raw hGap = config_.hGap();
-    const Pixel::Raw hMargin = config_.hMargin();
-
-    VLine *vline = &vrow.grow();
-
     DocLineCharInStream charStream(row);
-    TxtWordStream wordStream(charStream);
 
-    Pixel::Raw leftX = hGap;
+    RowWalker walker(config_, size_.width(), charStream);
 
-    while (true)
-    {
-        const UString word = wordStream.Next();
-        if (word.empty())
-        {
-            return;
+    walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
+        if (lineIndex == vrow.size()) {
+            if (isEmptyRow) {
+                vrow.grow();
+            } else {
+                vrow.grow().append(vchar);
+            }
+        } else if (lineIndex == vrow.size() - 1) {
+            if (!isEmptyRow) {
+                vrow.back().append(vchar);
+            }
+        } else {
+            throw std::logic_error("forEachChar logic error");
         }
-
-        if (vline->size() == 0)
-        {
-            for (const UChar c : word)
-            {
-                const Pixel::Raw charWidth = config_.charWidth(c);
-
-                if (leftX + charWidth > size_.width())
-                {
-                    leftX = hGap;
-                    vline = &vrow.grow();
-                }
-
-                VChar &vc = vline->grow();
-                vc.setUChar(c);
-                vc.setX(leftX);
-                vc.setWidth(charWidth);
-
-                leftX += charWidth;
-                leftX += hMargin;
-            }
-        }
-        else
-        {
-            Pixel::Raw wordWidth = 0;
-            for (const UChar c : word)
-            {
-                wordWidth += config_.charWidth(c);
-                wordWidth += hMargin;
-            }
-            if (leftX + wordWidth > size_.width())
-            {
-                leftX = hGap;
-                vline = &vrow.grow();
-            }
-            for (const UChar c : word)
-            {
-                const Pixel::Raw charWidth = config_.charWidth(c);
-
-                if (leftX + charWidth > size_.width())
-                {
-                    leftX = hGap;
-                    vline = &vrow.grow();
-                }
-
-                VChar &vc = vline->grow();
-                vc.setUChar(c);
-                vc.setX(leftX);
-                vc.setWidth(charWidth);
-
-                leftX += charWidth;
-                leftX += hMargin;
-            }
-        }
-    }
+    });
 }
 
 void TextArea::makeVRowNoWrapLine(const Row &row, VRow &vrow) const

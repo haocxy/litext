@@ -51,7 +51,7 @@ static UString toUString(const QString &qstr)
 
 bool SimpleDoc::LoadFromFile(const std::string &path)
 {
-    bool useSimpleDoc = false;
+    bool useSimpleDoc = true;
     if (!useSimpleDoc) {
         SimpleRow row;
         row.setRowEnd(RowEnd::NO);
