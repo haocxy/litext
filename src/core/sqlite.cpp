@@ -232,6 +232,12 @@ void Statement::step()
     // TODO step 返回值不是简单地非对即错，需要详细处理
 }
 
+int64_t Statement::lastInsertRowId() const
+{
+    assertOpened();
+    return sqlite3_last_insert_rowid(sqlite3_db_handle(stmt_));
+}
+
 void Statement::close()
 {
     assertOpened();

@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "doc_define.h"
+
 
 namespace doc
 {
@@ -11,8 +13,13 @@ class PartLoadedEvent {
 public:
     PartLoadedEvent() {}
 
-    PartLoadedEvent(uintmax_t fileSize, uintmax_t partOffset, uintmax_t partSize)
-        : fileSize_(fileSize), partOffset_(partOffset), partSize_(partSize) {}
+    int64_t partId() const {
+        return partId_;
+    }
+
+    void setPartId(int64_t id) {
+        partId_ = id;
+    }
 
     uintmax_t fileSize() const {
         return fileSize_;
@@ -39,6 +46,7 @@ public:
     }
 
 private:
+    int64_t partId_ = 0;
     uintmax_t fileSize_ = 0;
     uintmax_t partOffset_ = 0;
     uintmax_t partSize_ = 0;

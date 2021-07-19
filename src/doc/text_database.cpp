@@ -159,6 +159,7 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, co
         << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
     PartLoadedEvent e;
+    e.setPartId(saveDataStmt_.lastInsertRowId());
     e.setFileSize(fs::file_size(docPath_));
     e.setPartOffset(info.off);
     e.setPartSize(info.len);

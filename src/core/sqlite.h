@@ -68,6 +68,8 @@ public:
 
     void step();
 
+    int64_t lastInsertRowId() const;
+
     void close();
 
 private:
