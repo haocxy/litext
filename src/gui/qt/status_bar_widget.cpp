@@ -30,11 +30,17 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea, QWidget *parent)
 {
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    connect(this, &StatusBarWidget::qtSigAllLoaded, this, &StatusBarWidget::qtSlotAllLoaded);
-
     Editor &editor = textArea.editor();
     doc::Document &document = editor.document();
 
+    updateContent();
+
+    connect(this, &StatusBarWidget::qtSigCharsetDetected, &StatusBarWidget::qtSlotCharsetDetect);
+    slotCharsetDetected_ = document.sigCharsetDetected().connect([this](Charset charset) {
+        emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
+    });
+
+    connect(this, &StatusBarWidget::qtSigAllLoaded, this, &StatusBarWidget::qtSlotAllLoaded);
     slotAllLoaded_ = document.sigAllLoaded().connect([this]{
         emit qtSigAllLoaded();
     });
@@ -56,16 +62,41 @@ void StatusBarWidget::paintEvent(QPaintEvent *e)
 	p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), content_);
 }
 
-void StatusBarWidget::updateContent(QString &&content)
+static const QString partNameStatus = "Status: ";
+static const QString partNameCharset = "Charset: ";
+
+static const QString sep = "  |  ";
+
+void StatusBarWidget::updateContent()
 {
-	content_ = std::move(content);
+    content_.clear();
+    if (!status_.isEmpty()) {
+        content_.append(partNameStatus);
+        content_.append(status_);
+    }
+    if (!charset_.isEmpty()) {
+        content_.append(sep);
+        content_.append(partNameCharset);
+        content_.append(charset_);
+    }
+    if (!filesize_.isEmpty()) {
+        content_.append(sep);
+        content_.append(filesize_);
+    }
 
 	update();
 }
 
+void StatusBarWidget::qtSlotCharsetDetect(const QString &charset)
+{
+    charset_ = charset;
+    updateContent();
+}
+
 void StatusBarWidget::qtSlotAllLoaded()
 {
-    updateContent(tr("all loaded"));
+    status_ = "All loaded";
+    updateContent();
 }
 
 

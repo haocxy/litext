@@ -29,6 +29,10 @@ public:
 
     void start();
 
+    Signal<void(Charset)> &sigCharsetDetected() {
+        return sigCharsetDetected_;
+    }
+
     Signal<void()> &sigAllLoaded() {
         return sigAllLoaded_;
     }
@@ -59,6 +63,7 @@ private:
     Strand &worker_;
     Db db_;
     Statement saveDataStmt_;
+    Signal<void(Charset)> sigCharsetDetected_;
     Signal<void()> sigAllLoaded_;
 };
 
@@ -73,6 +78,10 @@ public:
     }
 
     ~TextDatabase() {}
+
+    Signal<void(Charset)> &sigCharsetDetected() {
+        return impl_->sigCharsetDetected();
+    }
 
     Signal<void()> &sigAllLoaded() {
         return impl_->sigAllLoaded();

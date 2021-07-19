@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "core/signal.h"
 #include "core/charset.h"
 #include "core/strand_pool.h"
@@ -10,11 +12,20 @@
 namespace doc
 {
 
-class Document {
+namespace detail
+{
+
+class Document : public std::enable_shared_from_this<Document> {
 public:
     Document(StrandPool &pool, const fs::path &file, Strand &ownerThread);
 
-    ~Document();
+    virtual ~Document();
+
+    void init();
+
+    Signal<void(Charset)> &sigCharsetDetected() {
+        return sigCharsetDetected_;
+    }
 
     Signal<void()> &sigAllLoaded() {
         return sigAllLoaded_;
@@ -24,9 +35,39 @@ private:
     const fs::path path_;
     Strand &ownerThread_;
     TextDatabase textDb_;
+    Slot textDbSlotCharsetDetected_;
+    Slot textDbSlotAllLoaded_;
+    Charset charset_ = Charset::Unknown;
 
+    Signal<void(Charset)> sigCharsetDetected_;
     Signal<void()> sigAllLoaded_;
-    Slot slotTextDatabaseAllLoaded_;
+
+};
+
+}
+
+class Document {
+public:
+    Document(StrandPool &pool, const fs::path &file, Strand &ownerThread)
+        : ptr_(std::make_shared<detail::Document>(pool, file, ownerThread)) {
+
+        ptr_->init();
+    }
+
+    virtual ~Document() {}
+
+    void init();
+
+    Signal<void(Charset)> &sigCharsetDetected() {
+        return ptr_->sigCharsetDetected();
+    }
+
+    Signal<void()> &sigAllLoaded() {
+        return ptr_->sigAllLoaded();
+    }
+
+private:
+    std::shared_ptr<detail::Document> ptr_;
 };
 
 }

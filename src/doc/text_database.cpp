@@ -199,6 +199,8 @@ void TextDatabaseImpl::loadAll()
         const std::string scharset = charsetDetector.charset();
         const Charset charset = CharsetUtil::strToCharset(scharset);
 
+        sigCharsetDetected_(charset);
+
         moveFileStreamPosToAfterNewLine(charset, ifs_, readBuff);
 
         LoadingPartInfo info;
