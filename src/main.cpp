@@ -14,7 +14,7 @@
 #include "core/logger.h"
 #include "doc/document.h"
 #include "gui/qt/mainwindow.h"
-#include "gui/qt/gui_thread_worker.h"
+#include "gui/qt/gui_strand.h"
 
 #include "tool/big_file_maker.h"
 

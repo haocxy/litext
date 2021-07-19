@@ -1,4 +1,4 @@
-#include "gui_thread_worker.h"
+#include "gui_strand.h"
 
 #include <mutex>
 
