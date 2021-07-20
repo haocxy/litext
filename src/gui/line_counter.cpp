@@ -10,22 +10,12 @@ LineCounter::LineCounter(StrandPool &pool, doc::Document &document)
     : worker_(pool.allocate("LineCounter"))
     , document_(document)
 {
-
-}
-
-void LineCounter::start()
-{
-    auto self(shared_from_this());
-    slotPartLoaded_ = document_.sigPartLoaded().connect([this, self](const doc::PartLoadedEvent &e) {
+    sigConns_ += document_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
+        auto self(shared_from_this());
         worker_.post([this, self, e] {
 
         });
     });
-}
-
-void LineCounter::stop()
-{
-    slotPartLoaded_.disconnect();
 }
 
 }

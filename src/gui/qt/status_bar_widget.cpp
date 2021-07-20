@@ -31,23 +31,23 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea, QWidget *parent)
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     Editor &editor = textArea.editor();
-    doc::Document &document = editor.document();
+    doc::Document &doc = editor.document();
 
     updateContent();
 
     connect(this, &StatusBarWidget::qtSigCharsetDetected, this, &StatusBarWidget::qtSlotCharsetDetect);
     connect(this, &StatusBarWidget::qtSigUpdateStatus, this, &StatusBarWidget::qtSlotUpdateStatus);
 
-    slotCharsetDetected_ = document.sigCharsetDetected().connect([this](Charset charset) {
+    sigConns_ += doc.sigCharsetDetected().connect([this](Charset charset) {
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
     });
 
-    slotPartLoaded_ = document.sigPartLoaded().connect([this](const doc::PartLoadedEvent &progress) {
+    sigConns_ += doc.sigPartLoaded().connect([this](const doc::PartLoadedEvent &progress) {
         const int percent = progress.fileSize() == 0 ? 100 : (progress.partOffset() + progress.partSize()) * 100 / progress.fileSize();
         emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", percent));
     });
 
-    slotAllLoaded_ = document.sigAllLoaded().connect([this]{
+    sigConns_ += doc.sigAllLoaded().connect([this]{
         emit qtSigUpdateStatus("All Loaded");
     });
 }

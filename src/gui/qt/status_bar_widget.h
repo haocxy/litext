@@ -33,13 +33,11 @@ private slots:
 
 private:
 	TextArea &textArea_;
-    QString status_{"Loading"};
+    QString status_;
     QString charset_;
     QString filesize_;
 	QString content_;
-    Slot slotCharsetDetected_;
-    Slot slotPartLoaded_;
-    Slot slotAllLoaded_;
+    SigConns sigConns_;
 };
 
 

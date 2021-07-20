@@ -19,14 +19,10 @@ public:
 
     virtual ~LineCounter() {}
 
-    void start();
-
-    void stop();
-
 private:
     Strand &worker_;
     doc::Document &document_;
-    Slot slotPartLoaded_;
+    SigConns sigConns_;
 };
 
 }
@@ -36,11 +32,9 @@ public:
     LineCounter(StrandPool &pool, doc::Document &document)
         : ptr_(std::make_shared<detail::LineCounter>(pool, document)) {
 
-        ptr_->start();
     }
 
     ~LineCounter() {
-        ptr_->stop();
     }
 
 private:

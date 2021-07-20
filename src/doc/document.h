@@ -21,10 +21,6 @@ public:
 
     virtual ~Document();
 
-    void start();
-
-    void stop();
-
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
     }
@@ -41,11 +37,8 @@ private:
     const fs::path path_;
     Strand &ownerThread_;
     TextDatabase textDb_;
-    Slot textDbSlotCharsetDetected_;
-    Slot textDbSlotPartLoaded_;
-    Slot textDbSlotAllLoaded_;
     Charset charset_ = Charset::Unknown;
-
+    SigConns sigConns_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
@@ -59,11 +52,9 @@ public:
     Document(StrandPool &pool, const fs::path &file, Strand &ownerThread)
         : ptr_(std::make_shared<detail::Document>(pool, file, ownerThread)) {
 
-        ptr_->start();
     }
 
     ~Document() {
-        ptr_->stop();
     }
 
     Signal<void(Charset)> &sigCharsetDetected() {
