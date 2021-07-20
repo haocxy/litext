@@ -1,5 +1,7 @@
 #include "document.h"
 
+#include "core/logger.h"
+
 
 namespace doc
 {
@@ -12,6 +14,8 @@ Document::Document(StrandPool &pool, const fs::path &path, Strand &ownerThread)
     , ownerThread_(ownerThread)
     , textDb_(path.generic_string(), pool)
 {
+    LOGD << "Document::Document() start, path: [" << path_ << "]";
+
     sigConns_ += textDb_.sigCharsetDetected().connect([this](Charset charset) {
         auto self(shared_from_this());
         ownerThread_.post([this, self, charset] {
@@ -27,11 +31,13 @@ Document::Document(StrandPool &pool, const fs::path &path, Strand &ownerThread)
     sigConns_ += textDb_.sigAllLoaded().connect([this] {
         sigAllLoaded_();
     });
+
+    LOGD << "Document::Document() end, path: [" << path_ << "]";
 }
 
 Document::~Document()
 {
-
+    LOGD << "Document::~Document() path: [" << path_ << "]";
 }
 
 }

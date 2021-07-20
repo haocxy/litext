@@ -40,6 +40,8 @@ SigConns::SigConns()
 
 SigConns::~SigConns()
 {
+    delete impl_;
+    impl_ = nullptr;
 }
 
 SigConns &SigConns::operator+=(boost::signals2::connection &&conn)
