@@ -206,6 +206,13 @@ add_executable(notesharp
     ${src_files}
 )
 
+if(MSVC)
+    target_link_options(notesharp
+        # windows平台的入口为WinMain，默认的main是带命令行的
+        PRIVATE "/SUBSYSTEM:WINDOWS"
+    )
+endif()
+
 source_group(TREE "${root_dir}/.." FILES ${src_files})
 
 set(dependencies
