@@ -21,7 +21,9 @@ public:
 
     virtual ~Document();
 
-    void init();
+    void start();
+
+    void stop();
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -57,10 +59,12 @@ public:
     Document(StrandPool &pool, const fs::path &file, Strand &ownerThread)
         : ptr_(std::make_shared<detail::Document>(pool, file, ownerThread)) {
 
-        ptr_->init();
+        ptr_->start();
     }
 
-    virtual ~Document() {}
+    ~Document() {
+        ptr_->stop();
+    }
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return ptr_->sigCharsetDetected();

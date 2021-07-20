@@ -19,6 +19,10 @@ public:
 
     virtual ~LineCounter() {}
 
+    void start();
+
+    void stop();
+
 private:
     Strand &worker_;
     doc::Document &document_;
@@ -30,9 +34,14 @@ private:
 class LineCounter {
 public:
     LineCounter(StrandPool &pool, doc::Document &document)
-        : ptr_(std::make_shared<detail::LineCounter>(pool, document)) {}
+        : ptr_(std::make_shared<detail::LineCounter>(pool, document)) {
 
-    ~LineCounter() {}
+        ptr_->start();
+    }
+
+    ~LineCounter() {
+        ptr_->stop();
+    }
 
 private:
     std::shared_ptr<detail::LineCounter> ptr_;

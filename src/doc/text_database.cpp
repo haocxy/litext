@@ -33,6 +33,10 @@ void TextDatabaseImpl::start()
     asyncLoadAll();
 }
 
+void TextDatabaseImpl::stop()
+{
+}
+
 bool TextDatabaseImpl::prepareDatabase()
 {
     try {

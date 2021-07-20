@@ -20,19 +20,31 @@ Document::~Document()
 
 }
 
-void Document::init()
+void Document::start()
 {
-    textDbSlotCharsetDetected_ = textDb_.sigCharsetDetected().connect([this](Charset charset) {
-        auto self(shared_from_this());
+    auto self(shared_from_this());
+
+    textDbSlotCharsetDetected_ = textDb_.sigCharsetDetected().connect([this, self](Charset charset) {
         ownerThread_.post([this, self, charset] {
-            this->charset_ = charset;
+            charset_ = charset;
         });
         sigCharsetDetected_(charset);
     });
 
-    textDbSlotPartLoaded_ = textDb_.sigPartLoaded().connect(sigPartLoaded_);
+    textDbSlotPartLoaded_ = textDb_.sigPartLoaded().connect([this, self](const PartLoadedEvent &e) {
+        sigPartLoaded_(e);
+    });
 
-    textDbSlotAllLoaded_ = textDb_.sigAllLoaded().connect(sigAllLoaded_);
+    textDbSlotAllLoaded_ = textDb_.sigAllLoaded().connect([this, self] {
+        sigAllLoaded_();
+    });
+}
+
+void Document::stop()
+{
+    textDbSlotAllLoaded_.disconnect();
+    textDbSlotPartLoaded_.disconnect();
+    textDbSlotCharsetDetected_.disconnect();
 }
 
 }

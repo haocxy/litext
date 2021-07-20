@@ -31,6 +31,8 @@ public:
 
     void start();
 
+    void stop();
+
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
     }
@@ -79,12 +81,14 @@ private:
 class TextDatabase {
 public:
     TextDatabase(const fs::path &docPath, StrandPool &pool)
-        : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath, pool))
-    {
+        : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath, pool)) {
+
         impl_->start();
     }
 
-    ~TextDatabase() {}
+    ~TextDatabase() {
+        impl_->stop();
+    }
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return impl_->sigCharsetDetected();
