@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "core/signal.h"
+#include "core/sigconns.h"
 #include "core/charset.h"
 #include "core/strand_pool.h"
 #include "doc/doc_define.h"

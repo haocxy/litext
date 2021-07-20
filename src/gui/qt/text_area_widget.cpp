@@ -91,7 +91,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent *e)
 
     area_->resize({ sz.width(), sz.height() });
 
-    refresh();
+    update();
 }
 
 void TextAreaWidget::keyPressEvent(QKeyEvent *e)
@@ -105,23 +105,23 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
     switch (key) {
     case Qt::Key_Up:
         area_->onDirUpKeyPress();
-        refresh();
+        update();
         break;
     case Qt::Key_Down:
         area_->onDirDownKeyPress();
-        refresh();
+        update();
         break;
     case Qt::Key_Left:
         area_->onDirLeftKeyPress();
-        refresh();
+        update();
         break;
     case Qt::Key_Right:
         area_->onDirRightKeyPress();
-        refresh();
+        update();
         break;
     case Qt::Key_S:
         area_->moveDownByOneLine();
-        refresh();
+        update();
         break;
     default:
         break;
@@ -136,7 +136,7 @@ void TextAreaWidget::mousePressEvent(QMouseEvent *e)
 
     if (e->button() == Qt::LeftButton) {
         area_->onPrimaryButtomPress(Pixel(e->x()), Pixel(e->y()));
-        refresh();
+        update();
     }
 }
 
@@ -153,14 +153,14 @@ void TextAreaWidget::bind(TextArea *area)
         return;
     }
 
-    cbhViewLocChanged_ = area_->addAfterViewLocChangedCallback([this] {
+    textAreaSigConns_ += area_->addAfterViewLocChangedCallback([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
-        refresh();
+        update();
     });
 
     area_->resize(Size(width(), height()));
 
-    refresh();
+    update();
 }
 
 void TextAreaWidget::unbind()
@@ -169,7 +169,7 @@ void TextAreaWidget::unbind()
         area_ = nullptr;
     }
 
-    cbhViewLocChanged_.disconnect();
+    textAreaSigConns_.clear();
 }
 
 void TextAreaWidget::paintBackground(QPainter &p)
@@ -227,13 +227,6 @@ void TextAreaWidget::paintWidget(QPainter &p)
     paintLastActLine(p);
     p.drawImage(0, 0, textPaintBuff_);
     paintCursor(p);
-}
-
-void TextAreaWidget::refresh()
-{
-    // refresh这个函数里即使只调用了update，也要这样包装一层
-    // 其他部分调用refresh，这样就便于以后需要时添加重绘相关的公用逻辑
-    update();
 }
 
 void TextAreaWidget::paintCursor(QPainter &p)

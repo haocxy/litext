@@ -130,7 +130,7 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
     }
 }
 
-Slot Editor::onLastActRowUpdated(std::function<void()>&& action)
+SigConn Editor::onLastActRowUpdated(std::function<void()>&& action)
 {
     return onLastActRowUpdated_.connect(std::move(action));
 }

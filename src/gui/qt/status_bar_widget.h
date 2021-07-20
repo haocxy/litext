@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include "core/signal.h"
+#include "core/sigconns.h"
 #include "gui/declare_text_area.h"
 
 

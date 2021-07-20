@@ -2,7 +2,7 @@
 
 #include <QWidget>
 
-#include "core/signal.h"
+#include "core/sigconns.h"
 #include "gui/declare_text_area.h"
 
 
@@ -27,8 +27,7 @@ private:
 
 private:
     TextArea &m_view;
-    Slot m_cbhUpdate;
-    Slot m_cbhViewLocChange;
+    SigConns sigConns_;
 };
 
 

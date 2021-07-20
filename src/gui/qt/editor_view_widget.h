@@ -3,7 +3,7 @@
 #include <QWidget>
 #include <QScrollBar>
 
-#include "core/signal.h"
+#include "core/sigconns.h"
 #include "doc/part_loaded_event.h"
 #include "gui/declare_text_area.h"
 #include "declare_ruler_widget.h"
@@ -38,7 +38,7 @@ private:
     TextAreaWidget *textArea_ = nullptr;
     QScrollBar *vScrollBar_ = nullptr;
     StatusBarWidget *statusBar_ = nullptr;
-    Slot slotPartLoaded_;
+    SigConns sigConns_;
 };
 
 

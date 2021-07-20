@@ -4,7 +4,7 @@
 #include <QImage>
 
 #include "core/flagset.h"
-#include "core/signal.h"
+#include "core/sigconns.h"
 #include "gui/declare_text_area.h"
 
 
@@ -18,7 +18,7 @@ class TextAreaWidget : public QWidget {
 public:
     TextAreaWidget(QWidget *parent = nullptr);
 
-    ~TextAreaWidget();
+    virtual ~TextAreaWidget();
 
     virtual QSize sizeHint() const override;
 
@@ -47,8 +47,6 @@ private:
 
     void paintWidget(QPainter &p);
 
-    void refresh();
-
 private:
     class DirtyBuffFlag {
     public:
@@ -62,7 +60,7 @@ private:
     TextArea *area_ = nullptr;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
-    Slot cbhViewLocChanged_;
+    SigConns textAreaSigConns_;
 };
 
 

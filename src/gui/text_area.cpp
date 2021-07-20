@@ -24,7 +24,7 @@ TextArea::TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config)
     assert(editor);
     assert(config);
    
-    slotOnLastActLineUpdated_ = editor_.onLastActRowUpdated([this] {
+    editorSigConns_ += editor_.onLastActRowUpdated([this] {
         cbsShouldRepaint_();
     });
 }
@@ -542,12 +542,12 @@ void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar
     }
 }
 
-Slot TextArea::addShouldRepaintCallback(std::function<void()>&& action)
+SigConn TextArea::addShouldRepaintCallback(std::function<void()>&& action)
 {
     return cbsShouldRepaint_.connect(std::move(action));
 }
 
-Slot TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
+SigConn TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
 {
     return cbsAfterViewLocChanged_.connect(std::move(action));
 }

@@ -77,9 +77,9 @@ public:
     void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)> &&action) const;
 
 public:
-    Slot addShouldRepaintCallback(std::function<void()> &&action);
+    SigConn addShouldRepaintCallback(std::function<void()> &&action);
 
-    Slot addAfterViewLocChangedCallback(std::function<void()> &&action);
+    SigConn addAfterViewLocChangedCallback(std::function<void()> &&action);
 
 private:
     int getMaxShownLineCnt() const;
@@ -145,7 +145,7 @@ private:
     Signal<void()> cbsAfterViewLocChanged_;
 
 private:
-    Slot slotOnLastActLineUpdated_;
+    SigConns editorSigConns_;
 };
 
 

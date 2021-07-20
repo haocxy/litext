@@ -47,7 +47,7 @@ public:
     DocLoc getNextRightLocByChar(const DocLoc & loc) const;
 
 public:
-    Slot onLastActRowUpdated(std::function<void()> && action);
+    SigConn onLastActRowUpdated(std::function<void()> && action);
 
 private:
     void setLastActRow(RowN row);

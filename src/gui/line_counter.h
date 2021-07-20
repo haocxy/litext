@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "core/signal.h"
+#include "core/sigconns.h"
 #include "core/strand_pool.h"
 #include "doc/declare_document.h"
 
