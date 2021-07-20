@@ -6,6 +6,8 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QPixmap>
+#include <QPainter>
 
 #include "core/system_util.h"
 #include "core/time_util.h"
@@ -74,6 +76,13 @@ static int cmdTool(int argc, char *argv[])
     return chooseCommand(argv[2], args);
 }
 
+static void useDrawText()
+{
+    QPixmap pix(1000, 1000);
+    QPainter painter(&pix);
+    painter.drawText(0, 0, "0123456789");
+}
+
 int main(int argc, char *argv[])
 {
     LOGI << "Page Size: " << SystemUtil::pageSize();
@@ -83,14 +92,15 @@ int main(int argc, char *argv[])
         return cmdTool(argc, argv);
     }
 
-    if (argc < 2) {
-        LOGE << "Error: file path require, give it by commond line argument";
-        return 1;
-    }
-
     QApplication app(argc, argv);
 
-    gui::qt::MainWindow mainWindow(argv[1]);
+    // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
+    // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
+    // 虽然没有看 Qt 的内部实现，但猜测是由于某种延迟加载的机制导致的，
+    // 所以解决办法就是在窗口显示前提前使用这个函数（注意，绘制的文本不能为空字符串）
+    useDrawText();
+
+    gui::qt::MainWindow mainWindow(argc >= 2 ? argv[1] : "D:\\tmp\\bigtest.txt");
     mainWindow.show();
     return app.exec();
 }
