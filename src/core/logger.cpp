@@ -9,6 +9,10 @@
 
 #include "fs.h"
 
+#if defined(WIN32) && !defined(NDEBUG)
+#include <Windows.h>
+#endif
+
 
 // before logger initalized, all log should be recorded
 static logger::Level g_Level = logger::Level::All;
@@ -163,15 +167,20 @@ void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &
 
     if (g_writer) {
         g_writer->write(data.data(), data.size());
-#ifndef NDEBUG
-        std::fwrite(data.data(), 1, data.size(), stdout);
-#endif
         if (shouldFlush(level)) {
             g_writer->flush();
         }
-    } else {
-        std::fwrite(data.data(), 1, data.size(), stdout);
     }
+
+#ifndef NDEBUG
+ #ifdef WIN32
+    if (IsDebuggerPresent()) {
+        OutputDebugStringA(data.c_str());
+    }
+ #else
+    std::fwrite(data.data(), 1, data.size(), stdout);
+ #endif
+#endif
 }
 
 void LogLine::printPath(const fs::path &p) {
