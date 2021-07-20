@@ -8,6 +8,7 @@ enum class Charset {
 	Unknown = 0,
 	Ascii,
 	UTF_8,
+    UTF_16,
 	GB18030,
 };
 

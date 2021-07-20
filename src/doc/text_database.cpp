@@ -16,7 +16,7 @@ namespace doc::detail
 
 TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath, StrandPool &pool)
     : docPath_(docPath)
-    , dbPath_(docPath.generic_string() + ".sqlite3db")
+    , dbPath_(docPath.generic_string() + ".notesharpdb")
     , ifs_(docPath, std::ios::binary)
     , worker_(pool.allocate("TextDatabase"))
 {
@@ -144,7 +144,7 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, co
     ElapsedTime elapsedTime;
 
     CharsetConverter converter;
-    converter.open(info.charset, Charset::UTF_8);
+    converter.open(info.charset, Charset::UTF_16);
 
     decodeBuff.clear();
 
