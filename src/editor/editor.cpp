@@ -130,11 +130,6 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
     }
 }
 
-SigConn Editor::onLastActRowUpdated(std::function<void()>&& action)
-{
-    return onLastActRowUpdated_.connect(std::move(action));
-}
-
 void Editor::setLastActRow(RowN row)
 {
     const RowN old = m_lastActRow;
@@ -142,7 +137,7 @@ void Editor::setLastActRow(RowN row)
 
     if (old != m_lastActRow)
     {
-        onLastActRowUpdated_();
+        sigLastActRowUpdated_();
     }
 }
 

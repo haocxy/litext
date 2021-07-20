@@ -27,7 +27,7 @@ private:
 
 private:
     TextArea &m_view;
-    SigConns sigConns_;
+    SigConns textAreaSigConns_;
 };
 
 

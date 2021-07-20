@@ -77,9 +77,13 @@ public:
     void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)> &&action) const;
 
 public:
-    SigConn addShouldRepaintCallback(std::function<void()> &&action);
+    auto &sigShouldRepaint() {
+        return sigShouldRepaint_;
+    }
 
-    SigConn addAfterViewLocChangedCallback(std::function<void()> &&action);
+    auto &sigViewLocChanged() {
+        return sigViewLocChanged_;
+    }
 
 private:
     int getMaxShownLineCnt() const;
@@ -141,8 +145,8 @@ private:
     Pixel::Raw stableX_ = 0;
 
 private:
-    Signal<void()> cbsShouldRepaint_;
-    Signal<void()> cbsAfterViewLocChanged_;
+    Signal<void()> sigShouldRepaint_;
+    Signal<void()> sigViewLocChanged_;
 
 private:
     SigConns editorSigConns_;

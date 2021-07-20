@@ -30,7 +30,7 @@ RulerWidget::RulerWidget(TextArea &view, QWidget *parent)
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
 
-    sigConns_ += m_view.addAfterViewLocChangedCallback([this] {
+    textAreaSigConns_ += m_view.sigViewLocChanged().connect([this] {
         update();
     });
 }

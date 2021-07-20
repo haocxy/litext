@@ -153,7 +153,7 @@ void TextAreaWidget::bind(TextArea *area)
         return;
     }
 
-    textAreaSigConns_ += area_->addAfterViewLocChangedCallback([this] {
+    textAreaSigConns_ += area_->sigViewLocChanged().connect([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
         update();
     });

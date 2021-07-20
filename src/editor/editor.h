@@ -47,7 +47,9 @@ public:
     DocLoc getNextRightLocByChar(const DocLoc & loc) const;
 
 public:
-    SigConn onLastActRowUpdated(std::function<void()> && action);
+    auto &sigLastActRowUpdated() {
+        return sigLastActRowUpdated_;
+    }
 
 private:
     void setLastActRow(RowN row);
@@ -64,5 +66,5 @@ private:
     RowN m_lastActRow = -1;
 
 private:
-    Signal<void()> onLastActRowUpdated_;
+    Signal<void()> sigLastActRowUpdated_;
 };

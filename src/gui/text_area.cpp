@@ -24,8 +24,8 @@ TextArea::TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config)
     assert(editor);
     assert(config);
    
-    editorSigConns_ += editor_.onLastActRowUpdated([this] {
-        cbsShouldRepaint_();
+    editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
+        sigShouldRepaint_();
     });
 }
 
@@ -47,7 +47,7 @@ void TextArea::resize(const Size & size)
 
     updateStableXByCurrentCursor();
 
-    cbsShouldRepaint_();
+    sigShouldRepaint_();
 }
 
 int TextArea::getMaxShownLineCnt() const
@@ -399,7 +399,7 @@ void TextArea::setViewLoc(const ViewLoc & viewLoc)
 
     vloc_ = viewLoc;
 
-    cbsAfterViewLocChanged_();
+    sigViewLocChanged_();
 }
 
 void TextArea::movePageHeadOneLine()
@@ -540,16 +540,6 @@ void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar
             ++lineOffset;
         }
     }
-}
-
-SigConn TextArea::addShouldRepaintCallback(std::function<void()>&& action)
-{
-    return cbsShouldRepaint_.connect(std::move(action));
-}
-
-SigConn TextArea::addAfterViewLocChangedCallback(std::function<void()>&& action)
-{
-    return cbsAfterViewLocChanged_.connect(std::move(action));
 }
 
 void TextArea::onPrimaryButtomPress(Pixel x, Pixel y)
