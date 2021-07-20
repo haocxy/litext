@@ -56,7 +56,7 @@ private:
         Charset charset = Charset::Unknown;
     };
 
-    void loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, const LoadingPartInfo &info);
+    void loadPart(const MemBuff &readBuff, const LoadingPartInfo &info);
 
     void loadAll();
 

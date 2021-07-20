@@ -137,7 +137,7 @@ static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs,
     }
 }
 
-void TextDatabaseImpl::loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, const LoadingPartInfo &info)
+void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info)
 {
     const char *title = "TextDatabaseImpl::loadPart() ";
 
@@ -146,6 +146,7 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, co
     CharsetConverter converter;
     converter.open(info.charset, Charset::UTF_16);
 
+    MemBuff decodeBuff;
     decodeBuff.clear();
 
     converter.convert(readBuff, decodeBuff);
@@ -167,6 +168,7 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, MemBuff &decodeBuff, co
     e.setFileSize(fs::file_size(docPath_));
     e.setPartOffset(info.off);
     e.setPartSize(info.len);
+    e.utf16content() = std::move(decodeBuff);
 
     sigPartLoaded_(e);
 }
@@ -190,7 +192,6 @@ void TextDatabaseImpl::loadAll()
     LOGD << title << "start for file [" << dbPath_ << "]";
 
     MemBuff readBuff;
-    MemBuff decodeBuff;
     CharsetDetector charsetDetector;
 
     const uintmax_t partLen = partSize();
@@ -221,9 +222,7 @@ void TextDatabaseImpl::loadAll()
         info.len = readBuff.size();
         info.charset = charset;
 
-        loadPart(readBuff, decodeBuff, info);
-
-        //LOGD << title << " part(" << partIndex << ") gcount [" << gcount << "], part len: [" << buff.size() << "]";
+        loadPart(readBuff, info);
 
         partLenSum += readBuff.size();
 
@@ -231,7 +230,6 @@ void TextDatabaseImpl::loadAll()
     }
 
     readBuff.clear();
-    decodeBuff.clear();
 
     LOGD << title << "end for file [" << dbPath_ << "]";
     LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
