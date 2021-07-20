@@ -37,7 +37,7 @@ Document::Document(StrandPool &pool, const fs::path &path, Strand &ownerThread)
 
 Document::~Document()
 {
-    LOGD << "Document::~Document() path: [" << path_ << "]";
+    LOGD << "Document::~Document() start, path: [" << path_ << "]";
 }
 
 }
