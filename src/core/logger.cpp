@@ -6,6 +6,7 @@
 #include <sstream>
 #include <mutex>
 #include <atomic>
+#include <system_error>
 
 #include "fs.h"
 
@@ -128,7 +129,7 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
     std::memset(&ts, 0, sizeof(ts));
     if (TIME_UTC != std::timespec_get(&ts, TIME_UTC)) {
         std::ostringstream ss;
-        ss << "std::timespec_get() error: " << std::strerror(errno);
+        ss << "std::timespec_get() error: " << std::error_code(errno, std::generic_category()).message();
         throw std::runtime_error(ss.str());
     }
     std::tm tm;
