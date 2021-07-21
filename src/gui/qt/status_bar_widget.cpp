@@ -58,11 +58,7 @@ QSize StatusBarWidget::sizeHint() const
 void StatusBarWidget::paintEvent(QPaintEvent *e)
 {
 	QPainter p(this);
-	p.setPen(Qt::blue);
-	p.setBrush(Qt::blue);
-	p.drawRect(rect());
-	p.setPen(Qt::white);
-
+    p.drawLine(0, 0, width(), 0);
 	p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), content_);
 }
 
