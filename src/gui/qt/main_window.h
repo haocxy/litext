@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
 
-    explicit MainWindow(fs::path filePath, QWidget *parent = nullptr);
+    MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath, QWidget *parent = nullptr);
 
     virtual ~MainWindow();
 
@@ -36,7 +36,7 @@ private:
 private:
     GuiStrand guiStrand_;
     SingleThreadStrandPool strandPool_;
-    TextAreaConfig *m_viewConfig = nullptr;
+    TextAreaConfig &textAreaConfig_;
     SimpleDoc *m_doc = nullptr;
     TextArea *m_view = nullptr;
     Editor *editor_ = nullptr;

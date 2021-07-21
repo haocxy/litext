@@ -34,16 +34,16 @@ static void setupConfig(TextAreaConfig &c)
     f.setFont(fi);
 }
 
-MainWindow::MainWindow(fs::path filePath, QWidget *parent)
+MainWindow::MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath, QWidget *parent)
     : QMainWindow(parent)
+    , textAreaConfig_(textAreaConfig)
 {
-    m_viewConfig = new TextAreaConfig();
-    setupConfig(*m_viewConfig);
+    setupConfig(textAreaConfig_);
     m_doc = new SimpleDoc;
     m_doc->LoadFromFile(filePath.generic_string());
 
     editor_ = new Editor(m_doc, strandPool_, filePath, guiStrand_);
-    m_view = new TextArea(strandPool_, editor_, m_viewConfig);
+    m_view = new TextArea(strandPool_, editor_, &textAreaConfig_);
     m_editorViewWidget = new EditorViewWidget(*m_view);
 
     setCentralWidget(m_editorViewWidget);
@@ -52,9 +52,6 @@ MainWindow::MainWindow(fs::path filePath, QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete m_viewConfig;
-    m_viewConfig = nullptr;
-
     delete m_doc;
     m_doc = nullptr;
 

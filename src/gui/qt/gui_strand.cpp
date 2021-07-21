@@ -2,6 +2,8 @@
 
 #include <mutex>
 
+#include <QApplication>
+
 
 namespace gui::qt
 {
@@ -14,6 +16,8 @@ GuiStrand::GuiStrand()
 	std::call_once(g_RegisterOnceFlag, []() {
 		qRegisterMetaType<QtGuiFuncWrapper>("QtGuiFuncWrapper");
 	});
+
+    moveToThread(QApplication::instance()->thread());
 
 	QObject::connect(this, &GuiStrand::postMyFunction, this, &GuiStrand::runMyFunction);
 }
