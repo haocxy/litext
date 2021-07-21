@@ -48,22 +48,23 @@ public:
         }
     }
 
-    void convert(const void *data, size_t len, MemBuff &buff)
+    MemBuff convert(const void *data, size_t len)
     {
         if (!isOpened()) {
             throw std::logic_error("CharsetConverterImpl::convert() error because converter not opened");
         }
 
         if (isSameCharset_) {
-            buff.append(data, len);
-            return;
+            return MemBuff(data, len);
         }
 
         if (data != nullptr || len > 0) {
             QString str = decoder_->toUnicode(reinterpret_cast<const char *>(data), static_cast<int>(len));
             QByteArray byteArray = encoder_->fromUnicode(str);
-            buff.append(byteArray.constData(), byteArray.size());
+            return MemBuff(byteArray.constData(), byteArray.size());
         }
+
+        return MemBuff();
     }
 
 private:
@@ -100,8 +101,8 @@ void CharsetConverter::open(Charset from, Charset to)
     impl_->open(from, to);
 }
 
-void CharsetConverter::convert(const void *data, size_t len, MemBuff &buff)
+MemBuff CharsetConverter::convert(const void *data, size_t len)
 {
     assert(impl_);
-    impl_->convert(data, len, buff);
+    return impl_->convert(data, len);
 }

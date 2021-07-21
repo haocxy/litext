@@ -1,5 +1,7 @@
 #include "membuff.h"
 
+#include <algorithm>
+
 
 void MemBuff::resize(size_t len) {
     ensureCapacity(len);

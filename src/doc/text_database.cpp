@@ -146,8 +146,7 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
     CharsetConverter converter;
     converter.open(info.charset, Charset::UTF_16);
 
-    MemBuff decodeBuff;
-    converter.convert(readBuff, decodeBuff);
+    MemBuff decodeBuff = converter.convert(readBuff);
 
     saveDataStmt_.reset();
     saveDataStmt_.arg().arg(info.off).arg(info.len).arg(decodeBuff);

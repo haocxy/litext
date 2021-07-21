@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include <cstring>
 
 
@@ -14,7 +13,9 @@ public:
 
     MemBuff(const void *buff, size_t len) { write(buff, len); }
 
-    MemBuff(const MemBuff &b) { write(b.data(), b.size()); }
+    MemBuff(const MemBuff &b) {
+        write(b.data(), b.size());
+    }
 
     MemBuff(MemBuff &&b) noexcept : beg_(b.beg_), size_(b.size_), capacity_(b.capacity_) {
         b.beg_ = nullptr;

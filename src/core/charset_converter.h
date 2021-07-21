@@ -20,10 +20,10 @@ public:
 
     void open(Charset from, Charset to);
 
-    void convert(const void *data, size_t len, MemBuff &buff);
+    MemBuff convert(const void *data, size_t len);
 
-    void convert(const MemBuff &from, MemBuff &to) {
-        convert(from.data(), from.size(), to);
+    MemBuff convert(const MemBuff &from) {
+        return convert(from.data(), from.size());
     }
 
 private:
