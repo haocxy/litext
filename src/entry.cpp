@@ -2,7 +2,7 @@
 #include <QPixmap>
 #include <QPainter>
 
-#include "gui/qt/mainwindow.h"
+#include "gui/qt/main_window.h"
 
 
 static void useDrawText()
