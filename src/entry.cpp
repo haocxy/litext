@@ -3,7 +3,7 @@
 #include <QPainter>
 
 #include "gui/qt/main_window.h"
-#include "gui/text_area_config.h"
+#include "gui/config.h"
 
 
 static void useDrawText()
@@ -23,9 +23,9 @@ int entry(int argc, char *argv[])
     // 所以解决办法就是在窗口显示前提前使用这个函数（注意，绘制的文本不能为空字符串）
     useDrawText();
 
-    gui::TextAreaConfig textAreaConfig;
+    gui::Config config;
 
-    gui::qt::MainWindow mainWindow(textAreaConfig, argc >= 2 ? argv[1] : "D:\\tmp\\bigtest.txt");
+    gui::qt::MainWindow mainWindow(config, argc >= 2 ? argv[1] : "D:\\tmp\\bigtest.txt");
     mainWindow.show();
     return app.exec();
 }

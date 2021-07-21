@@ -5,7 +5,7 @@
 #include "core/fs.h"
 #include "core/strand.h"
 #include "core/single_thread_strand_pool.h"
-#include "gui/declare_text_area_config.h"
+#include "gui/declare_config.h"
 #include "declare_editor_widget.h"
 #include "gui_strand.h"
 
@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath);
+    MainWindow(Config &config, const fs::path &filePath);
 
     virtual ~MainWindow();
 
@@ -30,7 +30,7 @@ private:
 private:
     GuiStrand guiStrand_;
     SingleThreadStrandPool strandPool_;
-    TextAreaConfig &textAreaConfig_;
+    Config &config_;
     EditorWidget *editorWidget_ = nullptr;
 };
 

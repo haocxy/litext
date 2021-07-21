@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 
 #include "gui/text_area.h"
+#include "gui/config.h"
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
@@ -34,12 +35,12 @@ static void setupConfig(TextAreaConfig &c)
     f.setFont(fi);
 }
 
-MainWindow::MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath)
-    : textAreaConfig_(textAreaConfig)
+MainWindow::MainWindow(Config &config, const fs::path &filePath)
+    : config_(config)
 {
-    setupConfig(textAreaConfig_);
+    setupConfig(config_.textAreaConfig());
 
-    editorWidget_ = new EditorWidget(strandPool_, textAreaConfig, filePath);
+    editorWidget_ = new EditorWidget(strandPool_, config_.textAreaConfig(), filePath);
 
     setCentralWidget(editorWidget_);
 }
