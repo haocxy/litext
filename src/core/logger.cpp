@@ -170,6 +170,10 @@ void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &
         if (shouldFlush(level)) {
             g_writer->flush();
         }
+    } else {
+#ifndef WIN32
+        std::fwrite(data.data(), 1, data.size(), stdout);
+#endif
     }
 
 #ifndef NDEBUG
