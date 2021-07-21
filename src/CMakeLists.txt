@@ -2,7 +2,9 @@ set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Boost 1.76 REQUIRED)
+find_package(Boost 1.76 REQUIRED
+    COMPONENTS filesystem)
+
 include_directories(${Boost_INCLUDE_DIRS})
 
 
@@ -219,6 +221,7 @@ set(dependencies
     Qt5::Widgets
     libuchardet_static
     libsqlite3_static
+    ${Boost_LIBRARIES}
 )
 
 if(NOT MSVC)

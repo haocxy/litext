@@ -1,7 +1,10 @@
 #include "main_window.h"
 
 #include <QKeyEvent>
+#include <QMenuBar>
+#include <QFileDialog>
 
+#include "core/system_util.h"
 #include "gui/text_area.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"
@@ -40,9 +43,11 @@ MainWindow::MainWindow(Config &config, const fs::path &filePath)
 {
     setupConfig(config_.textAreaConfig());
 
-    editorWidget_ = new EditorWidget(strandPool_, config_.textAreaConfig(), filePath);
+    initMenuBar();
 
-    setCentralWidget(editorWidget_);
+    initToolBar();
+
+    resize(800, 600);
 }
 
 MainWindow::~MainWindow()
@@ -61,7 +66,38 @@ void MainWindow::keyReleaseEvent(QKeyEvent *e)
 
 void MainWindow::initMenuBar()
 {
+    QMenuBar *bar = menuBar();
 
+    QMenu *fileMenu = bar->addMenu(tr("&File"));
+    QAction *openAction = fileMenu->addAction(tr("&Open"));
+    connect(openAction, &QAction::triggered, this, &MainWindow::fileMenuOpenActionTriggered);
+    QAction *quitAction = fileMenu->addAction(tr("&Quit"));
+    connect(quitAction, &QAction::triggered, this, &MainWindow::close);
+}
+
+void MainWindow::initToolBar()
+{
+}
+
+void MainWindow::openDocument(const fs::path &file)
+{
+    editorWidget_ = new EditorWidget(strandPool_, config_.textAreaConfig(), file);
+
+    setCentralWidget(editorWidget_);
+
+    setWindowTitle(QString("notesharp - ") + QString::fromStdU16String(file.generic_u16string()));
+}
+
+void MainWindow::fileMenuOpenActionTriggered()
+{
+    const std::u16string userHome = SystemUtil::userHome().generic_u16string();
+    const QString defaultDir = QString::fromStdU16String(userHome);
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Document"), defaultDir);
+    const fs::path path = fileName.toStdU16String();
+
+    if (!path.empty()) {
+        openDocument(path);
+    }
 }
 
 

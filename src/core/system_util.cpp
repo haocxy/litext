@@ -1,6 +1,9 @@
 #include "system_util.h"
 
 #include <cstring>
+#include <stdexcept>
+
+#include <boost/process/environment.hpp>
 
 #if defined(WIN32)
 #include <Windows.h>
@@ -53,6 +56,28 @@ static const Initer g_initer;
 
 }
 
+static fs::path userHomeForWindows() {
+    const boost::process::native_environment e = boost::this_process::environment();
+    const auto driveIt = e.find("HOMEDRIVE");
+    if (driveIt == e.end()) {
+        throw std::runtime_error("Environment 'HOMEDRIVE' not found");
+    }
+    const auto pathIt = e.find("HOMEPATH");
+    if (pathIt == e.end()) {
+        throw std::runtime_error("Environment 'HOMEPATH' not found");
+    }
+    return fs::absolute(driveIt->to_string() + pathIt->to_string()).lexically_normal();
+}
+
+static fs::path userHomeForNotWindows() {
+    const boost::process::native_environment e = boost::this_process::environment();
+    const auto homeIt = e.find("HOME");
+    if (homeIt == e.end()) {
+        throw std::runtime_error("Environment 'HOME' not found");
+    }
+    return fs::absolute(homeIt->to_string()).lexically_normal();
+}
+
 
 namespace SystemUtil
 {
@@ -65,5 +90,14 @@ size_t pageSize()
 int processorCount() {
 	return g_initer.procCount();
 }
+
+fs::path userHome() {
+#if defined(WIN32)
+    return userHomeForWindows();
+#else
+    return userHomeForNotWindows();
+#endif
+}
+
 
 }

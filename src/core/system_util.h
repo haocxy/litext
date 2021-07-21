@@ -2,6 +2,8 @@
 
 #include <cstddef>
 
+#include "core/fs.h"
+
 
 namespace SystemUtil
 {
@@ -9,5 +11,7 @@ namespace SystemUtil
 size_t pageSize();
 
 int processorCount();
+
+fs::path userHome();
 
 }

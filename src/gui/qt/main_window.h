@@ -27,6 +27,13 @@ protected:
 private:
     void initMenuBar();
 
+    void initToolBar();
+
+    void openDocument(const fs::path &file);
+
+private slots:
+    void fileMenuOpenActionTriggered();
+
 private:
     GuiStrand guiStrand_;
     SingleThreadStrandPool strandPool_;
