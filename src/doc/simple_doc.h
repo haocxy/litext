@@ -1,10 +1,10 @@
 #pragma once
 
 #include <vector>
-#include <filesystem>
 
 #include <QString>
 
+#include "core/fs.h"
 #include "simple_doc_row.h"
 #include "doc.h"
 
@@ -12,6 +12,12 @@
 class SimpleDoc : public Doc
 {
 public:
+    SimpleDoc() {}
+
+    SimpleDoc(const fs::path &file) {
+        LoadFromFile(file.generic_string());
+    }
+
     virtual ~SimpleDoc() {}
 
     virtual RowN rowCnt() const override

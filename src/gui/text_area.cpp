@@ -15,15 +15,12 @@
 namespace gui
 {
 
-TextArea::TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config)
-    : editor_(*editor)
-    , config_(*config)
-    , textLayouter_(pool, editor->document())
+TextArea::TextArea(StrandPool &pool, Editor &editor, const TextAreaConfig &config)
+    : editor_(editor)
+    , config_(config)
+    , textLayouter_(pool, editor.document())
     , cvt_(editor_, size_, page_, vloc_, config_)
-{
-    assert(editor);
-    assert(config);
-   
+{  
     editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
         sigShouldRepaint_();
     });

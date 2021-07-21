@@ -21,9 +21,9 @@ namespace gui::qt
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
-public:
 
-    MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath, QWidget *parent = nullptr);
+public:
+    MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath);
 
     virtual ~MainWindow();
 
@@ -37,10 +37,7 @@ private:
     GuiStrand guiStrand_;
     SingleThreadStrandPool strandPool_;
     TextAreaConfig &textAreaConfig_;
-    SimpleDoc *m_doc = nullptr;
-    TextArea *m_view = nullptr;
-    Editor *editor_ = nullptr;
-    EditorViewWidget *m_editorViewWidget = nullptr;
+    EditorViewWidget *editorWidget_ = nullptr;
 };
 
 

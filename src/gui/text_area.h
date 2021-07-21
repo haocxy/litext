@@ -40,7 +40,7 @@ namespace gui
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
-    TextArea(StrandPool &pool, Editor *editor, TextAreaConfig *config);
+    TextArea(StrandPool &pool, Editor &editor, const TextAreaConfig &config);
 
     ~TextArea();
 

@@ -15,14 +15,17 @@ namespace gui::qt
 
 static const int ProgressTotal = 1000000;
 
-EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
-    : QWidget(parent)
+EditorViewWidget::EditorViewWidget(StrandPool &strandPool, const TextAreaConfig &textAreaConfig, const fs::path &file)
+    : file_(file)
+    , doc_(file)
+    , editor_(&doc_, strandPool, file, ownerThread_)
+    , textArea_(strandPool, editor_, textAreaConfig)
 {
-    doc::Document &document = textArea.editor().document();
+    doc::Document &document = editor_.document();
 
-    ruler_ = new RulerWidget(textArea);
-    textArea_ = new TextAreaWidget;
-    textArea_->bind(&textArea);
+    ruler_ = new RulerWidget(textArea_);
+    textAreaWidget_ = new TextAreaWidget;
+    textAreaWidget_->bind(&textArea_);
 
     vScrollBar_ = new QScrollBar;
     vScrollBar_->setRange(0, 0);
@@ -32,7 +35,7 @@ EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
         emit qtSigPartLoaded(loaded / total);
     });
 
-    statusBar_ = new StatusBarWidget(textArea);
+    statusBar_ = new StatusBarWidget(textArea_);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(0);
@@ -42,7 +45,7 @@ EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
     hlayout->setMargin(0);
     hlayout->setSpacing(0);
     hlayout->addWidget(ruler_);
-    hlayout->addWidget(textArea_);
+    hlayout->addWidget(textAreaWidget_);
     hlayout->addWidget(vScrollBar_);
 
     vlayout->addLayout(hlayout);
@@ -54,7 +57,7 @@ EditorViewWidget::EditorViewWidget(TextArea &textArea, QWidget *parent)
 EditorViewWidget::~EditorViewWidget()
 {
     ruler_ = nullptr;
-    textArea_ = nullptr;
+    textAreaWidget_ = nullptr;
     vScrollBar_ = nullptr;
     statusBar_ = nullptr;
 }
