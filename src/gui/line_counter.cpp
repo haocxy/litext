@@ -6,7 +6,7 @@
 namespace gui::detail
 {
 
-LineCounter::LineCounter(StrandPool &pool, doc::Document &document)
+TextLayouterImpl::TextLayouterImpl(StrandPool &pool, doc::Document &document)
     : worker_(pool.allocate("LineCounter"))
     , document_(document)
 {

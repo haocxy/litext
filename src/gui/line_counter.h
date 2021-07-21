@@ -13,11 +13,11 @@ namespace gui
 namespace detail
 {
 
-class LineCounter : public std::enable_shared_from_this<LineCounter> {
+class TextLayouterImpl : public std::enable_shared_from_this<TextLayouterImpl> {
 public:
-    LineCounter(StrandPool &pool, doc::Document &document);
+    TextLayouterImpl(StrandPool &pool, doc::Document &document);
 
-    virtual ~LineCounter() {}
+    virtual ~TextLayouterImpl() {}
 
 private:
     Strand &worker_;
@@ -27,18 +27,18 @@ private:
 
 }
 
-class LineCounter {
+class TextLayouter {
 public:
-    LineCounter(StrandPool &pool, doc::Document &document)
-        : ptr_(std::make_shared<detail::LineCounter>(pool, document)) {
+    TextLayouter(StrandPool &pool, doc::Document &document)
+        : ptr_(std::make_shared<detail::TextLayouterImpl>(pool, document)) {
 
     }
 
-    ~LineCounter() {
+    ~TextLayouter() {
     }
 
 private:
-    std::shared_ptr<detail::LineCounter> ptr_;
+    std::shared_ptr<detail::TextLayouterImpl> ptr_;
 };
 
 

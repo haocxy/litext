@@ -134,7 +134,7 @@ private:
 private:
     Editor &editor_;
     const TextAreaConfig &config_;
-    LineCounter lineCounter_;
+    TextLayouter textLayouter_;
     Page page_;
     Size size_;
     ViewLoc vloc_{ 0, 0 };
