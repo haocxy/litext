@@ -6,7 +6,7 @@
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
 #include "doc/simple_doc.h"
-#include "editor_view_widget.h"
+#include "editor_widget.h"
 
 
 namespace gui::qt

@@ -1,4 +1,4 @@
-#include "editor_view_widget.h"
+#include "editor_widget.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

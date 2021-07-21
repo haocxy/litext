@@ -5,19 +5,13 @@
 #include "core/fs.h"
 #include "core/strand.h"
 #include "core/single_thread_strand_pool.h"
-#include "gui/declare_text_area.h"
 #include "gui/declare_text_area_config.h"
-#include "declare_editor_view_widget.h"
+#include "declare_editor_widget.h"
 #include "gui_strand.h"
-
-
-class Editor;
-class SimpleDoc;
 
 
 namespace gui::qt
 {
-
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -40,5 +34,5 @@ private:
     EditorViewWidget *editorWidget_ = nullptr;
 };
 
-
 }
+
