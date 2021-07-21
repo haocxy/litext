@@ -38,7 +38,7 @@ static void setupConfig(TextAreaConfig &c)
     f.setFont(fi);
 }
 
-MainWindow::MainWindow(Config &config, const fs::path &filePath)
+MainWindow::MainWindow(Config &config)
     : config_(config)
 {
     setupConfig(config_.textAreaConfig());
@@ -48,6 +48,12 @@ MainWindow::MainWindow(Config &config, const fs::path &filePath)
     initToolBar();
 
     resize(800, 600);
+}
+
+MainWindow::MainWindow(Config &config, const fs::path &filePath)
+    : MainWindow(config)
+{
+    openDocument(filePath);
 }
 
 MainWindow::~MainWindow()

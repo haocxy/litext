@@ -17,9 +17,13 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
+    explicit MainWindow(Config &config);
+
     MainWindow(Config &config, const fs::path &filePath);
 
     virtual ~MainWindow();
+
+    void openDocument(const fs::path &file);
 
 protected:
     virtual void keyReleaseEvent(QKeyEvent *e) override;
@@ -28,8 +32,6 @@ private:
     void initMenuBar();
 
     void initToolBar();
-
-    void openDocument(const fs::path &file);
 
 private slots:
     void fileMenuOpenActionTriggered();

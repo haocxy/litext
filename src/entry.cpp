@@ -25,7 +25,11 @@ int entry(int argc, char *argv[])
 
     gui::Config config;
 
-    gui::qt::MainWindow mainWindow(config, argc >= 2 ? argv[1] : "D:\\tmp\\bigtest.txt");
+    gui::qt::MainWindow mainWindow(config);
+    if (argc > 1) {
+        mainWindow.openDocument(argv[1]);
+    }
     mainWindow.show();
+
     return app.exec();
 }
