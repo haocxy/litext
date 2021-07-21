@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include <QKeyEvent>
+
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
@@ -64,6 +66,15 @@ MainWindow::~MainWindow()
 
     delete m_editorViewWidget;
     m_editorViewWidget = nullptr;
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *e)
+{
+    if (e->key() == Qt::Key_Escape) {
+        close();
+    } else {
+        QMainWindow::keyReleaseEvent(e);
+    }
 }
 
 void MainWindow::initMenuBar()

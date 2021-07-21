@@ -24,7 +24,11 @@ class MainWindow : public QMainWindow {
 public:
 
     explicit MainWindow(fs::path filePath, QWidget *parent = nullptr);
+
     virtual ~MainWindow();
+
+protected:
+    virtual void keyReleaseEvent(QKeyEvent *e) override;
 
 private:
     void initMenuBar();
