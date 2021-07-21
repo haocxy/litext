@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <chrono>
 
 
@@ -24,3 +25,11 @@ public:
 private:
 	const std::chrono::time_point<std::chrono::steady_clock> beg_;
 };
+
+
+namespace TimeUtil
+{
+
+std::chrono::system_clock::time_point compileTime(const char *dateByMacro, const char *timeByMacro);
+
+}

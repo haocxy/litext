@@ -1,5 +1,6 @@
 #include "text_database.h"
 
+#include <chrono>
 
 #include "core/logger.h"
 #include "core/time_util.h"
@@ -37,15 +38,24 @@ void TextDatabaseImpl::stop()
 {
 }
 
+static void clearFile(const fs::path &file)
+{
+    std::ofstream ofs(file, std::ios::binary);
+}
+
+static bool shouldClearDbFile(const fs::path &dbFile)
+{
+    return true;
+}
+
 bool TextDatabaseImpl::prepareDatabase()
 {
+    if (shouldClearDbFile(dbPath_)) {
+        clearFile(dbPath_);
+        LOGD << "TextDatabaseImpl::prepareDatabase() db file [" << dbPath_ << "] cleared";
+    }
+
     try {
-
-        {
-            // TODO 开发时为了方便每次清空旧数据文件
-            std::ofstream ofs(dbPath_, std::ios::binary);
-        }
-
         db_.open(dbPath_);
 
         db_.exec(reinterpret_cast<const char *>(Asset::Data::prepare_db__sql));
