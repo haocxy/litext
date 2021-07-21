@@ -21,12 +21,12 @@ namespace gui::qt
 {
 
 
-class EditorViewWidget : public QWidget {
+class EditorWidget : public QWidget {
     Q_OBJECT
 public:
-    EditorViewWidget(StrandPool &strandPool, const TextAreaConfig &textAreaConfig, const fs::path &file);
+    EditorWidget(StrandPool &strandPool, const TextAreaConfig &textAreaConfig, const fs::path &file);
 
-    virtual ~EditorViewWidget();
+    virtual ~EditorWidget();
 
 private:
 signals:

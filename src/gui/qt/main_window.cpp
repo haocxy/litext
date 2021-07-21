@@ -39,7 +39,7 @@ MainWindow::MainWindow(TextAreaConfig &textAreaConfig, const fs::path &filePath)
 {
     setupConfig(textAreaConfig_);
 
-    editorWidget_ = new EditorViewWidget(strandPool_, textAreaConfig, filePath);
+    editorWidget_ = new EditorWidget(strandPool_, textAreaConfig, filePath);
 
     setCentralWidget(editorWidget_);
 }

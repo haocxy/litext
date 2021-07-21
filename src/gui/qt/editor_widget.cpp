@@ -15,7 +15,7 @@ namespace gui::qt
 
 static const int ProgressTotal = 1000000;
 
-EditorViewWidget::EditorViewWidget(StrandPool &strandPool, const TextAreaConfig &textAreaConfig, const fs::path &file)
+EditorWidget::EditorWidget(StrandPool &strandPool, const TextAreaConfig &textAreaConfig, const fs::path &file)
     : file_(file)
     , doc_(file)
     , editor_(&doc_, strandPool, file, ownerThread_)
@@ -54,7 +54,7 @@ EditorViewWidget::EditorViewWidget(StrandPool &strandPool, const TextAreaConfig 
     setLayout(vlayout);
 }
 
-EditorViewWidget::~EditorViewWidget()
+EditorWidget::~EditorWidget()
 {
     ruler_ = nullptr;
     textAreaWidget_ = nullptr;
@@ -62,7 +62,7 @@ EditorViewWidget::~EditorViewWidget()
     statusBar_ = nullptr;
 }
 
-void EditorViewWidget::qtSlotPartLoaded(double percent)
+void EditorWidget::qtSlotPartLoaded(double percent)
 {
 
 }

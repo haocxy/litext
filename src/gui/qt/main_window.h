@@ -31,7 +31,7 @@ private:
     GuiStrand guiStrand_;
     SingleThreadStrandPool strandPool_;
     TextAreaConfig &textAreaConfig_;
-    EditorViewWidget *editorWidget_ = nullptr;
+    EditorWidget *editorWidget_ = nullptr;
 };
 
 }

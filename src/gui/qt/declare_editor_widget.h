@@ -3,6 +3,6 @@
 namespace gui::qt
 {
 
-class EditorViewWidget;
+class EditorWidget;
 
 }
