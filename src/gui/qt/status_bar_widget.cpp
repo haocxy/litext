@@ -24,14 +24,12 @@ namespace gui::qt
 {
 
 
-StatusBarWidget::StatusBarWidget(TextArea &textArea, QWidget *parent)
-	: QWidget(parent)
-	, textArea_(textArea)
+StatusBarWidget::StatusBarWidget(TextArea &textArea)
+	: textArea_(textArea)
 {
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    Editor &editor = textArea.editor();
-    doc::Document &doc = editor.document();
+    doc::Document &doc = textArea_.editor().document();
 
     updateContent();
 

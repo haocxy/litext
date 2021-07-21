@@ -19,9 +19,8 @@ namespace gui::qt
 {
 
 
-RulerWidget::RulerWidget(TextArea &view, QWidget *parent)
-    : QWidget(parent)
-    , m_view(view)
+RulerWidget::RulerWidget(TextArea &textArea)
+    : textArea_(textArea)
 {
     QSizePolicy sizePolicy;
     sizePolicy.setHorizontalPolicy(QSizePolicy::Fixed);
@@ -30,7 +29,7 @@ RulerWidget::RulerWidget(TextArea &view, QWidget *parent)
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
 
-    textAreaSigConns_ += m_view.sigViewLocChanged().connect([this] {
+    textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
         update();
     });
 }
@@ -54,13 +53,13 @@ void RulerWidget::paintBackground(QPainter &p)
 
 void RulerWidget::paintLineNum(QPainter &p)
 {
-    const QFont font = fontToQFont(m_view.config().font());
+    const QFont font = fontToQFont(textArea_.config().font());
     p.setFont(font);
     p.setPen(kNormalColor);
 
-    const int32_t lineNumOffset = m_view.config().lineNumOffset();
+    const int32_t lineNumOffset = textArea_.config().lineNumOffset();
 
-    m_view.drawEachLineNum([&p, lineNumOffset, this](RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct) {
+    textArea_.drawEachLineNum([&p, lineNumOffset](RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct) {
         const QString s = QString::number(lineNum + lineNumOffset);
 
         if (isLastAct) {
@@ -72,7 +71,7 @@ void RulerWidget::paintLineNum(QPainter &p)
         if (isLastAct) {
             p.setPen(kNormalColor);
         }
-        });
+    });
 }
 
 
