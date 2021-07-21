@@ -147,17 +147,10 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
     converter.open(info.charset, Charset::UTF_16);
 
     MemBuff decodeBuff;
-    decodeBuff.clear();
-
     converter.convert(readBuff, decodeBuff);
 
     saveDataStmt_.reset();
-
-    saveDataStmt_.bindNull(1);
-    saveDataStmt_.bind(2, info.off);
-    saveDataStmt_.bind(3, info.len);
-    saveDataStmt_.bind(4, decodeBuff.data(), decodeBuff.size());
-
+    saveDataStmt_.arg().arg(info.off).arg(info.len).arg(decodeBuff);
     saveDataStmt_.step();
 
     LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset

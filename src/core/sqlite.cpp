@@ -186,6 +186,8 @@ void Statement::reset()
 {
     assertOpened();
 
+    argBindIndex_ = 1;
+
     const int n = sqlite3_reset(stmt_);
     if (n != SQLITE_OK) {
         throwError("reset", n);
@@ -228,6 +230,9 @@ void Statement::bind(int pos, int64_t value)
 void Statement::step()
 {
     assertOpened();
+
+    argBindIndex_ = 1;
+
     const int n = sqlite3_step(stmt_);
     // TODO step 返回值不是简单地非对即错，需要详细处理
 }
