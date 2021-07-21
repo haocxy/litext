@@ -13,6 +13,8 @@
 #include <QTextEncoder>
 #include <QTextStream>
 
+#include "core/logger.h"
+
 #include "asset.big_file_maker_kv.txt.h"
 #include "asset.big_file_maker_mat.txt.h"
 
@@ -119,14 +121,13 @@ void BigFileMaker::execute()
 			if (!firstProgressPrint) {
 				std::cout << "\r";
 			}
-			std::cout << "progress: " << std::min(currProgress, 100) << "%" << std::flush;
+			LOGI << "progress: " << std::min(currProgress, 100) << "%";
 		}
 		prevProgress = currProgress;
 		firstProgressPrint = false;
 	}
 
-	std::cout << std::endl;
-	std::cout << "progress: Done" << std::endl;
+	LOGI << "progress: Done";
 }
 
 void BigFileMaker::init() {
