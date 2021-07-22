@@ -12,6 +12,10 @@ Editor::Editor(Doc *model, const fs::path &file)
 {
     assert(model);
 
+}
+
+void Editor::start()
+{
     document_.start();
 }
 

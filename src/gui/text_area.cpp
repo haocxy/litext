@@ -32,6 +32,11 @@ TextArea::~TextArea()
 
 }
 
+void TextArea::start()
+{
+    editor_.start();
+}
+
 void TextArea::resize(const Size & size)
 {
     if (size_ == size)

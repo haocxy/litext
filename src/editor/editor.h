@@ -23,6 +23,8 @@ public:
 
     Editor(Doc * model, const fs::path &file);
 
+    void start();
+
     const Doc & doc() const { return m_model; }
 
     const doc::Document &document() const { return document_; }

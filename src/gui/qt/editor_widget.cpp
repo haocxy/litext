@@ -52,6 +52,8 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
     vlayout->addWidget(statusBar_);
 
     setLayout(vlayout);
+
+    textArea_.start();
 }
 
 EditorWidget::~EditorWidget()

@@ -43,6 +43,8 @@ public:
 
     ~TextArea();
 
+    void start();
+
 public:
     void resize(const Size &size);
 
