@@ -30,12 +30,13 @@ static void setupConfig(TextAreaConfig &c)
     c.setShowLineNum(true);
     c.setLineNumOffset(1);
 
-    Font &f = c.rfont();
+    Font f;
     FontInfo fi;
     fi.family = kFontFamilyYaHei;
     fi.size = 22;
     fi.bold = false;
     f.setFont(fi);
+    c.setFont(f);
 }
 
 MainWindow::MainWindow(Config &config)

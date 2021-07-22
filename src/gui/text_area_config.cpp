@@ -4,6 +4,12 @@
 namespace gui
 {
 
+void TextAreaConfig::setFont(const Font &font)
+{
+    font_ = font;
+    isFixWidth_ = font_.isFixWidth();
+}
+
 Pixel::Raw TextAreaConfig::charWidth(UChar c) const
 {
     // 换行符不占用空间
@@ -11,12 +17,11 @@ Pixel::Raw TextAreaConfig::charWidth(UChar c) const
         return 0;
     }
 
-    const bool fixWidth = font_.isFixWidth();
     const int widthForFix = font_.charWidth('a');
 
     // tab符特殊处理
     if (c == '\t') {
-        if (fixWidth) {
+        if (isFixWidth_) {
             // *[]*[]*[]*[]*
             return hMargin_ * (tabSize_ - 1) + widthForFix * tabSize_;
         } else {
@@ -25,7 +30,7 @@ Pixel::Raw TextAreaConfig::charWidth(UChar c) const
     }
 
     // 不是等宽字体则直接返回宽度
-    if (!fixWidth) {
+    if (!isFixWidth_) {
         return font_.charWidth(c);
     }
 

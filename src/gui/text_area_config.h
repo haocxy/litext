@@ -37,8 +37,8 @@ public:
 	bool wrapLine() const { return wrapLine_; }
 	void setWrapLine(bool wrapLine) { wrapLine_ = wrapLine; }
 
-	Font &rfont() { return font_; }
 	const Font &font() const { return font_; }
+    void setFont(const Font &font);
 
 	Pixel::Raw charWidth(UChar c) const;
 
@@ -62,6 +62,7 @@ private:
 	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
 	Font font_;
+    bool isFixWidth_ = false;
 };
 
 
