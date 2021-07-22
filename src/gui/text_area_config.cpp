@@ -8,6 +8,7 @@ void TextAreaConfig::setFont(const Font &font)
 {
     font_ = font;
     isFixWidth_ = font_.isFixWidth();
+    widthForFix_ = font_.charWidth('a');
 }
 
 Pixel::Raw TextAreaConfig::charWidth(UChar c) const
@@ -17,13 +18,11 @@ Pixel::Raw TextAreaConfig::charWidth(UChar c) const
         return 0;
     }
 
-    const int widthForFix = font_.charWidth('a');
-
     // tab符特殊处理
     if (c == '\t') {
         if (isFixWidth_) {
             // *[]*[]*[]*[]*
-            return hMargin_ * (tabSize_ - 1) + widthForFix * tabSize_;
+            return hMargin_ * (tabSize_ - 1) + widthForFix_ * tabSize_;
         } else {
             return hMargin_ * (tabSize_ - 1) + font_.charWidth(' ') * tabSize_;
         }
@@ -37,12 +36,12 @@ Pixel::Raw TextAreaConfig::charWidth(UChar c) const
     // 下面处理等宽字体
 
     const int rawWidth = font_.charWidth(c);
-    if (rawWidth > widthForFix) {
+    if (rawWidth > widthForFix_) {
         // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-        return hMargin_ + widthForFix * 2;
+        return hMargin_ + widthForFix_ * 2;
     } else {
         // 当前字符是普通的等宽单字符
-        return widthForFix;
+        return widthForFix_;
     }
 }
 

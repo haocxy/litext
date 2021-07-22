@@ -63,6 +63,7 @@ private:
 
 	Font font_;
     bool isFixWidth_ = false;
+    int widthForFix_ = 0;
 };
 
 
