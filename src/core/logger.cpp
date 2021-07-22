@@ -10,7 +10,7 @@
 
 #include "fs.h"
 
-#if defined(WIN32) && !defined(NDEBUG)
+#ifdef WIN32
 #include <Windows.h>
 #endif
 
@@ -186,12 +186,13 @@ void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &
 #endif
     }
 
-#ifndef NDEBUG
- #ifdef WIN32
+#ifdef WIN32
     if (IsDebuggerPresent()) {
         OutputDebugStringA(data.c_str());
     }
- #else
+#else
+
+#ifndef NDEBUG
     std::fwrite(data.data(), 1, data.size(), stdout);
  #endif
 #endif
