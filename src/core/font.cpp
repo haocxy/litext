@@ -1,21 +1,9 @@
 #include "font.h"
 
 
-int Font::charWidth(UChar unicode) const
-{
-    if (!UCharUtil::needSurrogate(unicode)) {
-        return metrics_.horizontalAdvance(QChar(unicode));
-    } else {
-        QString pair;
-        pair.push_back(QChar::highSurrogate(unicode));
-        pair.push_back(QChar::lowSurrogate(unicode));
-        return metrics_.horizontalAdvance(pair);
-    }
-}
-
-bool Font::isFixWidth() const {
-    // TODO 这种实现并不好，更好的实现是维护一组常用的已知的等宽字体的名字
-    return metrics_.horizontalAdvance('i') == metrics_.horizontalAdvance('x');
+static bool checkIsFixWidth(const QFontMetrics &m) {
+    // TODO 杩欑瀹炵幇骞朵笉濂斤紝鏇村ソ鐨勫疄鐜版槸缁存姢涓�缁勫父鐢ㄧ殑宸茬煡鐨勭瓑瀹藉瓧浣撶殑鍚嶅瓧
+    return m.horizontalAdvance('i') == m.horizontalAdvance('x');
 }
 
 void Font::setFont(const FontInfo &fi)
@@ -25,4 +13,6 @@ void Font::setFont(const FontInfo &fi)
     font_.setBold(fi.bold);
 
     metrics_ = QFontMetrics(font_);
+
+    isFixWidth_ = checkIsFixWidth(metrics_);
 }

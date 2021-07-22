@@ -14,7 +14,7 @@ struct FontInfo {
 
 class Font {
 public:
-	Font() :metrics_(font_) {}
+	Font():metrics_(font_) {}
 
 	void setFont(const FontInfo &fontInfo);
 
@@ -30,11 +30,23 @@ public:
 	
 	int descent() const { return metrics_.descent(); }
 
-	int charWidth(UChar unicode) const;
+    int charWidth(UChar unicode) const {
+        if (!UCharUtil::needSurrogate(unicode)) {
+            return metrics_.horizontalAdvance(QChar(unicode));
+        } else {
+            QString pair;
+            pair.push_back(QChar::highSurrogate(unicode));
+            pair.push_back(QChar::lowSurrogate(unicode));
+            return metrics_.horizontalAdvance(pair);
+        }
+    }
 
-	bool isFixWidth() const;
+    bool isFixWidth() const {
+        return isFixWidth_;
+    }
 
 private:
 	QFont font_;
 	QFontMetrics metrics_;
+    bool isFixWidth_ = false;
 };
