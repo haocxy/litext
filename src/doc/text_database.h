@@ -82,12 +82,14 @@ class TextDatabase {
 public:
     TextDatabase(const fs::path &docPath, StrandPool &pool)
         : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath, pool)) {
-
-        impl_->start();
     }
 
     ~TextDatabase() {
         impl_->stop();
+    }
+
+    void start() {
+        impl_->start();
     }
 
     Signal<void(Charset)> &sigCharsetDetected() {

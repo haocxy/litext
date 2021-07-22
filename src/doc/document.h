@@ -22,6 +22,8 @@ public:
 
     virtual ~Document();
 
+    void start();
+
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
     }
@@ -56,6 +58,10 @@ public:
     }
 
     ~Document() {
+    }
+
+    void start() {
+        ptr_->start();
     }
 
     Signal<void(Charset)> &sigCharsetDetected() {

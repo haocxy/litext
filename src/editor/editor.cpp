@@ -11,6 +11,8 @@ Editor::Editor(Doc *model, StrandPool &pool, const fs::path &file, Strand &owner
     , document_(pool, file, ownerThread)
 {
     assert(model);
+
+    document_.start();
 }
 
 void Editor::onPrimaryKeyPress(const DocLoc & loc)

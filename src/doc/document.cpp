@@ -40,6 +40,11 @@ Document::~Document()
     LOGD << "Document::~Document() start, path: [" << path_ << "]";
 }
 
+void Document::start()
+{
+    textDb_.start();
+}
+
 }
 
 }
