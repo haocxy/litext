@@ -1,4 +1,4 @@
-#include "line_counter.h"
+#include "text_layouter.h"
 
 #include "doc/document.h"
 
