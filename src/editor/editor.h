@@ -5,7 +5,6 @@
 #include "core/fs.h"
 #include "core/signal.h"
 #include "core/ustring.h"
-#include "core/strand.h"
 #include "doc/document.h"
 #include "doc/row_range.h"
 #include "cursor.h"
@@ -22,7 +21,7 @@ class Editor
 {
 public:
 
-    Editor(Doc * model, StrandPool &pool, const fs::path &file, Strand &ownerThread);
+    Editor(Doc * model, const fs::path &file);
 
     const Doc & doc() const { return m_model; }
 

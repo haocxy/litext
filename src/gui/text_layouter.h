@@ -5,7 +5,7 @@
 #include <mutex>
 
 #include "core/sigconns.h"
-#include "core/strand_pool.h"
+#include "core/thread_pool.h"
 #include "doc/part_loaded_event.h"
 #include "doc/declare_document.h"
 #include "declare_text_area_config.h"
@@ -19,7 +19,7 @@ namespace detail
 
 class TextLayouterImpl : public std::enable_shared_from_this<TextLayouterImpl> {
 public:
-    TextLayouterImpl(StrandPool &pool, const TextAreaConfig &config, int width, doc::Document &document);
+    TextLayouterImpl(const TextAreaConfig &config, int width, doc::Document &document);
 
     virtual ~TextLayouterImpl() {}
 
@@ -29,7 +29,7 @@ private:
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
 private:
-    Strand &worker_;
+    ThreadPool worker_{ "TextLayouter", 4 };
     const TextAreaConfig &config_;
     int width_ = 0;
     doc::Document &document_;
@@ -44,8 +44,8 @@ private:
 
 class TextLayouter {
 public:
-    TextLayouter(StrandPool &pool, const TextAreaConfig &config, int width, doc::Document &document)
-        : ptr_(std::make_shared<detail::TextLayouterImpl>(pool, config, width, document)) {
+    TextLayouter(const TextAreaConfig &config, int width, doc::Document &document)
+        : ptr_(std::make_shared<detail::TextLayouterImpl>(config, width, document)) {
 
     }
 

@@ -3,11 +3,8 @@
 #include <QMainWindow>
 
 #include "core/fs.h"
-#include "core/strand.h"
-#include "core/single_thread_strand_pool.h"
 #include "gui/declare_config.h"
 #include "declare_editor_widget.h"
-#include "gui_strand.h"
 
 
 namespace gui::qt
@@ -37,8 +34,6 @@ private slots:
     void fileMenuOpenActionTriggered();
 
 private:
-    GuiStrand guiStrand_;
-    SingleThreadStrandPool strandPool_;
     Config &config_;
     EditorWidget *editorWidget_ = nullptr;
 };

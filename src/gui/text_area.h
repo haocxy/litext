@@ -8,7 +8,6 @@
 
 #include "core/signal.h"
 #include "core/strong_type_integer.h"
-#include "core/strand.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 
@@ -40,7 +39,7 @@ namespace gui
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
-    TextArea(StrandPool &pool, Editor &editor, const TextAreaConfig &config, const Size &size);
+    TextArea(Editor &editor, const TextAreaConfig &config, const Size &size);
 
     ~TextArea();
 

@@ -9,18 +9,14 @@ namespace doc
 namespace detail
 {
 
-Document::Document(StrandPool &pool, const fs::path &path, Strand &ownerThread)
+Document::Document(const fs::path &path)
     : path_(path)
-    , ownerThread_(ownerThread)
-    , textDb_(path.generic_string(), pool)
+    , textDb_(path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
     sigConns_ += textDb_.sigCharsetDetected().connect([this](Charset charset) {
-        auto self(shared_from_this());
-        ownerThread_.post([this, self, charset] {
-            charset_ = charset;
-        });
+        charset_ = charset;
         sigCharsetDetected_(charset);
     });
 

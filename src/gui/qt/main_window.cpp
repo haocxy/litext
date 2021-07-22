@@ -88,7 +88,7 @@ void MainWindow::initToolBar()
 
 void MainWindow::openDocument(const fs::path &file)
 {
-    editorWidget_ = new EditorWidget(strandPool_, config_.textAreaConfig(), file);
+    editorWidget_ = new EditorWidget(config_.textAreaConfig(), file);
 
     setCentralWidget(editorWidget_);
 

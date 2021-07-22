@@ -1,4 +1,4 @@
-#include "single_thread_strand.h"
+#include "thread_pool.h"
 
 #include <sstream>
 
@@ -12,7 +12,6 @@ static void setNameForCurrentThread(const std::string &name)
         return;
     }
 #ifdef WIN32
-    std::wstring widestr;
     constexpr UINT page = CP_UTF8;
     constexpr DWORD flags = MB_PRECOMPOSED;
     const char *mbstr = name.c_str();
@@ -37,35 +36,41 @@ static void setNameForCurrentThread(const std::string &name)
 }
 
 
-SingleThreadStrand::SingleThreadStrand(const std::string &name)
+ThreadPool::ThreadPool(const std::string &name, int threadCount)
     : name_(name)
-    , thread_([this] { loop(); })
 {
-
+    for (int i = 0; i < threadCount; ++i) {
+        threads_.push_back(std::thread([this, i]() {
+            std::ostringstream ss;
+            ss << name_ << "(" << i << ")";
+            setNameForCurrentThread(ss.str());
+            loop();
+        }));
+    }
 }
 
-SingleThreadStrand::~SingleThreadStrand()
+ThreadPool::~ThreadPool()
 {
     stopping_ = true;
     queue_.wakeupProducer();
     queue_.wakeupConsumer();
-    thread_.join();
+    for (std::thread &t : threads_) {
+        t.join();
+    }
 }
 
-void SingleThreadStrand::post(std::function<void()> &&f)
+void ThreadPool::post(std::function<void()> &&f)
 {
     queue_.push(std::move(f));
 }
 
-bool SingleThreadStrand::isStopping() const
+bool ThreadPool::isStopping() const
 {
     return stopping_;
 }
 
-void SingleThreadStrand::loop()
+void ThreadPool::loop()
 {
-    setNameForCurrentThread(name_);
-
     while (!stopping_) {
         std::optional<std::function<void()>> f = queue_.pop();
         if (f) {

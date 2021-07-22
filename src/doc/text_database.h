@@ -8,7 +8,7 @@
 #include "core/charset.h"
 #include "core/sqlite.h"
 #include "core/membuff.h"
-#include "core/strand_pool.h"
+#include "core/thread_pool.h"
 
 #include "part_loaded_event.h"
 
@@ -25,7 +25,7 @@ public:
 
     using Statement = sqlite::Statement;
 
-    TextDatabaseImpl(const fs::path &docPath, StrandPool &pool);
+    TextDatabaseImpl(const fs::path &docPath);
 
     virtual ~TextDatabaseImpl();
 
@@ -68,7 +68,7 @@ private:
     const fs::path docPath_;
     const fs::path dbPath_;
     std::ifstream ifs_;
-    Strand &worker_;
+    ThreadPool worker_{"TextDatabase", 1};
     Db db_;
     Statement saveDataStmt_;
     Signal<void(Charset)> sigCharsetDetected_;
@@ -80,8 +80,8 @@ private:
 
 class TextDatabase {
 public:
-    TextDatabase(const fs::path &docPath, StrandPool &pool)
-        : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath, pool)) {
+    TextDatabase(const fs::path &docPath)
+        : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath)) {
     }
 
     ~TextDatabase() {

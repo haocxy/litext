@@ -3,16 +3,17 @@
 #include <string>
 #include <atomic>
 #include <thread>
+#include <vector>
 
-#include "strand.h"
+#include "worker.h"
 #include "block_queue.h"
 
 
-class SingleThreadStrand : public Strand {
+class ThreadPool : public Worker {
 public:
-    SingleThreadStrand(const std::string &name);
+    ThreadPool(const std::string &name, int threadCount);
 
-    virtual ~SingleThreadStrand();
+    virtual ~ThreadPool();
 
     virtual void post(std::function<void()> &&f) override;
 
@@ -23,7 +24,7 @@ private:
 
 private:
     const std::string name_;
-    std::thread thread_;
+    std::vector<std::thread> threads_;
     std::atomic_bool stopping_{ false };
     BlockQueue<std::function<void()>> queue_;
 };

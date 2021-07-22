@@ -15,11 +15,11 @@
 namespace gui
 {
 
-TextArea::TextArea(StrandPool &pool, Editor &editor, const TextAreaConfig &config, const Size &size)
+TextArea::TextArea(Editor &editor, const TextAreaConfig &config, const Size &size)
     : editor_(editor)
     , config_(config)
     , size_(size)
-    , textLayouter_(pool, config_, size_.width(), editor.document())
+    , textLayouter_(config_, size_.width(), editor.document())
     , cvt_(editor_, size_, page_, vloc_, config_)
 {
     editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {

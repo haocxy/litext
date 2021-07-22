@@ -6,9 +6,9 @@
 #include "doc/doc_row.h"
 
 
-Editor::Editor(Doc *model, StrandPool &pool, const fs::path &file, Strand &ownerThread)
+Editor::Editor(Doc *model, const fs::path &file)
     : m_model(*model)
-    , document_(pool, file, ownerThread)
+    , document_(file)
 {
     assert(model);
 

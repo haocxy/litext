@@ -15,11 +15,10 @@
 namespace doc::detail
 {
 
-TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath, StrandPool &pool)
+TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath)
     : docPath_(docPath)
     , dbPath_(docPath.generic_string() + ".notesharpdb")
     , ifs_(docPath, std::ios::binary)
-    , worker_(pool.allocate("TextDatabase"))
 {
 
 }

@@ -42,9 +42,8 @@ RowN TextLayouterImpl::countLines(const MemBuff &utf16data) const
     return lineCount;
 }
 
-TextLayouterImpl::TextLayouterImpl(StrandPool &pool, const TextAreaConfig &config, int width, doc::Document &document)
-    : worker_(pool.allocate("LineCounter"))
-    , config_(config)
+TextLayouterImpl::TextLayouterImpl(const TextAreaConfig &config, int width, doc::Document &document)
+    : config_(config)
     , width_(width)
     , document_(document)
 {
