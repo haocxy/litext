@@ -90,10 +90,19 @@ public:
         basename_ = basename;
     }
 
+    bool isAlwaysFlush() const {
+        return alwaysFlush_;
+    }
+
+    void setAlwaysFlush(bool alwaysFlush) {
+        alwaysFlush_ = alwaysFlush;
+    }
+
 private:
     Level level_ = Level::Info;
     fs::path dir_;
     std::string basename_;
+    bool alwaysFlush_ = false;
 };
 
 void init(const Option &opt);

@@ -111,10 +111,19 @@ void Writer::write(const void *data, size_t len) {
 
 } // namespace logger
 
-static bool shouldFlush(logger::Level level) {
 #ifndef NDEBUG
-    return true;
+static const bool DefaultAlwaysFlush = true;
+#else
+static const bool DefaultAlwaysFlush = false;
 #endif
+
+static bool gAlwaysFlush = DefaultAlwaysFlush;
+
+
+static bool shouldFlush(logger::Level level) {
+    if (gAlwaysFlush) {
+        return true;
+    }
     switch (level) {
     case logger::Level::Warn:
     case logger::Level::Error:
@@ -220,6 +229,8 @@ void init(const Option &opt) {
     } else {
         LOGE << title << "error: [dir is empty string]. log will be write to stdout";
     }
+
+    gAlwaysFlush = opt.isAlwaysFlush();
 }
 
 static Level toLevel(const std::string &str) {

@@ -25,9 +25,7 @@ private:
     QPainter &painter_;
 };
 
-static QSize kSizeHint(800, 600);
-
-static QImage::Format kBuffImageFormat = QImage::Format_ARGB32_Premultiplied;
+static QImage::Format BuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 
 }
 
@@ -36,10 +34,12 @@ namespace gui::qt
 {
 
 
-TextAreaWidget::TextAreaWidget(QWidget *parent)
-    : QWidget(parent)
-    , textPaintBuff_(kSizeHint, kBuffImageFormat)
+TextAreaWidget::TextAreaWidget(TextArea &textArea)
+    : textArea_(textArea)
+    , textPaintBuff_(QSize(textArea_.width(), textArea_.height()), BuffImageFormat)
 {
+    resize(textArea_.width(), textArea_.height());
+
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
@@ -54,7 +54,7 @@ TextAreaWidget::~TextAreaWidget()
 
 QSize TextAreaWidget::sizeHint() const
 {
-    return kSizeHint;
+    return QSize(textArea_.width(), textArea_.height());
 }
 
 void TextAreaWidget::paintEvent(QPaintEvent *e)
@@ -78,49 +78,42 @@ void TextAreaWidget::showEvent(QShowEvent *e)
 
 void TextAreaWidget::resizeEvent(QResizeEvent *e)
 {
-    if (!area_) {
-        return;
-    }
 
     const QSize sz(size());
 
     if (e->oldSize().isValid() && sz != e->oldSize()) {
-        textPaintBuff_ = std::move(QImage(sz, kBuffImageFormat));
+        textPaintBuff_ = std::move(QImage(sz, BuffImageFormat));
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
     }
 
-    area_->resize({ sz.width(), sz.height() });
+    textArea_.resize({ sz.width(), sz.height() });
 
     update();
 }
 
 void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 {
-    if (!area_) {
-        return;
-    }
-
     const int key = e->key();
 
     switch (key) {
     case Qt::Key_Up:
-        area_->onDirUpKeyPress();
+        textArea_.onDirUpKeyPress();
         update();
         break;
     case Qt::Key_Down:
-        area_->onDirDownKeyPress();
+        textArea_.onDirDownKeyPress();
         update();
         break;
     case Qt::Key_Left:
-        area_->onDirLeftKeyPress();
+        textArea_.onDirLeftKeyPress();
         update();
         break;
     case Qt::Key_Right:
-        area_->onDirRightKeyPress();
+        textArea_.onDirRightKeyPress();
         update();
         break;
     case Qt::Key_S:
-        area_->moveDownByOneLine();
+        textArea_.moveDownByOneLine();
         update();
         break;
     default:
@@ -130,46 +123,22 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 
 void TextAreaWidget::mousePressEvent(QMouseEvent *e)
 {
-    if (!area_) {
-        return;
-    }
-
     if (e->button() == Qt::LeftButton) {
-        area_->onPrimaryButtomPress(Pixel(e->x()), Pixel(e->y()));
+        textArea_.onPrimaryButtomPress(Pixel(e->x()), Pixel(e->y()));
         update();
     }
 }
 
-void TextAreaWidget::bind(TextArea *area)
+void TextAreaWidget::bind()
 {
-    if (area_ == area) {
-        return;
-    }
-
-    unbind();
-
-    area_ = area;
-    if (!area_) {
-        return;
-    }
-
-    textAreaSigConns_ += area_->sigViewLocChanged().connect([this] {
+    textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
         update();
     });
 
-    area_->resize(Size(width(), height()));
+    textArea_.resize(Size(width(), height()));
 
     update();
-}
-
-void TextAreaWidget::unbind()
-{
-    if (area_) {
-        area_ = nullptr;
-    }
-
-    textAreaSigConns_.clear();
 }
 
 void TextAreaWidget::paintBackground(QPainter &p)
@@ -179,11 +148,7 @@ void TextAreaWidget::paintBackground(QPainter &p)
 
 void TextAreaWidget::paintLastActLine(QPainter &p)
 {
-    if (!area_) {
-        return;
-    }
-
-    std::optional<Rect> r = area_->getLastActLineDrawRect();
+    std::optional<Rect> r = textArea_.getLastActLineDrawRect();
     if (r) {
         p.fillRect(r->left(), r->top(), r->width(), r->height(),
             QColor(Qt::green).lighter(192));
@@ -201,18 +166,14 @@ static inline QString unicodeToUtf16SurrogatePairs(UChar unicode) {
 
 void TextAreaWidget::prepareTextImage()
 {
-    if (!area_) {
-        return;
-    }
-
     QPainter p(&textPaintBuff_);
     textPaintBuff_.fill(QColor(0, 0, 0, 0));
 
     QFont qfont;
-    fontToQFont(area_->config().font(), qfont);
+    fontToQFont(textArea_.config().font(), qfont);
     p.setFont(qfont);
 
-    area_->drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, UChar unicode) {
+    textArea_.drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, UChar unicode) {
         if (!UCharUtil::needSurrogate(unicode)) {
             p.drawText(x, y, QChar(unicode));
         } else {
@@ -231,11 +192,7 @@ void TextAreaWidget::paintWidget(QPainter &p)
 
 void TextAreaWidget::paintCursor(QPainter &p)
 {
-    if (!area_) {
-        return;
-    }
-
-    std::optional<VerticalLine> vl = area_->getNormalCursorDrawData();
+    std::optional<VerticalLine> vl = textArea_.getNormalCursorDrawData();
     if (vl) {
         p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }

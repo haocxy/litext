@@ -19,13 +19,13 @@ EditorWidget::EditorWidget(StrandPool &strandPool, const TextAreaConfig &textAre
     : file_(file)
     , doc_(file)
     , editor_(&doc_, strandPool, file, ownerThread_)
-    , textArea_(strandPool, editor_, textAreaConfig)
+    , textArea_(strandPool, editor_, textAreaConfig, gui::Size(800, 600))
 {
     doc::Document &document = editor_.document();
 
     ruler_ = new RulerWidget(textArea_);
-    textAreaWidget_ = new TextAreaWidget;
-    textAreaWidget_->bind(&textArea_);
+
+    textAreaWidget_ = new TextAreaWidget(textArea_);
 
     vScrollBar_ = new QScrollBar;
     vScrollBar_->setRange(0, 0);

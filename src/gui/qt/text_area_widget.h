@@ -16,7 +16,7 @@ class TextAreaWidget : public QWidget {
     Q_OBJECT
 
 public:
-    TextAreaWidget(QWidget *parent = nullptr);
+    explicit TextAreaWidget(TextArea &textArea);
 
     virtual ~TextAreaWidget();
 
@@ -32,11 +32,9 @@ public:
 
     virtual void mousePressEvent(QMouseEvent *e) override;
 
-    void bind(TextArea *area);
-
-    void unbind();
-
 private:
+    void bind();
+
     void paintBackground(QPainter &p);
 
     void paintLastActLine(QPainter &p);
@@ -57,7 +55,7 @@ private:
     };
 
 private:
-    TextArea *area_ = nullptr;
+    TextArea &textArea_;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
     SigConns textAreaSigConns_;

@@ -40,7 +40,7 @@ namespace gui
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
-    TextArea(StrandPool &pool, Editor &editor, const TextAreaConfig &config);
+    TextArea(StrandPool &pool, Editor &editor, const TextAreaConfig &config, const Size &size);
 
     ~TextArea();
 
@@ -62,6 +62,10 @@ public:
     bool moveDownByOneLine();
 
 public:
+    int width() const { return size_.width(); }
+
+    int height() const { return size_.height(); }
+
     Editor &editor() { return editor_; }
 
     const TextAreaConfig &config() const { return config_; }
@@ -134,9 +138,10 @@ private:
 private:
     Editor &editor_;
     const TextAreaConfig &config_;
+    Size size_;
     TextLayouter textLayouter_;
     Page page_;
-    Size size_;
+    
     ViewLoc vloc_{ 0, 0 };
     const CoordinateConverter cvt_;
 

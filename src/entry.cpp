@@ -2,6 +2,7 @@
 #include <QPixmap>
 #include <QPainter>
 
+#include "core/logger.h"
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 
@@ -22,6 +23,13 @@ int entry(int argc, char *argv[])
     // 虽然没有看 Qt 的内部实现，但猜测是由于某种延迟加载的机制导致的，
     // 所以解决办法就是在窗口显示前提前使用这个函数（注意，绘制的文本不能为空字符串）
     useDrawText();
+
+    logger::control::Option logOpt;
+    logOpt.setLevel("all");
+    logOpt.setDir("D:/tmp/log");
+    logOpt.setBasename("notesharplog");
+    logOpt.setAlwaysFlush(true);
+    logger::control::init(logOpt);
 
     gui::Config config;
 
