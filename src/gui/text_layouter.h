@@ -8,7 +8,7 @@
 #include "core/thread_pool.h"
 #include "doc/part_loaded_event.h"
 #include "doc/declare_document.h"
-#include "declare_text_area_config.h"
+#include "text_area_config.h"
 
 
 namespace gui
@@ -29,8 +29,8 @@ private:
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
 private:
-    ThreadPool worker_{ "TextLayouter", 4 };
-    const TextAreaConfig &config_;
+    ThreadPool worker_{ "TextLayouter", 1 };
+    const TextAreaConfig config_;
     int width_ = 0;
     doc::Document &document_;
     SigConns sigConns_;

@@ -197,6 +197,10 @@ generate_src_file_for_all_assets()
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
 
+if(MSVC)
+    include_directories("$ENV{LIBCAIRO_ROOT}/include")
+endif()
+
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
     "${root_dir}/*.cpp"
@@ -223,6 +227,10 @@ set(dependencies
     libsqlite3_static
     ${Boost_LIBRARIES}
 )
+
+if(MSVC)
+    list(APPEND dependencies "$ENV{LIBCAIRO_ROOT}/lib/libcairo.dll.a")
+endif()
 
 if(NOT MSVC)
     list(APPEND dependencies dl)
