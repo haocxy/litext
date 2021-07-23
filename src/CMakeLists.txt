@@ -196,7 +196,10 @@ generate_src_file_for_all_assets()
 
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
-include_directories($ENV{LIBCAIRO_INCLUDE})
+
+if(MSVC)
+    include_directories($ENV{LIBCAIRO_INCLUDE})
+endif()
 
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
@@ -218,17 +221,20 @@ endif()
 
 source_group(TREE "${root_dir}/.." FILES ${src_files})
 
-set(dependencies
+set(deps
     Qt5::Widgets
     libuchardet_static
     libsqlite3_static
     ${Boost_LIBRARIES}
-    $ENV{LIBCAIRO_LIB}
 )
 
-if(NOT MSVC)
-    list(APPEND dependencies dl)
+if(MSVC)
+    list(APPEND deps $ENV{LIBCAIRO_LIB})
+else()
+    list(APPEND deps dl)
+    list(APPEND deps cairo)
 endif()
 
 target_link_libraries(notesharp
-    ${dependencies})
+    ${deps}
+)
