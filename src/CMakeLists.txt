@@ -224,11 +224,12 @@ set(deps
     libuchardet_static
     libsqlite3_static
     ${Boost_LIBRARIES}
-    $ENV{LIBCAIRO_LIB}
-    $ENV{LIBFREETYPE_LIB}
 )
 
-if(NOT MSVC)
+if(MSVC)
+    list(APPEND deps $ENV{LIBCAIRO_LIB})
+    list(APPEND deps $ENV{LIBFREETYPE_LIB})
+else()
     list(APPEND deps dl)
     list(APPEND deps cairo)
     list(APPEND deps freetype)
