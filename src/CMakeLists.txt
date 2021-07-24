@@ -230,6 +230,12 @@ set(deps
 
 if(NOT MSVC)
     list(APPEND deps dl)
+    list(APPEND deps cairo)
+    list(APPEND deps freetype)
+    list(APPEND deps png)
+    list(APPEND deps z)
+    list(APPEND deps pixman-1)
+    list(APPEND deps fontconfig)
 endif()
 
 target_link_libraries(notesharp
