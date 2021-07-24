@@ -4,53 +4,11 @@
 #include <QPixmap>
 #include <QPainter>
 
+#include "core/system_util.h"
 #include "core/logger.h"
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 
-#include <fontconfig.h>
-#include <cairo.h>
-#include <ft2build.h>
-#include <freetype/freetype.h>
-
-
-
-
-typedef struct hex_color {
-    uint16_t r, g, b;
-} hex_color_t;
-
-hex_color_t HI_COLOR_1 = { 0xff, 0x33, 0xff };
-
-static void
-set_hex_color(cairo_t *cr, hex_color_t color)
-{
-    cairo_set_source_rgb(cr,
-        color.r / 255.0,
-        color.g / 255.0,
-        color.b / 255.0);
-}
-
-
-
-static void testCairo()
-{
-    cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 800, 600);
-
-    cairo_t *cr = cairo_create(surface);
-
-    cairo_rectangle(cr, 100, 100, 300, 200);
-    set_hex_color(cr, HI_COLOR_1);
-    cairo_fill(cr);
-
-    cairo_surface_write_to_png(surface, "D:/tmp/bycairo.png");
-
-    cairo_destroy(cr);
-    cr = nullptr;
-
-    cairo_surface_destroy(surface);
-    surface = nullptr;
-}
 
 class MyObj : public QWidget {
 public:
@@ -63,87 +21,7 @@ public:
     }
 };
 
-static void testFreeType()
-{
-    LOGD << "testFreeType() for file [" << "" << "]";
-
-    MyObj obj;
-
-    FT_Library lib = nullptr;
-    FT_Error error = 0;
-
-    error = FT_Init_FreeType(&lib);
-
-    FT_Face face = nullptr;
-    error = FT_New_Face(lib, "D:/tmp/msyh.ttc", 0, &face);
-    if (error != 0) {
-        LOGE << "error on FT_New_Face(): " << error;
-    }
-
-    auto dpix = obj.dpiX();
-    auto dpiy = obj.dpiY();
-
-    error = FT_Set_Char_Size(face, 0, 14 * 64, dpix, dpiy);
-
-    FT_UInt index = FT_Get_Char_Index(face, 'X');
-
-    error = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT);
-
-
-
-    FT_Done_Face(face);
-    face = nullptr;
-
-    error = FT_Done_FreeType(lib);
-    lib = nullptr;
-}
-
-static void allFonts()
-{
-    LOGI << "testFontConfig()";
-
-    FcPattern *p = FcPatternCreate();
-    if (!p) {
-        LOGE << "FcPatternCreate() error";
-        return;
-    }
-
-    FcConfig *config = FcInitLoadConfigAndFonts();
-
-    FcPatternAddBool(p, FC_SCALABLE, FcTrue);
-
-    FcConfigSubstitute(config, p, FcMatchPattern);
-    FcDefaultSubstitute(p);
-
-    FcResult result = FcResultNoMatch;
-    FcFontMatch(config, p, &result);
-    if (result != FcResultMatch) {
-        LOGE << "FcFontMatch() error";
-    }
-
-    FcFontSet *list = FcFontSort(nullptr, p, FcTrue, nullptr, &result);
-    if (!list || result != FcResultMatch) {
-        LOGE << "FcFontSort() error";
-        return;
-    }
-
-    for (int i = 0; i < list->nfont; ++i) {
-        FcPattern *font = list->fonts[i];
-        FcChar8 *family = nullptr;
-        if (FcResultMatch != FcPatternGetString(font, FC_FAMILY, 0, &family)) {
-            LOGE << "FcPatternGetString() for FC_FAMILTY error";
-            continue;
-        }
-
-        FcChar8 *file = nullptr;
-        if (FcResultMatch != FcPatternGetString(font, FC_FILE, 0, &file)) {
-            LOGE << "FcPatternGetString() for FC_FILE error";
-            continue;
-        }
-
-        LOGD << "[" << i << "] [" << reinterpret_cast<const char *>(family) << "] => [" << reinterpret_cast<const char *>(file) << "]";
-    }
-}
+void testFreeType(const std::string &file, int dpix, int dpiy);
 
 static void useDrawText()
 {
@@ -158,7 +36,18 @@ int entry(int argc, char *argv[])
 
     //testCairo();
     
-    allFonts();
+    std::vector<SystemUtil::FontInfo> fonts = SystemUtil::fonts();
+    int i = 0;
+    for (const SystemUtil::FontInfo &f : fonts) {
+        LOGI << "[" << (i++) << "] [" << f.family << "] [" << f.style << "] [" << f.file << "]";
+    }
+
+    MyObj obj;
+    int dpix = obj.dpiX();
+    int dpiy = obj.dpiY();
+
+    testFreeType(fs::absolute(fonts[0].file).generic_string(), dpix, dpiy);
+
     //testFreeType();
     return 0;
 

@@ -12,8 +12,6 @@ find_package(Boost 1.76 REQUIRED
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
-include_directories($ENV{LIBCAIRO_INCLUDE})
-include_directories($ENV{LIBFREETYPE_INCLUDE})
 include_directories($ENV{LIBFONTCONFIG_INCLUDE})
 
 file(GLOB_RECURSE src_files
@@ -41,17 +39,16 @@ set(deps
     Qt5::Widgets
     libuchardet_static
     libsqlite3_static
+    freetype
     ${Boost_LIBRARIES}
 )
 
 if(MSVC)
     list(APPEND deps $ENV{LIBCAIRO_LIB})
-    list(APPEND deps $ENV{LIBFREETYPE_LIB})
     list(APPEND deps $ENV{LIBFONTCONFIG_LIB})
 else()
     list(APPEND deps dl)
     list(APPEND deps cairo)
-    list(APPEND deps freetype)
     list(APPEND deps png)
     list(APPEND deps z)
     list(APPEND deps pixman-1)

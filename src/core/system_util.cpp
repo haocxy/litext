@@ -1,6 +1,7 @@
 #include "system_util.h"
 
 #include <cstring>
+#include <memory>
 #include <stdexcept>
 
 #include <boost/process/environment.hpp>
@@ -11,6 +12,8 @@
 #include <unistd.h>
 #include <sys/sysinfo.h>
 #endif
+
+#include <fontconfig.h>
 
 
 namespace
@@ -97,6 +100,69 @@ fs::path userHome() {
 #else
     return userHomeForNotWindows();
 #endif
+}
+
+std::vector<FontInfo> fonts()
+{
+    std::unique_ptr<FcPattern, void(*)(FcPattern *)> pattern(FcPatternCreate(), [](FcPattern *p) {
+        FcPatternDestroy(p);
+    });
+
+    if (!pattern) {
+        return {};
+    }
+
+    FcPatternAddBool(pattern.get(), FC_SCALABLE, FcTrue);
+
+    FcConfigSubstitute(nullptr, pattern.get(), FcMatchPattern);
+    FcDefaultSubstitute(pattern.get());
+
+    FcResult result = FcResultNoMatch;
+    FcFontMatch(nullptr, pattern.get(), &result);
+    if (result != FcResultMatch) {
+        return {};
+    }
+
+    std::unique_ptr<FcFontSet, void(*)(FcFontSet *)> list(FcFontSort(nullptr, pattern.get(), FcTrue, nullptr, &result),
+        [](FcFontSet *p) {
+        FcFontSetDestroy(p);
+    });
+
+    if (!list || result != FcResultMatch) {
+        return {};
+    }
+
+    std::vector<FontInfo> fonts;
+
+    for (int i = 0; i < list->nfont; ++i) {
+        FcPattern *font = list->fonts[i];
+        FontInfo f;
+
+        FcChar8 *family = nullptr;
+        if (FcResultMatch == FcPatternGetString(font, FC_FAMILY, 0, &family)) {
+            f.family = reinterpret_cast<const char *>(family);;
+        } else {
+            continue;
+        }
+
+        FcChar8 *style = nullptr;
+        if (FcResultMatch == FcPatternGetString(font, FC_STYLE, 0, &style)) {
+            f.style = reinterpret_cast<const char *>(style);
+        } else {
+            // TODO do nothing now
+        }
+
+        FcChar8 *file = nullptr;
+        if (FcResultMatch == FcPatternGetString(font, FC_FILE, 0, &file)) {
+            f.file = reinterpret_cast<const char *>(file);
+        } else {
+            continue;
+        }
+
+        fonts.push_back(f);
+    }
+
+    return fonts;
 }
 
 
