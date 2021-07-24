@@ -6,9 +6,11 @@
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 
+
 #include <cairo.h>
 #include <ft2build.h>
 #include <freetype/freetype.h>
+#include <fontconfig.h>
 
 
 typedef struct hex_color {
@@ -91,6 +93,16 @@ static void testFreeType()
     lib = nullptr;
 }
 
+static void testFontConfig()
+{
+    FcConfig *config = FcInitLoadConfigAndFonts();
+    if (!config) {
+        LOGE << "FcInitLoadConfigAndFonts() error";
+    } else {
+        LOGI << "FcInitLoadConfigAndFonts() done";
+    }
+}
+
 static void useDrawText()
 {
     QPixmap pix(32, 32);
@@ -103,7 +115,8 @@ int entry(int argc, char *argv[])
     QApplication app(argc, argv);
 
     //testCairo();
-    testFreeType();
+    //testFreeType();
+    testFontConfig();
     return 0;
 
 

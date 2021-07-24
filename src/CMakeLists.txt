@@ -14,6 +14,7 @@ include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories($ENV{LIBCAIRO_INCLUDE})
 include_directories($ENV{LIBFREETYPE_INCLUDE})
+include_directories($ENV{LIBFONTCONFIG_INCLUDE})
 
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
@@ -46,6 +47,7 @@ set(deps
 if(MSVC)
     list(APPEND deps $ENV{LIBCAIRO_LIB})
     list(APPEND deps $ENV{LIBFREETYPE_LIB})
+    list(APPEND deps $ENV{LIBFONTCONFIG_LIB})
 else()
     list(APPEND deps dl)
     list(APPEND deps cairo)
