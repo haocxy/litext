@@ -2,16 +2,14 @@ set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(CMAKE_AUTOMOC ON)
 
+include(assets.cmake)
+remove_useless_files_generated_for_assets()
+generate_src_file_for_all_assets()
+
 find_package(Boost 1.76 REQUIRED
     COMPONENTS filesystem)
 
 include_directories(${Boost_INCLUDE_DIRS})
-
-include(assets.cmake)
-
-remove_useless_files_generated_for_assets()
-generate_src_file_for_all_assets()
-
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories($ENV{LIBCAIRO_INCLUDE})
