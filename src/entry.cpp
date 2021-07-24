@@ -6,7 +6,10 @@
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 
-#include <cairo/cairo.h>
+#include <cairo.h>
+#include <ft2build.h>
+#include <freetype/freetype.h>
+
 
 typedef struct hex_color {
     uint16_t r, g, b;
@@ -42,6 +45,19 @@ static void testCairo()
 
     cairo_surface_destroy(surface);
     surface = nullptr;
+}
+
+static void testFreeType()
+{
+    FT_Library lib = nullptr;
+    FT_Error error = 0;
+
+    error = FT_Init_FreeType(&lib);
+
+
+
+    error = FT_Done_FreeType(lib);
+    lib = nullptr;
 }
 
 static void useDrawText()

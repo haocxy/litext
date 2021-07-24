@@ -199,6 +199,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 if(MSVC)
     include_directories($ENV{LIBCAIRO_INCLUDE})
+    include_directories($ENV{LIBFREETYPE_INCLUDE})
 endif()
 
 file(GLOB_RECURSE src_files
@@ -230,9 +231,11 @@ set(deps
 
 if(MSVC)
     list(APPEND deps $ENV{LIBCAIRO_LIB})
+    list(APPEND deps $ENV{LIBFREETYPE_LIB})
 else()
     list(APPEND deps dl)
     list(APPEND deps cairo)
+    list(APPEND deps freetype)
 endif()
 
 target_link_libraries(notesharp
