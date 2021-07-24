@@ -1,3 +1,5 @@
+
+
 #include <QApplication>
 #include <QPixmap>
 #include <QPainter>
@@ -6,11 +8,12 @@
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 
-
+#include <fontconfig.h>
 #include <cairo.h>
 #include <ft2build.h>
 #include <freetype/freetype.h>
-#include <fontconfig.h>
+
+
 
 
 typedef struct hex_color {
@@ -62,6 +65,8 @@ public:
 
 static void testFreeType()
 {
+    LOGD << "testFreeType() for file [" << "" << "]";
+
     MyObj obj;
 
     FT_Library lib = nullptr;
@@ -93,13 +98,50 @@ static void testFreeType()
     lib = nullptr;
 }
 
-static void testFontConfig()
+static void allFonts()
 {
+    LOGI << "testFontConfig()";
+
+    FcPattern *p = FcPatternCreate();
+    if (!p) {
+        LOGE << "FcPatternCreate() error";
+        return;
+    }
+
     FcConfig *config = FcInitLoadConfigAndFonts();
-    if (!config) {
-        LOGE << "FcInitLoadConfigAndFonts() error";
-    } else {
-        LOGI << "FcInitLoadConfigAndFonts() done";
+
+    FcPatternAddBool(p, FC_SCALABLE, FcTrue);
+
+    FcConfigSubstitute(config, p, FcMatchPattern);
+    FcDefaultSubstitute(p);
+
+    FcResult result = FcResultNoMatch;
+    FcFontMatch(config, p, &result);
+    if (result != FcResultMatch) {
+        LOGE << "FcFontMatch() error";
+    }
+
+    FcFontSet *list = FcFontSort(nullptr, p, FcTrue, nullptr, &result);
+    if (!list || result != FcResultMatch) {
+        LOGE << "FcFontSort() error";
+        return;
+    }
+
+    for (int i = 0; i < list->nfont; ++i) {
+        FcPattern *font = list->fonts[i];
+        FcChar8 *family = nullptr;
+        if (FcResultMatch != FcPatternGetString(font, FC_FAMILY, 0, &family)) {
+            LOGE << "FcPatternGetString() for FC_FAMILTY error";
+            continue;
+        }
+
+        FcChar8 *file = nullptr;
+        if (FcResultMatch != FcPatternGetString(font, FC_FILE, 0, &file)) {
+            LOGE << "FcPatternGetString() for FC_FILE error";
+            continue;
+        }
+
+        LOGD << "[" << i << "] [" << reinterpret_cast<const char *>(family) << "] => [" << reinterpret_cast<const char *>(file) << "]";
     }
 }
 
@@ -115,8 +157,9 @@ int entry(int argc, char *argv[])
     QApplication app(argc, argv);
 
     //testCairo();
+    
+    allFonts();
     //testFreeType();
-    testFontConfig();
     return 0;
 
 
