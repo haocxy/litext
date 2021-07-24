@@ -4,7 +4,7 @@ root = true
 [*.{c++,cc,cpp,cxx,h,h++,hh,hpp,hxx,inl,ipp,tlh,tli}]
 vc_generate_documentation_comments = xml
 
-[*.{h,cpp,txt}]
+[*.{h,cpp,txt,cmake}]
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
