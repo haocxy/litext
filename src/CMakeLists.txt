@@ -196,11 +196,8 @@ generate_src_file_for_all_assets()
 
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
-
-if(MSVC)
-    include_directories($ENV{LIBCAIRO_INCLUDE})
-    include_directories($ENV{LIBFREETYPE_INCLUDE})
-endif()
+include_directories($ENV{LIBCAIRO_INCLUDE})
+include_directories($ENV{LIBFREETYPE_INCLUDE})
 
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
@@ -227,15 +224,12 @@ set(deps
     libuchardet_static
     libsqlite3_static
     ${Boost_LIBRARIES}
+    $ENV{LIBCAIRO_LIB}
+    $ENV{LIBFREETYPE_LIB}
 )
 
-if(MSVC)
-    list(APPEND deps $ENV{LIBCAIRO_LIB})
-    list(APPEND deps $ENV{LIBFREETYPE_LIB})
-else()
+if(NOT MSVC)
     list(APPEND deps dl)
-    list(APPEND deps cairo)
-    list(APPEND deps freetype)
 endif()
 
 target_link_libraries(notesharp
