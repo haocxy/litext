@@ -47,14 +47,45 @@ static void testCairo()
     surface = nullptr;
 }
 
+class MyObj : public QWidget {
+public:
+    auto dpiX() const {
+        return this->physicalDpiX();
+    }
+
+    auto dpiY() const {
+        return this->physicalDpiY();
+    }
+};
+
 static void testFreeType()
 {
+    MyObj obj;
+
     FT_Library lib = nullptr;
     FT_Error error = 0;
 
     error = FT_Init_FreeType(&lib);
 
+    FT_Face face = nullptr;
+    error = FT_New_Face(lib, "D:/tmp/msyh.ttc", 0, &face);
+    if (error != 0) {
+        LOGE << "error on FT_New_Face(): " << error;
+    }
 
+    auto dpix = obj.dpiX();
+    auto dpiy = obj.dpiY();
+
+    error = FT_Set_Char_Size(face, 0, 14 * 64, dpix, dpiy);
+
+    FT_UInt index = FT_Get_Char_Index(face, 'X');
+
+    error = FT_Load_Glyph(face, index, FT_LOAD_DEFAULT);
+
+
+
+    FT_Done_Face(face);
+    face = nullptr;
 
     error = FT_Done_FreeType(lib);
     lib = nullptr;
@@ -69,10 +100,12 @@ static void useDrawText()
 
 int entry(int argc, char *argv[])
 {
-    testCairo();
+    QApplication app(argc, argv);
+
+    //testCairo();
+    testFreeType();
     return 0;
 
-    QApplication app(argc, argv);
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
