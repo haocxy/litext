@@ -6,7 +6,7 @@ static bool checkIsFixWidth(const QFontMetrics &m) {
     return m.horizontalAdvance('i') == m.horizontalAdvance('x');
 }
 
-void Font::setFont(const FontInfo &fi)
+void FontOld::setFont(const FontInfoOld &fi)
 {
     font_.setFamily(fi.family.c_str());
     font_.setPointSize(fi.size);

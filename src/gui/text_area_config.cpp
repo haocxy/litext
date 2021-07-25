@@ -4,7 +4,7 @@
 namespace gui
 {
 
-void TextAreaConfig::setFont(const Font &font)
+void TextAreaConfig::setFont(const FontOld &font)
 {
     font_ = font;
     isFixWidth_ = font_.isFixWidth();

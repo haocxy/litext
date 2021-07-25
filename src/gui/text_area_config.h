@@ -37,8 +37,8 @@ public:
 	bool wrapLine() const { return wrapLine_; }
 	void setWrapLine(bool wrapLine) { wrapLine_ = wrapLine; }
 
-	const Font &font() const { return font_; }
-    void setFont(const Font &font);
+	const FontOld &font() const { return font_; }
+    void setFont(const FontOld &font);
 
 	Pixel::Raw charWidth(UChar c) const;
 
@@ -61,7 +61,7 @@ private:
 	int32_t lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
-	Font font_;
+    FontOld font_;
     bool isFixWidth_ = false;
     int widthForFix_ = 0;
 };

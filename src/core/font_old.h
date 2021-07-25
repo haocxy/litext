@@ -6,17 +6,17 @@
 #include "uchar.h"
 
 
-struct FontInfo {
+struct FontInfoOld {
 	std::string family;
 	int size = 0;
 	bool bold = false;
 };
 
-class Font {
+class FontOld {
 public:
-	Font():metrics_(font_) {}
+    FontOld():metrics_(font_) {}
 
-	void setFont(const FontInfo &fontInfo);
+	void setFont(const FontInfoOld &fontInfo);
 
 	std::string family() const { return font_.family().toStdString(); }
 

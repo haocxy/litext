@@ -30,8 +30,8 @@ static void setupConfig(TextAreaConfig &c)
     c.setShowLineNum(true);
     c.setLineNumOffset(1);
 
-    Font f;
-    FontInfo fi;
+    FontOld f;
+    FontInfoOld fi;
     fi.family = kFontFamilyYaHei;
     fi.size = 22;
     fi.bold = false;
