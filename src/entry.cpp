@@ -4,6 +4,8 @@
 #include <QPixmap>
 #include <QPainter>
 
+#include "core/system_util.h"
+#include "core/font.h"
 #include "core/logger.h"
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
@@ -18,6 +20,12 @@ static void useDrawText()
 
 int entry(int argc, char *argv[])
 {
+    font::FontContext fontContext;
+    for (const fs::path &file : SystemUtil::fonts()) {
+        const font::FontFile fontFile(fontContext, file);
+        LOGI << "file[" << file << "] face count: [" << fontFile.faceCount() << "]";
+    }
+
     QApplication app(argc, argv);
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
