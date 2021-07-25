@@ -11,7 +11,7 @@
 #else
 #include <unistd.h>
 #include <sys/sysinfo.h>
-#include <fontconfig.h>
+#include <fontconfig/fontconfig.h>
 #endif
 
 
