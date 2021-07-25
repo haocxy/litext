@@ -14,10 +14,17 @@ set(CMAKE_AUTOMOC ON)
 find_package(Boost 1.76 REQUIRED
     COMPONENTS filesystem)
 
+if(NOT MSVC)
+    find_package(Fontconfig REQUIRED)
+endif()
+
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
+if(NOT MSVC)
+    include_directories(${Fontconfig_INCLUDE_DIRS})
+endif()
 
 
 file(GLOB_RECURSE src_files
@@ -50,8 +57,11 @@ set(deps
 )
 
 
+
 if(NOT MSVC)
     list(APPEND deps dl)
+    message("=======> Fontconfig_LIBRARIES: ${Fontconfig_LIBRARIES}")
+    list(APPEND deps ${Fontconfig_LIBRARIES})
 endif()
 
 target_link_libraries(notesharp
