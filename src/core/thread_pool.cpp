@@ -6,6 +6,9 @@
 #include <Windows.h>
 #endif
 
+#include "core/logger.h"
+
+
 static void setNameForCurrentThread(const std::string &name)
 {
     if (name.empty()) {
@@ -43,8 +46,11 @@ ThreadPool::ThreadPool(const std::string &name, int threadCount)
         threads_.push_back(std::thread([this, i]() {
             std::ostringstream ss;
             ss << name_ << "(" << i << ")";
-            setNameForCurrentThread(ss.str());
+            std::string threadName = ss.str();
+            setNameForCurrentThread(threadName);
+            LOGI << "Thread in ThreadPool named [" << threadName << "] started";
             loop();
+            LOGI << "Thread in ThreadPool named [" << threadName << "] stopped";
         }));
     }
 }
