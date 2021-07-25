@@ -32,6 +32,11 @@ static void useDrawText()
 
 int entry(int argc, char *argv[])
 {
+    int i = 0;
+    for (const fs::path &f : SystemUtil::fonts()) {
+        LOGI << "font[" << i++ << "]: [" << f << "]";
+    }
+
     QApplication app(argc, argv);
 
 

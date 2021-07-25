@@ -11,9 +11,8 @@
 #else
 #include <unistd.h>
 #include <sys/sysinfo.h>
-#endif
-
 #include <fontconfig.h>
+#endif
 
 
 namespace
@@ -102,7 +101,35 @@ fs::path userHome() {
 #endif
 }
 
-std::vector<FontInfo> fonts()
+static void fontsInDirForWindows(const fs::path &dir, std::vector<fs::path> &fonts)
+{
+    if (!fs::is_directory(dir)) {
+        return;
+    }
+
+    for (const fs::directory_entry &e : fs::directory_iterator(dir)) {
+        if (e.is_regular_file()) {
+            fonts.push_back(fs::absolute(e.path()));
+        }
+    }
+}
+
+static std::vector<fs::path> fontsForWindows()
+{
+    std::vector<fs::path> fonts;
+
+    // 所有用户共用的字体
+    fontsInDirForWindows("C:/Windows/Fonts", fonts);
+
+    // 当前用户专用的字体
+    fontsInDirForWindows(userHome() / "AppData/Local/Microsoft/Windows/Fonts", fonts);
+
+    return fonts;
+}
+
+#ifndef WIN32
+
+static std::vector<fs::path> fontsForUnix()
 {
     std::unique_ptr<FcPattern, void(*)(FcPattern *)> pattern(FcPatternCreate(), [](FcPattern *p) {
         FcPatternDestroy(p);
@@ -132,38 +159,33 @@ std::vector<FontInfo> fonts()
         return {};
     }
 
-    std::vector<FontInfo> fonts;
+    std::vector<fs::path> fonts;
 
     for (int i = 0; i < list->nfont; ++i) {
         FcPattern *font = list->fonts[i];
-        FontInfo f;
-
-        FcChar8 *family = nullptr;
-        if (FcResultMatch == FcPatternGetString(font, FC_FAMILY, 0, &family)) {
-            f.family = reinterpret_cast<const char *>(family);;
-        } else {
-            continue;
-        }
-
-        FcChar8 *style = nullptr;
-        if (FcResultMatch == FcPatternGetString(font, FC_STYLE, 0, &style)) {
-            f.style = reinterpret_cast<const char *>(style);
-        } else {
-            // TODO do nothing now
-        }
 
         FcChar8 *file = nullptr;
         if (FcResultMatch == FcPatternGetString(font, FC_FILE, 0, &file)) {
-            f.file = reinterpret_cast<const char *>(file);
+            f.file = ;
         } else {
             continue;
         }
 
-        fonts.push_back(f);
+        fonts.push_back(reinterpret_cast<const char *>(file));
     }
 
     return fonts;
 }
 
+#endif
+
+std::vector<fs::path> fonts()
+{
+#ifdef WIN32
+    return fontsForWindows();
+#else
+    return fontsForUnix();
+#endif
+}
 
 }
