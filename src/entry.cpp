@@ -23,7 +23,23 @@ int entry(int argc, char *argv[])
     font::FontContext fontContext;
     for (const fs::path &file : SystemUtil::fonts()) {
         const font::FontFile fontFile(fontContext, file);
+        if (!fontFile) {
+            LOGE << "unsupported font file: [" << file << "]";
+            continue;
+        }
         LOGI << "file[" << file << "] face count: [" << fontFile.faceCount() << "]";
+
+        const long faceCount = fontFile.faceCount();
+        for (long i = 0; i < faceCount; ++i) {
+            const font::FontFace face(fontFile, i);
+            if (!face) {
+                LOGE << "unsupported face at index [" << i << "]";
+                continue;
+            }
+            LOGI << "[" << i << "] family [" << face.familyName() << "], style [" << face.styleName() << "]";
+        }
+
+        LOGI;
     }
 
     QApplication app(argc, argv);

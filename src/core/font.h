@@ -38,6 +38,7 @@ private:
     FT_Library ftLib_ = nullptr;
 
     friend class FontFile;
+    friend class FontFace;
 };
 
 
@@ -76,7 +77,44 @@ private:
 };
 
 class FontFace {
+public:
+    FontFace(const FontFile &file, long faceIndex);
 
+    ~FontFace() {
+        if (ftFace_) {
+            FT_Done_Face(ftFace_);
+            ftFace_ = nullptr;
+        }
+    }
+
+    bool isValid() const {
+        return ftFace_ != nullptr;
+    }
+
+    operator bool() const {
+        return isValid();
+    }
+
+    const char *familyName() const {
+        return strOrEmpty(ftFace_->family_name);
+    }
+
+    const char *styleName() const {
+        return strOrEmpty(ftFace_->style_name);
+    }
+
+private:
+    static const char *strOrEmpty(const char *s) {
+        if (s) {
+            return s;
+        } else {
+            return "";
+        }
+    }
+
+private:
+    const FontFile &file_;
+    FT_Face ftFace_ = nullptr;
 };
 
 class FontMetrics {
