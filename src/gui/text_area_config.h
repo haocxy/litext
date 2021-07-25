@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/uchar.h"
-#include "core/font.h"
+#include "core/font_old.h"
 
 #include "pixel.h"
 #include "loc_outside_policy.h"
