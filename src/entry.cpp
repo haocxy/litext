@@ -39,6 +39,8 @@ int entry(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    LOGI << "screen dpi: x[" << SystemUtil::screenHorizontalDpi() << "], y[" << SystemUtil::screenHorizontalDpi() << "]";
+
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，

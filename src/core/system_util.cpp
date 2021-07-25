@@ -14,6 +14,8 @@
 #include <fontconfig/fontconfig.h>
 #endif
 
+#include <QWidget>
+
 
 namespace
 {
@@ -188,6 +190,42 @@ std::vector<fs::path> fonts()
 #else
     return fontsForUnix();
 #endif
+}
+
+int screenHorizontalDpi()
+{
+    // 利用 QWidget 的成员函数获取屏幕水平方向 DPI
+    // 定义一个子类是因为要用的函数是 protected 的
+    class Widget : public QWidget {
+    public:
+        virtual ~Widget() {}
+
+        int screenHorizontalDpi() const {
+            return physicalDpiX();
+        }
+    };
+
+    const Widget widget;
+
+    return widget.screenHorizontalDpi();
+}
+
+int screenVerticalDpi()
+{
+    // 利用 QWidget 的成员函数获取屏幕竖直方向 DPI
+    // 定义一个子类是因为要用的函数是 protected 的
+    class Widget : public QWidget {
+    public:
+        virtual ~Widget() {}
+
+        int screenVerticalDpi() const {
+            return physicalDpiY();
+        }
+    };
+
+    const Widget widget;
+
+    return widget.screenVerticalDpi();
 }
 
 }
