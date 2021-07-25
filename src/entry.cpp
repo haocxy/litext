@@ -45,17 +45,25 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
 
 int entry(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
+
     font::FontContext fontContext;
     font::FontFile fontFile;
     font::FontFace fontFace;
     selectFont(fontContext, fontFile, fontFace);
     LOGI << "selected fontFile: " << fontFile.path();
     LOGI << "selected fontFace: " << fontFace.familyName();
+    fontFace.setPointSize(16);
+    LOGI << "setPointSize(16) done";
     const char32_t unicode = 0x7f16; // "编程" 的 "编" 的 unicode 编码
     const int64_t glyphIndex = fontFace.mapUnicodeToGlyphIndex(unicode);
     LOGI << "glyphIndex: " << glyphIndex;
+    
+    fontFace.loadGlyph(glyphIndex);
+    LOGI << "loadGlyph done";
 
-    QApplication app(argc, argv);
+
+    
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，

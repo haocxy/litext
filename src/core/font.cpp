@@ -107,6 +107,9 @@ void FontFace::loadGlyph(int64_t glyphIndex)
     if (error != 0) {
         std::ostringstream ss;
         ss << "FontFace::loadGlyph() failed with glyphIndex [" << glyphIndex << "]";
+        if (error == FT_Err_Invalid_Size_Handle) {
+            ss << " because FontFace::setPointSize() not called";
+        }
         throw std::logic_error(ss.str());
     }
 }
