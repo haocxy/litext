@@ -1,4 +1,4 @@
-
+#include <set>
 
 #include <QApplication>
 #include <QPixmap>
@@ -18,30 +18,40 @@ static void useDrawText()
     painter.drawText(0, 0, "0");
 }
 
+
+
+static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
+    static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC"};
+    for (const fs::path &file : SystemUtil::fonts()) {
+        font::FontFile fontFile(context, file);
+        if (!fontFile) {
+            continue;
+        }
+
+        for (long i = 0; i < fontFile.faceCount(); ++i) {
+            font::FontFace face(fontFile, i);
+            if (!face || face.isBold() || face.isItalic() || !face.isScalable()) {
+                continue;
+            }
+
+            if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
+                fileTo = std::move(fontFile);
+                faceTo = std::move(face);
+                return;
+            }
+        }
+    }
+}
+
 int entry(int argc, char *argv[])
 {
     font::FontContext fontContext;
-    for (const fs::path &file : SystemUtil::fonts()) {
-        const font::FontFile fontFile(fontContext, file);
-        if (!fontFile) {
-            LOGE << "unsupported font file: [" << file << "]";
-            continue;
-        }
-        LOGI << "file[" << file << "]";
-
-        const long faceCount = fontFile.faceCount();
-        for (long i = 0; i < faceCount; ++i) {
-            const font::FontFace face(fontFile, i);
-            if (!face) {
-                LOGE << "unsupported face at index [" << i << "]";
-                continue;
-            }
-            LOGI << "[" << i << "] family [" << face.familyName() << "], style [" << face.styleName() << "] is scalable [" << face.isScalable() << "]";
-            LOGI << "=====> is bold [" << face.isBold() << "], is italic [" << face.isItalic() << "]";
-        }
-
-        LOGI;
-    }
+    font::FontFile fontFile;
+    font::FontFace fontFace;
+    selectFont(fontContext, fontFile, fontFace);
+    LOGI << "selected fontFile: " << fontFile.path();
+    LOGI << "selected fontFace: " << fontFace.familyName();
+    const char32_t unicode = 0x7f16;
 
     QApplication app(argc, argv);
 

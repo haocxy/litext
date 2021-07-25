@@ -70,6 +70,8 @@ private:
 
 class FontFile {
 public:
+    FontFile() {}
+
     FontFile(const FontContext &context, const fs::path &path, bool loadToMemory = false);
 
     FontFile(const FontFile &) = delete;
@@ -93,6 +95,10 @@ public:
 
     operator bool() const {
         return isValid_;
+    }
+
+    const fs::path &path() const {
+        return path_;
     }
 
     long faceCount() const {
@@ -136,6 +142,8 @@ private:
 
 class FontFace {
 public:
+    FontFace() {}
+
     FontFace(const FontFile &file, long faceIndex);
 
     FontFace(const FontFace &) = delete;
@@ -182,6 +190,14 @@ public:
     bool isBold() const {
         return hasFlag(ftFace_->style_flags, FT_STYLE_FLAG_BOLD);
     }
+
+    void setPointSize(int pt);
+
+    int64_t mapUnicodeToGlyphIndex(char32_t unicode) const;
+
+    void loadGlyph(int64_t glyphIndex);
+
+    void renderGlyph();
 
 private:
     static const char *strOrEmpty(const char *s) {

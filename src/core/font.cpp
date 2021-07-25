@@ -2,6 +2,9 @@
 
 #include <fstream>
 
+#include "system_util.h"
+
+
 namespace
 {
 
@@ -78,6 +81,43 @@ FontFace::FontFace(const FontFile &file, long faceIndex)
         if (error != 0) {
             ftFace_ = nullptr;
         }
+    }
+}
+
+void FontFace::setPointSize(int pt)
+{
+    thread_local int hDpi = SystemUtil::screenHorizontalDpi();
+    thread_local int vDpi = SystemUtil::screenVerticalDpi();
+    const FT_Error error = FT_Set_Char_Size(ftFace_, 0, pt * 64, hDpi, vDpi);
+    if (error != 0) {
+        std::ostringstream ss;
+        ss << "FontFace::setPointSize() failed";
+        throw std::logic_error(ss.str());
+    }
+}
+
+int64_t FontFace::mapUnicodeToGlyphIndex(char32_t unicode) const
+{
+    return FT_Get_Char_Index(ftFace_, unicode);
+}
+
+void FontFace::loadGlyph(int64_t glyphIndex)
+{
+    const FT_Error error = FT_Load_Glyph(ftFace_, static_cast<FT_UInt>(glyphIndex), FT_LOAD_DEFAULT);
+    if (error != 0) {
+        std::ostringstream ss;
+        ss << "FontFace::loadGlyph() failed with glyphIndex [" << glyphIndex << "]";
+        throw std::logic_error(ss.str());
+    }
+}
+
+void FontFace::renderGlyph()
+{
+    const FT_Error error = FT_Render_Glyph(ftFace_->glyph, FT_RENDER_MODE_NORMAL);
+    if (error != 0) {
+        std::ostringstream ss;
+        ss << "FontFace::renderGlyph() failed";
+        throw std::logic_error(ss.str());
     }
 }
 
