@@ -51,7 +51,9 @@ int entry(int argc, char *argv[])
     selectFont(fontContext, fontFile, fontFace);
     LOGI << "selected fontFile: " << fontFile.path();
     LOGI << "selected fontFace: " << fontFace.familyName();
-    const char32_t unicode = 0x7f16;
+    const char32_t unicode = 0x7f16; // "编程" 的 "编" 的 unicode 编码
+    const int64_t glyphIndex = fontFace.mapUnicodeToGlyphIndex(unicode);
+    LOGI << "glyphIndex: " << glyphIndex;
 
     QApplication app(argc, argv);
 
