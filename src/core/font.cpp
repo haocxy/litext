@@ -33,8 +33,8 @@ static void readFileToMemory(const fs::path &path, std::basic_string<unsigned ch
     ifs.read(reinterpret_cast<char *>(to.data()), to.size());
 }
 
-FontFile::FontFile(FontContext &context, const fs::path &path, bool loadToMemory)
-    : context_(context), path_(fs::absolute(path))
+FontFile::FontFile(const FontContext &context, const fs::path &path, bool loadToMemory)
+    : context_(&context), path_(fs::absolute(path))
 {
     isValid_ = false;
 
@@ -66,15 +66,15 @@ FontFile::FontFile(FontContext &context, const fs::path &path, bool loadToMemory
 }
 
 FontFace::FontFace(const FontFile &file, long faceIndex)
-    : file_(file)
+    : file_(&file)
 {
     if (!file.data_.empty()) {
-        const FT_Error error = FT_New_Memory_Face(file.context_.ftLib_, file.data_.data(), static_cast<FT_Long>(file.data_.size()), faceIndex, &ftFace_);
+        const FT_Error error = FT_New_Memory_Face(file.context_->ftLib_, file.data_.data(), static_cast<FT_Long>(file.data_.size()), faceIndex, &ftFace_);
         if (error != 0) {
             ftFace_ = nullptr;
         }
     } else {
-        const FT_Error error = FT_New_Face(file.context_.ftLib_, file.path_.generic_string().c_str(), faceIndex, &ftFace_);
+        const FT_Error error = FT_New_Face(file.context_->ftLib_, file.path_.generic_string().c_str(), faceIndex, &ftFace_);
         if (error != 0) {
             ftFace_ = nullptr;
         }

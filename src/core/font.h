@@ -27,7 +27,33 @@ public:
         }
     }
 
+    FontContext(const FontContext &) = delete;
+
+    FontContext(FontContext &&b) noexcept {
+        move(*this, b);
+    }
+
+    FontContext &operator=(const FontContext &) = delete;
+
+    FontContext &operator=(FontContext &&b) noexcept {
+        move(*this, b);
+        return *this;
+    }
+
     ~FontContext() {
+        close();
+    }
+
+private:
+    static void move(FontContext &to, FontContext &from) {
+        if (&to != &from) {
+            to.close();
+            to.ftLib_ = from.ftLib_;
+            from.ftLib_ = nullptr;
+        }
+    }
+
+    void close() {
         if (ftLib_) {
             FT_Done_FreeType(ftLib_);
             ftLib_ = nullptr;
@@ -44,7 +70,20 @@ private:
 
 class FontFile {
 public:
-    FontFile(FontContext &context, const fs::path &path, bool loadToMemory = false);
+    FontFile(const FontContext &context, const fs::path &path, bool loadToMemory = false);
+
+    FontFile(const FontFile &) = delete;
+
+    FontFile(FontFile &b) noexcept {
+        move(*this, b);
+    }
+
+    FontFile &operator=(const FontFile &) = delete;
+
+    FontFile &operator=(FontFile &&b) noexcept {
+        move(*this, b);
+        return *this;
+    }
 
     ~FontFile() {}
 
@@ -61,7 +100,25 @@ public:
     }
 
 private:
-    FontContext &context_;
+    static void move(FontFile &to, FontFile &from) {
+        if (&to != &from) {
+            to.context_ = from.context_;
+            from.context_ = nullptr;
+
+            to.path_ = std::move(from.path_);
+
+            to.data_ = std::move(from.data_);
+
+            to.isValid_ = from.isValid_;
+            from.isValid_ = false;
+
+            to.faceCount_ = from.faceCount_;
+            from.faceCount_ = 0;
+        }
+    }
+
+private:
+    const FontContext *context_ = nullptr;
 
     fs::path path_;
 
@@ -76,15 +133,26 @@ private:
     friend class FontFace;
 };
 
+
 class FontFace {
 public:
     FontFace(const FontFile &file, long faceIndex);
 
+    FontFace(const FontFace &) = delete;
+
+    FontFace(FontFace &&b) noexcept {
+        move(*this, b);
+    }
+
+    FontFace &operator=(const FontFace &) = delete;
+
+    FontFace &operator=(FontFace &&b) noexcept {
+        move(*this, b);
+        return *this;
+    }
+
     ~FontFace() {
-        if (ftFace_) {
-            FT_Done_Face(ftFace_);
-            ftFace_ = nullptr;
-        }
+        close();
     }
 
     bool isValid() const {
@@ -129,8 +197,25 @@ private:
         return (bitset & mask) == mask;
     }
 
+    void close() {
+        if (ftFace_) {
+            FT_Done_Face(ftFace_);
+            ftFace_ = nullptr;
+        }
+    }
+
+    static void move(FontFace &to, FontFace &from) {
+        if (&to != &from) {
+            to.close();
+            to.file_ = from.file_;
+            from.file_ = nullptr;
+            to.ftFace_ = from.ftFace_;
+            from.ftFace_ = nullptr;
+        }
+    }
+
 private:
-    const FontFile &file_;
+    const FontFile *file_ = nullptr;
     FT_Face ftFace_ = nullptr;
 };
 
