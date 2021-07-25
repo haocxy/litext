@@ -23,6 +23,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
 if(NOT MSVC)
+    message("======> Fontconfig_INCLUDE_DIRS: ${Fontconfig_INCLUDE_DIRS}")
     include_directories(${Fontconfig_INCLUDE_DIRS})
 endif()
 
