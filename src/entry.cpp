@@ -62,7 +62,8 @@ int entry(int argc, char *argv[])
     fontFace.loadGlyph(glyphIndex);
     LOGI << "loadGlyph done";
 
-
+    fontFace.renderGlyph();
+    LOGI << "renderGlyph done";
     
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
