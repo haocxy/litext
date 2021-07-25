@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QPixmap>
 #include <QPainter>
+#include <QImage>
 
 #include "core/system_util.h"
 #include "core/font.h"
@@ -43,6 +44,19 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
     }
 }
 
+static QString makeTestImgSavePath(const std::string &relative)
+{
+#ifdef WIN32
+    const fs::path base = "D:/tmp/";
+#else
+    const fs::path base = SystemUtil::userHome() / "tmp";
+#endif
+    const fs::path full = base / relative;
+    fs::create_directories(full.parent_path());
+    const std::string s = full.generic_string();
+    return QString::fromUtf8(s.c_str());
+}
+
 int entry(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -64,7 +78,26 @@ int entry(int argc, char *argv[])
 
     fontFace.renderGlyph();
     LOGI << "renderGlyph done";
-    
+
+    font::FontFace::BitmapInfo b = fontFace.bitmapInfo();
+    QImage glyph(b.buffer, b.width, b.rows, b.pitch, QImage::Format_Indexed8);
+    QVector<QRgb> colorTable;
+    for (int i = 0; i < 256; ++i) {
+        colorTable << qRgba(0, 0, 0, i);
+    }
+    glyph.setColorTable(colorTable);
+    const QString glyphSaveFile = makeTestImgSavePath("glyph.png");
+    glyph.save(glyphSaveFile, "png");
+    LOGI << "saved: " << glyphSaveFile.toStdString();
+
+    QPixmap img(800, 600);
+    QPainter painter(&img);
+    painter.fillRect(img.rect(), Qt::white);
+    painter.drawImage(QPoint(0, 0), glyph);
+
+    const QString renderedSaveFile = makeTestImgSavePath("rendered.png");
+    img.save(renderedSaveFile, "png");
+    LOGI << "saved: " << renderedSaveFile.toStdString();
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，

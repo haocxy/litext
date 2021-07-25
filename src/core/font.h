@@ -199,6 +199,23 @@ public:
 
     void renderGlyph();
 
+    struct BitmapInfo {
+        unsigned char *buffer = nullptr;
+        unsigned int width = 0;
+        unsigned int rows = 0;
+        unsigned int pitch = 0;
+    };
+
+    BitmapInfo bitmapInfo() const {
+        const FT_Bitmap &bm = ftFace_->glyph->bitmap;
+        BitmapInfo i;
+        i.buffer = bm.buffer;
+        i.width = bm.width;
+        i.rows = bm.rows;
+        i.pitch = bm.pitch;
+        return i;
+    }
+
 private:
     static const char *strOrEmpty(const char *s) {
         if (s) {
@@ -229,6 +246,8 @@ private:
             from.ftFace_ = nullptr;
         }
     }
+
+
 
 private:
     const FontFile *file_ = nullptr;
