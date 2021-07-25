@@ -60,6 +60,14 @@ public:
         return faceCount_;
     }
 
+    bool isItalic() const {
+        return isItalic_;
+    }
+
+    bool isBold() const {
+        return isBold_;
+    }
+
 private:
     FontContext &context_;
 
@@ -72,6 +80,8 @@ private:
     bool isValid_ = false;
 
     long faceCount_ = 0;
+    bool isItalic_ = false;
+    bool isBold_ = false;
 
     friend class FontFace;
 };
@@ -103,6 +113,10 @@ public:
         return strOrEmpty(ftFace_->style_name);
     }
 
+    bool isScalable() const {
+        return hasFlag(ftFace_->face_flags, FT_FACE_FLAG_SCALABLE);
+    }
+
 private:
     static const char *strOrEmpty(const char *s) {
         if (s) {
@@ -110,6 +124,11 @@ private:
         } else {
             return "";
         }
+    }
+
+    template <typename T>
+    static bool hasFlag(T bitset, T mask) {
+        return (bitset & mask) == mask;
     }
 
 private:

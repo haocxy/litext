@@ -27,7 +27,7 @@ int entry(int argc, char *argv[])
             LOGE << "unsupported font file: [" << file << "]";
             continue;
         }
-        LOGI << "file[" << file << "] face count: [" << fontFile.faceCount() << "]";
+        LOGI << "file[" << file << "], is bold [" << fontFile.isBold() << "], is italic [" << fontFile.isItalic() << "]";
 
         const long faceCount = fontFile.faceCount();
         for (long i = 0; i < faceCount; ++i) {
@@ -36,7 +36,7 @@ int entry(int argc, char *argv[])
                 LOGE << "unsupported face at index [" << i << "]";
                 continue;
             }
-            LOGI << "[" << i << "] family [" << face.familyName() << "], style [" << face.styleName() << "]";
+            LOGI << "[" << i << "] family [" << face.familyName() << "], style [" << face.styleName() << "] is scalable [" << face.isScalable() << "]";
         }
 
         LOGI;

@@ -33,6 +33,12 @@ static void readFileToMemory(const fs::path &path, std::basic_string<unsigned ch
     ifs.read(reinterpret_cast<char *>(to.data()), to.size());
 }
 
+template <typename T, typename U>
+static bool hasFlag(T bitset, U mask)
+{
+    return (bitset & mask) == mask;
+}
+
 FontFile::FontFile(FontContext &context, const fs::path &path, bool loadToMemory)
     : context_(context), path_(fs::absolute(path))
 {
@@ -60,6 +66,8 @@ FontFile::FontFile(FontContext &context, const fs::path &path, bool loadToMemory
 
     if (ftFace) {
         faceCount_ = ftFace->num_faces;
+        isItalic_ = hasFlag(ftFace->style_flags, FT_STYLE_FLAG_ITALIC);
+        isBold_ = hasFlag(ftFace->style_flags, FT_STYLE_FLAG_BOLD);
     }
 
     isValid_ = true;
