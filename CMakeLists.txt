@@ -16,10 +16,6 @@ else()
 endif()
 
 
-# Qt5支持
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
-
-
 # VS专用全局设置
 if(MSVC)
     # 关闭有关源代码字符集的警告

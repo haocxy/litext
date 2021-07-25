@@ -1,18 +1,24 @@
 set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(CMAKE_AUTOMOC ON)
+
 
 include(assets.cmake)
 remove_useless_files_generated_for_assets()
 generate_src_file_for_all_assets()
 
+
+find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+set(CMAKE_AUTOMOC ON)
+
+
 find_package(Boost 1.76 REQUIRED
     COMPONENTS filesystem)
+
 
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${root_dir})
 include_directories(${CMAKE_SOURCE_DIR})
-include_directories($ENV{LIBFONTCONFIG_INCLUDE})
+
 
 file(GLOB_RECURSE src_files
     "${root_dir}/*.h"
@@ -43,16 +49,9 @@ set(deps
     ${Boost_LIBRARIES}
 )
 
-if(MSVC)
-    list(APPEND deps $ENV{LIBCAIRO_LIB})
-    list(APPEND deps $ENV{LIBFONTCONFIG_LIB})
-else()
+
+if(NOT MSVC)
     list(APPEND deps dl)
-    list(APPEND deps cairo)
-    list(APPEND deps png)
-    list(APPEND deps z)
-    list(APPEND deps pixman-1)
-    list(APPEND deps fontconfig)
 endif()
 
 target_link_libraries(notesharp
