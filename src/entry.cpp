@@ -36,20 +36,20 @@ int entry(int argc, char *argv[])
 
     //testCairo();
     
-    std::vector<SystemUtil::FontInfo> fonts = SystemUtil::fonts();
-    int i = 0;
-    for (const SystemUtil::FontInfo &f : fonts) {
-        LOGI << "[" << (i++) << "] [" << f.family << "] [" << f.style << "] [" << f.file << "]";
-    }
+    //std::vector<SystemUtil::FontInfo> fonts = SystemUtil::fonts();
+    //int i = 0;
+    //for (const SystemUtil::FontInfo &f : fonts) {
+    //    LOGI << "[" << (i++) << "] [" << f.family << "] [" << f.style << "] [" << f.file << "]";
+    //}
 
-    MyObj obj;
-    int dpix = obj.dpiX();
-    int dpiy = obj.dpiY();
+    //MyObj obj;
+    //int dpix = obj.dpiX();
+    //int dpiy = obj.dpiY();
 
-    testFreeType(fs::absolute(fonts[0].file).generic_string(), dpix, dpiy);
+    //testFreeType(fs::absolute(fonts[0].file).generic_string(), dpix, dpiy);
 
-    //testFreeType();
-    return 0;
+    ////testFreeType();
+    //return 0;
 
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
