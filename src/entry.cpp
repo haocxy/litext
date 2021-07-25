@@ -4,24 +4,10 @@
 #include <QPixmap>
 #include <QPainter>
 
-#include "core/system_util.h"
 #include "core/logger.h"
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 
-
-class MyObj : public QWidget {
-public:
-    auto dpiX() const {
-        return this->physicalDpiX();
-    }
-
-    auto dpiY() const {
-        return this->physicalDpiY();
-    }
-};
-
-void testFreeType(const std::string &file, int dpix, int dpiy);
 
 static void useDrawText()
 {
@@ -32,15 +18,7 @@ static void useDrawText()
 
 int entry(int argc, char *argv[])
 {
-    int i = 0;
-    for (const fs::path &f : SystemUtil::fonts()) {
-        LOGI << "font[" << i++ << "]: [" << f << "]";
-    }
-
     QApplication app(argc, argv);
-
-    LOGI << "screen dpi: x[" << SystemUtil::screenHorizontalDpi() << "], y[" << SystemUtil::screenHorizontalDpi() << "]";
-
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
