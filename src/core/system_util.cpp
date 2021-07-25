@@ -165,9 +165,11 @@ static std::vector<fs::path> fontsForUnix()
         FcPattern *font = list->fonts[i];
 
         FcChar8 *file = nullptr;
-        if (FcResultMatch == FcPatternGetString(font, FC_FILE, 0, &file)) {
-            f.file = ;
-        } else {
+        if (FcResultMatch != FcPatternGetString(font, FC_FILE, 0, &file)) {
+            continue;
+        }
+
+        if (!file) {
             continue;
         }
 
