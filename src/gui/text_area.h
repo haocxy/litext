@@ -24,7 +24,7 @@
 #include "view_loc.h"
 #include "pixel.h"
 #include "coordinate_converter.h"
-#include "text_layouter.h"
+#include "line_manger.h"
 
 
 class Row;
