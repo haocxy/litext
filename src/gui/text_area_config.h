@@ -2,6 +2,7 @@
 
 #include "core/uchar.h"
 #include "core/font_old.h"
+#include "core/font.h"
 
 #include "pixel.h"
 #include "loc_outside_policy.h"
@@ -40,6 +41,9 @@ public:
 	const FontOld &font() const { return font_; }
     void setFont(const FontOld &font);
 
+    const font::FontIndex &fontIndex() const { return fontIndex_; }
+    void setFontIndex(const font::FontIndex &fontIndex) { fontIndex_ = fontIndex; }
+
 	Pixel::Raw charWidth(UChar c) const;
 
 	bool showLineNum() const { return showLineNum_; }
@@ -62,6 +66,7 @@ private:
 	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
 
     FontOld font_;
+    font::FontIndex fontIndex_;
     bool isFixWidth_ = false;
     int widthForFix_ = 0;
 };

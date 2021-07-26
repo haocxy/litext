@@ -8,8 +8,10 @@
 #include "core/system_util.h"
 #include "core/font.h"
 #include "core/logger.h"
+#include "core/time_util.h"
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
+#include "gui/text_area_config.h"
 
 
 static void useDrawText()
@@ -23,7 +25,11 @@ static void useDrawText()
 
 static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
     static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC"};
-    for (const fs::path &file : SystemUtil::fonts()) {
+    ElapsedTime elapsed;
+
+    const std::vector<fs::path> fontFiles = SystemUtil::fonts();
+
+    for (const fs::path &file : fontFiles) {
         font::FontFile fontFile(context, file);
         if (!fontFile) {
             continue;
@@ -38,7 +44,23 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
             if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
                 fileTo = std::move(fontFile);
                 faceTo = std::move(face);
+                LOGI << "selectFont time usage: [" << elapsed.milliSec() << " ms]";
                 return;
+            }
+        }
+    }
+
+    for (const fs::path &file : fontFiles) {
+        font::FontFile fontFile(context, file);
+        if (fontFile) {
+            for (long i = 0; i < fontFile.faceCount(); ++i) {
+                font::FontFace face(fontFile, i);
+                if (face) {
+                    fileTo = std::move(fontFile);
+                    faceTo = std::move(face);
+                    LOGI << "selectFont done without bad font, time usage: [" << elapsed.milliSec() << " ms]";
+                    return;
+                }
             }
         }
     }
@@ -64,10 +86,8 @@ static void logGlyph(const font::FontFace &f, const char *stage)
     LOGI << "glyph after [" << stage << "] is [buff:" << buf << ",width:" << b.width << ",rows:" << b.rows << ",pitch:" << b.pitch << "]";
 }
 
-int entry(int argc, char *argv[])
+static void testFont()
 {
-    QApplication app(argc, argv);
-
     font::FontContext fontContext;
     font::FontFile fontFile;
     font::FontFace fontFace;
@@ -77,12 +97,12 @@ int entry(int argc, char *argv[])
     fontFace.setPointSize(128);
     logGlyph(fontFace, "setPointSize");
     LOGI << "setPointSize(16) done";
-    
+
     const char32_t unicode = 0x7f16; // "编程" 的 "编" 的 unicode 编码
     const int64_t glyphIndex = fontFace.mapUnicodeToGlyphIndex(unicode);
     logGlyph(fontFace, "mapUnicodeToGlyphIndex");
     LOGI << "glyphIndex: " << glyphIndex;
-    
+
     fontFace.loadGlyph(glyphIndex);
     logGlyph(fontFace, "loadGlyph");
     LOGI << "loadGlyph done";
@@ -110,6 +130,26 @@ int entry(int argc, char *argv[])
     const QString renderedSaveFile = makeTestImgSavePath("rendered.png");
     img.save(renderedSaveFile, "png");
     LOGI << "saved: " << renderedSaveFile.toStdString();
+}
+
+static font::FontIndex selectFont()
+{
+    font::FontContext context;
+    font::FontFile fontFile;
+    font::FontFace fontFace;
+    selectFont(context, fontFile, fontFace);
+    if (fontFile && fontFace) {
+        return font::FontIndex(fontFile.path(), fontFace.faceIndex());
+    } else {
+        return font::FontIndex();
+    }
+}
+
+int entry(int argc, char *argv[])
+{
+    QApplication app(argc, argv);
+
+    testFont();
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
@@ -125,6 +165,13 @@ int entry(int argc, char *argv[])
     logger::control::init(logOpt);
 
     gui::Config config;
+    const font::FontIndex fontIndex = selectFont();
+    if (!fontIndex) {
+        LOGE << "select font failed";
+        return 1;
+    }
+
+    config.textAreaConfig().setFontIndex(fontIndex);
 
     gui::qt::MainWindow mainWindow(config);
     if (argc > 1) {

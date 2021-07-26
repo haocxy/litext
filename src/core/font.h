@@ -16,6 +16,10 @@ class FontIndex {
 public:
     FontIndex() {}
 
+    FontIndex(const fs::path &file, long faceIndex)
+        : file_(file), faceIndex_(faceIndex) {
+    }
+
     FontIndex(const FontIndex &b) {
         copy(*this, b);
     }
@@ -32,6 +36,14 @@ public:
     FontIndex &operator=(FontIndex &&b) noexcept {
         move(*this, b);
         return *this;
+    }
+
+    bool isValid() const {
+        return !file_.empty();
+    }
+
+    operator bool() const {
+        return isValid();
     }
 
     const fs::path &file() const {
@@ -228,6 +240,10 @@ public:
 
     operator bool() const {
         return isValid();
+    }
+
+    long faceIndex() const {
+        return ftFace_->face_index;
     }
 
     const char *familyName() const {
