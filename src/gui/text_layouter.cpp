@@ -25,37 +25,28 @@ RowN TextLayouterImpl::countLines(const MemBuff &utf16data)
     RowN lineCount = 0;
 
     std::u16string content(reinterpret_cast<const char16_t *>(utf16data.data()), utf16data.size() / 2);
-    std::basic_istringstream<char16_t> ss(content);
 
     QString qstrData = QString::fromStdU16String(content);
     QTextStream qtextStream(&qstrData);
 
-    try {
-
-        while (true) {
-            QString line = qtextStream.readLine();
-            if (line.isNull()) {
-                break;
-            }
-            UTF16CharInStream u16chars(line.data(), line.size() * 2);
-            CharInStreamOverUTF16CharInStram charStream(u16chars);
-            //RowWalker walker(config_, width_, charStream);
-            NewRowWalker walker(widthProvider_, charStream, rowWalkerConfig);
-
-            size_t lineCountInCurrentRow = 0;
-
-            walker.forEachChar([&lineCount, &lineCountInCurrentRow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
-                if (lineIndex == lineCountInCurrentRow) {
-                    ++lineCountInCurrentRow;
-                    ++lineCount;
-                }
-            });
+    while (true) {
+        QString line = qtextStream.readLine();
+        if (line.isNull()) {
+            break;
         }
+        UTF16CharInStream u16chars(line.data(), line.size() * 2);
+        CharInStreamOverUTF16CharInStram charStream(u16chars);
+        //RowWalker walker(config_, width_, charStream);
+        NewRowWalker walker(widthProvider_, charStream, rowWalkerConfig);
 
-    }
-    catch (const std::exception &e) {
-        LOGE << "TextLayouterImpl::countLines() exception: [" << e.what() << "]";
-        throw;
+        size_t lineCountInCurrentRow = 0;
+
+        walker.forEachChar([&lineCount, &lineCountInCurrentRow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
+            if (lineIndex == lineCountInCurrentRow) {
+                ++lineCountInCurrentRow;
+                ++lineCount;
+            }
+        });
     }
 
     return lineCount;
