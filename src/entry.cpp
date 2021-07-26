@@ -37,6 +37,9 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
 
         for (long i = 0; i < fontFile.faceCount(); ++i) {
             font::FontFace face(fontFile, i);
+            if (face) {
+                LOGI << "face: [" << face.familyName() << "] style [" << face.styleName() << "] width [" << (face.isFixedWidth() ? "is fixed" : "not fixed") << "]";
+            }
             if (!face || face.isBold() || face.isItalic() || !face.isScalable()) {
                 continue;
             }

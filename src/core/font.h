@@ -254,6 +254,10 @@ public:
         return strOrEmpty(ftFace_->style_name);
     }
 
+    bool isFixedWidth() const {
+        return hasFlag(ftFace_->face_flags, FT_FACE_FLAG_FIXED_WIDTH);
+    }
+
     bool isScalable() const {
         return hasFlag(ftFace_->face_flags, FT_FACE_FLAG_SCALABLE);
     }
