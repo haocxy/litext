@@ -2,7 +2,7 @@
 
 #include "core/uchar.h"
 #include "core/font_old.h"
-#include "core/font.h"
+#include "core/font_index.h"
 
 #include "pixel.h"
 #include "loc_outside_policy.h"
