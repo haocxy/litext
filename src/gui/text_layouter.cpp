@@ -53,7 +53,8 @@ RowN TextLayouterImpl::countLines(const MemBuff &utf16data)
 }
 
 TextLayouterImpl::TextLayouterImpl(const TextAreaConfig &config, int width, doc::Document &document)
-    : config_(config)
+    : worker_("TextLayouter", 1)
+    , config_(config)
     , width_(width)
     , document_(document)
     , widthProvider_(config.fontIndex(), 22)

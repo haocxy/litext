@@ -30,7 +30,7 @@ private:
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
 private:
-    ThreadPool worker_{ "TextLayouter", 1 };
+    ThreadPool worker_;
     const TextAreaConfig config_;
     int width_ = 0;
     doc::Document &document_;

@@ -23,7 +23,6 @@ private:
     font::FontContext context_;
     font::FontFile fontFile_;
     font::FontFace fontFace_;
-
     std::map<char32_t, int> cacheUnicodeToPixWidth_;
 };
 
