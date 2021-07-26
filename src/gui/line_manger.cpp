@@ -52,12 +52,10 @@ void LineManagerImpl::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     auto self(shared_from_this());
     taskQueue_.push([this, self, e](TextLayouterWorker &worker) {
-        LOGD << "TextLayouter::onPartLoaded() start for part id [" << e.partId() << "]";
-        ElapsedTime etime;
         const int64_t partId = e.partId();
         const PartInfo partInfo = worker.countLines(e.utf16content());
         const RowN totalRowCount = updatePartInfo(partId, partInfo);
-        LOGD << "TextLayouter::onPartLoaded() end for part id [" << partId << "] total row count [" << totalRowCount << "], time usage: [" << etime.milliSec() << " ms]";
+        sigRowCountUpdated_(totalRowCount);
     });
 }
 

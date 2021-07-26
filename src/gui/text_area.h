@@ -46,6 +46,10 @@ public:
     void start();
 
 public:
+    LineManager &lineManager() {
+        return lineManager_;
+    }
+
     void resize(const Size &size);
 
     void onPrimaryButtomPress(Pixel x, Pixel y);

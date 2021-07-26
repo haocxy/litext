@@ -35,6 +35,7 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
 
     connect(this, &StatusBarWidget::qtSigCharsetDetected, this, &StatusBarWidget::qtSlotCharsetDetect);
     connect(this, &StatusBarWidget::qtSigUpdateStatus, this, &StatusBarWidget::qtSlotUpdateStatus);
+    connect(this, &StatusBarWidget::qtSigRowCountUpdated, this, &StatusBarWidget::qtSlotRowCountUpdated);
 
     sigConns_ += doc.sigCharsetDetected().connect([this](Charset charset) {
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
@@ -47,6 +48,10 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
 
     sigConns_ += doc.sigAllLoaded().connect([this]{
         emit qtSigUpdateStatus("All Loaded");
+    });
+
+    sigConns_ += textArea_.lineManager().sigRowCountUpdated().connect([this](RowN rowCount) {
+        emit qtSigRowCountUpdated(QString("RowCount: %1").arg(rowCount));
     });
 }
 
@@ -81,6 +86,10 @@ void StatusBarWidget::updateContent()
         content_.append(sep);
         content_.append(filesize_);
     }
+    if (!rowCount_.isEmpty()) {
+        content_.append(sep);
+        content_.append(rowCount_);
+    }
 
 	update();
 }
@@ -94,6 +103,12 @@ void StatusBarWidget::qtSlotCharsetDetect(const QString &charset)
 void StatusBarWidget::qtSlotUpdateStatus(const QString &status)
 {
     status_ = status;
+    updateContent();
+}
+
+void StatusBarWidget::qtSlotRowCountUpdated(const QString &rowCount)
+{
+    rowCount_ = rowCount;
     updateContent();
 }
 

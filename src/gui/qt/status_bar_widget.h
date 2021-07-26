@@ -26,16 +26,19 @@ private:
 signals:
     void qtSigCharsetDetected(const QString &charset);
     void qtSigUpdateStatus(const QString &status);
+    void qtSigRowCountUpdated(const QString &rowCount);
 
 private slots:
     void qtSlotCharsetDetect(const QString &charset);
     void qtSlotUpdateStatus(const QString &status);
+    void qtSlotRowCountUpdated(const QString &rowCount);
 
 private:
 	TextArea &textArea_;
     QString status_;
     QString charset_;
     QString filesize_;
+    QString rowCount_;
 	QString content_;
     SigConns sigConns_;
 };
