@@ -246,6 +246,10 @@ public:
         return ftFace_->face_index;
     }
 
+    long glyphCount() const {
+        return ftFace_->num_glyphs;
+    }
+
     const char *familyName() const {
         return strOrEmpty(ftFace_->family_name);
     }
