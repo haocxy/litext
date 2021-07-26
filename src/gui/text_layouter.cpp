@@ -25,21 +25,29 @@ RowN TextLayouterImpl::countLines(const MemBuff &utf16data)
     std::u16string content(reinterpret_cast<const char16_t *>(utf16data.data()), utf16data.size() / 2);
     std::basic_istringstream<char16_t> ss(content);
 
-    std::u16string line;
-    while (std::getline(ss, line)) {
-        UTF16CharInStream u16chars(line.data(), line.size() * 2);
-        CharInStreamOverUTF16CharInStram charStream(u16chars);
-        //RowWalker walker(config_, width_, charStream);
-        NewRowWalker walker(widthProvider_, charStream, rowWalkerConfig);
+    try {
 
-        size_t lineCountInCurrentRow = 0;
+        std::u16string line;
+        while (std::getline(ss, line)) {
+            UTF16CharInStream u16chars(line.data(), line.size() * 2);
+            CharInStreamOverUTF16CharInStram charStream(u16chars);
+            //RowWalker walker(config_, width_, charStream);
+            NewRowWalker walker(widthProvider_, charStream, rowWalkerConfig);
 
-        walker.forEachChar([&lineCount, &lineCountInCurrentRow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
-            if (lineIndex == lineCountInCurrentRow) {
-                ++lineCountInCurrentRow;
-                ++lineCount;
-            }
-        });
+            size_t lineCountInCurrentRow = 0;
+
+            walker.forEachChar([&lineCount, &lineCountInCurrentRow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
+                if (lineIndex == lineCountInCurrentRow) {
+                    ++lineCountInCurrentRow;
+                    ++lineCount;
+                }
+            });
+        }
+
+    }
+    catch (const std::exception &e) {
+        LOGE << "TextLayouterImpl::countLines() exception: [" << e.what() << "]";
+        throw;
     }
 
     return lineCount;
