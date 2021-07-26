@@ -9,6 +9,7 @@
 #include "doc/part_loaded_event.h"
 #include "doc/declare_document.h"
 #include "text_area_config.h"
+#include "cached_char_pix_width_provider.h"
 
 
 namespace gui
@@ -24,7 +25,7 @@ public:
     virtual ~TextLayouterImpl() {}
 
 private:
-    RowN countLines(const MemBuff &utf16data) const;
+    RowN countLines(const MemBuff &utf16data);
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
@@ -33,6 +34,7 @@ private:
     const TextAreaConfig config_;
     int width_ = 0;
     doc::Document &document_;
+    CachedCharPixWidthProvider widthProvider_;
     SigConns sigConns_;
 
 private:

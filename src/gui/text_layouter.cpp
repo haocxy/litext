@@ -16,8 +16,10 @@
 namespace gui::detail
 {
 
-RowN TextLayouterImpl::countLines(const MemBuff &utf16data) const
+RowN TextLayouterImpl::countLines(const MemBuff &utf16data)
 {
+    NewRowWalker::Config rowWalkerConfig(config_, width_);
+
     RowN lineCount = 0;
 
     std::u16string content(reinterpret_cast<const char16_t *>(utf16data.data()), utf16data.size() / 2);
@@ -27,7 +29,8 @@ RowN TextLayouterImpl::countLines(const MemBuff &utf16data) const
     while (std::getline(ss, line)) {
         UTF16CharInStream u16chars(line.data(), line.size() * 2);
         CharInStreamOverUTF16CharInStram charStream(u16chars);
-        RowWalker walker(config_, width_, charStream);
+        //RowWalker walker(config_, width_, charStream);
+        NewRowWalker walker(widthProvider_, charStream, rowWalkerConfig);
 
         size_t lineCountInCurrentRow = 0;
 
@@ -46,6 +49,7 @@ TextLayouterImpl::TextLayouterImpl(const TextAreaConfig &config, int width, doc:
     : config_(config)
     , width_(width)
     , document_(document)
+    , widthProvider_(config.fontIndex(), 22)
 {
     sigConns_ += document_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
         onPartLoaded(e);

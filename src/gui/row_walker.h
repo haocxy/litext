@@ -31,6 +31,8 @@ private:
 class NewRowWalker {
 public:
     struct Config {
+        Config() {}
+        Config(const TextAreaConfig &c, int widthLimit);
         bool wrapLine = false;
         int widthLimit = 0;
         int hGap = 0;

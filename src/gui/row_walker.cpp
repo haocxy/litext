@@ -158,4 +158,13 @@ void NewRowWalker::forEachCharNoWrapLine(std::function<void(bool isEmptyRow, siz
     throw std::logic_error("NewRowWalker::forEachCharNoWrapLine(...) unimplemented");
 }
 
+NewRowWalker::Config::Config(const TextAreaConfig &c, int widthLimit)
+{
+    wrapLine = c.wrapLine();
+    this->widthLimit = widthLimit;
+    hGap = c.hGap();
+    hMargin = c.hMargin();
+    tabSize = c.tabSize();
+}
+
 }
