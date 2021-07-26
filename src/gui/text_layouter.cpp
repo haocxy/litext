@@ -20,7 +20,7 @@ namespace gui::detail
 {
 
 
-TextLayouterImpl::TextLayouterImpl(const TextAreaConfig &config, int width, doc::Document &document)
+LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document)
     : worker_("TextLayouter", 1)
     , config_(config)
     , width_(width)
@@ -39,7 +39,7 @@ TextLayouterImpl::TextLayouterImpl(const TextAreaConfig &config, int width, doc:
     });
 }
 
-TextLayouterImpl::~TextLayouterImpl()
+LineManagerImpl::~LineManagerImpl()
 {
     for (auto &worker : workers_) {
         worker->stop();
@@ -48,7 +48,7 @@ TextLayouterImpl::~TextLayouterImpl()
     taskQueue_.stop();
 }
 
-void TextLayouterImpl::onPartLoaded(const doc::PartLoadedEvent &e)
+void LineManagerImpl::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     auto self(shared_from_this());
     taskQueue_.push([this, self, e](TextLayouterWorker &worker) {
@@ -61,7 +61,7 @@ void TextLayouterImpl::onPartLoaded(const doc::PartLoadedEvent &e)
     });
 }
 
-RowN TextLayouterImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
+RowN LineManagerImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
 {
     std::unique_lock<std::mutex> lock(mtxPartInfos_);
     PartInfo &info = partIdToInfos_[id];
@@ -73,7 +73,7 @@ RowN TextLayouterImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
     return rowCount_;
 }
 
-TextLayouterImpl::TextLayouterWorker::TextLayouterWorker(
+LineManagerImpl::TextLayouterWorker::TextLayouterWorker(
     const font::FontIndex &fontIndex,
     BlockQueue<std::function<void(TextLayouterWorker &worker)>> &taskQueue,
     const NewRowWalker::Config &config)
@@ -85,12 +85,12 @@ TextLayouterImpl::TextLayouterWorker::TextLayouterWorker(
 
 }
 
-TextLayouterImpl::TextLayouterWorker::~TextLayouterWorker() {
+LineManagerImpl::TextLayouterWorker::~TextLayouterWorker() {
     stopping_ = false;
     thread_.join();
 }
 
-TextLayouterImpl::PartInfo TextLayouterImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
+LineManagerImpl::PartInfo LineManagerImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
 {
     RowN rowCount = 0;
     RowN lineCount = 0;
@@ -126,7 +126,7 @@ TextLayouterImpl::PartInfo TextLayouterImpl::TextLayouterWorker::countLines(cons
 }
 
 
-void TextLayouterImpl::TextLayouterWorker::loop() {
+void LineManagerImpl::TextLayouterWorker::loop() {
     ThreadUtil::setNameForCurrentThread("TextLayouterWorker");
     while (!stopping_) {
         auto f = taskQueue_.pop();

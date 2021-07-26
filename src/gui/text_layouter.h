@@ -23,11 +23,11 @@ namespace gui
 namespace detail
 {
 
-class TextLayouterImpl : public std::enable_shared_from_this<TextLayouterImpl> {
+class LineManagerImpl : public std::enable_shared_from_this<LineManagerImpl> {
 public:
-    TextLayouterImpl(const TextAreaConfig &config, int width, doc::Document &document);
+    LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document);
 
-    virtual ~TextLayouterImpl();
+    virtual ~LineManagerImpl();
 
     Signal<void(RowN)> &sigRowCountUpdated() {
         return sigRowCountUpdated_;
@@ -90,14 +90,14 @@ private:
 
 }
 
-class TextLayouter {
+class LineManager {
 public:
-    TextLayouter(const TextAreaConfig &config, int width, doc::Document &document)
-        : ptr_(std::make_shared<detail::TextLayouterImpl>(config, width, document)) {
+    LineManager(const TextAreaConfig &config, int width, doc::Document &document)
+        : ptr_(std::make_shared<detail::LineManagerImpl>(config, width, document)) {
 
     }
 
-    ~TextLayouter() {
+    ~LineManager() {
     }
 
     Signal<void(RowN)> &sigRowCountUpdated() {
@@ -105,7 +105,7 @@ public:
     }
 
 private:
-    std::shared_ptr<detail::TextLayouterImpl> ptr_;
+    std::shared_ptr<detail::LineManagerImpl> ptr_;
 };
 
 

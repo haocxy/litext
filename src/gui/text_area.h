@@ -140,7 +140,7 @@ private:
     Editor &editor_;
     const TextAreaConfig &config_;
     Size size_;
-    TextLayouter textLayouter_;
+    LineManager lineManager_;
     Page page_;
     
     ViewLoc vloc_{ 0, 0 };
