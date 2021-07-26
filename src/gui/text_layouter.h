@@ -6,6 +6,7 @@
 #include <mutex>
 #include <vector>
 
+#include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/block_queue.h"
 #include "core/thread_pool.h"
@@ -28,10 +29,18 @@ public:
 
     virtual ~TextLayouterImpl();
 
-private:
-    void onPartLoaded(const doc::PartLoadedEvent &e);
+    Signal<void(RowN)> &sigRowCountUpdated() {
+        return sigRowCountUpdated_;
+    }
 
 private:
+
+    struct PartInfo {
+        PartInfo() {}
+        PartInfo(RowN rowCount, RowN lineCount) : rowCount(rowCount), lineCount(lineCount) {}
+        RowN rowCount = 0;
+        RowN lineCount = 0;
+    };
 
     class TextLayouterWorker {
     public:
@@ -43,7 +52,7 @@ private:
             stopping_ = true;
         }
 
-        RowN countLines(const MemBuff &utf16data);
+        PartInfo countLines(const MemBuff &utf16data);
 
     private:
         void loop();
@@ -56,6 +65,10 @@ private:
         NewRowWalker::Config config_;
     };
 
+    void onPartLoaded(const doc::PartLoadedEvent &e);
+
+    RowN updatePartInfo(int64_t id, const PartInfo &newInfo);
+
 private:
     BlockQueue<std::function<void(TextLayouterWorker &worker)>> taskQueue_;
     std::vector<std::unique_ptr<TextLayouterWorker>> workers_;
@@ -66,9 +79,13 @@ private:
     
     SigConns sigConns_;
 
+    Signal<void(RowN)> sigRowCountUpdated_;
+
 private:
-    std::mutex mtxPartToRowCount_;
-    std::map<int64_t, RowN> partToLineCount_;
+    std::mutex mtxPartInfos_;
+    std::map<int64_t, PartInfo> partIdToInfos_;
+    RowN rowCount_ = 0;
+    RowN lineCount_ = 0;
 };
 
 }
@@ -81,6 +98,10 @@ public:
     }
 
     ~TextLayouter() {
+    }
+
+    Signal<void(RowN)> &sigRowCountUpdated() {
+        return ptr_->sigRowCountUpdated();
     }
 
 private:

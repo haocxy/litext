@@ -55,13 +55,22 @@ void TextLayouterImpl::onPartLoaded(const doc::PartLoadedEvent &e)
         LOGD << "TextLayouter::onPartLoaded() start for part id [" << e.partId() << "]";
         ElapsedTime etime;
         const int64_t partId = e.partId();
-        const RowN lineCount = worker.countLines(e.utf16content());
-        {
-            std::unique_lock<std::mutex> lock(mtxPartToRowCount_);
-            partToLineCount_[partId] = lineCount;
-        }
-        LOGD << "TextLayouter::onPartLoaded() end for part id [" << partId << "] count [" << lineCount << "], time usage: [" << etime.milliSec() << " ms]";
+        const PartInfo partInfo = worker.countLines(e.utf16content());
+        const RowN totalRowCount = updatePartInfo(partId, partInfo);
+        LOGD << "TextLayouter::onPartLoaded() end for part id [" << partId << "] total row count [" << totalRowCount << "], time usage: [" << etime.milliSec() << " ms]";
     });
+}
+
+RowN TextLayouterImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
+{
+    std::unique_lock<std::mutex> lock(mtxPartInfos_);
+    PartInfo &info = partIdToInfos_[id];
+    rowCount_ -= info.rowCount;
+    lineCount_ -= info.lineCount;
+    info = newInfo;
+    rowCount_ += info.rowCount;
+    lineCount_ += info.lineCount;
+    return rowCount_;
 }
 
 TextLayouterImpl::TextLayouterWorker::TextLayouterWorker(
@@ -81,8 +90,9 @@ TextLayouterImpl::TextLayouterWorker::~TextLayouterWorker() {
     thread_.join();
 }
 
-RowN TextLayouterImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
+TextLayouterImpl::PartInfo TextLayouterImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
 {
+    RowN rowCount = 0;
     RowN lineCount = 0;
 
     std::u16string content(reinterpret_cast<const char16_t *>(utf16data.data()), utf16data.size() / 2);
@@ -95,6 +105,8 @@ RowN TextLayouterImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
         if (line.isNull()) {
             break;
         }
+
+        ++rowCount;
         UTF16CharInStream u16chars(line.data(), line.size() * 2);
         CharInStreamOverUTF16CharInStram charStream(u16chars);
         //RowWalker walker(config_, width_, charStream);
@@ -110,7 +122,7 @@ RowN TextLayouterImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
         });
     }
 
-    return lineCount;
+    return PartInfo(rowCount, lineCount);
 }
 
 
