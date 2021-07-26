@@ -59,7 +59,7 @@ static QString makeTestImgSavePath(const std::string &relative)
 
 static void logGlyph(const font::FontFace &f, const char *stage)
 {
-    font::FontFace::BitmapInfo b = f.bitmapInfo();
+    font::FontFace::BitmapView b = f.bitmap();
     const char *buf = b.buffer ? "not null" : "is null";
     LOGI << "glyph after [" << stage << "] is [buff:" << buf << ",width:" << b.width << ",rows:" << b.rows << ",pitch:" << b.pitch << "]";
 }
@@ -74,7 +74,7 @@ int entry(int argc, char *argv[])
     selectFont(fontContext, fontFile, fontFace);
     LOGI << "selected fontFile: " << fontFile.path();
     LOGI << "selected fontFace: " << fontFace.familyName();
-    fontFace.setPointSize(16);
+    fontFace.setPointSize(128);
     logGlyph(fontFace, "setPointSize");
     LOGI << "setPointSize(16) done";
     
@@ -91,7 +91,7 @@ int entry(int argc, char *argv[])
     logGlyph(fontFace, "renderGlyph");
     LOGI << "renderGlyph done";
 
-    font::FontFace::BitmapInfo b = fontFace.bitmapInfo();
+    font::FontFace::BitmapView b = fontFace.bitmap();
     QImage glyph(b.buffer, b.width, b.rows, b.pitch, QImage::Format_Indexed8);
     QVector<QRgb> colorTable;
     for (int i = 0; i < 256; ++i) {
