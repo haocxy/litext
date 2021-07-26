@@ -57,6 +57,13 @@ static QString makeTestImgSavePath(const std::string &relative)
     return QString::fromUtf8(s.c_str());
 }
 
+static void logGlyph(const font::FontFace &f, const char *stage)
+{
+    font::FontFace::BitmapInfo b = f.bitmapInfo();
+    const char *buf = b.buffer ? "not null" : "is null";
+    LOGI << "glyph after [" << stage << "] is [buff:" << buf << ",width:" << b.width << ",rows:" << b.rows << ",pitch:" << b.pitch << "]";
+}
+
 int entry(int argc, char *argv[])
 {
     QApplication app(argc, argv);
@@ -68,15 +75,20 @@ int entry(int argc, char *argv[])
     LOGI << "selected fontFile: " << fontFile.path();
     LOGI << "selected fontFace: " << fontFace.familyName();
     fontFace.setPointSize(16);
+    logGlyph(fontFace, "setPointSize");
     LOGI << "setPointSize(16) done";
+    
     const char32_t unicode = 0x7f16; // "编程" 的 "编" 的 unicode 编码
     const int64_t glyphIndex = fontFace.mapUnicodeToGlyphIndex(unicode);
+    logGlyph(fontFace, "mapUnicodeToGlyphIndex");
     LOGI << "glyphIndex: " << glyphIndex;
     
     fontFace.loadGlyph(glyphIndex);
+    logGlyph(fontFace, "loadGlyph");
     LOGI << "loadGlyph done";
 
     fontFace.renderGlyph();
+    logGlyph(fontFace, "renderGlyph");
     LOGI << "renderGlyph done";
 
     font::FontFace::BitmapInfo b = fontFace.bitmapInfo();
