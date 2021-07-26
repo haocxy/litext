@@ -51,24 +51,21 @@ public:
         return *this;
     }
 
-    void wakeupConsumer() {
+    void stop() {
         Lock lock(mtx_);
-        hasElemWakingUp_ = true;
-        cvhasElem_.notify_all();
-    }
-
-    void wakeupProducer() {
-        Lock lock(mtx_);
-        hasCapaWakingUp_ = true;
+        stopping_ = true;
         cvhasCapa_.notify_all();
+        cvhasElem_.notify_all();
     }
 
     bool push(const T &e) {
         Lock lock(mtx_);
+        if (stopping_) {
+            return false;
+        }
         while (q_.size() >= limit_) {
             cvhasCapa_.wait(lock);
-            if (hasCapaWakingUp_) {
-                hasCapaWakingUp_ = false;
+            if (stopping_) {
                 return false;
             }
         }
@@ -79,10 +76,12 @@ public:
 
     bool push(T &&e) {
         Lock lock(mtx_);
+        if (stopping_) {
+            return false;
+        }
         while (q_.size() >= limit_) {
             cvhasCapa_.wait(lock);
-            if (hasCapaWakingUp_) {
-                hasCapaWakingUp_ = false;
+            if (stopping_) {
                 return false;
             }
         }
@@ -93,10 +92,12 @@ public:
 
     std::optional<T> pop() {
         Lock lock(mtx_);
+        if (stopping_) {
+            return std::nullopt;
+        }
         while (q_.empty()) {
             cvhasElem_.wait(lock);
-            if (hasElemWakingUp_) {
-                hasElemWakingUp_ = false;
+            if (stopping_) {
                 return std::nullopt;
             }
         }
@@ -110,8 +111,7 @@ private:
     mutable std::mutex mtx_;
     mutable std::condition_variable cvhasElem_;
     mutable std::condition_variable cvhasCapa_;
-    bool hasElemWakingUp_ = false;
-    bool hasCapaWakingUp_ = false;
+    bool stopping_ = false;
     std::queue<T> q_;
     size_t limit_ = kDefaultLimit;
 };
