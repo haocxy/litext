@@ -5,6 +5,8 @@
 #include <sstream>
 #include <future>
 
+#include <QTextStream>
+
 #include "core/time_util.h"
 #include "core/logger.h"
 #include "core/readable_size_util.h"
@@ -25,10 +27,16 @@ RowN TextLayouterImpl::countLines(const MemBuff &utf16data)
     std::u16string content(reinterpret_cast<const char16_t *>(utf16data.data()), utf16data.size() / 2);
     std::basic_istringstream<char16_t> ss(content);
 
+    QString qstrData = QString::fromStdU16String(content);
+    QTextStream qtextStream(&qstrData);
+
     try {
 
-        std::u16string line;
-        while (std::getline(ss, line)) {
+        while (true) {
+            QString line = qtextStream.readLine();
+            if (line.isNull()) {
+                break;
+            }
             UTF16CharInStream u16chars(line.data(), line.size() * 2);
             CharInStreamOverUTF16CharInStram charStream(u16chars);
             //RowWalker walker(config_, width_, charStream);

@@ -161,8 +161,8 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
     saveDataStmt_.arg().arg(info.off).arg(info.len).arg(decodeBuff);
     saveDataStmt_.step();
 
-    LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset
-        << "], time usage[" << elapsedTime.milliSec() << " ms]";
+    //LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset
+    //<< "], time usage[" << elapsedTime.milliSec() << " ms]";
 
     PartLoadedEvent e;
     e.setPartId(saveDataStmt_.lastInsertRowId());
