@@ -1,9 +1,7 @@
 #include <set>
 
 #include <QApplication>
-#include <QPixmap>
 #include <QPainter>
-#include <QImage>
 
 #include "core/system_util.h"
 #include "core/font.h"
@@ -20,8 +18,6 @@ static void useDrawText()
     QPainter painter(&pix);
     painter.drawText(0, 0, "0");
 }
-
-
 
 static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
     static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC"};
@@ -69,72 +65,6 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
     }
 }
 
-static QString makeTestImgSavePath(const std::string &relative)
-{
-#ifdef WIN32
-    const fs::path base = "D:/tmp/";
-#else
-    const fs::path base = SystemUtil::userHome() / "tmp";
-#endif
-    const fs::path full = base / relative;
-    fs::create_directories(full.parent_path());
-    const std::string s = full.generic_string();
-    return QString::fromUtf8(s.c_str());
-}
-
-static void logGlyph(const font::FontFace &f, const char *stage)
-{
-    font::FontFace::BitmapView b = f.bitmap();
-    const char *buf = b.buffer ? "not null" : "is null";
-    LOGI << "glyph after [" << stage << "] is [buff:" << buf << ",width:" << b.width << ",rows:" << b.rows << ",pitch:" << b.pitch << "]";
-}
-
-static void testFont()
-{
-    font::FontContext fontContext;
-    font::FontFile fontFile;
-    font::FontFace fontFace;
-    selectFont(fontContext, fontFile, fontFace);
-    LOGI << "selected fontFile: " << fontFile.path();
-    LOGI << "selected fontFace: " << fontFace.familyName();
-    fontFace.setPointSize(128);
-    logGlyph(fontFace, "setPointSize");
-    LOGI << "setPointSize(16) done";
-
-    const char32_t unicode = 0x7f16; // "编程" 的 "编" 的 unicode 编码
-    const int64_t glyphIndex = fontFace.mapUnicodeToGlyphIndex(unicode);
-    logGlyph(fontFace, "mapUnicodeToGlyphIndex");
-    LOGI << "glyphIndex: " << glyphIndex;
-
-    fontFace.loadGlyph(glyphIndex);
-    logGlyph(fontFace, "loadGlyph");
-    LOGI << "loadGlyph done";
-
-    fontFace.renderGlyph();
-    logGlyph(fontFace, "renderGlyph");
-    LOGI << "renderGlyph done";
-
-    font::FontFace::BitmapView b = fontFace.bitmap();
-    QImage glyph(b.buffer, b.width, b.rows, b.pitch, QImage::Format_Indexed8);
-    QVector<QRgb> colorTable;
-    for (int i = 0; i < 256; ++i) {
-        colorTable << qRgba(0, 0, 0, i);
-    }
-    glyph.setColorTable(colorTable);
-    const QString glyphSaveFile = makeTestImgSavePath("glyph.png");
-    glyph.save(glyphSaveFile, "png");
-    LOGI << "saved: " << glyphSaveFile.toStdString();
-
-    QPixmap img(800, 600);
-    QPainter painter(&img);
-    painter.fillRect(img.rect(), Qt::white);
-    painter.drawImage(QPoint(0, 0), glyph);
-
-    const QString renderedSaveFile = makeTestImgSavePath("rendered.png");
-    img.save(renderedSaveFile, "png");
-    LOGI << "saved: " << renderedSaveFile.toStdString();
-}
-
 static font::FontIndex selectFont()
 {
     font::FontContext context;
@@ -151,8 +81,6 @@ static font::FontIndex selectFont()
 int entry(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-
-    testFont();
 
     // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
     // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
