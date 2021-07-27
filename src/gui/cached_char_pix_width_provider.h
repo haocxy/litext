@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
 
 #include "core/font_index.h"
 #include "core/font.h"
@@ -23,7 +24,7 @@ private:
     font::FontContext context_;
     font::FontFile fontFile_;
     font::FontFace fontFace_;
-    std::map<char32_t, int> cacheUnicodeToPixWidth_;
+    std::unordered_map<char32_t, int> cacheUnicodeToPixWidth_{ 65536 };
 };
 
 }
