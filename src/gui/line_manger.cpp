@@ -22,9 +22,7 @@ namespace gui::detail
 
 
 LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document)
-    : worker_("TextLayouter", 1)
-    , config_(config)
-    , width_(width)
+    : config_(config)
     , document_(document)
 {
     NewRowWalker::Config walkerConfig(config, width);
@@ -32,7 +30,7 @@ LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::D
     const int workerCount = std::max(4, SystemUtil::processorCount() / 2);
 
     for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<TextLayouterWorker>(config_.fontIndex(), taskQueue_, walkerConfig));
+        workers_.push_back(std::make_unique<Worker>(config_.fontIndex(), taskQueue_, walkerConfig));
     }
 
     sigConns_ += document_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
@@ -42,17 +40,13 @@ LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::D
 
 LineManagerImpl::~LineManagerImpl()
 {
-    for (auto &worker : workers_) {
-        worker->stop();
-    }
-
     taskQueue_.stop();
 }
 
 void LineManagerImpl::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     auto self(shared_from_this());
-    taskQueue_.push([this, self, e](TextLayouterWorker &worker) {
+    taskQueue_.push([this, self, e](Worker &worker) {
         const int64_t partId = e.partId();
         ElapsedTime elapse;
         const PartInfo partInfo = worker.countLines(e.utf16content());
@@ -74,9 +68,9 @@ RowN LineManagerImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
     return rowCount_;
 }
 
-LineManagerImpl::TextLayouterWorker::TextLayouterWorker(
+LineManagerImpl::Worker::Worker(
     const font::FontIndex &fontIndex,
-    BlockQueue<std::function<void(TextLayouterWorker &worker)>> &taskQueue,
+    BlockQueue<std::function<void(Worker &worker)>> &taskQueue,
     const NewRowWalker::Config &config)
     : taskQueue_(taskQueue)
     , thread_([this] { loop(); })
@@ -86,12 +80,12 @@ LineManagerImpl::TextLayouterWorker::TextLayouterWorker(
 
 }
 
-LineManagerImpl::TextLayouterWorker::~TextLayouterWorker() {
-    stopping_ = false;
+LineManagerImpl::Worker::~Worker() {
+    stopping_ = true;
     thread_.join();
 }
 
-LineManagerImpl::PartInfo LineManagerImpl::TextLayouterWorker::countLines(const MemBuff &utf16data)
+LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const MemBuff &utf16data)
 {
     RowN rowCount = 0;
     RowN lineCount = 0;
@@ -127,8 +121,8 @@ LineManagerImpl::PartInfo LineManagerImpl::TextLayouterWorker::countLines(const 
 }
 
 
-void LineManagerImpl::TextLayouterWorker::loop() {
-    ThreadUtil::setNameForCurrentThread("TextLayouterWorker");
+void LineManagerImpl::Worker::loop() {
+    ThreadUtil::setNameForCurrentThread("LineManager-Worker");
     while (!stopping_) {
         auto f = taskQueue_.pop();
         if (f) {

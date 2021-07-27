@@ -42,11 +42,11 @@ private:
         RowN lineCount = 0;
     };
 
-    class TextLayouterWorker {
+    class Worker {
     public:
-        TextLayouterWorker(const font::FontIndex &fontIndex, BlockQueue<std::function<void(TextLayouterWorker &worker)>> &taskQueue, const NewRowWalker::Config &config);
+        Worker(const font::FontIndex &fontIndex, BlockQueue<std::function<void(Worker &worker)>> &taskQueue, const NewRowWalker::Config &config);
 
-        ~TextLayouterWorker();
+        ~Worker();
 
         void stop() {
             stopping_ = true;
@@ -58,7 +58,7 @@ private:
         void loop();
 
     private:
-        BlockQueue<std::function<void(TextLayouterWorker &worker)>> &taskQueue_;
+        BlockQueue<std::function<void(Worker &worker)>> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
         CachedCharPixWidthProvider widthProvider_;
@@ -70,11 +70,9 @@ private:
     RowN updatePartInfo(int64_t id, const PartInfo &newInfo);
 
 private:
-    BlockQueue<std::function<void(TextLayouterWorker &worker)>> taskQueue_;
-    std::vector<std::unique_ptr<TextLayouterWorker>> workers_;
-    ThreadPool worker_;
+    BlockQueue<std::function<void(Worker &worker)>> taskQueue_;
+    std::vector<std::unique_ptr<Worker>> workers_;
     const TextAreaConfig config_;
-    int width_ = 0;
     doc::Document &document_;
     
     SigConns sigConns_;
