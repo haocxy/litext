@@ -20,14 +20,21 @@
 namespace gui::detail
 {
 
+// 工作线程数量
+// 使用一半的CPU，确保用户体验
+static int decideWorkerCount()
+{
+    return std::max(1, SystemUtil::processorCount() / 2);
+}
 
 LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document)
-    : config_(config)
+    : taskQueue_(decideWorkerCount())
+    , config_(config)
     , document_(document)
 {
-    NewRowWalker::Config walkerConfig(config, width);
+    const int workerCount = decideWorkerCount();
 
-    const int workerCount = std::max(4, SystemUtil::processorCount() / 2);
+    NewRowWalker::Config walkerConfig(config, width);
 
     for (int i = 0; i < workerCount; ++i) {
         workers_.push_back(std::make_unique<Worker>(config_.fontIndex(), taskQueue_, walkerConfig));
