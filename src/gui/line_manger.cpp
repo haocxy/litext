@@ -8,6 +8,7 @@
 #include <QTextStream>
 
 #include "core/thread_util.h"
+#include "core/system_util.h"
 #include "core/time_util.h"
 #include "core/logger.h"
 #include "core/readable_size_util.h"
@@ -26,11 +27,11 @@ LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::D
     , width_(width)
     , document_(document)
 {
-    const int workCount = 4;
-
     NewRowWalker::Config walkerConfig(config, width);
 
-    for (int i = 0; i < workCount; ++i) {
+    const int workerCount = std::max(4, SystemUtil::processorCount() / 2);
+
+    for (int i = 0; i < workerCount; ++i) {
         workers_.push_back(std::make_unique<TextLayouterWorker>(config_.fontIndex(), taskQueue_, walkerConfig));
     }
 
@@ -53,7 +54,9 @@ void LineManagerImpl::onPartLoaded(const doc::PartLoadedEvent &e)
     auto self(shared_from_this());
     taskQueue_.push([this, self, e](TextLayouterWorker &worker) {
         const int64_t partId = e.partId();
+        ElapsedTime elapse;
         const PartInfo partInfo = worker.countLines(e.utf16content());
+        LOGD << "LineManager part[" << partId << "], linecount[" << partInfo.lineCount << "], time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(partId, partInfo);
         sigRowCountUpdated_(totalRowCount);
     });
