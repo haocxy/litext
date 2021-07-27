@@ -85,15 +85,12 @@ LineManagerImpl::Worker::~Worker() {
     thread_.join();
 }
 
-LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const MemBuff &utf16data)
+LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const QString &content)
 {
     RowN rowCount = 0;
     RowN lineCount = 0;
 
-    std::u16string content(reinterpret_cast<const char16_t *>(utf16data.data()), utf16data.size() / 2);
-
-    QString qstrData = QString::fromStdU16String(content);
-    QTextStream qtextStream(&qstrData);
+    QTextStream qtextStream(const_cast<QString *>(&content), QIODevice::ReadOnly);
 
     while (true) {
         QString line = qtextStream.readLine();

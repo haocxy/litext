@@ -52,7 +52,7 @@ private:
             stopping_ = true;
         }
 
-        PartInfo countLines(const MemBuff &utf16data);
+        PartInfo countLines(const QString &content);
 
     private:
         void loop();

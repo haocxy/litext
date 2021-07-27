@@ -2,6 +2,8 @@
 
 #include <chrono>
 
+#include <QTextCodec>
+
 #include "core/logger.h"
 #include "core/time_util.h"
 #include "core/system_util.h"
@@ -152,13 +154,18 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
 
     ElapsedTime elapsedTime;
 
-    CharsetConverter converter;
-    converter.open(info.charset, Charset::UTF_16);
+    QTextCodec *codec = QTextCodec::codecForName(CharsetUtil::charsetToStr(info.charset));
+    if (!codec) {
+        LOGE << title << "cannot get codec by charset name [" << CharsetUtil::charsetToStr(info.charset) << "]";
+        return; // TODO 错误处理
+    }
 
-    MemBuff decodeBuff = converter.convert(readBuff);
+    std::unique_ptr<QTextDecoder> decoder(codec->makeDecoder());
+
+    QString content = decoder->toUnicode(reinterpret_cast<const char *>(readBuff.data()), readBuff.size());
 
     saveDataStmt_.reset();
-    saveDataStmt_.arg().arg(info.off).arg(info.len).arg(decodeBuff);
+    saveDataStmt_.arg().arg(info.off).arg(info.len).arg(content.constData(), content.size() * 2);
     saveDataStmt_.step();
 
     LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
@@ -168,7 +175,7 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
     e.setFileSize(fs::file_size(docPath_));
     e.setPartOffset(info.off);
     e.setPartSize(info.len);
-    e.utf16content() = std::move(decodeBuff);
+    e.setContent(std::move(content));
 
     sigPartLoaded_(e);
 }
