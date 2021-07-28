@@ -10,6 +10,8 @@
 namespace ThreadUtil
 {
 
+#ifndef NDEBUG
+
 void setNameForCurrentThread(const std::string &name)
 {
     if (name.empty()) {
@@ -38,5 +40,9 @@ void setNameForCurrentThread(const std::string &name)
     SetThreadDescription(GetCurrentThread(), wstr.c_str());
 #endif
 }
+
+#else
+void setNameForCurrentThread(const std::string &name) {}
+#endif
 
 }

@@ -41,3 +41,44 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
+
+
+install(TARGETS notesharp
+    RUNTIME
+    DESTINATION bin
+    CONFIGURATIONS Release
+)
+
+file(GLOB_RECURSE asset_files "assets/*")
+install(FILES ${asset_files} DESTINATION assets)
+
+find_file(dlib_qt5core "Qt5Core.dll")
+find_file(dlib_qt5gui "Qt5Gui.dll")
+find_file(dlib_qt5widgets "Qt5Widgets.dll")
+find_file(dlib_zlibd "zlibd.dll")
+find_file(dlib_png "libpng16d.dll")
+find_file(dlib_msvcp140 "MSVCP140.dll")
+find_file(dlib_vcruntime140 "VCRUNTIME140.dll")
+find_file(dlib_vcruntime140_1 "VCRUNTIME140_1.dll")
+find_file(dlib_vcruntime140d "VCRUNTIME140D.dll")
+find_file(dlib_ucrtbased "ucrtbased.dll")
+install(
+    FILES
+        ${dlib_qt5core}
+        ${dlib_qt5gui}
+        ${dlib_qt5widgets}
+        ${dlib_zlibd}
+        ${dlib_png}
+        ${dlib_msvcp140}
+        ${dlib_vcruntime140}
+        ${dlib_vcruntime140_1}
+        ${dlib_vcruntime140d}
+        ${dlib_ucrtbased}
+    DESTINATION bin
+)
+
+set(CPACK_GENERATOR ZIP)
+set(CPACK_PACKAGE_NAME "NoteSharp")
+include(CPack)
+
+
