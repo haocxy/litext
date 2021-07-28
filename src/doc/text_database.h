@@ -10,6 +10,7 @@
 #include "core/membuff.h"
 #include "core/thread_pool.h"
 
+#include "text_repo.h"
 #include "part_loaded_event.h"
 
 
@@ -46,10 +47,6 @@ public:
     }
 
 private:
-    bool prepareDatabase();
-
-    bool prepareSaveDataStatement();
-
     struct LoadingPartInfo {
         uintmax_t off = 0;
         uintmax_t len = 0;
@@ -66,11 +63,9 @@ private:
 
 private:
     const fs::path docPath_;
-    const fs::path dbPath_;
     std::ifstream ifs_;
     ThreadPool worker_{"TextDatabase", 1};
-    Db db_;
-    Statement saveDataStmt_;
+    TextRepo textRepo_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;

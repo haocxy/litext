@@ -19,8 +19,8 @@ namespace doc::detail
 
 TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath)
     : docPath_(docPath)
-    , dbPath_(docPath.generic_string() + ".notesharpdb")
     , ifs_(docPath, std::ios::binary)
+    , textRepo_(docPath.generic_string() + ".notesharpdb")
 {
 
 }
@@ -47,48 +47,6 @@ static void clearFile(const fs::path &file)
 static bool shouldClearDbFile(const fs::path &dbFile)
 {
     return true;
-}
-
-bool TextDatabaseImpl::prepareDatabase()
-{
-    if (shouldClearDbFile(dbPath_)) {
-        clearFile(dbPath_);
-        LOGD << "TextDatabaseImpl::prepareDatabase() db file [" << dbPath_ << "] cleared";
-    }
-
-    try {
-        db_.open(dbPath_);
-
-        db_.exec(reinterpret_cast<const char *>(Asset::Data::prepare_db__sql));
-
-        return true;
-    }
-    catch (const std::exception &e) {
-        LOGE << "TextDatabaseImpl::prepareDatabase() failed because" << ": " << e.what();
-        return false;
-    }
-    catch (...) {
-        LOGE << "TextDatabaseImpl::prepareDatabase() failed because" << "unknown exception";
-        return false;
-    }
-}
-
-bool TextDatabaseImpl::prepareSaveDataStatement()
-{
-    try {
-
-        saveDataStmt_.open(db_, "INSERT INTO doc VALUES(?,?,?,?);");
-
-        return true;
-    }
-    catch (std::exception &e) {
-        LOGE << "TextDatabaseImpl::prepareSaveDataStatement() failed because" << ": " << e.what();
-        return false;
-    }
-    catch (...) {
-        LOGE << "TextDatabaseImpl::prepareSaveDataStatement() failed because" << "unknown exception";
-        return false;
-    }
 }
 
 static uintmax_t partSize() {
@@ -156,22 +114,21 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
 
     QTextCodec *codec = QTextCodec::codecForName(CharsetUtil::charsetToStr(info.charset));
     if (!codec) {
-        LOGE << title << "cannot get codec by charset name [" << CharsetUtil::charsetToStr(info.charset) << "]";
-        return; // TODO 错误处理
+        std::ostringstream ss;
+        ss << "cannot get codec by charset name [" << CharsetUtil::charsetToStr(info.charset) << "]";
+        throw std::logic_error(ss.str());
     }
 
     std::unique_ptr<QTextDecoder> decoder(codec->makeDecoder());
 
     QString content = decoder->toUnicode(reinterpret_cast<const char *>(readBuff.data()), readBuff.size());
 
-    saveDataStmt_.reset();
-    saveDataStmt_.arg().arg(info.off).arg(info.len).arg(content.constData(), content.size() * 2);
-    saveDataStmt_.step();
+    const i64 id = textRepo_.savePart(info.off, content.constData(), static_cast<i64>(content.size()) * 2);
 
     LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
     PartLoadedEvent e;
-    e.setPartId(saveDataStmt_.lastInsertRowId());
+    e.setPartId(id);
     e.setFileSize(fs::file_size(docPath_));
     e.setPartOffset(info.off);
     e.setPartSize(info.len);
@@ -184,19 +141,7 @@ void TextDatabaseImpl::loadAll()
 {
     static const char *title = "TextDatabaseImpl::loadAll() ";
 
-    if (!prepareDatabase()) {
-        // TODO
-        return;
-    }
-
-    if (!prepareSaveDataStatement()) {
-        // TODO
-        return;
-    }
-
     ElapsedTime elapsedTime;
-
-    LOGD << title << "start for file [" << dbPath_ << "]";
 
     MemBuff readBuff;
     CharsetDetector charsetDetector;
@@ -238,7 +183,6 @@ void TextDatabaseImpl::loadAll()
 
     readBuff.clear();
 
-    LOGD << title << "end for file [" << dbPath_ << "]";
     LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
     LOGD << title << "time usage : " << elapsedTime.milliSec() << "ms";
 

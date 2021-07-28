@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 
+#include "primitive_types.h"
 #include "membuff.h"
 #include "fs.h"
 
