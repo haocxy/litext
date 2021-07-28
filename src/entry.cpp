@@ -1,4 +1,5 @@
 #include <set>
+#include <iostream>
 
 #include <QApplication>
 #include <QPainter>
@@ -80,35 +81,41 @@ static font::FontIndex selectFont()
 
 int entry(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    try {
+        QApplication app(argc, argv);
 
-    // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
-    // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
-    // 虽然没有看 Qt 的内部实现，但猜测是由于某种延迟加载的机制导致的，
-    // 所以解决办法就是在窗口显示前提前使用这个函数（注意，绘制的文本不能为空字符串）
-    useDrawText();
+        // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
+        // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
+        // 虽然没有看 Qt 的内部实现，但猜测是由于某种延迟加载的机制导致的，
+        // 所以解决办法就是在窗口显示前提前使用这个函数（注意，绘制的文本不能为空字符串）
+        useDrawText();
 
-    logger::control::Option logOpt;
-    logOpt.setLevel("all");
-    logOpt.setDir("D:/tmp/log");
-    logOpt.setBasename("notesharplog");
-    logOpt.setAlwaysFlush(true);
-    logger::control::init(logOpt);
+        logger::control::Option logOpt;
+        logOpt.setLevel("all");
+        logOpt.setDir("./tmp/log");
+        logOpt.setBasename("notesharplog");
+        logOpt.setAlwaysFlush(true);
+        logger::control::init(logOpt);
 
-    gui::Config config;
-    const font::FontIndex fontIndex = selectFont();
-    if (!fontIndex) {
-        LOGE << "select font failed";
+        gui::Config config;
+        const font::FontIndex fontIndex = selectFont();
+        if (!fontIndex) {
+            LOGE << "select font failed";
+            return 1;
+        }
+
+        config.textAreaConfig().setFontIndex(fontIndex);
+
+        gui::qt::MainWindow mainWindow(config);
+        if (argc > 1) {
+            mainWindow.openDocument(argv[1]);
+        }
+        mainWindow.show();
+
+        return app.exec();
+    }
+    catch (const std::exception &e) {
+        std::cerr << "exception: " << e.what() << std::endl;
         return 1;
     }
-
-    config.textAreaConfig().setFontIndex(fontIndex);
-
-    gui::qt::MainWindow mainWindow(config);
-    if (argc > 1) {
-        mainWindow.openDocument(argv[1]);
-    }
-    mainWindow.show();
-
-    return app.exec();
 }

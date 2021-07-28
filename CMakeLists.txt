@@ -77,6 +77,15 @@ install(
     DESTINATION bin
 )
 
+function(install_qt_plugin relative_dir plugin_name)
+    find_file(plugin_file ${plugin_name} PATH_SUFFIXES "plugins/${relative_dir}")
+    install(FILES "${plugin_file}" DESTINATION "bin/${relative_dir}")
+endfunction()
+
+install_qt_plugin(platforms "qwindows.dll")
+install_qt_plugin(styles "qwindowsvistastyle.dll")
+
+
 set(CPACK_GENERATOR ZIP)
 set(CPACK_PACKAGE_NAME "NoteSharp")
 include(CPack)
