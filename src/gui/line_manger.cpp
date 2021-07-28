@@ -17,7 +17,7 @@
 #include "row_walker.h"
 
 
-namespace gui::detail
+namespace gui
 {
 
 // 工作线程数量
@@ -27,7 +27,7 @@ static int decideWorkerCount()
     return std::max(1, SystemUtil::processorCount() / 2);
 }
 
-LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document)
+LineManager::LineManager(const TextAreaConfig &config, int width, doc::Document &document)
     : taskQueue_(decideWorkerCount())
     , config_(config.hLayout())
     , document_(document)
@@ -43,15 +43,16 @@ LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::D
     });
 }
 
-LineManagerImpl::~LineManagerImpl()
+LineManager::~LineManager()
 {
     taskQueue_.stop();
+
+    workers_.clear();
 }
 
-void LineManagerImpl::onPartLoaded(const doc::PartLoadedEvent &e)
+void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 {
-    auto self(shared_from_this());
-    taskQueue_.push([this, self, e](Worker &worker) {
+    taskQueue_.push([this, e](Worker &worker) {
         const int64_t partId = e.partId();
         ElapsedTime elapse;
         const PartInfo partInfo = worker.countLines(e.utf16content());
@@ -61,7 +62,7 @@ void LineManagerImpl::onPartLoaded(const doc::PartLoadedEvent &e)
     });
 }
 
-RowN LineManagerImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
+RowN LineManager::updatePartInfo(int64_t id, const PartInfo &newInfo)
 {
     std::unique_lock<std::mutex> lock(mtxPartInfos_);
     PartInfo &info = partIdToInfos_[id];
@@ -73,7 +74,7 @@ RowN LineManagerImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
     return rowCount_;
 }
 
-LineManagerImpl::Worker::Worker(
+LineManager::Worker::Worker(
     const font::FontIndex &fontIndex,
     BlockQueue<std::function<void(Worker &worker)>> &taskQueue,
     const HLayoutConfig &config,
@@ -87,19 +88,19 @@ LineManagerImpl::Worker::Worker(
 
 }
 
-LineManagerImpl::Worker::~Worker() {
+LineManager::Worker::~Worker() {
     stopping_ = true;
     thread_.join();
 }
 
-LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const QString &content)
+LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
 {
     RowN rowCount = 0;
     RowN lineCount = 0;
 
     QTextStream qtextStream(const_cast<QString *>(&content), QIODevice::ReadOnly);
 
-    while (true) {
+    while (!stopping_) {
         QString line = qtextStream.readLine();
         if (line.isNull()) {
             break;
@@ -124,7 +125,7 @@ LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const QString &con
 }
 
 
-void LineManagerImpl::Worker::loop() {
+void LineManager::Worker::loop() {
     ThreadUtil::setNameForCurrentThread("LineManager-Worker");
     while (!stopping_) {
         auto f = taskQueue_.pop();

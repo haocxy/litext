@@ -20,14 +20,11 @@
 namespace gui
 {
 
-namespace detail
-{
-
-class LineManagerImpl : public std::enable_shared_from_this<LineManagerImpl> {
+class LineManager {
 public:
-    LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document);
+    LineManager(const TextAreaConfig &config, int width, doc::Document &document);
 
-    virtual ~LineManagerImpl();
+    ~LineManager();
 
     Signal<void(RowN)> &sigRowCountUpdated() {
         return sigRowCountUpdated_;
@@ -89,25 +86,3 @@ private:
 
 }
 
-class LineManager {
-public:
-    LineManager(const TextAreaConfig &config, int width, doc::Document &document)
-        : ptr_(std::make_shared<detail::LineManagerImpl>(config, width, document)) {
-
-    }
-
-    ~LineManager() {
-    }
-
-    Signal<void(RowN)> &sigRowCountUpdated() {
-        return ptr_->sigRowCountUpdated();
-    }
-
-private:
-    std::shared_ptr<detail::LineManagerImpl> ptr_;
-};
-
-
-
-
-}
