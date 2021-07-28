@@ -38,7 +38,7 @@ Document::~Document()
 
 void Document::start()
 {
-    loader_.start();
+    loader_.loadAll();
 }
 
 }

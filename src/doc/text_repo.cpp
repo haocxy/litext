@@ -20,7 +20,6 @@ TextRepo::TextRepo(const fs::path &dbFile)
         db_.open(dbFile);
         db_.exec(reinterpret_cast<const char *>
             (Asset::Data::prepare_db__sql));
-        stSavePart_.open(db_, "INSERT INTO doc VALUES(?,?,?,?);");
     }
     catch (const std::exception &e) {
         LOGE << "db exception: " << e.what();
@@ -32,15 +31,9 @@ TextRepo::~TextRepo()
 {
 }
 
-i64 TextRepo::savePart(i64 off, const void *data, i64 nbytes)
+TextRepo::SavePartStmt TextRepo::stmtSavePart()
 {
-    stSavePart_.reset();
-    stSavePart_.arg(); // id
-    stSavePart_.arg(off); // off
-    stSavePart_.arg(data, nbytes); // data
-    stSavePart_.arg(nbytes); // nbytes
-    stSavePart_.step();
-    return stSavePart_.lastInsertRowId();
+    return SavePartStmt(db_);
 }
 
 bool TextRepo::shouldClearDb()
@@ -51,6 +44,22 @@ bool TextRepo::shouldClearDb()
 void TextRepo::clearDb()
 {
     std::ofstream ofs(dbFile_, std::ios::binary);
+}
+
+i64 TextRepo::SavePartStmt::operator()(i64 off, const void *data, i64 nbytes)
+{
+    stmt_.reset();
+    stmt_.arg(); // id
+    stmt_.arg(off); // off
+    stmt_.arg(data, nbytes); // data
+    stmt_.arg(nbytes); // nbytes
+    stmt_.step();
+    return stmt_.lastInsertRowId();
+}
+
+TextRepo::SavePartStmt::SavePartStmt(sqlite::Database &db)
+{
+    stmt_.open(db, "INSERT INTO doc VALUES(?,?,?,?);");
 }
 
 }
