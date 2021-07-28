@@ -28,8 +28,8 @@ public:
         return pad_;
     }
 
-    void setHMargin(int hMargin) {
-        pad_ = hMargin;
+    void setPad(int pad) {
+        pad_ = pad;
     }
 
     i32 tabSize() const {

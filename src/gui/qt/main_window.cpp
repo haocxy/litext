@@ -25,7 +25,7 @@ static void setupConfig(TextAreaConfig &c)
     HLayoutConfig hLayout;
 
     hLayout.setGap(2);
-    hLayout.setHMargin(0);
+    hLayout.setPad(0);
     hLayout.setTabSize(4);
     hLayout.setWrapLine(true);
     c.setHLayout(hLayout);
