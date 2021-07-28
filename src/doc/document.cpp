@@ -11,20 +11,20 @@ namespace detail
 
 Document::Document(const fs::path &path)
     : path_(path)
-    , textDb_(path)
+    , loader_(path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
-    sigConns_ += textDb_.sigCharsetDetected().connect([this](Charset charset) {
+    sigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
         charset_ = charset;
         sigCharsetDetected_(charset);
     });
 
-    sigConns_ += textDb_.sigPartLoaded().connect([this](const PartLoadedEvent &e) {
+    sigConns_ += loader_.sigPartLoaded().connect([this](const PartLoadedEvent &e) {
         sigPartLoaded_(e);
     });
 
-    sigConns_ += textDb_.sigAllLoaded().connect([this] {
+    sigConns_ += loader_.sigAllLoaded().connect([this] {
         sigAllLoaded_();
     });
 
@@ -38,7 +38,7 @@ Document::~Document()
 
 void Document::start()
 {
-    textDb_.start();
+    loader_.start();
 }
 
 }

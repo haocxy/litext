@@ -40,7 +40,7 @@ public:
 private:
     const fs::path path_;
     ThreadPool worker_{ "Document", 1 };
-    TextDatabase textDb_;
+    TextLoader loader_;
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns sigConns_;
     Signal<void(Charset)> sigCharsetDetected_;

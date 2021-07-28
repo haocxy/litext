@@ -17,7 +17,7 @@
 namespace doc
 {
 
-TextDatabase::TextDatabase(const fs::path &docPath)
+TextLoader::TextLoader(const fs::path &docPath)
     : docPath_(docPath)
     , ifs_(docPath, std::ios::binary)
     , textRepo_(docPath.generic_string() + ".notesharpdb")
@@ -25,33 +25,23 @@ TextDatabase::TextDatabase(const fs::path &docPath)
 
 }
 
-TextDatabase::~TextDatabase()
+TextLoader::~TextLoader()
 {
     worker_.stop();
 }
 
-void TextDatabase::start()
+void TextLoader::start()
 {
     asyncLoadAll();
-}
-
-static void clearFile(const fs::path &file)
-{
-    std::ofstream ofs(file, std::ios::binary);
-}
-
-static bool shouldClearDbFile(const fs::path &dbFile)
-{
-    return true;
 }
 
 static uintmax_t partSize() {
     return SystemUtil::pageSize() * 1024;
 }
 
-void TextDatabase::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info)
+void TextLoader::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info)
 {
-    const char *title = "TextDatabase::loadPart() ";
+    const char *title = "TextLoader::loadPart() ";
 
     ElapsedTime elapsedTime;
 
@@ -80,9 +70,9 @@ void TextDatabase::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info
     sigPartLoaded_(e);
 }
 
-void TextDatabase::loadAll()
+void TextLoader::loadAll()
 {
-    static const char *title = "TextDatabase::loadAll() ";
+    static const char *title = "TextLoader::loadAll() ";
 
     ElapsedTime elapsedTime;
 
@@ -131,7 +121,7 @@ void TextDatabase::loadAll()
     sigAllLoaded_();
 }
 
-void TextDatabase::asyncLoadAll()
+void TextLoader::asyncLoadAll()
 {
     worker_.post([this] {
         loadAll();

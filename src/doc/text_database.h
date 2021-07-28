@@ -6,7 +6,6 @@
 #include "core/fs.h"
 #include "core/signal.h"
 #include "core/charset.h"
-#include "core/sqlite.h"
 #include "core/membuff.h"
 #include "core/thread_pool.h"
 
@@ -17,15 +16,11 @@
 namespace doc
 {
 
-class TextDatabase {
+class TextLoader {
 public:
-    using Db = sqlite::Database;
+    TextLoader(const fs::path &docPath);
 
-    using Statement = sqlite::Statement;
-
-    TextDatabase(const fs::path &docPath);
-
-    virtual ~TextDatabase();
+    ~TextLoader();
 
     void start();
 
