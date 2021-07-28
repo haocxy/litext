@@ -77,14 +77,11 @@ install(
     DESTINATION bin
 )
 
-function(install_qt_plugin relative_dir plugin_name)
-    find_file(plugin_file ${plugin_name} PATH_SUFFIXES "plugins/${relative_dir}")
-    install(FILES "${plugin_file}" DESTINATION "bin/${relative_dir}")
-endfunction()
+find_file(dlib_qtplugin_platforms_windows "qwindows.dll" PATH_SUFFIXES plugins/platforms)
+install(FILES ${dlib_qtplugin_platforms_windows} DESTINATION bin/platforms)
 
-install_qt_plugin(platforms "qwindows.dll")
-install_qt_plugin(styles "qwindowsvistastyle.dll")
-
+find_file(dlib_qtplugin_styles_vistastyle "qwindowsvistastyle.dll" PATH_SUFFIXES plugins/styles)
+install(FILES ${dlib_qtplugin_styles_vistastyle} DESTINATION bin/styles)
 
 set(CPACK_GENERATOR ZIP)
 set(CPACK_PACKAGE_NAME "NoteSharp")
