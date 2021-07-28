@@ -11,7 +11,7 @@
 #include "core/charset_converter.h"
 #include "core/readable_size_util.h"
 
-#include "sql/asset.prepare_db.sql.h"
+#include "skip_row.h"
 
 
 namespace doc::detail
@@ -51,59 +51,6 @@ static bool shouldClearDbFile(const fs::path &dbFile)
 
 static uintmax_t partSize() {
     return SystemUtil::pageSize() * 1024;
-}
-
-static void skipRowEndForAscii(std::ifstream &ifs, std::vector<unsigned char> &skipBuff) {
-    constexpr char eof = std::ifstream::traits_type::eof();
-    char ch = 0;
-    while ((ch = ifs.get()) != eof) {
-        skipBuff.push_back(ch);
-        if (ch == '\r') {
-            char next = 0;
-            if ((next = ifs.get()) != eof) {
-                if (next == '\n') {
-                    skipBuff.push_back(next);
-                    return;
-                } else {
-                    ifs.unget();
-                    continue;
-                }
-            } else {
-                return;
-            }
-        } else if (ch == '\n') {
-            return;
-        } else {
-            continue;
-        }
-    }
-}
-
-static void skipRowEndForUnknown(std::ifstream &ifs, std::vector<unsigned char> &skipBuff) {
-    skipRowEndForAscii(ifs, skipBuff);
-}
-
-// 把文件流ifs定位到换行字节组之后的下一个字节
-static void skipRowEnd(std::ifstream &ifs, Charset charset, std::vector<unsigned char> &skipBuff) {
-    switch (charset) {
-    case Charset::Ascii:
-    case Charset::UTF_8:
-    case Charset::GB18030:
-        skipRowEndForAscii(ifs, skipBuff);
-        return;
-    default:
-        skipRowEndForUnknown(ifs, skipBuff);
-        return;
-    }
-}
-
-static void moveFileStreamPosToAfterNewLine(Charset charset, std::ifstream &ifs, MemBuff &partBuff)
-{
-    std::vector<unsigned char> skipBuff;
-    skipRowEnd(ifs, charset, skipBuff);
-    if (!skipBuff.empty()) {
-        partBuff.append(skipBuff.data(), skipBuff.size());
-    }
 }
 
 void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info)
@@ -167,7 +114,7 @@ void TextDatabaseImpl::loadAll()
 
         sigCharsetDetected_(charset);
 
-        moveFileStreamPosToAfterNewLine(charset, ifs_, readBuff);
+        skipRow(charset, ifs_, readBuff);
 
         LoadingPartInfo info;
         info.off = offset;
