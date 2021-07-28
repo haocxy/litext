@@ -6,7 +6,7 @@
 #include "core/font_index.h"
 
 #include "char_pix_width_provider.h"
-#include "doc/horizontal_text_layout_config.h"
+#include "doc/layout_config.h"
 
 
 namespace gui
@@ -26,12 +26,12 @@ public:
         return lineHeightFactor_ * font_.height();
     }
 
-    const HorizontalTextLayoutConfig &horizontalTextLayout() const {
-        return horizontalTextLayout_;
+    const HLayoutConfig &horizontalTextLayout() const {
+        return hLayout_;
     }
 
-    void setHorizontalTextLayout(const HorizontalTextLayoutConfig &config) {
-        horizontalTextLayout_ = config;
+    void setHorizontalTextLayout(const HLayoutConfig &config) {
+        hLayout_ = config;
     }
 
     const FontOld &font() const {
@@ -67,7 +67,7 @@ public:
     }
 
 private:
-    HorizontalTextLayoutConfig horizontalTextLayout_;
+    HLayoutConfig hLayout_;
     f32 lineHeightFactor_ = 1.0f; // 行高系数，行高 = 行高系数 * 字体高度
     bool showLineNum_ = false; // 是否显示行号
     i32 lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值

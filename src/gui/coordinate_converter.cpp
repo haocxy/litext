@@ -58,13 +58,13 @@ Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
     }
 
     if (charLoc.isAfterLastRow()) {
-        return config_.horizontalTextLayout().hGap();
+        return config_.horizontalTextLayout().gap();
     }
 
     if (charLoc.isAfterLastChar()) {
         const VLine &line = page_[charLoc.row()][charLoc.line()];
         if (line.empty()) {
-            return config_.horizontalTextLayout().hGap();
+            return config_.horizontalTextLayout().gap();
         }
         const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
         return vc.x() + vc.width();

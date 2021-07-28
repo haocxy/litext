@@ -3,7 +3,7 @@
 #include <functional>
 
 #include "text/char_instream.h"
-#include "doc/horizontal_text_layout_config.h"
+#include "doc/layout_config.h"
 #include "char_pix_width_provider.h"
 #include "view_define.h"
 #include "view_char.h"
@@ -14,14 +14,14 @@ namespace gui
 
 class NewRowWalker {
 public:
-    NewRowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const HorizontalTextLayoutConfig &config, int widthLimit)
+    NewRowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const HLayoutConfig &h, int widthLimit)
         : widthProvider_(widthProvider)
         , charStream_(stream)
-        , wrapLine_(config.wrapLine())
+        , wrapLine_(h.wrapLine())
         , widthLimit_(widthLimit)
-        , hGap_(config.hGap())
-        , hMargin_(config.hMargin())
-        , tabSize_(config.tabSize()) {
+        , hGap_(h.gap())
+        , hMargin_(h.hMargin())
+        , tabSize_(h.tabSize()) {
 
 
     }

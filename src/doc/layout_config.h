@@ -4,9 +4,9 @@
 
 
 // 控制水平方向文本布局的配置
-class HorizontalTextLayoutConfig {
+class HLayoutConfig {
 public:
-    HorizontalTextLayoutConfig() {}
+    HLayoutConfig() {}
 
     bool wrapLine() const {
         return wrapLine_;
@@ -16,12 +16,12 @@ public:
         wrapLine_ = wrapLine;
     }
 
-    i32 hGap() const {
-        return hGap_;
+    i32 gap() const {
+        return gap_;
     }
 
-    void setHGap(int hGap) {
-        hGap_ = hGap;
+    void setGap(int gap) {
+        gap_ = gap;
     }
 
     i32 hMargin() const {
@@ -42,7 +42,7 @@ public:
 
 private:
     bool wrapLine_ = false;
-    i32 hGap_ = 2; // 水平方向最左侧字符左边的空白
+    i32 gap_ = 2; // 水平方向最左侧字符左边的空白
     i32 hMargin_ = 2; // 水平字符间距
     i32 tabSize_ = 4; // 一个TAB的宽度为若干个空格
 };

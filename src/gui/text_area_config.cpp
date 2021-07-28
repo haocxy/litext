@@ -13,7 +13,7 @@ void TextAreaConfig::setFont(const FontOld &font)
 
 i32 TextAreaConfig::charWidth(UChar c)
 {
-    const HorizontalTextLayoutConfig &cfg = horizontalTextLayout_;
+    const HLayoutConfig &h = hLayout_;
 
     // 换行符不占用空间
     if (c == '\n' || c == '\r') {
@@ -24,9 +24,9 @@ i32 TextAreaConfig::charWidth(UChar c)
     if (c == '\t') {
         if (isFixWidth_) {
             // *[]*[]*[]*[]*
-            return cfg.hMargin() * (cfg.tabSize() - 1) + widthForFix_ * cfg.tabSize();
+            return h.hMargin() * (h.tabSize() - 1) + widthForFix_ * h.tabSize();
         } else {
-            return cfg.hMargin() * (cfg.tabSize() - 1) + font_.charWidth(' ') * cfg.tabSize();
+            return h.hMargin() * (h.tabSize() - 1) + font_.charWidth(' ') * h.tabSize();
         }
     }
 
@@ -40,7 +40,7 @@ i32 TextAreaConfig::charWidth(UChar c)
     const int rawWidth = font_.charWidth(c);
     if (rawWidth > widthForFix_) {
         // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-        return cfg.hMargin() + widthForFix_ * 2;
+        return h.hMargin() + widthForFix_ * 2;
     } else {
         // 当前字符是普通的等宽单字符
         return widthForFix_;

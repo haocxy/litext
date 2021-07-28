@@ -76,7 +76,7 @@ RowN LineManagerImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
 LineManagerImpl::Worker::Worker(
     const font::FontIndex &fontIndex,
     BlockQueue<std::function<void(Worker &worker)>> &taskQueue,
-    const HorizontalTextLayoutConfig &config,
+    const HLayoutConfig &config,
     int widthLimit)
     : taskQueue_(taskQueue)
     , thread_([this] { loop(); })
