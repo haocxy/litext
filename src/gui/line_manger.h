@@ -8,7 +8,7 @@
 
 #include "core/signal.h"
 #include "core/sigconns.h"
-#include "core/block_queue.h"
+#include "core/task_queue.h"
 #include "core/thread_pool.h"
 #include "doc/part_loaded_event.h"
 #include "doc/declare_document.h"
@@ -41,7 +41,7 @@ private:
 
     class Worker {
     public:
-        Worker(const font::FontIndex &fontIndex, BlockQueue<std::function<void(Worker &worker)>> &taskQueue, const HLayoutConfig &config, int widthLimit);
+        Worker(const font::FontIndex &fontIndex, TaskQueue<void(Worker &worker)> &taskQueue, const HLayoutConfig &config, int widthLimit);
 
         ~Worker();
 
@@ -55,7 +55,7 @@ private:
         void loop();
 
     private:
-        BlockQueue<std::function<void(Worker &worker)>> &taskQueue_;
+        TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
         CachedCharPixWidthProvider widthProvider_;
@@ -68,7 +68,7 @@ private:
     RowN updatePartInfo(int64_t id, const PartInfo &newInfo);
 
 private:
-    BlockQueue<std::function<void(Worker &worker)>> taskQueue_;
+    TaskQueue<void(Worker &worker)> taskQueue_;
     std::vector<std::unique_ptr<Worker>> workers_;
     HLayoutConfig config_;
     doc::Document &document_;
