@@ -44,7 +44,7 @@ private:
 
     class Worker {
     public:
-        Worker(const font::FontIndex &fontIndex, BlockQueue<std::function<void(Worker &worker)>> &taskQueue, const NewRowWalker::Config &config);
+        Worker(const font::FontIndex &fontIndex, BlockQueue<std::function<void(Worker &worker)>> &taskQueue, const HorizontalTextLayoutConfig &config, int widthLimit);
 
         ~Worker();
 
@@ -62,7 +62,8 @@ private:
         std::thread thread_;
         std::atomic_bool stopping_{ false };
         CachedCharPixWidthProvider widthProvider_;
-        NewRowWalker::Config config_;
+        HorizontalTextLayoutConfig config_;
+        int widthLimit_ = 0;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
@@ -72,7 +73,7 @@ private:
 private:
     BlockQueue<std::function<void(Worker &worker)>> taskQueue_;
     std::vector<std::unique_ptr<Worker>> workers_;
-    const TextAreaConfig config_;
+    HorizontalTextLayoutConfig config_;
     doc::Document &document_;
     
     SigConns sigConns_;

@@ -22,11 +22,13 @@ static const char *kFontFamilyYaHei = "Microsoft YaHei";
 
 static void setupConfig(TextAreaConfig &c)
 {
-    c.setLineHeightFactor(1.f);
-    c.setHGap(2);
-    c.setHMargin(0);
-    c.setTabSize(4);
-    c.setWrapLine(true);
+    HorizontalTextLayoutConfig hconfig;
+
+    hconfig.setHGap(2);
+    hconfig.setHMargin(0);
+    hconfig.setTabSize(4);
+    hconfig.setWrapLine(true);
+    c.setHorizontalTextLayout(hconfig);
     c.setShowLineNum(true);
     c.setLineNumOffset(1);
 

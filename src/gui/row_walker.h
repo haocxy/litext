@@ -2,52 +2,26 @@
 
 #include <functional>
 
-#include "core/ustring.h"
 #include "text/char_instream.h"
-
-#include "declare_text_area_config.h"
+#include "doc/horizontal_text_layout_config.h"
+#include "char_pix_width_provider.h"
 #include "view_define.h"
 #include "view_char.h"
-#include "char_pix_width_provider.h"
 
 
 namespace gui
 {
 
-class RowWalker {
-public:
-    using CharOperation = std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)>;
-
-    RowWalker(const TextAreaConfig &config, int widthLimit, CharInStream &charStream);
-
-    void forEachChar(CharOperation &&operation);
-
-private:
-    const TextAreaConfig &config_;
-    const int widthLimit_;
-    CharInStream &charStream_;
-};
-
 class NewRowWalker {
 public:
-    struct Config {
-        Config() {}
-        Config(const TextAreaConfig &c, int widthLimit);
-        bool wrapLine = false;
-        int widthLimit = 0;
-        int hGap = 0;
-        int hMargin = 0;
-        int tabSize = 0;
-    };
-
-    NewRowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const Config &config)
+    NewRowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const HorizontalTextLayoutConfig &config, int widthLimit)
         : widthProvider_(widthProvider)
         , charStream_(stream)
-        , wrapLine_(config.wrapLine)
-        , widthLimit_(config.widthLimit)
-        , hGap_(config.hGap)
-        , hMargin_(config.hMargin)
-        , tabSize_(config.tabSize) {
+        , wrapLine_(config.wrapLine())
+        , widthLimit_(widthLimit)
+        , hGap_(config.hGap())
+        , hMargin_(config.hMargin())
+        , tabSize_(config.tabSize()) {
 
 
     }

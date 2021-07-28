@@ -624,25 +624,13 @@ void TextArea::remakePage()
 }
 
 
-void TextArea::makeVRow(const Row &row, VRow &vrow) const
-{
-    if (config_.wrapLine())
-    {
-        makeVRowWithWrapLine(row, vrow);
-    }
-    else
-    {
-        makeVRowNoWrapLine(row, vrow);
-    }
-}
-
-void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
+void TextArea::makeVRow(const Row &row, VRow &vrow)
 {
     assert(vrow.size() == 0);
 
     DocLineCharInStream charStream(row);
 
-    RowWalker walker(config_, size_.width(), charStream);
+    NewRowWalker walker(config_, charStream, config_.horizontalTextLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {
@@ -659,33 +647,6 @@ void TextArea::makeVRowWithWrapLine(const Row &row, VRow &vrow) const
             throw std::logic_error("forEachChar logic error");
         }
     });
-}
-
-void TextArea::makeVRowNoWrapLine(const Row &row, VRow &vrow) const
-{
-    assert(vrow.size() == 0);
-
-    const Pixel::Raw hGap = config_.hGap();
-    const Pixel::Raw hMargin = config_.hMargin();
-
-    VLine &vline = vrow.grow();
-
-    Pixel::Raw leftX = hGap;
-
-    const CharN cnt = row.charCnt();
-    for (CharN i = 0; i < cnt; ++i)
-    {
-        const UChar c = row.charAt(i);
-        const Pixel::Raw charWidth = config_.charWidth(c);
-
-        VChar &vchar = vline.grow();
-        vchar.setUChar(c);
-        vchar.setX(leftX);
-        vchar.setWidth(charWidth);
-
-        leftX += charWidth;
-        leftX += hMargin;
-    }
 }
 
 VLineLoc TextArea::getShownLastLineLoc() const

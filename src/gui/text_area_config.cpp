@@ -11,8 +11,10 @@ void TextAreaConfig::setFont(const FontOld &font)
     widthForFix_ = font_.charWidth('a');
 }
 
-Pixel::Raw TextAreaConfig::charWidth(UChar c) const
+i32 TextAreaConfig::charWidth(UChar c)
 {
+    const HorizontalTextLayoutConfig &cfg = horizontalTextLayout_;
+
     // 换行符不占用空间
     if (c == '\n' || c == '\r') {
         return 0;
@@ -22,9 +24,9 @@ Pixel::Raw TextAreaConfig::charWidth(UChar c) const
     if (c == '\t') {
         if (isFixWidth_) {
             // *[]*[]*[]*[]*
-            return hMargin_ * (tabSize_ - 1) + widthForFix_ * tabSize_;
+            return cfg.hMargin() * (cfg.tabSize() - 1) + widthForFix_ * cfg.tabSize();
         } else {
-            return hMargin_ * (tabSize_ - 1) + font_.charWidth(' ') * tabSize_;
+            return cfg.hMargin() * (cfg.tabSize() - 1) + font_.charWidth(' ') * cfg.tabSize();
         }
     }
 
@@ -38,7 +40,7 @@ Pixel::Raw TextAreaConfig::charWidth(UChar c) const
     const int rawWidth = font_.charWidth(c);
     if (rawWidth > widthForFix_) {
         // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-        return hMargin_ + widthForFix_ * 2;
+        return cfg.hMargin() + widthForFix_ * 2;
     } else {
         // 当前字符是普通的等宽单字符
         return widthForFix_;

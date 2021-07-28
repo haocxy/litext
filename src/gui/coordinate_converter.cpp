@@ -58,13 +58,13 @@ Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
     }
 
     if (charLoc.isAfterLastRow()) {
-        return config_.hGap();
+        return config_.horizontalTextLayout().hGap();
     }
 
     if (charLoc.isAfterLastChar()) {
         const VLine &line = page_[charLoc.row()][charLoc.line()];
         if (line.empty()) {
-            return config_.hGap();
+            return config_.horizontalTextLayout().hGap();
         }
         const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
         return vc.x() + vc.width();
@@ -177,7 +177,7 @@ VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) c
         return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Pixel::Raw margin = config_.hMargin();
+    const Pixel::Raw margin = config_.horizontalTextLayout().hMargin();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const VChar &firstChar = line[0];

@@ -29,15 +29,13 @@ static int decideWorkerCount()
 
 LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document)
     : taskQueue_(decideWorkerCount())
-    , config_(config)
+    , config_(config.horizontalTextLayout())
     , document_(document)
 {
     const int workerCount = decideWorkerCount();
 
-    NewRowWalker::Config walkerConfig(config, width);
-
     for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<Worker>(config_.fontIndex(), taskQueue_, walkerConfig));
+        workers_.push_back(std::make_unique<Worker>(config.fontIndex(), taskQueue_, config_, width));
     }
 
     sigConns_ += document_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
@@ -78,11 +76,13 @@ RowN LineManagerImpl::updatePartInfo(int64_t id, const PartInfo &newInfo)
 LineManagerImpl::Worker::Worker(
     const font::FontIndex &fontIndex,
     BlockQueue<std::function<void(Worker &worker)>> &taskQueue,
-    const NewRowWalker::Config &config)
+    const HorizontalTextLayoutConfig &config,
+    int widthLimit)
     : taskQueue_(taskQueue)
     , thread_([this] { loop(); })
     , widthProvider_(fontIndex, 22)
     , config_(config)
+    , widthLimit_(widthLimit)
 {
 
 }
@@ -108,8 +108,7 @@ LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const QString &con
         ++rowCount;
         UTF16CharInStream u16chars(line.data(), line.size() * 2);
         CharInStreamOverUTF16CharInStram charStream(u16chars);
-        //RowWalker walker(config_, width_, charStream);
-        NewRowWalker walker(widthProvider_, charStream, config_);
+        NewRowWalker walker(widthProvider_, charStream, config_, widthLimit_);
 
         size_t lineCountInCurrentRow = 0;
 

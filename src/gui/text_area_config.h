@@ -1,74 +1,81 @@
 #pragma once
 
+#include "core/primitive_types.h"
 #include "core/uchar.h"
 #include "core/font_old.h"
 #include "core/font_index.h"
 
-#include "pixel.h"
-#include "loc_outside_policy.h"
+#include "char_pix_width_provider.h"
+#include "doc/horizontal_text_layout_config.h"
 
 
 namespace gui
 {
 
 
-class TextAreaConfig {
+class TextAreaConfig : public CharPixWidthProvider {
 public:
-	static const int kLineHeightScale = 1000;
-	static const int kDefaultLineHeightFactor = static_cast<int>(1.2 * kLineHeightScale); // 默认行高系数
-	static const int kDefaultHGap = 2; // 默认水平字符间距
-	static const int kDefaultHMargin = 2; // 默认水平间距
-	static const int kDefaultTabSize = 4; // 默认TAB尺寸
+    TextAreaConfig() {
+    }
 
-public:
-	float lineHeightFactor() const { return lineHeightFactor_ / 1000.0; }
-	void setLineHeightFactor(float f) { lineHeightFactor_ = static_cast<int>(f * 1000); }
+    virtual ~TextAreaConfig() {
 
-	Pixel::Raw lineHeight() const { return lineHeightFactor_ * font_.height() / 1000; }
+    }
 
-	Pixel::Raw hGap() const { return hGap_; }
-	void setHGap(Pixel::Raw hGap) { hGap_ = hGap; }
+    i32 lineHeight() const {
+        return lineHeightFactor_ * font_.height();
+    }
 
-	Pixel::Raw hMargin() const { return hMargin_; }
-	void setHMargin(Pixel::Raw hMargin) { hMargin_ = hMargin; }
+    const HorizontalTextLayoutConfig &horizontalTextLayout() const {
+        return horizontalTextLayout_;
+    }
 
-	int tabSize() const { return tabSize_; }
-	void setTabSize(int tabSize) { tabSize_ = tabSize; }
+    void setHorizontalTextLayout(const HorizontalTextLayoutConfig &config) {
+        horizontalTextLayout_ = config;
+    }
 
-	bool wrapLine() const { return wrapLine_; }
-	void setWrapLine(bool wrapLine) { wrapLine_ = wrapLine; }
+    const FontOld &font() const {
+        return font_;
+    }
 
-	const FontOld &font() const { return font_; }
     void setFont(const FontOld &font);
 
-    const font::FontIndex &fontIndex() const { return fontIndex_; }
-    void setFontIndex(const font::FontIndex &fontIndex) { fontIndex_ = fontIndex; }
+    const font::FontIndex &fontIndex() const {
+        return fontIndex_;
+    }
 
-	Pixel::Raw charWidth(UChar c) const;
+    void setFontIndex(const font::FontIndex &fontIndex) {
+        fontIndex_ = fontIndex;
+    }
 
-	bool showLineNum() const { return showLineNum_; }
-	void setShowLineNum(bool showLineNum) { showLineNum_ = showLineNum; }
+    virtual i32 charWidth(UChar c);
 
-	int32_t lineNumOffset() const { return lineNumOffset_; }
-	void setLineNumOffset(int32_t lineNumOffset) { lineNumOffset_ = lineNumOffset; }
+    bool showLineNum() const {
+        return showLineNum_;
+    }
 
-	LocOutsidePolicy locateOutsideOfViewPolicy() const { return locateOutsideOfViewPolicy_; }
-	void setLocateOutsideOfViewPolicy(LocOutsidePolicy policy) { locateOutsideOfViewPolicy_ = policy; }
+    void setShowLineNum(bool showLineNum) {
+        showLineNum_ = showLineNum;
+    }
+
+    i32 lineNumOffset() const {
+        return lineNumOffset_;
+    }
+
+    void setLineNumOffset(i32 lineNumOffset) {
+        lineNumOffset_ = lineNumOffset;
+    }
 
 private:
-	int lineHeightFactor_ = kDefaultLineHeightFactor; // 行高系数，行高 = 行高系数 * 字体高度 / 1000
-	Pixel::Raw hGap_{ kDefaultHGap }; // 水平方向最左侧字符左边的空白
-	Pixel::Raw hMargin_{ kDefaultHMargin }; // 水平字符间距
-	int tabSize_ = kDefaultTabSize; // 一个TAB的宽度为若干个空格
-	bool wrapLine_ = false;
-	bool showLineNum_ = false; // 是否显示行号
-	int32_t lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
-	LocOutsidePolicy locateOutsideOfViewPolicy_ = LocOutsidePolicy::MoveView;
+    HorizontalTextLayoutConfig horizontalTextLayout_;
+    f32 lineHeightFactor_ = 1.0f; // 行高系数，行高 = 行高系数 * 字体高度
+    bool showLineNum_ = false; // 是否显示行号
+    i32 lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 
     FontOld font_;
     font::FontIndex fontIndex_;
     bool isFixWidth_ = false;
-    int widthForFix_ = 0;
+    i32 widthForFix_ = 0;
 };
 
 

@@ -110,9 +110,7 @@ private:
     VCharLoc betterLocForVerticalMove(const VCharLoc &charLoc) const;
     DocLoc getNextUpLoc(const DocLoc &docLoc) const;
     DocLoc getNextDownLoc(const DocLoc &docLoc) const;
-    void makeVRow(const Row &row, VRow &vrow) const;
-    void makeVRowWithWrapLine(const Row &row, VRow &vrow) const;
-    void makeVRowNoWrapLine(const Row &row, VRow &vrow) const;
+    void makeVRow(const Row &row, VRow &vrow);
 
     // 视图中最后一个可视line的LineLoc
     VLineLoc getShownLastLineLoc() const;
@@ -142,7 +140,7 @@ private:
 
 private:
     Editor &editor_;
-    const TextAreaConfig &config_;
+    TextAreaConfig config_;
     Size size_;
     LineManager lineManager_;
     Page page_;
