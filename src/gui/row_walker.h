@@ -55,21 +55,7 @@ private:
             }
         }
 
-        // 不是等宽字体则直接返回宽度
-        if (!isFixWidth_) {
-            return widthProvider_.charWidth(c);
-        }
-
-        // 下面处理等宽字体
-
-        const int rawWidth = widthProvider_.charWidth(c);
-        if (rawWidth > widthForFix_) {
-            // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-            return hPad_ + widthForFix_ * 2;
-        } else {
-            // 当前字符是普通的等宽单字符
-            return widthForFix_;
-        }
+        return widthProvider_.charWidth(c);
     }
 
 private:

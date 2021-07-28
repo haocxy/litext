@@ -623,14 +623,25 @@ void TextArea::remakePage()
     }
 }
 
-
 void TextArea::makeVRow(const Row &row, VRow &vrow)
 {
     assert(vrow.size() == 0);
 
     DocLineCharInStream charStream(row);
 
-    NewRowWalker walker(config_, charStream, config_.hLayout(), size_.width());
+    class Provider : public CharPixWidthProvider {
+    public:
+        Provider(const FontOld &font) : fontOld_(font) {}
+        virtual ~Provider() {}
+        virtual int charWidth(char32_t unicode) override {
+            return fontOld_.charWidth(unicode);
+        }
+    private:
+        const FontOld &fontOld_;
+    };
+
+    Provider provider(config_.font());
+    NewRowWalker walker(provider, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {

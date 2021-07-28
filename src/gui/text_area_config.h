@@ -5,21 +5,15 @@
 #include "core/font_old.h"
 #include "core/font_index.h"
 
-#include "char_pix_width_provider.h"
 #include "doc/layout_config.h"
 
 
 namespace gui
 {
 
-
-class TextAreaConfig : public CharPixWidthProvider {
+class TextAreaConfig {
 public:
     TextAreaConfig() {
-    }
-
-    virtual ~TextAreaConfig() {
-
     }
 
     i32 lineHeight() const {
@@ -48,8 +42,6 @@ public:
         fontIndex_ = fontIndex;
     }
 
-    virtual i32 charWidth(UChar c);
-
     bool showLineNum() const {
         return showLineNum_;
     }
@@ -74,8 +66,6 @@ private:
 
     FontOld font_;
     font::FontIndex fontIndex_;
-    bool isFixWidth_ = false;
-    i32 widthForFix_ = 0;
 };
 
 
