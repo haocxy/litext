@@ -630,7 +630,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
 
     DocLineCharInStream charStream(row);
 
-    NewRowWalker walker(config_, charStream, config_.horizontalTextLayout(), size_.width());
+    NewRowWalker walker(config_, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {

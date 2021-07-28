@@ -28,7 +28,7 @@ static void setupConfig(TextAreaConfig &c)
     hLayout.setHMargin(0);
     hLayout.setTabSize(4);
     hLayout.setWrapLine(true);
-    c.setHorizontalTextLayout(hLayout);
+    c.setHLayout(hLayout);
     c.setShowLineNum(true);
     c.setLineNumOffset(1);
 

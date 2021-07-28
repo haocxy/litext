@@ -26,11 +26,11 @@ public:
         return lineHeightFactor_ * font_.height();
     }
 
-    const HLayoutConfig &horizontalTextLayout() const {
+    const HLayoutConfig &hLayout() const {
         return hLayout_;
     }
 
-    void setHorizontalTextLayout(const HLayoutConfig &config) {
+    void setHLayout(const HLayoutConfig &config) {
         hLayout_ = config;
     }
 

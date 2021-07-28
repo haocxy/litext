@@ -29,7 +29,7 @@ static int decideWorkerCount()
 
 LineManagerImpl::LineManagerImpl(const TextAreaConfig &config, int width, doc::Document &document)
     : taskQueue_(decideWorkerCount())
-    , config_(config.horizontalTextLayout())
+    , config_(config.hLayout())
     , document_(document)
 {
     const int workerCount = decideWorkerCount();
