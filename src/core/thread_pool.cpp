@@ -24,11 +24,7 @@ ThreadPool::ThreadPool(const std::string &name, int threadCount)
 
 ThreadPool::~ThreadPool()
 {
-    stopping_ = true;
-    queue_.stop();
-    for (std::thread &t : threads_) {
-        t.join();
-    }
+    stop();
 }
 
 void ThreadPool::post(std::function<void()> &&f)
@@ -39,6 +35,16 @@ void ThreadPool::post(std::function<void()> &&f)
 bool ThreadPool::isStopping() const
 {
     return stopping_;
+}
+
+void ThreadPool::stop()
+{
+    stopping_ = true;
+    queue_.stop();
+    for (std::thread &t : threads_) {
+        t.join();
+    }
+    threads_.clear();
 }
 
 void ThreadPool::loop()

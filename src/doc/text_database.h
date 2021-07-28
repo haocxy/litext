@@ -17,22 +17,17 @@
 namespace doc
 {
 
-namespace detail
-{
-
-class TextDatabaseImpl : public std::enable_shared_from_this<TextDatabaseImpl> {
+class TextDatabase {
 public:
     using Db = sqlite::Database;
 
     using Statement = sqlite::Statement;
 
-    TextDatabaseImpl(const fs::path &docPath);
+    TextDatabase(const fs::path &docPath);
 
-    virtual ~TextDatabaseImpl();
+    virtual ~TextDatabase();
 
     void start();
-
-    void stop();
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -69,38 +64,5 @@ private:
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 };
-
-}
-
-class TextDatabase {
-public:
-    TextDatabase(const fs::path &docPath)
-        : impl_(std::make_shared<detail::TextDatabaseImpl>(docPath)) {
-    }
-
-    ~TextDatabase() {
-        impl_->stop();
-    }
-
-    void start() {
-        impl_->start();
-    }
-
-    Signal<void(Charset)> &sigCharsetDetected() {
-        return impl_->sigCharsetDetected();
-    }
-
-    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
-        return impl_->sigPartLoaded();
-    }
-
-    Signal<void()> &sigAllLoaded() {
-        return impl_->sigAllLoaded();
-    }
-
-private:
-    std::shared_ptr<detail::TextDatabaseImpl> impl_;
-};
-
 
 }

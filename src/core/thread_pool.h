@@ -19,6 +19,8 @@ public:
 
     virtual bool isStopping() const override;
 
+    void stop();
+
 private:
     void loop();
 

@@ -14,10 +14,10 @@
 #include "skip_row.h"
 
 
-namespace doc::detail
+namespace doc
 {
 
-TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath)
+TextDatabase::TextDatabase(const fs::path &docPath)
     : docPath_(docPath)
     , ifs_(docPath, std::ios::binary)
     , textRepo_(docPath.generic_string() + ".notesharpdb")
@@ -25,18 +25,14 @@ TextDatabaseImpl::TextDatabaseImpl(const fs::path &docPath)
 
 }
 
-TextDatabaseImpl::~TextDatabaseImpl()
+TextDatabase::~TextDatabase()
 {
-
+    worker_.stop();
 }
 
-void TextDatabaseImpl::start()
+void TextDatabase::start()
 {
     asyncLoadAll();
-}
-
-void TextDatabaseImpl::stop()
-{
 }
 
 static void clearFile(const fs::path &file)
@@ -53,9 +49,9 @@ static uintmax_t partSize() {
     return SystemUtil::pageSize() * 1024;
 }
 
-void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info)
+void TextDatabase::loadPart(const MemBuff &readBuff, const LoadingPartInfo &info)
 {
-    const char *title = "TextDatabaseImpl::loadPart() ";
+    const char *title = "TextDatabase::loadPart() ";
 
     ElapsedTime elapsedTime;
 
@@ -84,9 +80,9 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
     sigPartLoaded_(e);
 }
 
-void TextDatabaseImpl::loadAll()
+void TextDatabase::loadAll()
 {
-    static const char *title = "TextDatabaseImpl::loadAll() ";
+    static const char *title = "TextDatabase::loadAll() ";
 
     ElapsedTime elapsedTime;
 
@@ -135,10 +131,9 @@ void TextDatabaseImpl::loadAll()
     sigAllLoaded_();
 }
 
-void TextDatabaseImpl::asyncLoadAll()
+void TextDatabase::asyncLoadAll()
 {
-    auto self(shared_from_this());
-    worker_.post([this, self] {
+    worker_.post([this] {
         loadAll();
     });
 }
