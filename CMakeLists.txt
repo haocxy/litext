@@ -42,6 +42,9 @@ endif()
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
 
+if(MSVC)
+    file(COPY "${CMAKE_SOURCE_DIR}/scripts/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
+endif()
 
 if(MSVC)
     include(install_for_windows.cmake)
