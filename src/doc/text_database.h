@@ -49,7 +49,6 @@ public:
 private:
     struct LoadingPartInfo {
         uintmax_t off = 0;
-        uintmax_t len = 0;
         Charset charset = Charset::Unknown;
     };
 

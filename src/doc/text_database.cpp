@@ -72,13 +72,13 @@ void TextDatabaseImpl::loadPart(const MemBuff &readBuff, const LoadingPartInfo &
 
     const i64 id = textRepo_.savePart(info.off, content.constData(), static_cast<i64>(content.size()) * 2);
 
-    LOGD << title << "end, off[" << info.off << "], len[" << info.len << "], charset[" << info.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
+    LOGD << title << "end, off[" << info.off << "], len[" << readBuff.size() << "], charset[" << info.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
     PartLoadedEvent e;
     e.setPartId(id);
     e.setFileSize(fs::file_size(docPath_));
     e.setPartOffset(info.off);
-    e.setPartSize(info.len);
+    e.setPartSize(readBuff.size());
     e.setContent(std::move(content));
 
     sigPartLoaded_(e);
@@ -118,7 +118,6 @@ void TextDatabaseImpl::loadAll()
 
         LoadingPartInfo info;
         info.off = offset;
-        info.len = readBuff.size();
         info.charset = charset;
 
         loadPart(readBuff, info);
