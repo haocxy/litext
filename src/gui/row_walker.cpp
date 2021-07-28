@@ -8,14 +8,11 @@
 namespace gui
 {
 
-void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)
+void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)
 {
-    const Pixel::Raw hGap = hGap_;
-    const Pixel::Raw hPad = hPad_;
-
     TxtWordStream wordStream(charStream_);
 
-    Pixel::Raw leftX = hGap;
+    Pixel::Raw leftX = hGap_;
 
     size_t currentLineIndex = 0;
     bool isCurrentLineEmpty = true;
@@ -31,7 +28,7 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
                 const Pixel::Raw charWidth = charPixelWith(c);
 
                 if (leftX + charWidth > widthLimit_) {
-                    leftX = hGap;
+                    leftX = hGap_;
                     ++currentLineIndex;
                     isCurrentLineEmpty = true;
                 } else {
@@ -41,16 +38,16 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
                 action(false, currentLineIndex, VChar(c, leftX, charWidth));
 
                 leftX += charWidth;
-                leftX += hPad;
+                leftX += hPad_;
             }
         } else {
             Pixel::Raw wordWidth = 0;
             for (const UChar c : word) {
                 wordWidth += charPixelWith(c);
-                wordWidth += hPad;
+                wordWidth += hPad_;
             }
             if (leftX + wordWidth > widthLimit_) {
-                leftX = hGap;
+                leftX = hGap_;
                 ++currentLineIndex;
                 isCurrentLineEmpty = true;
             } else {
@@ -60,7 +57,7 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
                 const Pixel::Raw charWidth = charPixelWith(c);
 
                 if (leftX + charWidth > widthLimit_) {
-                    leftX = hGap;
+                    leftX = hGap_;
                     ++currentLineIndex;
                     isCurrentLineEmpty = true;
                 }
@@ -68,7 +65,7 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
                 action(false, currentLineIndex, VChar(c, leftX, charWidth));
 
                 leftX += charWidth;
-                leftX += hPad;
+                leftX += hPad_;
             }
         }
     }
@@ -79,9 +76,9 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
     }
 }
 
-void NewRowWalker::forEachCharNoWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)
+void RowWalker::forEachCharNoWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)
 {
-    throw std::logic_error("NewRowWalker::forEachCharNoWrapLine(...) unimplemented");
+    throw std::logic_error("RowWalker::forEachCharNoWrapLine(...) unimplemented");
 }
 
 }

@@ -108,7 +108,7 @@ LineManagerImpl::PartInfo LineManagerImpl::Worker::countLines(const QString &con
         ++rowCount;
         UTF16CharInStream u16chars(line.data(), line.size() * 2);
         CharInStreamOverUTF16CharInStram charStream(u16chars);
-        NewRowWalker walker(widthProvider_, charStream, config_, widthLimit_);
+        RowWalker walker(widthProvider_, charStream, config_, widthLimit_);
 
         size_t lineCountInCurrentRow = 0;
 

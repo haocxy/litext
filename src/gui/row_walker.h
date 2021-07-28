@@ -12,9 +12,9 @@
 namespace gui
 {
 
-class NewRowWalker {
+class RowWalker {
 public:
-    NewRowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const HLayoutConfig &h, int widthLimit)
+    RowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const HLayoutConfig &h, int widthLimit)
         : widthProvider_(widthProvider)
         , charStream_(stream)
         , wrapLine_(h.wrapLine())
@@ -47,12 +47,8 @@ private:
 
         // tab符特殊处理
         if (c == '\t') {
-            if (isFixWidth_) {
-                // *[]*[]*[]*[]*
-                return hPad_ * (tabSize_ - 1) + widthForFix_ * tabSize_;
-            } else {
-                return hPad_ * (tabSize_ - 1) + widthProvider_.charWidth(' ') * tabSize_;
-            }
+            // *[]*[]*[]*[]*
+            return hPad_ * (tabSize_ - 1) + widthProvider_.charWidth(' ') * tabSize_;
         }
 
         return widthProvider_.charWidth(c);
@@ -68,11 +64,6 @@ private:
     int hGap_ = 0;
     int hPad_ = 0;
     int tabSize_ = 0;
-
-private:
-    // 内部计算得到的数据
-    bool isFixWidth_ = false;
-    int widthForFix_ = 0;
 };
 
 }

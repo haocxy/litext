@@ -641,7 +641,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
     };
 
     Provider provider(config_.font());
-    NewRowWalker walker(provider, charStream, config_.hLayout(), size_.width());
+    RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {
