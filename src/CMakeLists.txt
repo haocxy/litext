@@ -3,7 +3,7 @@ set(root_dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(MSVC)
     # Debug配置启用AddressSanitizer技术
-    add_compile_options($<$<CONFIG:Debug>:/fsanitize=address>)
+    #add_compile_options($<$<CONFIG:Debug>:/fsanitize=address>)
 endif()
 
 
