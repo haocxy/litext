@@ -20,7 +20,7 @@ public:
         , wrapLine_(h.wrapLine())
         , widthLimit_(widthLimit)
         , hGap_(h.gap())
-        , hMargin_(h.hMargin())
+        , hPad_(h.pad())
         , tabSize_(h.tabSize()) {
 
 
@@ -49,9 +49,9 @@ private:
         if (c == '\t') {
             if (isFixWidth_) {
                 // *[]*[]*[]*[]*
-                return hMargin_ * (tabSize_ - 1) + widthForFix_ * tabSize_;
+                return hPad_ * (tabSize_ - 1) + widthForFix_ * tabSize_;
             } else {
-                return hMargin_ * (tabSize_ - 1) + widthProvider_.charWidth(' ') * tabSize_;
+                return hPad_ * (tabSize_ - 1) + widthProvider_.charWidth(' ') * tabSize_;
             }
         }
 
@@ -65,7 +65,7 @@ private:
         const int rawWidth = widthProvider_.charWidth(c);
         if (rawWidth > widthForFix_) {
             // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-            return hMargin_ + widthForFix_ * 2;
+            return hPad_ + widthForFix_ * 2;
         } else {
             // 当前字符是普通的等宽单字符
             return widthForFix_;
@@ -80,7 +80,7 @@ private:
     bool wrapLine_ = false;
     int widthLimit_ = 0;
     int hGap_ = 0;
-    int hMargin_ = 0;
+    int hPad_ = 0;
     int tabSize_ = 0;
 
 private:

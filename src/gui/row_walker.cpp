@@ -11,7 +11,7 @@ namespace gui
 void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)
 {
     const Pixel::Raw hGap = hGap_;
-    const Pixel::Raw hMargin = hMargin_;
+    const Pixel::Raw hPad = hPad_;
 
     TxtWordStream wordStream(charStream_);
 
@@ -41,13 +41,13 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
                 action(false, currentLineIndex, VChar(c, leftX, charWidth));
 
                 leftX += charWidth;
-                leftX += hMargin;
+                leftX += hPad;
             }
         } else {
             Pixel::Raw wordWidth = 0;
             for (const UChar c : word) {
                 wordWidth += charPixelWith(c);
-                wordWidth += hMargin;
+                wordWidth += hPad;
             }
             if (leftX + wordWidth > widthLimit_) {
                 leftX = hGap;
@@ -68,7 +68,7 @@ void NewRowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, s
                 action(false, currentLineIndex, VChar(c, leftX, charWidth));
 
                 leftX += charWidth;
-                leftX += hMargin;
+                leftX += hPad;
             }
         }
     }

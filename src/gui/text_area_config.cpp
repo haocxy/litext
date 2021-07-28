@@ -24,9 +24,9 @@ i32 TextAreaConfig::charWidth(UChar c)
     if (c == '\t') {
         if (isFixWidth_) {
             // *[]*[]*[]*[]*
-            return h.hMargin() * (h.tabSize() - 1) + widthForFix_ * h.tabSize();
+            return h.pad() * (h.tabSize() - 1) + widthForFix_ * h.tabSize();
         } else {
-            return h.hMargin() * (h.tabSize() - 1) + font_.charWidth(' ') * h.tabSize();
+            return h.pad() * (h.tabSize() - 1) + font_.charWidth(' ') * h.tabSize();
         }
     }
 
@@ -40,7 +40,7 @@ i32 TextAreaConfig::charWidth(UChar c)
     const int rawWidth = font_.charWidth(c);
     if (rawWidth > widthForFix_) {
         // 如果当前字符宽度大于单字符宽度，则固定占用两个字符
-        return h.hMargin() + widthForFix_ * 2;
+        return h.pad() + widthForFix_ * 2;
     } else {
         // 当前字符是普通的等宽单字符
         return widthForFix_;

@@ -145,11 +145,11 @@ VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
     return VLineLoc::newLineLocAfterLastRow();
 }
 
-static inline Pixel::Raw calcLeftBound(Pixel::Raw x, Pixel::Raw leftWidth, Pixel::Raw margin)
+static inline Pixel::Raw calcLeftBound(Pixel::Raw x, Pixel::Raw leftWidth, Pixel::Raw pad)
 {
     assert(leftWidth > 0);
 
-    return x - (leftWidth >> 1) - margin;
+    return x - (leftWidth >> 1) - pad;
 }
 
 static inline Pixel::Raw calcRightBound(Pixel::Raw x, Pixel::Raw curWidth)
@@ -177,7 +177,7 @@ VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) c
         return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Pixel::Raw margin = config_.hLayout().hMargin();
+    const Pixel::Raw pad = config_.hLayout().pad();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const VChar &firstChar = line[0];
@@ -194,7 +194,7 @@ VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) c
         const int mid = ((left + right) >> 1);
         const VChar &c = line[mid];
         const Pixel::Raw cx = c.x();
-        const Pixel::Raw a = calcLeftBound(cx, line[mid - 1].width(), margin);
+        const Pixel::Raw a = calcLeftBound(cx, line[mid - 1].width(), pad);
         const Pixel::Raw b = calcRightBound(cx, c.width());
         if (x < a) {
             right = mid - 1;

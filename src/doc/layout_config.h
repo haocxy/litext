@@ -24,12 +24,12 @@ public:
         gap_ = gap;
     }
 
-    i32 hMargin() const {
-        return hMargin_;
+    i32 pad() const {
+        return pad_;
     }
 
     void setHMargin(int hMargin) {
-        hMargin_ = hMargin;
+        pad_ = hMargin;
     }
 
     i32 tabSize() const {
@@ -43,6 +43,6 @@ public:
 private:
     bool wrapLine_ = false;
     i32 gap_ = 2; // 水平方向最左侧字符左边的空白
-    i32 hMargin_ = 2; // 水平字符间距
+    i32 pad_ = 2; // 水平字符间距
     i32 tabSize_ = 4; // 一个TAB的宽度为若干个空格
 };
