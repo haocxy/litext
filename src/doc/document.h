@@ -8,7 +8,7 @@
 #include "core/charset.h"
 #include "core/thread_pool.h"
 #include "doc/doc_define.h"
-#include "text_database.h"
+#include "text_loader.h"
 
 
 namespace doc
