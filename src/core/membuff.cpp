@@ -3,28 +3,28 @@
 #include <algorithm>
 
 
-void MemBuff::resize(size_t len) {
+void MemBuff::resize(i32 len) {
     ensureCapacity(len);
     size_ = len;
 }
 
-size_t MemBuff::read(size_t offset, void *to, size_t len) const {
+i32 MemBuff::read(i32 offset, void *to, i32 len) const {
     if (size_ <= offset) {
         return 0;
     }
 
-    const size_t readable = std::min(size_ - offset, len);
+    const i32 readable = std::min(size_ - offset, len);
     std::memcpy(to, beg_ + offset, readable);
     return readable;
 }
 
-size_t MemBuff::remove(size_t offset, size_t len) {
+i32 MemBuff::remove(i32 offset, i32 len) {
     if (size_ <= offset) {
         return 0;
     }
 
-    const size_t removable = std::min(size_ - offset, len);
-    const size_t endOffset = offset + removable;
+    const i32 removable = std::min(size_ - offset, len);
+    const i32 endOffset = offset + removable;
     if (endOffset < size_) {
         std::memmove(beg_ + offset, beg_ + endOffset, size_ - endOffset);
     }
@@ -32,13 +32,13 @@ size_t MemBuff::remove(size_t offset, size_t len) {
     return removable;
 }
 
-size_t MemBuff::take(size_t offset, void *to, size_t len) {
+i32 MemBuff::take(i32 offset, void *to, i32 len) {
     if (size_ <= offset) {
         return 0;
     }
 
-    const size_t takable = std::min(size_ - offset, len);
-    const size_t endOffset = offset + takable;
+    const i32 takable = std::min(size_ - offset, len);
+    const i32 endOffset = offset + takable;
     std::memcpy(to, beg_ + offset, takable);
     if (endOffset < size_) {
         std::memmove(beg_ + offset, beg_ + endOffset, size_ - endOffset);
@@ -47,7 +47,7 @@ size_t MemBuff::take(size_t offset, void *to, size_t len) {
     return takable;
 }
 
-void MemBuff::write(size_t offset, const void *data, size_t len) {
+void MemBuff::write(i32 offset, const void *data, i32 len) {
     ensureCapacity(offset + len);
 
     // 若当前字节数小于指定偏移,先用0字节把这段空白初始化
@@ -62,23 +62,23 @@ void MemBuff::write(size_t offset, const void *data, size_t len) {
     size_ = std::max(size_, offset + len);
 }
 
-void MemBuff::append(const void *from, size_t len) {
-    const size_t newbytecount = size_ + len;
+void MemBuff::append(const void *from, i32 len) {
+    const i32 newbytecount = size_ + len;
     ensureCapacity(newbytecount);
     std::memcpy(beg_ + size_, from, len);
     size_ = newbytecount;
 }
 
-size_t MemBuff::calcRealNewCapacity(size_t curCapacity, size_t newCapacity) {
-	constexpr size_t kInit = 256;
-	size_t n = curCapacity == 0 ? kInit : curCapacity;
+i32 MemBuff::calcRealNewCapacity(i32 curCapacity, i32 newCapacity) {
+	constexpr i32 kInit = 256;
+    i32 n = curCapacity == 0 ? kInit : curCapacity;
 	while (n < newCapacity) {
 		n *= 2;
 	}
 	return n;
 }
 
-void MemBuff::realloc(size_t newcapacity) {
+void MemBuff::realloc(i32 newcapacity) {
     capacity_ = newcapacity;
     byte *ptr = new byte[capacity_];
     std::memcpy(ptr, beg_, size_);

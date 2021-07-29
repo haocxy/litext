@@ -1,5 +1,7 @@
 #pragma once
 
+#include "primitive_types.h"
+
 #include <cstring>
 
 
@@ -9,9 +11,9 @@ public:
 
     MemBuff() {}
 
-    explicit MemBuff(size_t capacity) { reverse(capacity); }
+    explicit MemBuff(i32 capacity) { reverse(capacity); }
 
-    MemBuff(const void *buff, size_t len) { write(buff, len); }
+    MemBuff(const void *buff, i32 len) { write(buff, len); }
 
     MemBuff(const MemBuff &b) {
         write(b.data(), b.size());
@@ -57,29 +59,29 @@ public:
 
     void *data() { return beg_; }
 
-    size_t size() const { return size_; }
+    i32 size() const { return size_; }
 
-    void resize(size_t len);
+    void resize(i32 len);
 
-    size_t read(size_t offset, void *to, size_t len) const;
+    i32 read(i32 offset, void *to, i32 len) const;
 
-    size_t read(void *to, size_t len) const { return read(0, to, len); }
+    i32 read(void *to, i32 len) const { return read(0, to, len); }
 
-    size_t remove(size_t offset, size_t len);
+    i32 remove(i32 offset, i32 len);
 
-    size_t popFront(size_t len) {
+    i32 popFront(i32 len) {
         return remove(0, len);
     }
 
-    size_t take(size_t offset, void *to, size_t len);
+    i32 take(i32 offset, void *to, i32 len);
 
-    void write(size_t offset, const void *data, size_t len);
+    void write(i32 offset, const void *data, i32 len);
 
-    void write(const void *data, size_t len) { write(0, data, len); }
+    void write(const void *data, i32 len) { write(0, data, len); }
 
-    void reverse(size_t len) { ensureCapacity(len); }
+    void reverse(i32 len) { ensureCapacity(len); }
 
-    void append(const void *from, size_t len);
+    void append(const void *from, i32 len);
 
 private:
     using byte = unsigned char;
@@ -87,22 +89,22 @@ private:
     static_assert(sizeof(unsigned char) == 1);
     static_assert(sizeof(byte) == 1);
 
-    static size_t calcRealNewCapacity(
-        size_t curCapacity,
-        size_t newCapacity);
+    static i32 calcRealNewCapacity(
+        i32 curCapacity,
+        i32 newCapacity);
 
-    void ensureCapacity(size_t required) {
+    void ensureCapacity(i32 required) {
         if (capacity_ >= required) {
             return;
         }
         realloc(calcRealNewCapacity(capacity_, required));
     }
 
-    void realloc(size_t newcapacity);
+    void realloc(i32 newcapacity);
 
 private:
     byte *beg_ = nullptr;
-    size_t size_ = 0;
-    size_t capacity_ = 0;
+    i32 size_ = 0;
+    i32 capacity_ = 0;
 };
 
