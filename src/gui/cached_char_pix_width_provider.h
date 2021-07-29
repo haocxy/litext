@@ -6,7 +6,7 @@
 #include "core/font_index.h"
 #include "core/font.h"
 
-#include "char_pix_width_provider.h"
+#include "doc/glyph_width_provider.h"
 
 
 namespace gui

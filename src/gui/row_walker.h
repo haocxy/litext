@@ -4,7 +4,7 @@
 
 #include "text/char_instream.h"
 #include "doc/layout_config.h"
-#include "char_pix_width_provider.h"
+#include "doc/glyph_width_provider.h"
 #include "view_define.h"
 #include "view_char.h"
 
