@@ -27,15 +27,15 @@ static int decideWorkerCount()
     return std::max(1, SystemUtil::processorCount() / 2);
 }
 
-LineManager::LineManager(const TextAreaConfig &config, int width, doc::Document &document)
+LineManager::LineManager(const HLayoutConfig &config, int width, doc::Document &document, const font::FontIndex &font)
     : taskQueue_(decideWorkerCount())
-    , config_(config.hLayout())
+    , config_(config)
     , document_(document)
 {
     const int workerCount = decideWorkerCount();
 
     for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<Worker>(config.fontIndex(), taskQueue_, config_, width));
+        workers_.push_back(std::make_unique<Worker>(font, taskQueue_, config_, width));
     }
 
     sigConns_ += document_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {

@@ -9,9 +9,10 @@
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/task_queue.h"
-#include "doc/part_loaded_event.h"
-#include "doc/declare_document.h"
-#include "gui/text_area_config.h"
+#include "core/font_index.h"
+#include "part_loaded_event.h"
+#include "declare_document.h"
+#include "layout_config.h"
 #include "gui/cached_char_pix_width_provider.h"
 #include "gui/row_walker.h"
 
@@ -21,7 +22,7 @@ namespace gui
 
 class LineManager {
 public:
-    LineManager(const TextAreaConfig &config, int width, doc::Document &document);
+    LineManager(const HLayoutConfig &config, int width, doc::Document &document, const font::FontIndex &font);
 
     ~LineManager();
 

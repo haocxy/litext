@@ -24,6 +24,7 @@
 #include "row_bound.h"
 #include "view_loc.h"
 #include "pixel.h"
+#include "text_area_config.h"
 #include "coordinate_converter.h"
 
 

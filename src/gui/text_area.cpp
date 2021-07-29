@@ -19,7 +19,7 @@ TextArea::TextArea(Editor &editor, const TextAreaConfig &config, const Size &siz
     : editor_(editor)
     , config_(config)
     , size_(size)
-    , lineManager_(config_, size_.width(), editor.document())
+    , lineManager_(config_.hLayout(), size_.width(), editor.document(), config_.fontIndex())
     , cvt_(editor_, size_, page_, vloc_, config_)
 {
     editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
