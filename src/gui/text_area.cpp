@@ -37,7 +37,7 @@ TextArea::~TextArea()
 
 void TextArea::start()
 {
-    editor_.start();
+    editor_.start(config_.render());
 }
 
 void TextArea::resize(const Size & size)

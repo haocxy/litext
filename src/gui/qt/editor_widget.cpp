@@ -18,7 +18,7 @@ static const int ProgressTotal = 1000000;
 EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file)
     : file_(file)
     , doc_(file)
-    , editor_(&doc_, file, textAreaConfig.render())
+    , editor_(&doc_, file)
     , textArea_(editor_, textAreaConfig, gui::Size(800, 600))
 {
     doc::Document &document = editor_.document();

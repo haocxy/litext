@@ -22,9 +22,7 @@ public:
 
     ~Document();
 
-    void start();
-
-    void updateConfig(const RenderConfig &config);
+    void start(const RenderConfig &config);
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;

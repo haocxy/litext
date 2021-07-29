@@ -34,20 +34,13 @@ Document::~Document()
     LOGD << "Document::~Document() start, path: [" << path_ << "]";
 }
 
-void Document::start()
-{
-    if (!config_) {
-        throw std::logic_error("Document::updateConfig() should be called before Document::start()");
-    }
-
-    loader_.loadAll();
-}
-
-void Document::updateConfig(const RenderConfig &config)
+void Document::start(const RenderConfig &config)
 {
     config_ = std::make_unique<RenderConfig>(config);
 
     lineManager_.updateConfig(config);
+
+    loader_.loadAll();
 }
 
 }

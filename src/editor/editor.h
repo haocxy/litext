@@ -22,9 +22,9 @@ class Editor
 {
 public:
 
-    Editor(Doc * model, const fs::path &file, const RenderConfig &renderConfig);
+    Editor(Doc * model, const fs::path &file);
 
-    void start();
+    void start(const RenderConfig &renderConfig);
 
     const Doc & doc() const { return m_model; }
 

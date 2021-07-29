@@ -6,18 +6,16 @@
 #include "doc/doc_row.h"
 
 
-Editor::Editor(Doc *model, const fs::path &file, const RenderConfig &renderConfig)
+Editor::Editor(Doc *model, const fs::path &file)
     : m_model(*model)
     , document_(file)
 {
     assert(model);
-
-    document_.updateConfig(renderConfig);
 }
 
-void Editor::start()
+void Editor::start(const RenderConfig &renderConfig)
 {
-    document_.start();
+    document_.start(renderConfig);
 }
 
 void Editor::onPrimaryKeyPress(const DocLoc & loc)
