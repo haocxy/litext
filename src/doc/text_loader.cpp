@@ -9,7 +9,6 @@
 #include "core/system.h"
 #include "core/thread.h"
 #include "core/charset.h"
-#include "core/charset_converter.h"
 #include "core/readable.h"
 
 #include "skip_row.h"
