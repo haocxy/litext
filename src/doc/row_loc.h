@@ -1,10 +1,10 @@
 #pragma once
 
-#include "doc/doc_define.h"
 #include "core/flagset.h"
+#include "core/primitive_types.h"
 
 
-namespace gui
+namespace doc
 {
 
 class VRowLoc {
@@ -18,10 +18,10 @@ public:
 		return loc;
 	}
 public:
-	VRowLoc() :m_flag(kIsNull), m_row(0) {}
-	explicit VRowLoc(RowN row) : m_row(row) {}
-	RowN row() const { return m_row; }
-	void setRow(RowN row) { m_row = row; }
+	VRowLoc() :m_flag(kIsNull), row_(0) {}
+	explicit VRowLoc(i64 row) : row_(row) {}
+    i64 row() const { return row_; }
+	void setRow(i64 row) { row_ = row; }
 	bool isNull() const { return hasFlag(kIsNull); }
 	bool isAfterLastRow() const { return hasFlag(kAfterLastRow); }
 protected:
@@ -37,7 +37,7 @@ protected:
 	void setFlag(int f) { m_flag.set(f); }
 private:
 	FlagSet<kFlagCnt> m_flag;
-	RowN m_row = 0;
+    i64 row_ = 0;
 };
 
 }

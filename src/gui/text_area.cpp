@@ -12,6 +12,9 @@
 
 #include "text_area_config.h"
 
+namespace {
+using namespace doc;
+}
 
 namespace gui
 {

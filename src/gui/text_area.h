@@ -11,10 +11,11 @@
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 #include "doc/line_manger.h"
+#include "doc/page.h"
+#include "doc/char_loc.h"
+#include "doc/view_loc.h"
 
-#include "page.h"
 #include "line_offset.h"
-#include "char_loc.h"
 #include "rect.h"
 #include "vertical_line.h"
 #include "view_define.h"
@@ -22,7 +23,6 @@
 #include "size.h"
 #include "line_bound.h"
 #include "row_bound.h"
-#include "view_loc.h"
 #include "pixel.h"
 #include "text_area_config.h"
 #include "coordinate_converter.h"
@@ -100,31 +100,31 @@ private:
     int getMaxShownLineCnt() const;
 
     LineBound getLineBoundByLineOffset(LineOffset lineOffset) const;
-    LineBound getLineBound(const VLineLoc &lineLoc) const;
-    RowBound getRowBound(const VRowLoc &rowLoc) const;
-    bool hasPrevCharAtSameLine(const VCharLoc &charLoc) const;
-    bool noPrevCharAtSameLine(const VCharLoc &charLoc) const;
-    bool hasNextCharAtSameLine(const VCharLoc &charLoc) const;
-    bool noNextCharAtSameLine(const VCharLoc &charLoc) const;
-    bool needEnsureHasNextLine(const VCharLoc &charLoc) const;
-    bool isLastLineOfRow(const VLineLoc &lineLoc) const;
-    bool isEndOfVirtualLine(const VCharLoc &charLoc) const;
-    VCharLoc betterLocForVerticalMove(const VCharLoc &charLoc) const;
+    LineBound getLineBound(const doc::VLineLoc &lineLoc) const;
+    RowBound getRowBound(const doc::VRowLoc &rowLoc) const;
+    bool hasPrevCharAtSameLine(const doc::VCharLoc &charLoc) const;
+    bool noPrevCharAtSameLine(const doc::VCharLoc &charLoc) const;
+    bool hasNextCharAtSameLine(const doc::VCharLoc &charLoc) const;
+    bool noNextCharAtSameLine(const doc::VCharLoc &charLoc) const;
+    bool needEnsureHasNextLine(const doc::VCharLoc &charLoc) const;
+    bool isLastLineOfRow(const doc::VLineLoc &lineLoc) const;
+    bool isEndOfVirtualLine(const doc::VCharLoc &charLoc) const;
+    doc::VCharLoc betterLocForVerticalMove(const doc::VCharLoc &charLoc) const;
     DocLoc getNextUpLoc(const DocLoc &docLoc) const;
     DocLoc getNextDownLoc(const DocLoc &docLoc) const;
-    void makeVRow(const Row &row, VRow &vrow);
+    void makeVRow(const Row &row, doc::VRow &vrow);
 
     // 视图中最后一个可视line的LineLoc
-    VLineLoc getShownLastLineLoc() const;
+    doc::VLineLoc getShownLastLineLoc() const;
 
 private:
     // 调用这个函数后，需要在合适的时刻调用removeSpareRow
-    void ensureHasPrevLine(const VLineLoc &curLineLoc);
+    void ensureHasPrevLine(const doc::VLineLoc &curLineLoc);
 
     // 确保参数行有下一行
     // 如果需要把页面头部向后移动则返回true
     // 返回true则需要在合适的时刻调用movePageHeadOneLine
-    bool ensureHasNextLine(const VLineLoc &curLineLoc);
+    bool ensureHasNextLine(const doc::VLineLoc &curLineLoc);
 
     void setViewLoc(const ViewLoc &viewLoc);
 
@@ -145,7 +145,7 @@ private:
     TextAreaConfig config_;
     Size size_;
     doc::LineManager lineManager_;
-    Page page_;
+    doc::Page page_;
     
     ViewLoc vloc_{ 0, 0 };
     const CoordinateConverter cvt_;

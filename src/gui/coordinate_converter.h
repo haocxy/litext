@@ -2,14 +2,14 @@
 
 #include "doc/doc_loc.h"
 #include "editor/declare_editor.h"
-#include "size.h"
-#include "page.h"
-#include "view_loc.h"
-#include "line_loc.h"
-#include "char_loc.h"
+#include "doc/page.h"
+#include "doc/view_loc.h"
+#include "doc/line_loc.h"
+#include "doc/char_loc.h"
 #include "row_offset.h"
 #include "line_offset.h"
 #include "pixel.h"
+#include "size.h"
 #include "declare_text_area_config.h"
 
 
@@ -24,7 +24,7 @@ public:
 	CoordinateConverter(
 		const Editor &editor,
 		const Size &size,
-		const Page &page,
+		const doc::Page &page,
 		const ViewLoc &vloc,
 		const TextAreaConfig &config)
 		: editor_(editor)
@@ -40,37 +40,37 @@ public:
 	CoordinateConverter &operator=(const CoordinateConverter &) = delete;
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
-	LineOffset::Raw toLineOffset(const VRowLoc &vRowLoc) const;
+	LineOffset::Raw toLineOffset(const doc::VRowLoc &vRowLoc) const;
 
-	LineOffset::Raw toLineOffset(const VLineLoc &vLineLoc) const;
+	LineOffset::Raw toLineOffset(const doc::VLineLoc &vLineLoc) const;
 
 	LineOffset::Raw toLineOffset(Pixel y) const;
 
-	Pixel::Raw toX(const VCharLoc &charLoc) const;
+	Pixel::Raw toX(const doc::VCharLoc &charLoc) const;
 
 	Pixel::Raw toBaselineY(LineOffset lineOffset) const;
 
-	VRowLoc toRowLoc(VRowOffset vRowOffset) const;
+    doc::VRowLoc toRowLoc(VRowOffset vRowOffset) const;
 
-	VLineLoc toVLineLoc(LineOffset lineOffset) const;
+    doc::VLineLoc toVLineLoc(LineOffset lineOffset) const;
 
-	VCharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
+    doc::VCharLoc toCharLoc(const doc::VLineLoc &vLineLoc, Pixel x) const;
 
-	VCharLoc toCharLoc(Pixel x, Pixel y) const;
+    doc::VCharLoc toCharLoc(Pixel x, Pixel y) const;
 
-	VCharLoc toCharLoc(const DocLoc &docLoc) const;
+    doc::VCharLoc toCharLoc(const DocLoc &docLoc) const;
 
-	DocLoc toDocLoc(const VCharLoc &vCharLoc) const;
+	DocLoc toDocLoc(const doc::VCharLoc &vCharLoc) const;
 
 	DocLoc toDocLoc(Pixel x, Pixel y) const;
 
 private:
-	bool isLastLineOfRow(const VLineLoc &lineLoc) const;
+	bool isLastLineOfRow(const doc::VLineLoc &lineLoc) const;
 
 private:
 	const Editor &editor_;
 	const Size &size_;
-	const Page &page_;
+	const doc::Page &page_;
 	const ViewLoc &vloc_;
 	const TextAreaConfig &config_;
 };

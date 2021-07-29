@@ -3,7 +3,7 @@
 #include "line_loc.h"
 
 
-namespace gui
+namespace doc
 {
 
 

@@ -13,7 +13,7 @@ namespace gui
 
 
 
-LineOffset::Raw CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
+LineOffset::Raw CoordinateConverter::toLineOffset(const doc::VRowLoc &vRowLoc) const
 {
     const RowN row = vRowLoc.row();
 
@@ -30,7 +30,7 @@ LineOffset::Raw CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
     return sum;
 }
 
-LineOffset::Raw CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
+LineOffset::Raw CoordinateConverter::toLineOffset(const doc::VLineLoc &vLineLoc) const
 {
     LineOffset::Raw sum = vLineLoc.line();
 
@@ -51,7 +51,7 @@ LineOffset::Raw CoordinateConverter::toLineOffset(Pixel y) const
     return y.value() / config_.lineHeight();
 }
 
-Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
+Pixel::Raw CoordinateConverter::toX(const doc::VCharLoc &charLoc) const
 {
     if (charLoc.isNull()) {
         return 0;
@@ -62,11 +62,11 @@ Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
     }
 
     if (charLoc.isAfterLastChar()) {
-        const VLine &line = page_[charLoc.row()][charLoc.line()];
+        const doc::VLine &line = page_[charLoc.row()][charLoc.line()];
         if (line.empty()) {
             return config_.hLayout().gap();
         }
-        const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
+        const doc::VChar &vc = page_[charLoc.row()][charLoc.line()].last();
         return vc.x() + vc.width();
     }
 
@@ -78,26 +78,26 @@ Pixel::Raw CoordinateConverter::toBaselineY(LineOffset off) const
     return (1 + off.value()) * config_.lineHeight() - config_.font().descent();
 }
 
-VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const
+doc::VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const
 {
     const VRowOffset::Raw row = vRowOffset.value();
     const int vrowIndex = row - vloc_.row();
     const int vrowCnt = page_.size();
     if (vrowIndex < 0 || vrowIndex >= vrowCnt) {
         if (row >= editor_.doc().rowCnt()) {
-            return VRowLoc::newRowLocAfterLastRow();
+            return doc::VRowLoc::newRowLocAfterLastRow();
         }
-        return VRowLoc();
+        return doc::VRowLoc();
     }
 
     if (row >= editor_.doc().rowCnt()) {
-        return VRowLoc::newRowLocAfterLastRow();
+        return doc::VRowLoc::newRowLocAfterLastRow();
     }
 
-    return VRowLoc(vrowIndex);
+    return doc::VRowLoc(vrowIndex);
 }
 
-VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
+doc::VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
 {
     const int rowCnt = page_.size();
     const int offset = lineOffset.value();
@@ -106,43 +106,43 @@ VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
         int sum = 0;
 
         for (int i = 0; i < rowCnt; ++i) {
-            const VRow &row = page_[i];
+            const doc::VRow &row = page_[i];
             const int lineCnt = row.size();
 
             if (sum + lineCnt > offset) {
-                return VLineLoc(i, offset - sum);
+                return doc::VLineLoc(i, offset - sum);
             }
 
             sum += lineCnt;
         }
 
-        return VLineLoc::newLineLocAfterLastRow();
+        return doc::VLineLoc::newLineLocAfterLastRow();
     }
 
     if (rowCnt == 0) {
-        return VLineLoc();
+        return doc::VLineLoc();
     }
 
-    const VRow &curRow = page_[0];
+    const doc::VRow &curRow = page_[0];
     const int curRowSize = curRow.size();
     if (vloc_.line() + offset < curRowSize) {
-        return VLineLoc(0, vloc_.line() + offset);
+        return doc::VLineLoc(0, vloc_.line() + offset);
     }
 
     int sum = curRowSize - vloc_.line();
 
     for (int i = 1; i < rowCnt; ++i) {
-        const VRow &row = page_[i];
+        const doc::VRow &row = page_[i];
         const int lineCnt = row.size();
 
         if (sum + lineCnt > offset) {
-            return VLineLoc(i, offset - sum);
+            return doc::VLineLoc(i, offset - sum);
         }
 
         sum += lineCnt;
     }
 
-    return VLineLoc::newLineLocAfterLastRow();
+    return doc::VLineLoc::newLineLocAfterLastRow();
 }
 
 static inline Pixel::Raw calcLeftBound(Pixel::Raw x, Pixel::Raw leftWidth, Pixel::Raw pad)
@@ -163,36 +163,36 @@ static inline Pixel::Raw calcRightBound(Pixel::Raw x, Pixel::Raw curWidth)
     }
 }
 
-VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) const
+doc::VCharLoc CoordinateConverter::toCharLoc(const doc::VLineLoc &lineLoc, Pixel xPixel) const
 {
     if (lineLoc.isNull() || lineLoc.isAfterLastRow()) {
-        return VCharLoc::newCharLocAfterLastChar(lineLoc);
+        return doc::VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const VLine &line = page_.getLine(lineLoc);
+    const doc::VLine &line = page_.getLine(lineLoc);
     const Pixel::Raw x = xPixel.value();
     const int charCnt = line.size();
 
     if (charCnt == 0) {
-        return VCharLoc::newCharLocAfterLastChar(lineLoc);
+        return doc::VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
     const Pixel::Raw pad = config_.hLayout().pad();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
-    const VChar &firstChar = line[0];
+    const doc::VChar &firstChar = line[0];
     const Pixel::Raw firstX = firstChar.x();
     const Pixel::Raw firstWidth = firstChar.width();
     const Pixel::Raw firstCharRightBound = calcRightBound(firstX, firstWidth);
     if (x <= firstCharRightBound) {
-        return VCharLoc(lineLoc, 0);
+        return doc::VCharLoc(lineLoc, 0);
     }
 
     int left = 1;
     int right = charCnt - 1;
     while (left <= right) {
         const int mid = ((left + right) >> 1);
-        const VChar &c = line[mid];
+        const doc::VChar &c = line[mid];
         const Pixel::Raw cx = c.x();
         const Pixel::Raw a = calcLeftBound(cx, line[mid - 1].width(), pad);
         const Pixel::Raw b = calcRightBound(cx, c.width());
@@ -201,41 +201,41 @@ VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) c
         } else if (x > b) {
             left = mid + 1;
         } else {
-            return VCharLoc(lineLoc, mid);
+            return doc::VCharLoc(lineLoc, mid);
         }
     }
 
-    return VCharLoc::newCharLocAfterLastChar(lineLoc);
+    return doc::VCharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
-VCharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
+doc::VCharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
 {
     const LineOffset::Raw lineOffset = toLineOffset(y);
-    const VLineLoc lineLoc = toVLineLoc(LineOffset(lineOffset));
+    const doc::VLineLoc lineLoc = toVLineLoc(LineOffset(lineOffset));
     return toCharLoc(lineLoc, x);
 }
 
-VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
+doc::VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
 {
     if (docLoc.isNull()) {
-        return VCharLoc();
+        return doc::VCharLoc();
     }
 
     if (docLoc.isAfterLastRow()) {
-        return VCharLoc::newCharLocAfterLastRow();
+        return doc::VCharLoc::newCharLocAfterLastRow();
     }
 
     const int r = docLoc.row() - vloc_.row();
     const int rowCnt = page_.size();
     if (r < 0 || r >= rowCnt) {
-        return VCharLoc();
+        return doc::VCharLoc();
     }
 
-    const VRow &vrow = page_[r];
+    const doc::VRow &vrow = page_[r];
 
     if (docLoc.isAfterLastChar()) {
-        VLineLoc lineLoc(r, vrow.size() - 1);
-        return VCharLoc::newCharLocAfterLastChar(lineLoc);
+        doc::VLineLoc lineLoc(r, vrow.size() - 1);
+        return doc::VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
     int lineIndex = 0;
@@ -245,10 +245,10 @@ VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
 
     const CharN col = docLoc.col();
 
-    for (const VLine &vline : vrow) {
-        for (const VChar &vc : vline) {
+    for (const doc::VLine &vline : vrow) {
+        for (const doc::VChar &vc : vline) {
             if (charIndex == col) {
-                return VCharLoc(r, lineIndex, col - prevLineCharCnt);
+                return doc::VCharLoc(r, lineIndex, col - prevLineCharCnt);
             }
 
             ++charIndex;
@@ -259,10 +259,10 @@ VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
         prevLineCharCnt += vline.size();
     }
 
-    return VCharLoc();
+    return doc::VCharLoc();
 }
 
-DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
+DocLoc CoordinateConverter::toDocLoc(const doc::VCharLoc &charLoc) const
 {
     if (charLoc.isNull()) {
         return DocLoc();
@@ -277,12 +277,12 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
             return DocLoc::newDocLocAfterLastChar(vloc_.row() + charLoc.row());
         } else {
             // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
-            return toDocLoc(VCharLoc(charLoc.row(), charLoc.line() + 1, 0));
+            return toDocLoc(doc::VCharLoc(charLoc.row(), charLoc.line() + 1, 0));
         }
     }
 
 
-    const VRow &vrow = page_[charLoc.row()];
+    const doc::VRow &vrow = page_[charLoc.row()];
     int lastLine = charLoc.line();
     if (vloc_.row() == 0) {
         // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
@@ -298,12 +298,12 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
 
 DocLoc CoordinateConverter::toDocLoc(Pixel x, Pixel y) const
 {
-    const VCharLoc charLoc = toCharLoc(x, y);
+    const doc::VCharLoc charLoc = toCharLoc(x, y);
     const DocLoc docLoc = toDocLoc(charLoc);
     return docLoc;
 }
 
-bool CoordinateConverter::isLastLineOfRow(const VLineLoc &lineLoc) const
+bool CoordinateConverter::isLastLineOfRow(const doc::VLineLoc &lineLoc) const
 {
     return lineLoc.line() == page_[lineLoc.row()].size() - 1;
 }

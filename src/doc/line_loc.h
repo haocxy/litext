@@ -1,10 +1,9 @@
 #pragma once
 
-#include "view_define.h"
 #include "row_loc.h"
 
 
-namespace gui
+namespace doc
 {
 
 
@@ -20,11 +19,11 @@ public:
 	}
 public:
 	VLineLoc() = default;
-	VLineLoc(RowN row, LineN line) : VRowLoc(row), m_line(line) {}
-	LineN line() const { return m_line; }
-	void setLine(LineN line) { m_line = line; }
+	VLineLoc(i64 row, i64 line) : VRowLoc(row), m_line(line) {}
+    i64 line() const { return m_line; }
+	void setLine(i64 line) { m_line = line; }
 private:
-	LineN m_line = 0;
+    i64 m_line = 0;
 };
 
 
