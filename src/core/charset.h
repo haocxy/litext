@@ -29,3 +29,31 @@ inline std::ostringstream &operator<<(std::ostringstream &stream, Charset charse
     stream << CharsetUtil::charsetToStr(charset);
     return stream;
 }
+
+struct uchardet;
+
+class CharsetDetector {
+public:
+    CharsetDetector();
+
+    ~CharsetDetector();
+
+    CharsetDetector(const CharsetDetector &) = delete;
+
+    CharsetDetector(CharsetDetector &&) = delete;
+
+    CharsetDetector &operator=(const CharsetDetector &) = delete;
+
+    CharsetDetector &operator=(CharsetDetector &&) = delete;
+
+    bool feed(const void *data, size_t len);
+
+    void end();
+
+    void reset();
+
+    const char *charset() const;
+
+private:
+    uchardet *handle_ = nullptr;
+};
