@@ -4,6 +4,7 @@
 
 #include <QPainter>
 
+#include "core/logger.h"
 #include "editor/editor.h"
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
@@ -42,8 +43,12 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
     });
 
     sigConns_ += doc.sigPartLoaded().connect([this](const doc::PartLoadedEvent &progress) {
-        const int percent = progress.fileSize() == 0 ? 100 : (progress.partOffset() + progress.partSize()) * 100 / progress.fileSize();
-        emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", percent));
+        const i64 off = progress.partOffset();
+        if (off > maxOffset_) {
+            maxOffset_ = off;
+            const int percent = progress.fileSize() == 0 ? 100 : (off + progress.partSize()) * 100 / progress.fileSize();
+            emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", percent));
+        }
     });
 
     sigConns_ += doc.sigAllLoaded().connect([this]{
