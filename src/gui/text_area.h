@@ -10,6 +10,7 @@
 #include "core/strong_type_integer.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
+#include "doc/line_manger.h"
 
 #include "page.h"
 #include "line_offset.h"
@@ -24,7 +25,7 @@
 #include "view_loc.h"
 #include "pixel.h"
 #include "coordinate_converter.h"
-#include "line_manger.h"
+
 
 
 class Row;

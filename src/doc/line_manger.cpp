@@ -14,7 +14,7 @@
 #include "core/readable_size_util.h"
 #include "doc/document.h"
 #include "text/utf16char_in_stream.h"
-#include "row_walker.h"
+#include "gui/row_walker.h"
 
 
 namespace gui

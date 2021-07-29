@@ -11,9 +11,9 @@
 #include "core/task_queue.h"
 #include "doc/part_loaded_event.h"
 #include "doc/declare_document.h"
-#include "text_area_config.h"
-#include "cached_char_pix_width_provider.h"
-#include "row_walker.h"
+#include "gui/text_area_config.h"
+#include "gui/cached_char_pix_width_provider.h"
+#include "gui/row_walker.h"
 
 
 namespace gui
