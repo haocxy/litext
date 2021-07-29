@@ -9,7 +9,6 @@
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/task_queue.h"
-#include "core/thread_pool.h"
 #include "doc/part_loaded_event.h"
 #include "doc/declare_document.h"
 #include "text_area_config.h"
