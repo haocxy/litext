@@ -6,16 +6,16 @@ namespace doc
 
 
 
-CachedCharPixWidthProvider::CachedCharPixWidthProvider(const font::FontIndex &fontIndex, int pointSize)
+GlyphWidthCache::GlyphWidthCache(const font::FontIndex &fontIndex, int pointSize)
     : fontFile_(context_, fontIndex.file())
     , fontFace_(fontFile_, fontIndex.faceIndex())
 {
     fontFace_.setPointSize(pointSize);
 }
 
-int CachedCharPixWidthProvider::glyphWidth(char32_t unicode)
+int GlyphWidthCache::glyphWidth(char32_t unicode)
 {
-    int &pixWidth = cacheUnicodeToPixWidth_[unicode];
+    int &pixWidth = unicodeToWidth_[unicode];
     if (pixWidth != 0) {
         return pixWidth;
     }

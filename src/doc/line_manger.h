@@ -58,7 +58,7 @@ private:
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
-        CachedCharPixWidthProvider widthProvider_;
+        GlyphWidthCache widthProvider_;
         HLayoutConfig config_;
         int widthLimit_ = 0;
     };

@@ -12,11 +12,11 @@
 namespace doc
 {
 
-class CachedCharPixWidthProvider : public GlyphWidthProvider {
+class GlyphWidthCache : public GlyphWidthProvider {
 public:
-    CachedCharPixWidthProvider(const font::FontIndex &fontIndex, int pointSize);
+    GlyphWidthCache(const font::FontIndex &fontIndex, int pointSize);
 
-    virtual ~CachedCharPixWidthProvider() {}
+    virtual ~GlyphWidthCache() {}
 
     virtual int glyphWidth(char32_t unicode) override;
 
@@ -24,7 +24,7 @@ private:
     font::FontContext context_;
     font::FontFile fontFile_;
     font::FontFace fontFace_;
-    std::unordered_map<char32_t, int> cacheUnicodeToPixWidth_{ 65536 };
+    std::unordered_map<char32_t, int> unicodeToWidth_{ 65536 };
 };
 
 }
