@@ -7,7 +7,7 @@
 #include "core/system.h"
 #include "core/font.h"
 #include "core/logger.h"
-#include "core/time_util.h"
+#include "core/time.h"
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"

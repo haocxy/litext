@@ -9,7 +9,7 @@
 
 #include "core/thread_util.h"
 #include "core/system.h"
-#include "core/time_util.h"
+#include "core/time.h"
 #include "core/logger.h"
 #include "core/readable.h"
 #include "text/utf16char_in_stream.h"
