@@ -12,13 +12,13 @@
 namespace doc
 {
 
-class CachedCharPixWidthProvider : public CharPixWidthProvider {
+class CachedCharPixWidthProvider : public GlyphWidthProvider {
 public:
     CachedCharPixWidthProvider(const font::FontIndex &fontIndex, int pointSize);
 
     virtual ~CachedCharPixWidthProvider() {}
 
-    virtual int charWidth(char32_t unicode) override;
+    virtual int glyphWidth(char32_t unicode) override;
 
 private:
     font::FontContext context_;

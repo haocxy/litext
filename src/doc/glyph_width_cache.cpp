@@ -1,4 +1,4 @@
-#include "cached_char_pix_width_provider.h"
+#include "glyph_width_cache.h"
 
 
 namespace doc
@@ -13,7 +13,7 @@ CachedCharPixWidthProvider::CachedCharPixWidthProvider(const font::FontIndex &fo
     fontFace_.setPointSize(pointSize);
 }
 
-int CachedCharPixWidthProvider::charWidth(char32_t unicode)
+int CachedCharPixWidthProvider::glyphWidth(char32_t unicode)
 {
     int &pixWidth = cacheUnicodeToPixWidth_[unicode];
     if (pixWidth != 0) {

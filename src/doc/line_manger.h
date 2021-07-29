@@ -13,7 +13,7 @@
 #include "part_loaded_event.h"
 #include "declare_document.h"
 #include "layout_config.h"
-#include "cached_char_pix_width_provider.h"
+#include "glyph_width_cache.h"
 #include "row_walker.h"
 
 

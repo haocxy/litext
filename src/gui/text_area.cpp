@@ -630,11 +630,11 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
 
     DocLineCharInStream charStream(row);
 
-    class Provider : public doc::CharPixWidthProvider {
+    class Provider : public doc::GlyphWidthProvider {
     public:
         Provider(const FontOld &font) : fontOld_(font) {}
         virtual ~Provider() {}
-        virtual int charWidth(char32_t unicode) override {
+        virtual int glyphWidth(char32_t unicode) override {
             return fontOld_.charWidth(unicode);
         }
     private:

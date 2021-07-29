@@ -13,7 +13,7 @@ namespace doc
 
 class RowWalker {
 public:
-    RowWalker(CharPixWidthProvider &widthProvider, CharInStream &stream, const HLayoutConfig &h, int widthLimit)
+    RowWalker(GlyphWidthProvider &widthProvider, CharInStream &stream, const HLayoutConfig &h, int widthLimit)
         : widthProvider_(widthProvider)
         , charStream_(stream)
         , wrapLine_(h.wrapLine())
@@ -47,14 +47,14 @@ private:
         // tab符特殊处理
         if (c == '\t') {
             // *[]*[]*[]*[]*
-            return hPad_ * (tabSize_ - 1) + widthProvider_.charWidth(' ') * tabSize_;
+            return hPad_ * (tabSize_ - 1) + widthProvider_.glyphWidth(' ') * tabSize_;
         }
 
-        return widthProvider_.charWidth(c);
+        return widthProvider_.glyphWidth(c);
     }
 
 private:
-    CharPixWidthProvider &widthProvider_;
+    GlyphWidthProvider &widthProvider_;
     CharInStream &charStream_;
 
     // 外部传入的设置
