@@ -13,7 +13,7 @@
 #include "part_loaded_event.h"
 #include "declare_document.h"
 #include "layout_config.h"
-#include "gui/cached_char_pix_width_provider.h"
+#include "cached_char_pix_width_provider.h"
 #include "gui/row_walker.h"
 
 
