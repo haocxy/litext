@@ -9,8 +9,7 @@
 #include "core/signal.h"
 #include "core/charset.h"
 #include "core/membuff.h"
-#include "core/block_queue.h"
-#include "core/task_queue.h"
+#include "core/thread.h"
 
 #include "text_repo.h"
 #include "part_loaded_event.h"

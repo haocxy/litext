@@ -8,7 +8,7 @@
 
 #include "core/signal.h"
 #include "core/sigconns.h"
-#include "core/task_queue.h"
+#include "core/thread.h"
 #include "core/font_index.h"
 #include "part_loaded_event.h"
 #include "declare_document.h"
