@@ -8,7 +8,7 @@
 #include <QTextStream>
 
 #include "core/thread_util.h"
-#include "core/system_util.h"
+#include "core/system.h"
 #include "core/time_util.h"
 #include "core/logger.h"
 #include "core/readable.h"

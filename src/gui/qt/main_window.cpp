@@ -4,7 +4,7 @@
 #include <QMenuBar>
 #include <QFileDialog>
 
-#include "core/system_util.h"
+#include "core/system.h"
 #include "gui/text_area.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"
