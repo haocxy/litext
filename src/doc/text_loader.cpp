@@ -7,7 +7,7 @@
 #include "core/logger.h"
 #include "core/time.h"
 #include "core/system.h"
-#include "core/thread_util.h"
+#include "core/thread.h"
 #include "core/charset_detector.h"
 #include "core/charset_converter.h"
 #include "core/readable.h"
