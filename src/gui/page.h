@@ -3,12 +3,14 @@
 #include <vector>
 #include <deque>
 
+#include "doc/view_char.h"
 #include "line_loc.h"
-#include "view_char.h"
 
 
 namespace gui
 {
+
+using VChar = doc::VChar;
 
 
 class VLine {

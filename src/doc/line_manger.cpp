@@ -12,12 +12,12 @@
 #include "core/time_util.h"
 #include "core/logger.h"
 #include "core/readable_size_util.h"
-#include "doc/document.h"
 #include "text/utf16char_in_stream.h"
-#include "gui/row_walker.h"
+#include "document.h"
+#include "row_walker.h"
 
 
-namespace gui
+namespace doc
 {
 
 // 工作线程数量

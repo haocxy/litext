@@ -48,7 +48,7 @@ public:
     void start();
 
 public:
-    LineManager &lineManager() {
+    doc::LineManager &lineManager() {
         return lineManager_;
     }
 
@@ -144,7 +144,7 @@ private:
     Editor &editor_;
     TextAreaConfig config_;
     Size size_;
-    LineManager lineManager_;
+    doc::LineManager lineManager_;
     Page page_;
     
     ViewLoc vloc_{ 0, 0 };

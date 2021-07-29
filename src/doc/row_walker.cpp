@@ -1,18 +1,19 @@
 #include "row_walker.h"
 
+#include <stdexcept>
+
 #include "text/ustring_char_in_stream.h"
 #include "text/txt_word_instream.h"
-#include "text_area_config.h"
 
 
-namespace gui
+namespace doc
 {
 
 void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)
 {
     TxtWordStream wordStream(charStream_);
 
-    Pixel::Raw leftX = hGap_;
+    int leftX = hGap_;
 
     size_t currentLineIndex = 0;
     bool isCurrentLineEmpty = true;
@@ -25,7 +26,7 @@ void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size
 
         if (isCurrentLineEmpty) {
             for (const UChar c : word) {
-                const Pixel::Raw charWidth = charPixelWith(c);
+                const int charWidth = charPixelWith(c);
 
                 if (leftX + charWidth > widthLimit_) {
                     leftX = hGap_;
@@ -41,7 +42,7 @@ void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size
                 leftX += hPad_;
             }
         } else {
-            Pixel::Raw wordWidth = 0;
+            int wordWidth = 0;
             for (const UChar c : word) {
                 wordWidth += charPixelWith(c);
                 wordWidth += hPad_;
@@ -54,7 +55,7 @@ void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size
                 isCurrentLineEmpty = false;
             }
             for (const UChar c : word) {
-                const Pixel::Raw charWidth = charPixelWith(c);
+                const int charWidth = charPixelWith(c);
 
                 if (leftX + charWidth > widthLimit_) {
                     leftX = hGap_;

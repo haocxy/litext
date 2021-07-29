@@ -3,13 +3,12 @@
 #include <functional>
 
 #include "text/char_instream.h"
-#include "doc/layout_config.h"
-#include "doc/glyph_width_provider.h"
-#include "view_define.h"
+#include "layout_config.h"
+#include "glyph_width_provider.h"
 #include "view_char.h"
 
 
-namespace gui
+namespace doc
 {
 
 class RowWalker {

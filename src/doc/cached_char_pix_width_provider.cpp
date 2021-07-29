@@ -1,7 +1,7 @@
 #include "cached_char_pix_width_provider.h"
 
 
-namespace gui
+namespace doc
 {
 
 

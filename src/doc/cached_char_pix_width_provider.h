@@ -6,10 +6,10 @@
 #include "core/font_index.h"
 #include "core/font.h"
 
-#include "doc/glyph_width_provider.h"
+#include "glyph_width_provider.h"
 
 
-namespace gui
+namespace doc
 {
 
 class CachedCharPixWidthProvider : public CharPixWidthProvider {

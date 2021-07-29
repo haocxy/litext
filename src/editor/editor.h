@@ -6,7 +6,7 @@
 #include "core/signal.h"
 #include "core/ustring.h"
 #include "doc/document.h"
-#include "doc/row_range.h"
+
 #include "cursor.h"
 
 

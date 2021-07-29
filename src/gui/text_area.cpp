@@ -5,11 +5,12 @@
 
 #include "doc/doc.h"
 #include "doc/doc_row.h"
+#include "doc/row_walker.h"
+#include "editor/editor.h"
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
-#include "editor/editor.h"
+
 #include "text_area_config.h"
-#include "row_walker.h"
 
 
 namespace gui
@@ -629,7 +630,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
 
     DocLineCharInStream charStream(row);
 
-    class Provider : public CharPixWidthProvider {
+    class Provider : public doc::CharPixWidthProvider {
     public:
         Provider(const FontOld &font) : fontOld_(font) {}
         virtual ~Provider() {}
@@ -641,7 +642,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
     };
 
     Provider provider(config_.font());
-    RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
+    doc::RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {

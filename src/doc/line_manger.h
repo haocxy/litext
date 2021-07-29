@@ -14,10 +14,10 @@
 #include "declare_document.h"
 #include "layout_config.h"
 #include "cached_char_pix_width_provider.h"
-#include "gui/row_walker.h"
+#include "row_walker.h"
 
 
-namespace gui
+namespace doc
 {
 
 class LineManager {
