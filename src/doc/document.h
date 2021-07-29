@@ -18,11 +18,13 @@ namespace doc
 
 class Document {
 public:
-    Document(const fs::path &file, const RenderConfig &config);
+    Document(const fs::path &file);
 
-    virtual ~Document();
+    ~Document();
 
     void start();
+
+    void updateConfig(const RenderConfig &config);
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -42,7 +44,7 @@ public:
 
 private:
     const fs::path path_;
-    RenderConfig config_;
+    std::unique_ptr<RenderConfig> config_;
     TextLoader loader_;
     LineManager lineManager_;
     std::atomic<Charset> charset_{ Charset::Unknown };

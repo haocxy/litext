@@ -27,15 +27,14 @@ static int decideWorkerCount()
     return std::max(1, SystemUtil::processorCount() / 2);
 }
 
-LineManager::LineManager(TextLoader &loader, const RenderConfig &config)
+LineManager::LineManager(TextLoader &loader)
     : loader_(loader)
-    , config_(config)
     , taskQueue_(decideWorkerCount())
 {
     const int workerCount = decideWorkerCount();
 
     for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<Worker>(taskQueue_, config_));
+        workers_.push_back(std::make_unique<Worker>(taskQueue_));
     }
 
     sigConns_ += loader_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
@@ -48,6 +47,15 @@ LineManager::~LineManager()
     taskQueue_.stop();
 
     workers_.clear();
+}
+
+void LineManager::updateConfig(const RenderConfig &config)
+{
+    config_ = config;
+
+    for (const auto &worker : workers_) {
+        worker->updateConfig(config);
+    }
 }
 
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
@@ -75,11 +83,9 @@ RowN LineManager::updatePartInfo(int64_t id, const PartInfo &newInfo)
     return rowCount_;
 }
 
-LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue, const RenderConfig &config)
+LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue)
     : taskQueue_(taskQueue)
     , thread_([this] { loop(); })
-    , config_(config)
-    , widthProvider_(config_.font(), 22)
 {
 
 }
@@ -87,6 +93,12 @@ LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue, const Re
 LineManager::Worker::~Worker() {
     stopping_ = true;
     thread_.join();
+}
+
+void LineManager::Worker::updateConfig(const RenderConfig &config)
+{
+    config_ = std::make_unique<RenderConfig>(config);
+    widthProvider_ = std::make_unique<GlyphWidthCache>(config_->font(), 22);
 }
 
 LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
@@ -105,7 +117,7 @@ LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
         ++rowCount;
         UTF16CharInStream u16chars(line.data(), line.size() * 2);
         CharInStreamOverUTF16CharInStram charStream(u16chars);
-        RowWalker walker(widthProvider_, charStream, config_.hLayout(), config_.widthLimit());
+        RowWalker walker(*widthProvider_, charStream, config_->hLayout(), config_->widthLimit());
 
         size_t lineCountInCurrentRow = 0;
 

@@ -23,9 +23,11 @@ namespace doc
 
 class LineManager {
 public:
-    LineManager(TextLoader &loader, const RenderConfig &config);
+    LineManager(TextLoader &loader);
 
     ~LineManager();
+
+    void updateConfig(const RenderConfig &config);
 
     Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return sigPartLoaded_;
@@ -46,13 +48,15 @@ private:
 
     class Worker {
     public:
-        Worker(TaskQueue<void(Worker &worker)> &taskQueue, const RenderConfig &config);
+        Worker(TaskQueue<void(Worker &worker)> &taskQueue);
 
         ~Worker();
 
         void stop() {
             stopping_ = true;
         }
+
+        void updateConfig(const RenderConfig &config);
 
         PartInfo countLines(const QString &content);
 
@@ -63,8 +67,8 @@ private:
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
-        RenderConfig config_;
-        GlyphWidthCache widthProvider_;
+        std::unique_ptr<RenderConfig> config_;
+        std::unique_ptr<GlyphWidthCache> widthProvider_;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);

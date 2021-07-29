@@ -6,11 +6,10 @@
 namespace doc
 {
 
-Document::Document(const fs::path &path, const RenderConfig &config)
+Document::Document(const fs::path &path)
     : path_(path)
-    , config_(config)
     , loader_(path)
-    , lineManager_(loader_, config_)
+    , lineManager_(loader_)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
@@ -37,7 +36,18 @@ Document::~Document()
 
 void Document::start()
 {
+    if (!config_) {
+        throw std::logic_error("Document::updateConfig() should be called before Document::start()");
+    }
+
     loader_.loadAll();
+}
+
+void Document::updateConfig(const RenderConfig &config)
+{
+    config_ = std::make_unique<RenderConfig>(config);
+
+    lineManager_.updateConfig(config);
 }
 
 }

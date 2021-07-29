@@ -8,10 +8,11 @@
 
 Editor::Editor(Doc *model, const fs::path &file, const RenderConfig &renderConfig)
     : m_model(*model)
-    , document_(file, renderConfig)
+    , document_(file)
 {
     assert(model);
 
+    document_.updateConfig(renderConfig);
 }
 
 void Editor::start()
