@@ -55,7 +55,7 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
         emit qtSigUpdateStatus("All Loaded");
     });
 
-    sigConns_ += textArea_.lineManager().sigRowCountUpdated().connect([this](RowN rowCount) {
+    sigConns_ += doc.sigRowCountUpdated().connect([this](RowN rowCount) {
         emit qtSigRowCountUpdated(QString("RowCount: %1").arg(rowCount));
     });
 }

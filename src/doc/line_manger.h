@@ -12,8 +12,9 @@
 #include "core/font_index.h"
 #include "part_loaded_event.h"
 #include "declare_document.h"
-#include "layout_config.h"
+#include "text_loader.h"
 #include "glyph_width_cache.h"
+#include "render_config.h"
 #include "row_walker.h"
 
 
@@ -22,9 +23,13 @@ namespace doc
 
 class LineManager {
 public:
-    LineManager(const HLayoutConfig &config, int width, doc::Document &document, const font::FontIndex &font);
+    LineManager(TextLoader &loader, const RenderConfig &config);
 
     ~LineManager();
+
+    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
+        return sigPartLoaded_;
+    }
 
     Signal<void(RowN)> &sigRowCountUpdated() {
         return sigRowCountUpdated_;
@@ -41,7 +46,7 @@ private:
 
     class Worker {
     public:
-        Worker(const font::FontIndex &fontIndex, TaskQueue<void(Worker &worker)> &taskQueue, const HLayoutConfig &config, int widthLimit);
+        Worker(TaskQueue<void(Worker &worker)> &taskQueue, const RenderConfig &config);
 
         ~Worker();
 
@@ -58,9 +63,8 @@ private:
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
+        RenderConfig config_;
         GlyphWidthCache widthProvider_;
-        HLayoutConfig config_;
-        int widthLimit_ = 0;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
@@ -68,14 +72,14 @@ private:
     RowN updatePartInfo(int64_t id, const PartInfo &newInfo);
 
 private:
+    TextLoader &loader_;
+    RenderConfig config_;
     TaskQueue<void(Worker &worker)> taskQueue_;
     std::vector<std::unique_ptr<Worker>> workers_;
-    HLayoutConfig config_;
-    doc::Document &document_;
     
     SigConns sigConns_;
-
     Signal<void(RowN)> sigRowCountUpdated_;
+    Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
 
 private:
     std::mutex mtxPartInfos_;

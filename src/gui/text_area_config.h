@@ -5,7 +5,7 @@
 #include "core/font_old.h"
 #include "core/font_index.h"
 
-#include "doc/layout_config.h"
+#include "doc/render_config.h"
 
 
 namespace gui
@@ -20,12 +20,24 @@ public:
         return lineHeightFactor_ * font_.height();
     }
 
+    const RenderConfig &render() const {
+        return render_;
+    }
+
+    RenderConfig &render() {
+        return render_;
+    }
+
+    void setRender(const RenderConfig &render) {
+        render_ = render;
+    }
+
     const HLayoutConfig &hLayout() const {
-        return hLayout_;
+        return render_.hLayout();
     }
 
     void setHLayout(const HLayoutConfig &config) {
-        hLayout_ = config;
+        render_.setHLayout(config);
     }
 
     const FontOld &font() const {
@@ -35,11 +47,11 @@ public:
     void setFont(const FontOld &font);
 
     const font::FontIndex &fontIndex() const {
-        return fontIndex_;
+        return render_.font();
     }
 
     void setFontIndex(const font::FontIndex &fontIndex) {
-        fontIndex_ = fontIndex;
+        render_.setFont(fontIndex);
     }
 
     bool showLineNum() const {
@@ -59,13 +71,12 @@ public:
     }
 
 private:
-    HLayoutConfig hLayout_;
+    RenderConfig render_;
     f32 lineHeightFactor_ = 1.0f; // 行高系数，行高 = 行高系数 * 字体高度
     bool showLineNum_ = false; // 是否显示行号
     i32 lineNumOffset_ = 0; // 行号偏移，显示行号时，把程序内部从0开始的行索引加上这个值
 
     FontOld font_;
-    font::FontIndex fontIndex_;
 };
 
 

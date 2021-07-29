@@ -6,9 +6,11 @@
 namespace doc
 {
 
-Document::Document(const fs::path &path)
+Document::Document(const fs::path &path, const RenderConfig &config)
     : path_(path)
+    , config_(config)
     , loader_(path)
+    , lineManager_(loader_, config_)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
@@ -17,12 +19,12 @@ Document::Document(const fs::path &path)
         sigCharsetDetected_(charset);
     });
 
-    sigConns_ += loader_.sigPartLoaded().connect([this](const PartLoadedEvent &e) {
-        sigPartLoaded_(e);
+    sigConns_ += lineManager_.sigRowCountUpdated().connect([this](RowN nrows) {
+        sigRowCountUpdated_(nrows);
     });
 
-    sigConns_ += loader_.sigAllLoaded().connect([this] {
-        sigAllLoaded_();
+    sigConns_ += lineManager_.sigPartLoaded().connect([this](const PartLoadedEvent &e) {
+        sigPartLoaded_(e);
     });
 
     LOGD << "Document::Document() end, path: [" << path_ << "]";

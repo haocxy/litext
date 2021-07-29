@@ -6,9 +6,9 @@
 #include "doc/doc_row.h"
 
 
-Editor::Editor(Doc *model, const fs::path &file)
+Editor::Editor(Doc *model, const fs::path &file, const RenderConfig &renderConfig)
     : m_model(*model)
-    , document_(file)
+    , document_(file, renderConfig)
 {
     assert(model);
 

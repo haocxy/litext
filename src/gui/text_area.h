@@ -48,9 +48,6 @@ public:
     void start();
 
 public:
-    doc::LineManager &lineManager() {
-        return lineManager_;
-    }
 
     void resize(const Size &size);
 
@@ -144,7 +141,6 @@ private:
     Editor &editor_;
     TextAreaConfig config_;
     Size size_;
-    doc::LineManager lineManager_;
     doc::Page page_;
     
     ViewLoc vloc_{ 0, 0 };
