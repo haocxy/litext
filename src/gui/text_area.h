@@ -123,7 +123,7 @@ private:
     // 返回true则需要在合适的时刻调用movePageHeadOneLine
     bool ensureHasNextLine(const doc::VLineLoc &curLineLoc);
 
-    void setViewLoc(const ViewLoc &viewLoc);
+    void setViewLoc(const doc::ViewLoc &viewLoc);
 
     // 根据当前游标位置更新stableX
     // 当视口大小调整时调用，视口大小调整时之前计算的stableX已经没有意义，需要重新计算
@@ -143,7 +143,7 @@ private:
     Size size_;
     doc::Page page_;
     
-    ViewLoc vloc_{ 0, 0 };
+    doc::ViewLoc vloc_{ 0, 0 };
     const CoordinateConverter cvt_;
 
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置

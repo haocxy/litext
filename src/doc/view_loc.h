@@ -1,10 +1,9 @@
 #pragma once
 
-#include "doc/doc_define.h"
-#include "view_define.h"
+#include "doc_define.h"
 
 
-namespace gui
+namespace doc
 {
 
 

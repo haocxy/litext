@@ -25,7 +25,7 @@ public:
 		const Editor &editor,
 		const Size &size,
 		const doc::Page &page,
-		const ViewLoc &vloc,
+		const doc::ViewLoc &vloc,
 		const TextAreaConfig &config)
 		: editor_(editor)
 		, size_(size)
@@ -71,7 +71,7 @@ private:
 	const Editor &editor_;
 	const Size &size_;
 	const doc::Page &page_;
-	const ViewLoc &vloc_;
+	const doc::ViewLoc &vloc_;
 	const TextAreaConfig &config_;
 };
 
