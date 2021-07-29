@@ -11,7 +11,7 @@
 #include "core/system_util.h"
 #include "core/time_util.h"
 #include "core/logger.h"
-#include "core/readable_size_util.h"
+#include "core/readable.h"
 #include "text/utf16char_in_stream.h"
 #include "document.h"
 #include "row_walker.h"

@@ -10,7 +10,7 @@
 #include "core/thread_util.h"
 #include "core/charset_detector.h"
 #include "core/charset_converter.h"
-#include "core/readable_size_util.h"
+#include "core/readable.h"
 
 #include "skip_row.h"
 
