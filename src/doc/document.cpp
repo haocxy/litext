@@ -6,9 +6,6 @@
 namespace doc
 {
 
-namespace detail
-{
-
 Document::Document(const fs::path &path)
     : path_(path)
     , loader_(path)
@@ -39,8 +36,6 @@ Document::~Document()
 void Document::start()
 {
     loader_.loadAll();
-}
-
 }
 
 }
