@@ -263,6 +263,7 @@ __pycache__/
 
 /*build*/
 /third/freetype_wrapper/freetype/
+/third/libiconv_wrapper/libiconv
 
 asset.*.h
 asset.*.cpp
