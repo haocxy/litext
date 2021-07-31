@@ -37,6 +37,11 @@ public:
         return sigRowCountUpdated_;
     }
 
+    RowN rowCount() const {
+        std::unique_lock<std::mutex> lock(mtx_);
+        return rowCount_;
+    }
+
 private:
 
     struct PartInfo {
@@ -86,7 +91,7 @@ private:
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
 
 private:
-    std::mutex mtxPartInfos_;
+    mutable std::mutex mtx_;
     std::map<int64_t, PartInfo> partIdToInfos_;
     RowN rowCount_ = 0;
     RowN lineCount_ = 0;

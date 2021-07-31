@@ -73,7 +73,8 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 
 RowN LineManager::updatePartInfo(int64_t id, const PartInfo &newInfo)
 {
-    std::unique_lock<std::mutex> lock(mtxPartInfos_);
+    std::unique_lock<std::mutex> lock(mtx_);
+
     PartInfo &info = partIdToInfos_[id];
     rowCount_ -= info.rowCount;
     lineCount_ -= info.lineCount;
