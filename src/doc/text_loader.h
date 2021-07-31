@@ -20,7 +20,7 @@ namespace doc
 
 class TextLoader {
 public:
-    TextLoader(const fs::path &docPath);
+    TextLoader(TextRepo &textRepo, const fs::path &docPath);
 
     ~TextLoader();
 
@@ -89,7 +89,7 @@ private:
     };
 
 private:
-    TextRepo textRepo_;
+    TextRepo &textRepo_;
     TaskQueue<void(Reader &)> readerTasks_;
     LoadingParts loadingParts_;
     std::unique_ptr<Reader> reader_;

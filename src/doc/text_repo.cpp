@@ -62,4 +62,19 @@ TextRepo::SavePartStmt::SavePartStmt(sqlite::Database &db)
     stmt_.open(db, "INSERT INTO doc VALUES(?,?,?,?);");
 }
 
+TextRepo::SaveRowStmt::SaveRowStmt(sqlite::Database &db)
+{
+    stmt_.open(db, "INSERT INTO rows VALUES(?,?,?)");
+}
+
+i64 TextRepo::SaveRowStmt::operator()(const void *data, i64 nbytes)
+{
+    stmt_.reset();
+    stmt_.arg(); // id 数据库生成
+    stmt_.arg(); // row_index 初始时为空，由其它逻辑填入
+    stmt_.arg(data, nbytes); // data 该行内容
+    stmt_.step();
+    return i64();
+}
+
 }

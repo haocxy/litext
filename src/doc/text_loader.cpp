@@ -22,9 +22,9 @@ static int decideDecoderCount()
     return std::max(1, SystemUtil::processorCount() / 2);
 }
 
-TextLoader::TextLoader(const fs::path &docPath)
+TextLoader::TextLoader(TextRepo &textRepo, const fs::path &docPath)
     : loadingParts_(decideDecoderCount())
-    , textRepo_(docPath.generic_string() + ".notesharpdb")
+    , textRepo_(textRepo)
 {
     reader_ = std::make_unique<Reader>(docPath, readerTasks_, loadingParts_);
 

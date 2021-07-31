@@ -33,6 +33,16 @@ public:
         friend class TextRepo;
     };
 
+    class SaveRowStmt {
+    public:
+        SaveRowStmt(sqlite::Database &db);
+
+        i64 operator()(const void *data, i64 nbytes);
+
+    private:
+        sqlite::Statement stmt_;
+    };
+
     SavePartStmt stmtSavePart();
 
 private:

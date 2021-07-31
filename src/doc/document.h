@@ -7,6 +7,7 @@
 #include "core/charset.h"
 
 #include "render_config.h"
+#include "text_repo.h"
 #include "text_loader.h"
 #include "line_manger.h"
 #include "doc_define.h"
@@ -57,6 +58,7 @@ public:
 private:
     const fs::path path_;
     std::unique_ptr<RenderConfig> config_;
+    TextRepo textRepo_;
     TextLoader loader_;
     LineManager lineManager_;
     std::atomic<Charset> charset_{ Charset::Unknown };
