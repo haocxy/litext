@@ -49,12 +49,12 @@ LineManager::~LineManager()
     workers_.clear();
 }
 
-void LineManager::updateConfig(const RenderConfig &config)
+void LineManager::init(const RenderConfig &config)
 {
     config_ = config;
 
     for (const auto &worker : workers_) {
-        worker->updateConfig(config);
+        worker->init(config);
     }
 }
 
@@ -96,10 +96,17 @@ LineManager::Worker::~Worker() {
     thread_.join();
 }
 
-void LineManager::Worker::updateConfig(const RenderConfig &config)
+void LineManager::Worker::init(const RenderConfig &config)
 {
     config_ = std::make_unique<RenderConfig>(config);
     widthProvider_ = std::make_unique<GlyphWidthCache>(config_->font(), 22);
+}
+
+void LineManager::Worker::setWidthLimit(int w)
+{
+    std::unique_ptr<RenderConfig> config(new RenderConfig(*config_));
+    config->setWidthLimit(w);
+    config_ = std::move(config);
 }
 
 LineManager::PartInfo LineManager::Worker::countLines(const QString &content)

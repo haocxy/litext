@@ -33,9 +33,18 @@ public:
         widthLimit_ = limit;
     }
 
+    int heightLimit() const {
+        return heightLimit_;
+    }
+
+    void setHeightLimit(int limit) {
+        heightLimit_ = limit;
+    }
+
 private:
     HLayoutConfig hLayout_;
     font::FontIndex font_;
     int widthLimit_ = 0;
+    int heightLimit_ = 0;
 };
 

@@ -5,12 +5,12 @@
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/charset.h"
-#include "doc/doc_define.h"
 
 #include "render_config.h"
 #include "text_loader.h"
 #include "line_manger.h"
-
+#include "doc_define.h"
+#include "doc_row.h"
 
 
 namespace doc
@@ -23,6 +23,8 @@ public:
     ~Document();
 
     void start(const RenderConfig &config);
+
+    void setAreaSize(int w, int h);
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -38,6 +40,18 @@ public:
 
     Signal<void(RowN nrows)> &sigRowCountUpdated() {
         return sigRowCountUpdated_;
+    }
+
+    RowN rowCnt() const {
+        return lineManager_.rowCnt();
+    }
+
+    void loadRow(RowN row, std::function<void(std::shared_ptr<Row> row)> &&cb) {
+        // TODO not implemented
+    }
+
+    void loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
+        // TODO not implemented
     }
 
 private:

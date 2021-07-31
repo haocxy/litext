@@ -27,7 +27,7 @@ public:
 
     ~LineManager();
 
-    void updateConfig(const RenderConfig &config);
+    void init(const RenderConfig &config);
 
     Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return sigPartLoaded_;
@@ -37,7 +37,7 @@ public:
         return sigRowCountUpdated_;
     }
 
-    RowN rowCount() const {
+    RowN rowCnt() const {
         std::unique_lock<std::mutex> lock(mtx_);
         return rowCount_;
     }
@@ -61,7 +61,9 @@ private:
             stopping_ = true;
         }
 
-        void updateConfig(const RenderConfig &config);
+        void init(const RenderConfig &config);
+
+        void setWidthLimit(int w);
 
         PartInfo countLines(const QString &content);
 

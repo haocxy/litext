@@ -26,7 +26,9 @@ public:
 
     void start(const RenderConfig &renderConfig);
 
-    const Doc & doc() const { return m_model; }
+    const doc::Document &doc() const { return document_; }
+
+    doc::Document &doc() { return document_; }
 
     const doc::Document &document() const { return document_; }
 

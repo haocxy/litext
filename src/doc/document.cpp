@@ -38,9 +38,15 @@ void Document::start(const RenderConfig &config)
 {
     config_ = std::make_unique<RenderConfig>(config);
 
-    lineManager_.updateConfig(config);
+    lineManager_.init(config);
 
     loader_.loadAll();
+}
+
+void Document::setAreaSize(int w, int h)
+{
+    config_->setWidthLimit(w);
+    config_->setHeightLimit(h);
 }
 
 }
