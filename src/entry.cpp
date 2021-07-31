@@ -38,9 +38,6 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
                 continue;
             }
 
-            LOGD << "face: [" << face.familyName() << "] style [" << face.styleName() << "]";
-            LOGD << "====> glyph count: [" << face.glyphCount() << "]";
-
             if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
                 fileTo = std::move(fontFile);
                 faceTo = std::move(face);

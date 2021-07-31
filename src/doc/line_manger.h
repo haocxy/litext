@@ -58,6 +58,7 @@ private:
         i64 nbytes = 0;
         RowN rowCount = 0;
         RowN lineCount = 0;
+        RowN rowOffset = 0;
     };
 
     class Worker {
@@ -99,7 +100,11 @@ private:
     // 所以每次加载完一个片段后检查下这个片段前的片段是否都加载完成
     // 如果这个片段的前面都加载完成，或者因为这一片段的完成使得位置在其后却先加载的先片段明确了段偏移，则更新它门段偏移
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
-    void updateRowOff(const PartInfo &i);
+    void updateRowOff(PartInfo &i);
+
+    void tryMergeRowOffUnawaredParts();
+
+    void setRowOff(PartInfo &i, RowN rowOff);
 
     const PartInfo *findPartByRow(RowN row) const;
 
@@ -116,13 +121,11 @@ private:
     mutable std::mutex mtx_;
     std::map<i64, PartInfo> byteOffToInfos_;
 
-    // 已经确定段数偏移的
-    // 键：字节偏移，值：段数偏移
-    std::map<i64, RowN> rowOffAwaredParts_;
+    std::set<i64> rowOffAwaredParts_;
 
     // 未确定段数偏移的
-    // 键：字节偏移，值：这一片段内的段数
-    std::map<i64, RowN> rowOffUnawaredParts_;
+    // 键：字节偏移
+    std::set<i64> rowOffUnawaredParts_;
 
     RowN rowCount_ = 0;
     RowN lineCount_ = 0;
