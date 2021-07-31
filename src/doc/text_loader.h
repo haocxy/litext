@@ -11,7 +11,6 @@
 #include "core/membuff.h"
 #include "core/thread.h"
 
-#include "text_repo.h"
 #include "part_loaded_event.h"
 
 
@@ -20,7 +19,7 @@ namespace doc
 
 class TextLoader {
 public:
-    TextLoader(TextRepo &textRepo, const fs::path &docPath);
+    TextLoader(const fs::path &docPath);
 
     ~TextLoader();
 
@@ -83,13 +82,11 @@ private:
     private:
         TextLoader &self_;
         BlockQueue<LoadingPart> &loadingParts_;
-        TextRepo::SavePartStmt stmtSavePart_;
         std::thread th_;
         std::atomic_bool stopping_{ false };
     };
 
 private:
-    TextRepo &textRepo_;
     TaskQueue<void(Reader &)> readerTasks_;
     LoadingParts loadingParts_;
     std::unique_ptr<Reader> reader_;

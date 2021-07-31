@@ -9,8 +9,8 @@ namespace doc
 Document::Document(const fs::path &path)
     : path_(path)
     , textRepo_(path.generic_string() + ".notesharpdb")
-    , loader_(textRepo_, path)
-    , lineManager_(loader_)
+    , loader_(path)
+    , lineManager_(textRepo_, loader_)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 

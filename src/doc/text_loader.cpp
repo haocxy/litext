@@ -22,9 +22,8 @@ static int decideDecoderCount()
     return std::max(1, SystemUtil::processorCount() / 2);
 }
 
-TextLoader::TextLoader(TextRepo &textRepo, const fs::path &docPath)
+TextLoader::TextLoader(const fs::path &docPath)
     : loadingParts_(decideDecoderCount())
-    , textRepo_(textRepo)
 {
     reader_ = std::make_unique<Reader>(docPath, readerTasks_, loadingParts_);
 
@@ -133,7 +132,6 @@ void TextLoader::Reader::loop()
 TextLoader::Decoder::Decoder(TextLoader &self, LoadingParts &loadingParts)
     : self_(self)
     , loadingParts_(loadingParts)
-    , stmtSavePart_(self.textRepo_.stmtSavePart())
     , th_([this]() { loop(); })
 {
 }
@@ -171,12 +169,9 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     QString content = decoder->toUnicode(reinterpret_cast<const char *>(p.data.data()), p.data.size());
 
-    const i64 id = stmtSavePart_(p.off, content.constData(), static_cast<i64>(content.size()) * 2);
-
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
     PartLoadedEvent e;
-    e.setPartId(id);
     e.setFileSize(p.filesize);
     e.setPartOffset(p.off);
     e.setPartSize(p.data.size());

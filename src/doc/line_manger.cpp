@@ -27,17 +27,16 @@ static int decideWorkerCount()
     return std::max(1, SystemUtil::processorCount() / 2);
 }
 
-LineManager::LineManager(TextLoader &loader)
-    : loader_(loader)
-    , taskQueue_(decideWorkerCount())
+LineManager::LineManager(TextRepo &textRepo, TextLoader &loader)
+    : taskQueue_(decideWorkerCount())
 {
     const int workerCount = decideWorkerCount();
 
     for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<Worker>(taskQueue_));
+        workers_.push_back(std::make_unique<Worker>(textRepo, taskQueue_));
     }
 
-    sigConns_ += loader_.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
+    sigConns_ += loader.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
         onPartLoaded(e);
     });
 }
@@ -61,11 +60,12 @@ void LineManager::init(const RenderConfig &config)
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
-        const int64_t partId = e.partId();
         ElapsedTime elapse;
-        const PartInfo partInfo = worker.countLines(e.utf16content());
-        LOGD << "LineManager part[" << partId << "], linecount[" << partInfo.lineCount << "], time usage[" << elapse.milliSec() << "]";
-        const RowN totalRowCount = updatePartInfo(partId, partInfo);
+        const QString s = e.utf16content();
+        const PartInfo i = worker.countLines(s);
+        const i64 id = worker.stmtSavePart_(e.partOffset(), i.rowCount, i.lineCount, s.data(), s.size() * 2);
+        LOGD << "LineManager part[" << id << "], linecount[" << i.lineCount << "], time usage[" << elapse.milliSec() << "]";
+        const RowN totalRowCount = updatePartInfo(id, i);
         sigRowCountUpdated_(totalRowCount);
         sigPartLoaded_(e);
     });
@@ -84,8 +84,9 @@ RowN LineManager::updatePartInfo(int64_t id, const PartInfo &newInfo)
     return rowCount_;
 }
 
-LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue)
-    : taskQueue_(taskQueue)
+LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)
+    : stmtSavePart_(textRepo)
+    , taskQueue_(taskQueue)
     , thread_([this] { loop(); })
 {
 

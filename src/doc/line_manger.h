@@ -12,6 +12,7 @@
 #include "core/font_index.h"
 #include "part_loaded_event.h"
 #include "declare_document.h"
+#include "text_repo.h"
 #include "text_loader.h"
 #include "glyph_width_cache.h"
 #include "render_config.h"
@@ -23,7 +24,7 @@ namespace doc
 
 class LineManager {
 public:
-    LineManager(TextLoader &loader);
+    LineManager(TextRepo &textRespo, TextLoader &loader);
 
     ~LineManager();
 
@@ -46,14 +47,16 @@ private:
 
     struct PartInfo {
         PartInfo() {}
-        PartInfo(RowN rowCount, RowN lineCount) : rowCount(rowCount), lineCount(lineCount) {}
+        PartInfo(RowN rowCount, RowN lineCount)
+            : rowCount(rowCount), lineCount(lineCount) {}
+
         RowN rowCount = 0;
         RowN lineCount = 0;
     };
 
     class Worker {
     public:
-        Worker(TaskQueue<void(Worker &worker)> &taskQueue);
+        Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue);
 
         ~Worker();
 
@@ -71,11 +74,14 @@ private:
         void loop();
 
     private:
+        TextRepo::SavePartStmt stmtSavePart_;
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
         std::unique_ptr<RenderConfig> config_;
         std::unique_ptr<GlyphWidthCache> widthProvider_;
+
+        friend class LineManager;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
@@ -83,7 +89,6 @@ private:
     RowN updatePartInfo(int64_t id, const PartInfo &newInfo);
 
 private:
-    TextLoader &loader_;
     RenderConfig config_;
     TaskQueue<void(Worker &worker)> taskQueue_;
     std::vector<std::unique_ptr<Worker>> workers_;
