@@ -173,7 +173,7 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     PartLoadedEvent e;
     e.setFileSize(p.filesize);
-    e.setPartOffset(p.off);
+    e.setByteOffset(p.off);
     e.setPartSize(p.data.size());
     e.setContent(std::move(content));
 

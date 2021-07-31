@@ -57,14 +57,28 @@ void LineManager::init(const RenderConfig &config)
     }
 }
 
+void LineManager::loadRow(RowN row, std::function<void(QString s)> &&cb)
+{
+    std::unique_lock<std::mutex> lock(mtx_);
+
+    const PartInfo *part = findPartByRow(row);
+
+    if (part) {
+
+    } else {
+        waitingRow_ = WaitingRow(row, std::move(cb));
+    }
+}
+
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
         const QString s = e.utf16content();
         PartInfo i = worker.countLines(s);
-        i.id = worker.savePart(e.partOffset(), i.rowCount, i.lineCount, s);
-        i.offset = e.partOffset();
+        i.id = worker.savePart(e.byteOffset(), i.rowCount, i.lineCount, s);
+        i.byteOffset = e.byteOffset();
+        i.nbytes = e.partSize();
         LOGD << "LineManager part[" << i.id << "], linecount[" << i.lineCount << "], time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(i);
         sigRowCountUpdated_(totalRowCount);
@@ -76,13 +90,35 @@ RowN LineManager::updatePartInfo(const PartInfo &i)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    PartInfo &info = offToInfos_[i.offset];
+    PartInfo &info = byteOffToInfos_[i.byteOffset];
     rowCount_ -= info.rowCount;
     lineCount_ -= info.lineCount;
     info = i;
     rowCount_ += info.rowCount;
     lineCount_ += info.lineCount;
+
+    updateRowOff(i);
+
     return rowCount_;
+}
+
+void LineManager::updateRowOff(const PartInfo &i)
+{
+
+}
+
+const LineManager::PartInfo *LineManager::findPartByRow(RowN row) const
+{
+    RowN partRowOffset = 0;
+
+    for (const auto &pair : byteOffToInfos_) {
+        if (row >= partRowOffset) {
+            return &(pair.second);
+        }
+        partRowOffset += pair.second.rowCount;
+    }
+
+    return nullptr;
 }
 
 LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)

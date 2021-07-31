@@ -43,7 +43,7 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
     });
 
     sigConns_ += doc.sigPartLoaded().connect([this](const doc::PartLoadedEvent &progress) {
-        const i64 off = progress.partOffset();
+        const i64 off = progress.byteOffset();
         if (off > maxOffset_) {
             maxOffset_ = off;
             const int percent = progress.fileSize() == 0 ? 100 : (off + progress.partSize()) * 100 / progress.fileSize();

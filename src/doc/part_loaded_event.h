@@ -34,12 +34,12 @@ public:
         fileSize_ = fileSize;
     }
 
-    uintmax_t partOffset() const {
-        return partOffset_;
+    uintmax_t byteOffset() const {
+        return byteOffset_;
     }
 
-    void setPartOffset(uintmax_t partOffset) {
-        partOffset_ = partOffset;
+    void setByteOffset(uintmax_t byteOffset) {
+        byteOffset_ = byteOffset;
     }
 
     uintmax_t partSize() const {
@@ -61,7 +61,7 @@ public:
 private:
     int64_t partId_ = 0;
     uintmax_t fileSize_ = 0;
-    uintmax_t partOffset_ = 0;
+    uintmax_t byteOffset_ = 0;
     uintmax_t partSize_ = 0;
     QString content_;
 };
