@@ -62,23 +62,24 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
         const QString s = e.utf16content();
-        const PartInfo i = worker.countLines(s);
-        const i64 id = worker.stmtSavePart_(e.partOffset(), i.rowCount, i.lineCount, s.data(), s.size() * 2);
-        LOGD << "LineManager part[" << id << "], linecount[" << i.lineCount << "], time usage[" << elapse.milliSec() << "]";
-        const RowN totalRowCount = updatePartInfo(id, i);
+        PartInfo i = worker.countLines(s);
+        i.id = worker.savePart(e.partOffset(), i.rowCount, i.lineCount, s);
+        i.offset = e.partOffset();
+        LOGD << "LineManager part[" << i.id << "], linecount[" << i.lineCount << "], time usage[" << elapse.milliSec() << "]";
+        const RowN totalRowCount = updatePartInfo(i);
         sigRowCountUpdated_(totalRowCount);
         sigPartLoaded_(e);
     });
 }
 
-RowN LineManager::updatePartInfo(int64_t id, const PartInfo &newInfo)
+RowN LineManager::updatePartInfo(const PartInfo &i)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    PartInfo &info = partIdToInfos_[id];
+    PartInfo &info = partIdToInfos_[i.id];
     rowCount_ -= info.rowCount;
     lineCount_ -= info.lineCount;
-    info = newInfo;
+    info = i;
     rowCount_ += info.rowCount;
     lineCount_ += info.lineCount;
     return rowCount_;
@@ -124,7 +125,7 @@ LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
         }
 
         ++rowCount;
-        UTF16CharInStream u16chars(line.data(), line.size() * 2);
+        UTF16CharInStream u16chars(line.data(), static_cast<size_t>(line.size()) * 2);
         CharInStreamOverUTF16CharInStram charStream(u16chars);
         RowWalker walker(*widthProvider_, charStream, config_->hLayout(), config_->widthLimit());
 
@@ -141,6 +142,10 @@ LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
     return PartInfo(rowCount, lineCount);
 }
 
+i64 LineManager::Worker::savePart(i64 off, i64 nrows, i64 nlines, const QString &s)
+{
+    return stmtSavePart_(off, nrows, nlines, s.constData(), static_cast<i64>(s.size()) * 2);
+}
 
 void LineManager::Worker::loop() {
     ThreadUtil::setNameForCurrentThread("LineManager-Worker");

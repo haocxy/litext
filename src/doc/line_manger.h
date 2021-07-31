@@ -50,6 +50,8 @@ private:
         PartInfo(RowN rowCount, RowN lineCount)
             : rowCount(rowCount), lineCount(lineCount) {}
 
+        i64 id = 0;
+        i64 offset = 0;
         RowN rowCount = 0;
         RowN lineCount = 0;
     };
@@ -68,7 +70,9 @@ private:
 
         void setWidthLimit(int w);
 
-        PartInfo countLines(const QString &content);
+        PartInfo countLines(const QString &s);
+
+        i64 savePart(i64 off, i64 nrows, i64 nlines, const QString &s);
 
     private:
         void loop();
@@ -80,13 +84,11 @@ private:
         std::atomic_bool stopping_{ false };
         std::unique_ptr<RenderConfig> config_;
         std::unique_ptr<GlyphWidthCache> widthProvider_;
-
-        friend class LineManager;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
-    RowN updatePartInfo(int64_t id, const PartInfo &newInfo);
+    RowN updatePartInfo(const PartInfo &i);
 
 private:
     RenderConfig config_;
