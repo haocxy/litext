@@ -101,7 +101,7 @@ private:
 
 private:
     mutable std::mutex mtx_;
-    std::map<int64_t, PartInfo> partIdToInfos_;
+    std::map<i64, PartInfo> offToInfos_;
     RowN rowCount_ = 0;
     RowN lineCount_ = 0;
 };

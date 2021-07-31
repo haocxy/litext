@@ -76,7 +76,7 @@ RowN LineManager::updatePartInfo(const PartInfo &i)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    PartInfo &info = partIdToInfos_[i.id];
+    PartInfo &info = offToInfos_[i.offset];
     rowCount_ -= info.rowCount;
     lineCount_ -= info.lineCount;
     info = i;
