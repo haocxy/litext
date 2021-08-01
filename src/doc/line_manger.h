@@ -44,7 +44,9 @@ public:
         return rowCount_;
     }
 
-    void loadRow(RowN row, std::function<void(QString s)> &&cb);
+    using LoadRangeResult = std::shared_ptr<std::map<RowN, QString>>;
+
+    void loadRange(RowN rowOffset, RowN rowCount, std::function<void(LoadRangeResult)> &&cb);
 
 private:
 
@@ -113,6 +115,8 @@ private:
     void onRowOffDetected(const PartInfo &i);
 
     std::optional<size_t> findPartByRow(RowN row) const;
+
+    QString queryRowContent(RowN row);
 
 private:
     RenderConfig config_;

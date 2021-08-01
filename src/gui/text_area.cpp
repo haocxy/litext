@@ -618,6 +618,9 @@ void TextArea::remakePage()
 
     int h = -vloc_.line();
 
+    // TODO test code
+    editor_.doc().loadPage(0, [](std::vector<std::shared_ptr<Row>>) {});
+
     for (RowN i = vloc_.row(); i < rowCnt; ++i)
     {
         if (h >= maxShownLineCnt)

@@ -47,13 +47,9 @@ public:
         return lineManager_.rowCnt();
     }
 
-    void loadRow(RowN row, std::function<void(std::shared_ptr<Row> row)> &&cb) {
-        // TODO not implemented
-    }
+    void loadRow(RowN row, std::function<void(std::shared_ptr<Row> row)> &&cb);
 
-    void loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
-        // TODO not implemented
-    }
+    void loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb);
 
 private:
     const fs::path path_;

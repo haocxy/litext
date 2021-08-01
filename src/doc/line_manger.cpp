@@ -57,11 +57,54 @@ void LineManager::init(const RenderConfig &config)
     }
 }
 
-void LineManager::loadRow(RowN row, std::function<void(QString s)> &&cb)
+void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(LoadRangeResult)> &&cb)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    throw std::logic_error("LineManager::loadRow(...) unimplemented");
+    const RowN right = rowOffset + rowCount - 1;
+
+    RowN row = rowOffset;
+
+    std::map<RowN, QString> orderedRows;
+
+    if (!orderedInfos_.empty()) {
+
+        const RowN orderedLastRow = orderedInfos_.back().rowEnd() - 1;
+
+        // 找到最后一个可作为结果的段落偏移
+        const RowN lastUsable = std::min(right, orderedLastRow);
+
+        // 把可用部分取出来
+        for (; row <= lastUsable; ++row) {
+            orderedRows[row] = queryRowContent(row);
+        }
+    }
+
+    // 如果没有未排序的部分，则直接回调并返回
+    if (row > right) {
+        using Map = std::map<RowN, QString>;
+        LoadRangeResult result = std::make_shared<Map>(std::move(orderedRows));
+        cb(result);
+        return;
+    }
+
+    // 把未排序部分的区间记录下来
+    // 这样就可以在加载和排序过程中先通过区间大致判断，
+    // 如果某行在区间中才进一步判断是否是需要的行
+    const RowN unorderedLeft = row;
+
+    // 虽然，在一开始请求加载某范围的时候，未加载的部分是连续的，
+    // 但是，随着加载过程的推进，未加载部分可能不再连续，
+    // 所以，不能仅记录边界，而是应该用 set 记录每一个段落偏移，
+    // 记录段落偏移仅仅是为了提升判断速度，并不能作为充分的依据
+    std::set<RowN> unorderedRows;
+
+    // 记录未加载的部分
+    for (; row <= right; ++row) {
+        unorderedRows.insert(row);
+    }
+
+    // TODO
 }
 
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
@@ -161,6 +204,11 @@ std::optional<size_t> LineManager::findPartByRow(RowN row) const
     }
 
     throw std::logic_error("logic should never reach here");
+}
+
+QString LineManager::queryRowContent(RowN row)
+{
+    return QString();
 }
 
 LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)
