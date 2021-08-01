@@ -1,41 +1,50 @@
 #pragma once
 
-
 template <typename T>
 class Range {
 public:
     Range() {}
 
-    static Range byOffAndLen(T off, T len) {
-        return Range(off, len);
-    }
+    Range(T off, T len)
+        : off_(off), len_(len) {}
 
-    static Range byBegAndEnd(T beg, T end) {
-        return Range(beg, end - beg);
-    }
+    template <typename U>
+    Range(const Range<U> &b)
+        : off_(b.off()), len_(b.len()) {}
 
-    static Range byLeftAndRight(T left, T right) {
-        return Range(left, right - left + 1);
+    template <typename U>
+    Range &operator=(const Range<U> &b) {
+        off_ = b.off();
+        len_ = b.len();
+        return *this;
     }
 
     T off() const {
-        return beg_;
+        return off_;
+    }
+
+    void setOff(T n) {
+        off_ = n;
     }
 
     T len() const {
         return len_;
     }
 
+    void setLen(T n) {
+        len_ = n;
+    }
+
     T beg() const {
-        return beg_;
+        return off_;
     }
 
     T end() const {
-        return beg_ + len_;
+        return off_ + len_;
     }
 
     T left() const {
-        return beg_;
+        return off_;
     }
 
     T right() const {
@@ -53,10 +62,27 @@ public:
     }
 
 private:
-    Range(T beg, T len)
-        : beg_(beg), len_(len) {}
-
-private:
-    T beg_ = T();
+    T off_ = T();
     T len_ = T();
 };
+
+
+namespace Ranges
+{
+
+template <typename T>
+inline Range<T> byOffAndLen(T off, T len) {
+    return Range<T>(off, len);
+}
+
+template <typename T>
+inline Range<T> byBegAndEnd(T beg, T end) {
+    return Range<T>(beg, end - beg);
+}
+
+template <typename T>
+inline Range<T> byLeftAndRight(T left, T right) {
+    return Range<T>(left, right - left + 1);
+}
+
+}

@@ -7,6 +7,7 @@
 #include <mutex>
 #include <vector>
 
+#include "core/range.h"
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/thread.h"
@@ -59,13 +60,8 @@ private:
             return rowOffset + rowCount;
         }
 
-        i64 byteEnd() const {
-            return byteOffset + nbytes;
-        }
-
         i64 id = 0;
-        i64 byteOffset = 0;
-        i64 nbytes = 0;
+        Range<i64> byteRange;
         RowN rowCount = 0;
         RowN lineCount = 0;
         RowN rowOffset = 0;

@@ -109,8 +109,7 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
         const QString &s = e.utf16content();
         PartInfo info = worker.countLines(s);
         info.id = worker.savePart(e.byteOffset(), info.rowCount, info.lineCount, s);
-        info.byteOffset = e.byteOffset();
-        info.nbytes = e.partSize();
+        info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
         LOGD << "LineManager part[" << info.id << "], linecount[" << info.lineCount << "], time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info, s);
         sigRowCountUpdated_(totalRowCount);
@@ -132,11 +131,11 @@ RowN LineManager::updatePartInfo(const PartInfo &info, const QString &s)
 
 void LineManager::updateRowOff(const PartInfo &info, const QString &s)
 {
-    pendingInfos_[info.byteOffset] = info;
+    pendingInfos_[info.byteRange.off()] = info;
 
     while (!pendingInfos_.empty()) {
         const PartInfo &firstPending = pendingInfos_.begin()->second;
-        if (firstPending.byteOffset == 0) {
+        if (firstPending.byteRange.off() == 0) {
             orderedInfos_.push_back(firstPending);
             orderedInfos_.back().rowOffset = 0;
             pendingInfos_.erase(pendingInfos_.begin());
@@ -146,7 +145,7 @@ void LineManager::updateRowOff(const PartInfo &info, const QString &s)
                 break;
             } else {
                 const PartInfo &lastOrdered = orderedInfos_.back();
-                if (orderedInfos_.back().byteEnd() == firstPending.byteOffset) {
+                if (orderedInfos_.back().byteRange.end() == firstPending.byteRange.off()) {
                     const RowN oldLastRowEnd = lastOrdered.rowEnd();
                     orderedInfos_.push_back(firstPending);
                     orderedInfos_.back().rowOffset = oldLastRowEnd;
@@ -164,7 +163,7 @@ void LineManager::onRowOffDetected(const PartInfo &i, const QString &s)
 {
     LOGD << "LineManager::onRowOffDetected"
         << ", part id: [" << i.id << "]"
-        << ", byte off: [" << i.byteOffset << "]"
+        << ", byte off: [" << i.byteRange.off() << "]"
         << ", row off: [" << i.rowOffset << "]"
         << ", row count: [" << i.rowCount << "]"
         << ", row end: [" << i.rowEnd() << "]";
