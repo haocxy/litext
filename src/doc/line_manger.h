@@ -103,16 +103,16 @@ private:
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
-    RowN updatePartInfo(const PartInfo &i);
+    RowN updatePartInfo(const PartInfo &info, const QString &s);
 
     // 更新段偏移信息
     // 多线程加载导致各个片段不是完全有序的，但总体上是有序的
     // 所以每次加载完一个片段后检查下这个片段前的片段是否都加载完成
     // 如果这个片段的前面都加载完成，或者因为这一片段的完成使得位置在其后却先加载的先片段明确了段偏移，则更新它门段偏移
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
-    void updateRowOff(const PartInfo &i);
+    void updateRowOff(const PartInfo &info, const QString &s);
 
-    void onRowOffDetected(const PartInfo &i);
+    void onRowOffDetected(const PartInfo &info, const QString &s);
 
     std::optional<size_t> findPartByRow(RowN row) const;
 

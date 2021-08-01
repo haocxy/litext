@@ -106,31 +106,31 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
-        const QString s = e.utf16content();
-        PartInfo i = worker.countLines(s);
-        i.id = worker.savePart(e.byteOffset(), i.rowCount, i.lineCount, s);
-        i.byteOffset = e.byteOffset();
-        i.nbytes = e.partSize();
-        LOGD << "LineManager part[" << i.id << "], linecount[" << i.lineCount << "], time usage[" << elapse.milliSec() << "]";
-        const RowN totalRowCount = updatePartInfo(i);
+        const QString &s = e.utf16content();
+        PartInfo info = worker.countLines(s);
+        info.id = worker.savePart(e.byteOffset(), info.rowCount, info.lineCount, s);
+        info.byteOffset = e.byteOffset();
+        info.nbytes = e.partSize();
+        LOGD << "LineManager part[" << info.id << "], linecount[" << info.lineCount << "], time usage[" << elapse.milliSec() << "]";
+        const RowN totalRowCount = updatePartInfo(info, s);
         sigRowCountUpdated_(totalRowCount);
         sigPartLoaded_(e);
     });
 }
 
-RowN LineManager::updatePartInfo(const PartInfo &i)
+RowN LineManager::updatePartInfo(const PartInfo &info, const QString &s)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    rowCount_ += i.rowCount;
-    lineCount_ += i.lineCount;
+    rowCount_ += info.rowCount;
+    lineCount_ += info.lineCount;
 
-    updateRowOff(i);
+    updateRowOff(info, s);
 
     return rowCount_;
 }
 
-void LineManager::updateRowOff(const PartInfo &info)
+void LineManager::updateRowOff(const PartInfo &info, const QString &s)
 {
     pendingInfos_[info.byteOffset] = info;
 
@@ -140,7 +140,7 @@ void LineManager::updateRowOff(const PartInfo &info)
             orderedInfos_.push_back(firstPending);
             orderedInfos_.back().rowOffset = 0;
             pendingInfos_.erase(pendingInfos_.begin());
-            onRowOffDetected(orderedInfos_.back());
+            onRowOffDetected(orderedInfos_.back(), s);
         } else {
             if (orderedInfos_.empty()) {
                 break;
@@ -151,7 +151,7 @@ void LineManager::updateRowOff(const PartInfo &info)
                     orderedInfos_.push_back(firstPending);
                     orderedInfos_.back().rowOffset = oldLastRowEnd;
                     pendingInfos_.erase(pendingInfos_.begin());
-                    onRowOffDetected(orderedInfos_.back());
+                    onRowOffDetected(orderedInfos_.back(), s);
                 } else {
                     break;
                 }
@@ -160,7 +160,7 @@ void LineManager::updateRowOff(const PartInfo &info)
     }
 }
 
-void LineManager::onRowOffDetected(const PartInfo &i)
+void LineManager::onRowOffDetected(const PartInfo &i, const QString &s)
 {
     LOGD << "LineManager::onRowOffDetected"
         << ", part id: [" << i.id << "]"
@@ -169,7 +169,7 @@ void LineManager::onRowOffDetected(const PartInfo &i)
         << ", row count: [" << i.rowCount << "]"
         << ", row end: [" << i.rowEnd() << "]";
 
-    // TODO 明确段落偏移时触发的逻辑
+    
 }
 
 std::optional<size_t> LineManager::findPartByRow(RowN row) const
