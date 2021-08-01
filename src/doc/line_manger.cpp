@@ -61,13 +61,7 @@ void LineManager::loadRow(RowN row, std::function<void(QString s)> &&cb)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    const PartInfo *part = findPartByRow(row);
-
-    if (part) {
-
-    } else {
-        waitingRow_ = WaitingRow(row, std::move(cb));
-    }
+    throw std::logic_error("LineManager::loadRow(...) unimplemented");
 }
 
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
@@ -140,9 +134,33 @@ void LineManager::onRowOffDetected(const PartInfo &i)
     // TODO 明确段落偏移时触发的逻辑
 }
 
-const LineManager::PartInfo *LineManager::findPartByRow(RowN row) const
+std::optional<size_t> LineManager::findPartByRow(RowN row) const
 {
-    throw std::logic_error("LineManager::findPartByRow() unimplemented");
+    if (orderedInfos_.empty()) {
+        return std::nullopt;
+    }
+
+    if (orderedInfos_.back().rowEnd() <= row) {
+        return std::nullopt;
+    }
+
+    size_t leftPartIndex = 0;
+    size_t rightPartIndex = orderedInfos_.size() - 1;
+
+    while (leftPartIndex <= rightPartIndex) {
+        const size_t midPartIndex = (leftPartIndex + rightPartIndex) / 2;
+        const PartInfo &part = orderedInfos_[midPartIndex];
+
+        if (row < part.rowOffset) {
+            rightPartIndex = midPartIndex - 1;
+        } else if (row >= part.rowEnd()) {
+            leftPartIndex = midPartIndex + 1;
+        } else {
+            return midPartIndex;
+        }
+    }
+
+    throw std::logic_error("logic should never reach here");
 }
 
 LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)

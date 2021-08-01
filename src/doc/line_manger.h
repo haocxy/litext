@@ -112,7 +112,7 @@ private:
 
     void onRowOffDetected(const PartInfo &i);
 
-    const PartInfo *findPartByRow(RowN row) const;
+    std::optional<size_t> findPartByRow(RowN row) const;
 
 private:
     RenderConfig config_;
