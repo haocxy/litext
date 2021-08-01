@@ -90,74 +90,59 @@ RowN LineManager::updatePartInfo(const PartInfo &i)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    PartInfo &info = byteOffToInfos_[i.byteOffset];
-    rowCount_ -= info.rowCount;
-    lineCount_ -= info.lineCount;
-    info = i;
-    rowCount_ += info.rowCount;
-    lineCount_ += info.lineCount;
+    rowCount_ += i.rowCount;
+    lineCount_ += i.lineCount;
 
-    updateRowOff(info);
+    updateRowOff(i);
 
     return rowCount_;
 }
 
-void LineManager::updateRowOff(PartInfo &i)
+void LineManager::updateRowOff(const PartInfo &info)
 {
-    LOGD << "updateRowOff,id[" << i.id << "],byteoff[" << i.byteOffset << "],nbytes[" << i.nbytes << "]";
-    // 如果当前片段是第一个片段，则直接设置第一个片段的段落偏移为0，并检查是否有未设置段落偏移的片段
-    if (i.byteOffset == 0) {
-        setRowOff(i, 0);
-        tryMergeRowOffUnawaredParts();
-    } else {
-        if (rowOffAwaredParts_.empty()) {
-            // 如果还没有明确段落偏移的片段，则这个片段也无法明确
-            rowOffUnawaredParts_.insert(i.byteOffset);
+    pendingInfos_[info.byteOffset] = info;
+
+    while (!pendingInfos_.empty()) {
+        const PartInfo &firstPending = pendingInfos_.begin()->second;
+        if (firstPending.byteOffset == 0) {
+            orderedInfos_.push_back(firstPending);
+            orderedInfos_.back().rowOffset = 0;
+            pendingInfos_.erase(pendingInfos_.begin());
+            onRowOffDetected(orderedInfos_.back());
         } else {
-            const PartInfo &lastAwared = byteOffToInfos_[*(rowOffAwaredParts_.rbegin())];
-            // 如果最后一个已经明确段落偏移的片段和这个片段是连续的
-            if (lastAwared.byteOffset + lastAwared.nbytes == i.byteOffset) {
-                setRowOff(i, lastAwared.rowOffset + lastAwared.rowCount);
-                tryMergeRowOffUnawaredParts();
+            if (orderedInfos_.empty()) {
+                break;
             } else {
-                rowOffUnawaredParts_.insert(i.byteOffset);
+                const PartInfo &lastOrdered = orderedInfos_.back();
+                if (orderedInfos_.back().byteEnd() == firstPending.byteOffset) {
+                    const RowN oldLastRowEnd = lastOrdered.rowEnd();
+                    orderedInfos_.push_back(firstPending);
+                    orderedInfos_.back().rowOffset = oldLastRowEnd;
+                    pendingInfos_.erase(pendingInfos_.begin());
+                    onRowOffDetected(orderedInfos_.back());
+                } else {
+                    break;
+                }
             }
         }
     }
 }
 
-void LineManager::tryMergeRowOffUnawaredParts()
+void LineManager::onRowOffDetected(const PartInfo &i)
 {
-    if (!rowOffUnawaredParts_.empty()) {
-        updateRowOff(byteOffToInfos_[*(rowOffUnawaredParts_.begin())]);
-    }
-}
-
-void LineManager::setRowOff(PartInfo &i, RowN rowOff)
-{
-    i.rowOffset = rowOff;
-
-    LOGD << "======> LineManager::setRowOff, part id [" << i.id << "], byteoff[" << i.byteOffset << "], row off [" << rowOff << "]"
-        << ", row count: [" << i.rowCount << "], row end: [" << (i.rowOffset + i.rowCount) << "]";
-
-    rowOffAwaredParts_.insert(i.byteOffset);
-    rowOffUnawaredParts_.erase(i.byteOffset);
+    LOGD << "LineManager::onRowOffDetected"
+        << ", part id: [" << i.id << "]"
+        << ", byte off: [" << i.byteOffset << "]"
+        << ", row off: [" << i.rowOffset << "]"
+        << ", row count: [" << i.rowCount << "]"
+        << ", row end: [" << i.rowEnd() << "]";
 
     // TODO 明确段落偏移时触发的逻辑
 }
 
 const LineManager::PartInfo *LineManager::findPartByRow(RowN row) const
 {
-    RowN partRowOffset = 0;
-
-    for (const auto &pair : byteOffToInfos_) {
-        if (row >= partRowOffset) {
-            return &(pair.second);
-        }
-        partRowOffset += pair.second.rowCount;
-    }
-
-    return nullptr;
+    throw std::logic_error("LineManager::findPartByRow() unimplemented");
 }
 
 LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)

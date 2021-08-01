@@ -53,6 +53,14 @@ private:
         PartInfo(RowN rowCount, RowN lineCount)
             : rowCount(rowCount), lineCount(lineCount) {}
 
+        RowN rowEnd() const {
+            return rowOffset + rowCount;
+        }
+
+        i64 byteEnd() const {
+            return byteOffset + nbytes;
+        }
+
         i64 id = 0;
         i64 byteOffset = 0;
         i64 nbytes = 0;
@@ -100,11 +108,9 @@ private:
     // 所以每次加载完一个片段后检查下这个片段前的片段是否都加载完成
     // 如果这个片段的前面都加载完成，或者因为这一片段的完成使得位置在其后却先加载的先片段明确了段偏移，则更新它门段偏移
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
-    void updateRowOff(PartInfo &i);
+    void updateRowOff(const PartInfo &i);
 
-    void tryMergeRowOffUnawaredParts();
-
-    void setRowOff(PartInfo &i, RowN rowOff);
+    void onRowOffDetected(const PartInfo &i);
 
     const PartInfo *findPartByRow(RowN row) const;
 
@@ -119,13 +125,12 @@ private:
 
 private:
     mutable std::mutex mtx_;
-    std::map<i64, PartInfo> byteOffToInfos_;
 
-    std::set<i64> rowOffAwaredParts_;
+    std::vector<PartInfo> orderedInfos_;
 
     // 未确定段数偏移的
     // 键：字节偏移
-    std::set<i64> rowOffUnawaredParts_;
+    std::map<i64, PartInfo> pendingInfos_;
 
     RowN rowCount_ = 0;
     RowN lineCount_ = 0;
