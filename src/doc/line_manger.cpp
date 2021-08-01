@@ -88,11 +88,10 @@ void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(Lo
 
     // 记录等待加载的信息
     WaitingRange waiting;
-    waiting.left = row;
-    waiting.right = right;
+    waiting.rowRange = Ranges::byLeftAndRight(row, right);
 
     for (; row <= right; ++row) {
-        waiting.rows.insert(row);
+        waiting.waitingRows.insert(row);
     }
 
     waiting.cb = std::move(cb);

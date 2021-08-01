@@ -147,21 +147,17 @@ private:
 
         static void move(WaitingRange &to, WaitingRange &from) {
             if (&to != &from) {
-                to.left = from.left;
-                from.left = 0;
+                to.rowRange = from.rowRange;
+                from.rowRange = Range<RowN>();
 
-                to.right = from.right;
-                from.right = 0;
-
-                to.rows = std::move(from.rows);
+                to.waitingRows = std::move(from.waitingRows);
 
                 to.cb = std::move(from.cb);
             }
         }
 
-        RowN left = 0;
-        RowN right = 0;
-        std::set<RowN> rows;
+        Range<RowN> rowRange;
+        std::set<RowN> waitingRows;
         std::function<void(LoadRangeResult)> cb;
     };
     std::optional<WaitingRange> waitingRange_;
