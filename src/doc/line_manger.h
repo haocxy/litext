@@ -139,29 +139,39 @@ private:
     RowN rowCount_ = 0;
     RowN lineCount_ = 0;
 
-    struct WaitingRow {
-        WaitingRow(RowN row, std::function<void(QString)> &&cb)
-            : row(row), cb(std::move(cb)) {}
+    struct WaitingRange {
 
-        WaitingRow(WaitingRow &&b) noexcept {
-            row = b.row;
-            b.row = 0;
-            cb = std::move(b.cb);
+        WaitingRange() {}
+
+        WaitingRange(WaitingRange &&b) noexcept {
+            move(*this, b);
         }
 
-        WaitingRow &operator=(WaitingRow &&b) noexcept {
-            if (this != &b) {
-                row = b.row;
-                b.row = 0;
-                cb = std::move(b.cb);
-            }
+        WaitingRange &operator=(WaitingRange &b) noexcept {
+            move(*this, b);
             return *this;
         }
 
-        RowN row = 0;
-        std::function<void(QString)> cb;
+        static void move(WaitingRange &to, WaitingRange &from) {
+            if (&to != &from) {
+                to.left = from.left;
+                from.left = 0;
+
+                to.right = from.right;
+                from.right = 0;
+
+                to.rows = std::move(from.rows);
+
+                to.cb = std::move(from.cb);
+            }
+        }
+
+        RowN left = 0;
+        RowN right = 0;
+        std::set<RowN> rows;
+        std::function<void(LoadRangeResult)> cb;
     };
-    std::optional<WaitingRow> waitingRow_;
+    std::optional<WaitingRange> waitingRange_;
 };
 
 }

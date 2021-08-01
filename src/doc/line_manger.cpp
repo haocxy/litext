@@ -88,23 +88,18 @@ void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(Lo
         return;
     }
 
-    // 把未排序部分的区间记录下来
-    // 这样就可以在加载和排序过程中先通过区间大致判断，
-    // 如果某行在区间中才进一步判断是否是需要的行
-    const RowN unorderedLeft = row;
+    // 记录等待加载的信息
+    WaitingRange waiting;
+    waiting.left = row;
+    waiting.right = right;
 
-    // 虽然，在一开始请求加载某范围的时候，未加载的部分是连续的，
-    // 但是，随着加载过程的推进，未加载部分可能不再连续，
-    // 所以，不能仅记录边界，而是应该用 set 记录每一个段落偏移，
-    // 记录段落偏移仅仅是为了提升判断速度，并不能作为充分的依据
-    std::set<RowN> unorderedRows;
-
-    // 记录未加载的部分
     for (; row <= right; ++row) {
-        unorderedRows.insert(row);
+        waiting.rows.insert(row);
     }
 
-    // TODO
+    waiting.cb = std::move(cb);
+
+    waitingRange_ = std::move(waiting);
 }
 
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
