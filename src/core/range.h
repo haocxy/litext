@@ -5,9 +5,6 @@ class Range {
 public:
     Range() {}
 
-    Range(T off, T len)
-        : off_(off), len_(len) {}
-
     template <typename U>
     Range(const Range<U> &b)
         : off_(b.off()), len_(b.len()) {}
@@ -28,6 +25,10 @@ public:
     }
 
     T len() const {
+        return len_;
+    }
+
+    T count() const {
         return len_;
     }
 
@@ -62,27 +63,38 @@ public:
     }
 
 private:
+    Range(T off, T len)
+        : off_(off), len_(len) {}
+
+private:
     T off_ = T();
     T len_ = T();
+
+    friend class Ranges;
 };
 
 
-namespace Ranges
-{
+class Ranges {
+public:
 
-template <typename T>
-inline Range<T> byOffAndLen(T off, T len) {
-    return Range<T>(off, len);
-}
+    template <typename T>
+    static Range<T> byOffAndLen(T off, T len) {
+        return Range<T>(off, len);
+    }
 
-template <typename T>
-inline Range<T> byBegAndEnd(T beg, T end) {
-    return Range<T>(beg, end - beg);
-}
+    template <typename T>
+    static Range<T> byBegAndEnd(T beg, T end) {
+        return Range<T>(beg, end - beg);
+    }
 
-template <typename T>
-inline Range<T> byLeftAndRight(T left, T right) {
-    return Range<T>(left, right - left + 1);
-}
+    template <typename T>
+    static Range<T> byLeftAndRight(T left, T right) {
+        return Range<T>(left, right - left + 1);
+    }
 
-}
+    template <typename T>
+    static Range<T> byCount(T count) {
+        return Range<T>(0, count);
+    }
+
+};

@@ -53,18 +53,15 @@ private:
 
     struct PartInfo {
         PartInfo() {}
-        PartInfo(RowN rowCount, RowN lineCount)
-            : rowCount(rowCount), lineCount(lineCount) {}
 
-        RowN rowEnd() const {
-            return rowOffset + rowCount;
-        }
+        PartInfo(RowN rowCount, RowN lineCount)
+            : rowRange(Ranges::byCount(rowCount))
+            , lineCount(lineCount) {}
 
         i64 id = 0;
         Range<i64> byteRange;
-        RowN rowCount = 0;
+        Range<RowN> rowRange;
         RowN lineCount = 0;
-        RowN rowOffset = 0;
     };
 
     class Worker {

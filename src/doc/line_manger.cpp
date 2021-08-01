@@ -69,10 +69,8 @@ void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(Lo
 
     if (!orderedInfos_.empty()) {
 
-        const RowN orderedLastRow = orderedInfos_.back().rowEnd() - 1;
-
         // 找到最后一个可作为结果的段落偏移
-        const RowN lastUsable = std::min(right, orderedLastRow);
+        const RowN lastUsable = std::min(right, orderedInfos_.back().rowRange.right());
 
         // 把可用部分取出来
         for (; row <= lastUsable; ++row) {
@@ -108,7 +106,7 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
         ElapsedTime elapse;
         const QString &s = e.utf16content();
         PartInfo info = worker.countLines(s);
-        info.id = worker.savePart(e.byteOffset(), info.rowCount, info.lineCount, s);
+        info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), info.lineCount, s);
         info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
         LOGD << "LineManager part[" << info.id << "], linecount[" << info.lineCount << "], time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info, s);
@@ -121,7 +119,7 @@ RowN LineManager::updatePartInfo(const PartInfo &info, const QString &s)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    rowCount_ += info.rowCount;
+    rowCount_ += info.rowRange.count();
     lineCount_ += info.lineCount;
 
     updateRowOff(info, s);
@@ -137,7 +135,7 @@ void LineManager::updateRowOff(const PartInfo &info, const QString &s)
         const PartInfo &firstPending = pendingInfos_.begin()->second;
         if (firstPending.byteRange.off() == 0) {
             orderedInfos_.push_back(firstPending);
-            orderedInfos_.back().rowOffset = 0;
+            orderedInfos_.back().rowRange.setOff(0);
             pendingInfos_.erase(pendingInfos_.begin());
             onRowOffDetected(orderedInfos_.back(), s);
         } else {
@@ -146,9 +144,9 @@ void LineManager::updateRowOff(const PartInfo &info, const QString &s)
             } else {
                 const PartInfo &lastOrdered = orderedInfos_.back();
                 if (orderedInfos_.back().byteRange.end() == firstPending.byteRange.off()) {
-                    const RowN oldLastRowEnd = lastOrdered.rowEnd();
+                    const RowN oldLastRowEnd = lastOrdered.rowRange.end();
                     orderedInfos_.push_back(firstPending);
-                    orderedInfos_.back().rowOffset = oldLastRowEnd;
+                    orderedInfos_.back().rowRange.setOff(oldLastRowEnd);
                     pendingInfos_.erase(pendingInfos_.begin());
                     onRowOffDetected(orderedInfos_.back(), s);
                 } else {
@@ -164,9 +162,9 @@ void LineManager::onRowOffDetected(const PartInfo &i, const QString &s)
     LOGD << "LineManager::onRowOffDetected"
         << ", part id: [" << i.id << "]"
         << ", byte off: [" << i.byteRange.off() << "]"
-        << ", row off: [" << i.rowOffset << "]"
-        << ", row count: [" << i.rowCount << "]"
-        << ", row end: [" << i.rowEnd() << "]";
+        << ", row off: [" << i.rowRange.off() << "]"
+        << ", row count: [" << i.rowRange.count() << "]"
+        << ", row end: [" << i.rowRange.end() << "]";
 
     
 }
@@ -177,7 +175,7 @@ std::optional<size_t> LineManager::findPartByRow(RowN row) const
         return std::nullopt;
     }
 
-    if (orderedInfos_.back().rowEnd() <= row) {
+    if (orderedInfos_.back().rowRange.right() < row) {
         return std::nullopt;
     }
 
@@ -188,9 +186,9 @@ std::optional<size_t> LineManager::findPartByRow(RowN row) const
         const size_t midPartIndex = (leftPartIndex + rightPartIndex) / 2;
         const PartInfo &part = orderedInfos_[midPartIndex];
 
-        if (row < part.rowOffset) {
+        if (row < part.rowRange.left()) {
             rightPartIndex = midPartIndex - 1;
-        } else if (row >= part.rowEnd()) {
+        } else if (row > part.rowRange.right()) {
             leftPartIndex = midPartIndex + 1;
         } else {
             return midPartIndex;
