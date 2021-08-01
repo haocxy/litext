@@ -140,7 +140,7 @@ private:
             move(*this, b);
         }
 
-        WaitingRange &operator=(WaitingRange &b) noexcept {
+        WaitingRange &operator=(WaitingRange &&b) noexcept {
             move(*this, b);
             return *this;
         }
