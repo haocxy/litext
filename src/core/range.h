@@ -42,6 +42,16 @@ public:
         return end() - 1;
     }
 
+    bool isIntersect(const Range &other) const {
+        if (right() < other.left()) {
+            return false;
+        }
+        if (left() > other.right()) {
+            return false;
+        }
+        return true;
+    }
+
 private:
     Range(T beg, T len)
         : beg_(beg), len_(len) {}
