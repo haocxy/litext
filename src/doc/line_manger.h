@@ -19,6 +19,7 @@
 #include "glyph_width_cache.h"
 #include "render_config.h"
 #include "row_walker.h"
+#include "row_index.h"
 
 
 namespace doc
@@ -45,7 +46,7 @@ public:
         return rowCount_;
     }
 
-    using LoadRangeResult = std::shared_ptr<std::map<RowN, QString>>;
+    using LoadRangeResult = std::shared_ptr<std::map<RowN, RowIndex>>;
 
     void loadRange(RowN rowOffset, RowN rowCount, std::function<void(LoadRangeResult)> &&cb);
 
@@ -107,9 +108,9 @@ private:
 
     void onRowOffDetected(const PartInfo &info);
 
-    std::optional<size_t> findPartByRow(RowN row) const;
+    void checkWaitingRows(const PartInfo &info);
 
-    QString queryRowContent(RowN row);
+    std::optional<RowIndex> queryRowIndex(RowN row) const;
 
 private:
     RenderConfig config_;
@@ -152,12 +153,15 @@ private:
 
                 to.waitingRows = std::move(from.waitingRows);
 
+                to.foundRows = std::move(from.foundRows);
+
                 to.cb = std::move(from.cb);
             }
         }
 
         Range<RowN> rowRange;
         std::set<RowN> waitingRows;
+        std::map<RowN, RowIndex> foundRows;
         std::function<void(LoadRangeResult)> cb;
     };
     std::optional<WaitingRange> waitingRange_;

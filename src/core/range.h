@@ -62,6 +62,10 @@ public:
         return true;
     }
 
+    bool contains(T n) const {
+        return left() <= n && n <= right();
+    }
+
 private:
     Range(T off, T len)
         : off_(off), len_(len) {}

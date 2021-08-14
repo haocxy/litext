@@ -52,12 +52,12 @@ void Document::setAreaSize(int w, int h)
 
 void Document::loadRow(RowN row, std::function<void(std::shared_ptr<Row>row)> &&cb) {
     // TODO test code
-    lineManager_.loadRange(row, 1, std::function<void(LineManager::LoadRangeResult)>());
+    lineManager_.loadRange(row, 3000, std::function<void(LineManager::LoadRangeResult)>());
 }
 
 void Document::loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
     // TODO test code
-    lineManager_.loadRange(row, 10, std::function<void(LineManager::LoadRangeResult)>());
+    lineManager_.loadRange(row, 3000, std::function<void(LineManager::LoadRangeResult)>());
 }
 
 }

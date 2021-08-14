@@ -1,9 +1,10 @@
 #pragma once
 
-#include <stdint.h>
+#include "core/primitive_types.h"
 
 
-typedef int64_t RowN;
-typedef RowN LineN;
-typedef int64_t CharN;
+typedef i64 PartId;
+typedef i64 RowN;
+typedef i64 LineN;
+typedef i64 CharN;
 

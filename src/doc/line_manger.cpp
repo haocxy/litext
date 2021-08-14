@@ -65,7 +65,7 @@ void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(Lo
 
     RowN row = rowOffset;
 
-    std::map<RowN, QString> orderedRows;
+    std::map<RowN, RowIndex> foundRows;
 
     if (!orderedInfos_.empty()) {
 
@@ -74,14 +74,14 @@ void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(Lo
 
         // 把可用部分取出来
         for (; row <= lastUsable; ++row) {
-            orderedRows[row] = queryRowContent(row);
+            foundRows[row] = *queryRowIndex(row);
         }
     }
 
     // 如果没有未排序的部分，则直接回调并返回
     if (row > right) {
-        using Map = std::map<RowN, QString>;
-        LoadRangeResult result = std::make_shared<Map>(std::move(orderedRows));
+        using Map = std::map<RowN, RowIndex>;
+        LoadRangeResult result = std::make_shared<Map>(std::move(foundRows));
         cb(result);
         return;
     }
@@ -94,6 +94,7 @@ void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(Lo
         waiting.waitingRows.insert(row);
     }
 
+    waiting.foundRows = std::move(foundRows);
     waiting.cb = std::move(cb);
 
     waitingRange_ = std::move(waiting);
@@ -156,6 +157,38 @@ void LineManager::updateRowOff(const PartInfo &info)
     }
 }
 
+void LineManager::checkWaitingRows(const PartInfo &info)
+{
+    if (!waitingRange_) {
+        return;
+    }
+
+    const Range<RowN> detectedRowRange = info.rowRange;
+
+    if (!waitingRange_->rowRange.isIntersect(detectedRowRange)) {
+        return;
+    }
+
+    std::set<RowN> &waitingRows = waitingRange_->waitingRows;
+
+    for (auto it = waitingRows.begin(); it != waitingRows.end(); ) {
+        const RowN row = *it;
+        if (detectedRowRange.contains(row)) {
+            it = waitingRows.erase(it);
+            waitingRange_->foundRows[row] = *queryRowIndex(row);
+        } else {
+            ++it;
+        }
+    }
+
+    if (waitingRows.empty()) {
+        if (waitingRange_->cb) {
+            waitingRange_->cb(std::make_shared<std::map<RowN, RowIndex>>(std::move(waitingRange_->foundRows)));
+        }
+        waitingRange_ = std::nullopt;
+    }
+}
+
 void LineManager::onRowOffDetected(const PartInfo &i)
 {
     LOGD << "LineManager::onRowOffDetected"
@@ -165,10 +198,10 @@ void LineManager::onRowOffDetected(const PartInfo &i)
         << ", row count: [" << i.rowRange.count() << "]"
         << ", row end: [" << i.rowRange.end() << "]";
 
-    
+    checkWaitingRows(i);
 }
 
-std::optional<size_t> LineManager::findPartByRow(RowN row) const
+std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const
 {
     if (orderedInfos_.empty()) {
         return std::nullopt;
@@ -190,16 +223,11 @@ std::optional<size_t> LineManager::findPartByRow(RowN row) const
         } else if (row > part.rowRange.right()) {
             leftPartIndex = midPartIndex + 1;
         } else {
-            return midPartIndex;
+            return RowIndex(midPartIndex, part.byteRange);
         }
     }
 
     throw std::logic_error("logic should never reach here");
-}
-
-QString LineManager::queryRowContent(RowN row)
-{
-    return QString();
 }
 
 LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)
