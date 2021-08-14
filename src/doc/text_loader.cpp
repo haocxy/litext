@@ -43,7 +43,11 @@ TextLoader::~TextLoader()
 }
 
 static uintmax_t partSize() {
+#ifndef NDEBUG
+    return SystemUtil::pageSize() * 128;
+#else
     return SystemUtil::pageSize() * 1024;
+#endif
 }
 
 void TextLoader::loadAll()
