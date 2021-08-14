@@ -108,25 +108,25 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
         info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), info.lineCount, s);
         info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
         LOGD << "LineManager part[" << info.id << "], linecount[" << info.lineCount << "], time usage[" << elapse.milliSec() << "]";
-        const RowN totalRowCount = updatePartInfo(info, s);
+        const RowN totalRowCount = updatePartInfo(info);
         sigRowCountUpdated_(totalRowCount);
         sigPartLoaded_(e);
     });
 }
 
-RowN LineManager::updatePartInfo(const PartInfo &info, const QString &s)
+RowN LineManager::updatePartInfo(const PartInfo &info)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
     rowCount_ += info.rowRange.count();
     lineCount_ += info.lineCount;
 
-    updateRowOff(info, s);
+    updateRowOff(info);
 
     return rowCount_;
 }
 
-void LineManager::updateRowOff(const PartInfo &info, const QString &s)
+void LineManager::updateRowOff(const PartInfo &info)
 {
     pendingInfos_[info.byteRange.off()] = info;
 
@@ -136,7 +136,7 @@ void LineManager::updateRowOff(const PartInfo &info, const QString &s)
             orderedInfos_.push_back(firstPending);
             orderedInfos_.back().rowRange.setOff(0);
             pendingInfos_.erase(pendingInfos_.begin());
-            onRowOffDetected(orderedInfos_.back(), s);
+            onRowOffDetected(orderedInfos_.back());
         } else {
             if (orderedInfos_.empty()) {
                 break;
@@ -147,7 +147,7 @@ void LineManager::updateRowOff(const PartInfo &info, const QString &s)
                     orderedInfos_.push_back(firstPending);
                     orderedInfos_.back().rowRange.setOff(oldLastRowEnd);
                     pendingInfos_.erase(pendingInfos_.begin());
-                    onRowOffDetected(orderedInfos_.back(), s);
+                    onRowOffDetected(orderedInfos_.back());
                 } else {
                     break;
                 }
@@ -156,7 +156,7 @@ void LineManager::updateRowOff(const PartInfo &info, const QString &s)
     }
 }
 
-void LineManager::onRowOffDetected(const PartInfo &i, const QString &s)
+void LineManager::onRowOffDetected(const PartInfo &i)
 {
     LOGD << "LineManager::onRowOffDetected"
         << ", part id: [" << i.id << "]"
