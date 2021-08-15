@@ -237,6 +237,38 @@ void Statement::step()
     // TODO step 返回值不是简单地非对即错，需要详细处理
 }
 
+bool Statement::nextRow()
+{
+    assertOpened();
+
+    const int n = sqlite3_step(stmt_);
+
+    if (n == SQLITE_ROW) {
+        return true;
+    } else if (n == SQLITE_DONE) {
+        return false;
+    } else {
+        throwError("nextRow", n);
+        return false;
+    }
+}
+
+void Statement::getValue(int col, int32_t &to)
+{
+    to = sqlite3_column_int(stmt_, col);
+}
+
+void Statement::getValue(int col, int64_t &to)
+{
+    to = sqlite3_column_int64(stmt_, col);
+}
+
+void Statement::getValue(int col, MemBuff &to)
+{
+    to.resize(sqlite3_column_bytes(stmt_, col));
+    to.write(0, sqlite3_column_blob(stmt_, col), to.size());
+}
+
 int64_t Statement::lastInsertRowId() const
 {
     assertOpened();

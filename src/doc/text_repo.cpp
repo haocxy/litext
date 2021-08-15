@@ -58,4 +58,25 @@ TextRepo::SavePartStmt::SavePartStmt(TextRepo &repo)
     stmt_.open(repo.db_, "INSERT INTO doc VALUES(?,?,?,?,?);");
 }
 
+TextRepo::QueryPartDataByPartIdStmt::QueryPartDataByPartIdStmt(TextRepo &repo)
+{
+    stmt_.open(repo.db_, "SELECT data FROM doc WHERE id = ?");
+}
+
+TextRepo::QueryPartDataByPartIdStmt::Result TextRepo::QueryPartDataByPartIdStmt::operator()(i64 partId) const
+{
+    stmt_.reset();
+    stmt_.arg(partId);
+
+    Result result;
+
+    if (stmt_.nextRow()) {
+        MemBuff mem;
+        stmt_.getValue(0, result.partData);
+        return result;
+    } else {
+        return result;
+    }
+}
+
 }

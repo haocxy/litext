@@ -1,6 +1,9 @@
 #pragma once
 
 #include "core/sqlite.h"
+#include "core/membuff.h"
+
+#include "row_range.h"
 
 
 namespace doc
@@ -31,6 +34,37 @@ public:
         sqlite::Statement stmt_;
     };
 
+    class QueryPartDataByPartIdStmt {
+    public:
+        struct Result {
+            Result() {}
+
+            Result(Result &&b) {
+                move(*this, b);
+            }
+
+            Result &operator=(Result &&b) {
+                move(*this, b);
+                return *this;
+            }
+
+            static void move(Result &to, Result &from) {
+                to.partRange = std::move(from.partRange);
+                to.partData = std::move(from.partData);
+            }
+
+            RowRange partRange;
+            MemBuff partData;
+        };
+
+        QueryPartDataByPartIdStmt(TextRepo &repo);
+
+        Result operator()(i64 partId) const;
+
+    private:
+        mutable sqlite::Statement stmt_;
+    };
+
 private:
     bool shouldClearDb();
 
@@ -39,7 +73,6 @@ private:
 private:
     const fs::path &dbFile_;
     sqlite::Database db_;
-    sqlite::Statement stSavePart_;
 };
 
 }

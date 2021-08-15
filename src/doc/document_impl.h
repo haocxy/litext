@@ -10,6 +10,7 @@
 #include "text_repo.h"
 #include "text_loader.h"
 #include "line_manger.h"
+#include "row_cache.h"
 #include "doc_define.h"
 #include "doc_row.h"
 #include "row_range.h"
@@ -58,6 +59,7 @@ private:
     TextRepo textRepo_;
     TextLoader loader_;
     LineManager lineManager_;
+    RowCache rowCache_;
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns sigConns_;
     Signal<void(Charset)> sigCharsetDetected_;

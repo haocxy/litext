@@ -103,6 +103,14 @@ public:
 
     void step();
 
+    bool nextRow();
+
+    void getValue(int col, int32_t &to);
+
+    void getValue(int col, int64_t &to);
+
+    void getValue(int col, MemBuff &to);
+
     int64_t lastInsertRowId() const;
 
     void close();

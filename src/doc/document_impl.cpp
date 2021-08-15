@@ -11,6 +11,7 @@ DocumentImpl::DocumentImpl(const fs::path &path)
     , textRepo_(path.generic_string() + ".notesharpdb")
     , loader_(path)
     , lineManager_(textRepo_, loader_)
+    , rowCache_(textRepo_)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
@@ -60,8 +61,27 @@ void DocumentImpl::loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &
 }
 
 void DocumentImpl::loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
-    // TODO test code
-    lineManager_.loadRange(range, std::function<void(LineManager::LoadRangeResult)>());
+
+    lineManager_.loadRange(range, [this, range, cb = std::move(cb)](std::shared_ptr<std::map<RowN, RowIndex>> rowIndexes) {
+        if (!rowIndexes) {
+            return;
+        }
+
+        std::vector<std::shared_ptr<Row>> result;
+        result.resize(range.count());
+
+        const std::map<RowN, std::shared_ptr<Row>> foundRows = rowCache_.loadRows(*rowIndexes);
+
+        for (RowN row = range.beg(); row < range.end(); ++row) {
+            auto it = foundRows.find(row);
+            if (it != foundRows.end()) {
+                result[row - range.beg()] = it->second;
+            }
+        }
+
+        cb(std::move(result));
+    });
+
 }
 
 }
