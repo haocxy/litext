@@ -616,10 +616,11 @@ void TextArea::remakePage()
 
     const int shownLineCnt = getMaxShownLineCnt();
 
-    int h = -vloc_.line();
+    const int lineDelta = -vloc_.line();
 
     const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), shownLineCnt);
-    editor_.doc().loadRows(range, [&h, &shownLineCnt, this](std::vector<std::shared_ptr<Row>> &&rows) {
+    editor_.doc().loadRows(range, [lineDelta, shownLineCnt, this] (std::vector<std::shared_ptr<Row>> &&rows) {
+        int h = lineDelta;
         for (const std::shared_ptr<Row> &row : rows) {
             if (h >= shownLineCnt) {
                 break;
