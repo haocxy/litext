@@ -614,28 +614,42 @@ void TextArea::remakePage()
 
     const RowN rowCnt = editor_.doc().rowCnt();
 
-    const int maxShownLineCnt = getMaxShownLineCnt();
+    const int shownLineCnt = getMaxShownLineCnt();
 
     int h = -vloc_.line();
 
-    // TODO test code
-    editor_.doc().loadRows(Ranges::byOffAndLen(0, 100), [](std::vector<std::shared_ptr<Row>>) {});
+    const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), shownLineCnt);
+    editor_.doc().loadRows(range, [&h, &shownLineCnt, this](std::vector<std::shared_ptr<Row>> &&rows) {
+        for (const std::shared_ptr<Row> &row : rows) {
+            if (h >= shownLineCnt) {
+                break;
+            }
 
-    for (RowN i = vloc_.row(); i < rowCnt; ++i)
-    {
-        if (h >= maxShownLineCnt)
-        {
-            break;
+            VRow vrow;
+            assert(row);
+            makeVRow(*row, vrow);
+
+            const int rowSize = vrow.size();
+            page_.pushBack(std::move(vrow));
+            h += rowSize;
         }
+    });
 
-        VRow vrow;
-        // TODO not implemented
-        //makeVRow(editor_.doc().rowAt(i), vrow);
-        const int rowSize = vrow.size();
-        page_.pushBack(std::move(vrow));
+    //for (RowN i = vloc_.row(); i < rowCnt; ++i)
+    //{
+    //    if (h >= shownLineCnt)
+    //    {
+    //        break;
+    //    }
 
-        h += rowSize;
-    }
+    //    VRow vrow;
+    //    // TODO not implemented
+    //    //makeVRow(editor_.doc().rowAt(i), vrow);
+    //    const int rowSize = vrow.size();
+    //    page_.pushBack(std::move(vrow));
+
+    //    h += rowSize;
+    //}
 }
 
 void TextArea::makeVRow(const Row &row, VRow &vrow)
