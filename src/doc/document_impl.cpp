@@ -61,7 +61,7 @@ void DocumentImpl::loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &
 
 void DocumentImpl::loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
     // TODO test code
-    lineManager_.loadRange(0, 3000, std::function<void(LineManager::LoadRangeResult)>());
+    lineManager_.loadRange(range, std::function<void(LineManager::LoadRangeResult)>());
 }
 
 }

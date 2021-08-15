@@ -57,13 +57,13 @@ void LineManager::init(const RenderConfig &config)
     }
 }
 
-void LineManager::loadRange(RowN rowOffset, RowN rowCount, std::function<void(LoadRangeResult)> &&cb)
+void LineManager::loadRange(const RowRange &range, std::function<void(LoadRangeResult)> &&cb)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    const RowN right = rowOffset + rowCount - 1;
+    const RowN right = range.right();
 
-    RowN row = rowOffset;
+    RowN row = range.off();
 
     std::map<RowN, RowIndex> foundRows;
 

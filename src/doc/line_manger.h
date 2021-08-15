@@ -20,6 +20,7 @@
 #include "render_config.h"
 #include "row_walker.h"
 #include "row_index.h"
+#include "row_range.h"
 
 
 namespace doc
@@ -48,7 +49,7 @@ public:
 
     using LoadRangeResult = std::shared_ptr<std::map<RowN, RowIndex>>;
 
-    void loadRange(RowN rowOffset, RowN rowCount, std::function<void(LoadRangeResult)> &&cb);
+    void loadRange(const RowRange &range, std::function<void(LoadRangeResult)> &&cb);
 
 private:
 
