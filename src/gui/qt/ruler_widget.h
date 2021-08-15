@@ -25,6 +25,9 @@ private:
     void paintBackground(QPainter &p);
     void paintLineNum(QPainter &p);
 
+signals:
+    void qtSigShouldRepaint();
+
 private:
     TextArea &textArea_;
     SigConns textAreaSigConns_;

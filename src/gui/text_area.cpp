@@ -54,11 +54,10 @@ void TextArea::resize(const Size & size)
 
     size_ = size;
 
-    remakePage();
-
-    updateStableXByCurrentCursor();
-
-    sigShouldRepaint_();
+    remakePage([this] {
+        updateStableXByCurrentCursor();
+        sigShouldRepaint_();
+    });
 }
 
 int TextArea::getMaxShownLineCnt() const
@@ -608,7 +607,7 @@ void TextArea::updateStableXByCurrentCursor()
     stableX_ = cvt_.toX(vCharLoc);
 }
 
-void TextArea::remakePage()
+void TextArea::remakePage(std::function<void()> &&cb)
 {
     page_.clear();
 
@@ -619,7 +618,7 @@ void TextArea::remakePage()
     const int lineDelta = -vloc_.line();
 
     const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), shownLineCnt);
-    editor_.doc().loadRows(range, [lineDelta, shownLineCnt, this] (std::vector<std::shared_ptr<Row>> &&rows) {
+    editor_.doc().loadRows(range, [lineDelta, shownLineCnt, cb = std::move(cb), this] (std::vector<std::shared_ptr<Row>> &&rows) {
         int h = lineDelta;
         for (const std::shared_ptr<Row> &row : rows) {
             if (h >= shownLineCnt) {
@@ -633,6 +632,8 @@ void TextArea::remakePage()
             const int rowSize = vrow.size();
             page_.pushBack(std::move(vrow));
             h += rowSize;
+
+            cb();
         }
     });
 

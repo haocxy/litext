@@ -45,6 +45,14 @@ TextAreaWidget::TextAreaWidget(TextArea &textArea)
     setFocusPolicy(Qt::ClickFocus);
 
     dirtyBuffFlags_.set(DirtyBuffFlag::Text);
+
+    connect(this, &TextAreaWidget::qtSigShouldRepaint, [this] {
+        dirtyBuffFlags_.set(DirtyBuffFlag::Text);
+        update();
+    });
+    textArea_.sigShouldRepaint().connect([this] {
+        emit qtSigShouldRepaint();
+    });
 }
 
 TextAreaWidget::~TextAreaWidget()
@@ -127,18 +135,6 @@ void TextAreaWidget::mousePressEvent(QMouseEvent *e)
         textArea_.onPrimaryButtomPress(Pixel(e->x()), Pixel(e->y()));
         update();
     }
-}
-
-void TextAreaWidget::bind()
-{
-    textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
-        dirtyBuffFlags_.set(DirtyBuffFlag::Text);
-        update();
-    });
-
-    textArea_.resize(Size(width(), height()));
-
-    update();
 }
 
 void TextAreaWidget::paintBackground(QPainter &p)

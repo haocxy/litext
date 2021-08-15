@@ -33,8 +33,6 @@ public:
     virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
-    void bind();
-
     void paintBackground(QPainter &p);
 
     void paintLastActLine(QPainter &p);
@@ -44,6 +42,9 @@ private:
     void prepareTextImage();
 
     void paintWidget(QPainter &p);
+
+signals:
+    void qtSigShouldRepaint();
 
 private:
     class DirtyBuffFlag {

@@ -29,8 +29,14 @@ RulerWidget::RulerWidget(TextArea &textArea)
     setFixedWidth(50);
     setSizePolicy(sizePolicy);
 
-    textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
+    connect(this, &RulerWidget::qtSigShouldRepaint, [this] {
         update();
+    });
+    textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
+        emit qtSigShouldRepaint();
+    });
+    textAreaSigConns_ += textArea_.sigShouldRepaint().connect([this] {
+        emit qtSigShouldRepaint();
     });
 }
 

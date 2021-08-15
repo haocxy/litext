@@ -130,7 +130,7 @@ private:
     void updateStableXByCurrentCursor();
 
 private:
-    void remakePage();
+    void remakePage(std::function<void()> &&cb);
 
     // 把页面开头向后移动一个line
     void movePageHeadOneLine();
