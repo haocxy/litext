@@ -12,6 +12,7 @@
 #include "line_manger.h"
 #include "doc_define.h"
 #include "doc_row.h"
+#include "row_range.h"
 
 
 namespace doc
@@ -47,9 +48,9 @@ public:
         return lineManager_.rowCnt();
     }
 
-    void loadRow(RowN row, std::function<void(std::shared_ptr<Row> row)> &&cb);
+    void loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb);
 
-    void loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb);
+    void loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb);
 
 private:
     const fs::path path_;

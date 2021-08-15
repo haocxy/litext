@@ -50,14 +50,18 @@ void DocumentImpl::setAreaSize(int w, int h)
     config_->setHeightLimit(h);
 }
 
-void DocumentImpl::loadRow(RowN row, std::function<void(std::shared_ptr<Row>row)> &&cb) {
-    // TODO test code
-    lineManager_.loadRange(row, 3000, std::function<void(LineManager::LoadRangeResult)>());
+void DocumentImpl::loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb)
+{
+    loadRows(Ranges::byOffAndLen<RowN>(row, 1), [cb = std::move(cb)](std::vector<std::shared_ptr<Row>> &&rows) {
+        if (!rows.empty()) {
+            cb(rows[0]);
+        }
+    });
 }
 
-void DocumentImpl::loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
+void DocumentImpl::loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
     // TODO test code
-    lineManager_.loadRange(row, 3000, std::function<void(LineManager::LoadRangeResult)>());
+    lineManager_.loadRange(0, 3000, std::function<void(LineManager::LoadRangeResult)>());
 }
 
 }

@@ -54,14 +54,14 @@ RowN Document::rowCnt() const
     return impl_->rowCnt();
 }
 
-void Document::loadRow(RowN row, std::function<void(std::shared_ptr<Row>row)> &&cb)
+void Document::loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb)
 {
-    return impl_->loadRow(row, std::move(cb));
+    impl_->loadRow(row, std::move(cb));
 }
 
-void Document::loadPage(RowN row, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb)
+void Document::loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb)
 {
-    return impl_->loadPage(row, std::move(cb));
+    impl_->loadRows(range, std::move(cb));
 }
 
 }
