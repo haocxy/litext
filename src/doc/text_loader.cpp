@@ -25,7 +25,7 @@ static int decideDecoderCount()
 TextLoader::TextLoader(const fs::path &docPath)
     : loadingParts_(decideDecoderCount())
 {
-    reader_ = std::make_unique<Reader>(docPath, readerTasks_, loadingParts_);
+    reader_ = std::make_unique<Reader>(*this, docPath, readerTasks_, loadingParts_);
 
     const int decoderCount = decideDecoderCount();
 
@@ -57,8 +57,48 @@ void TextLoader::loadAll()
     });
 }
 
-TextLoader::Reader::Reader(const fs::path &docPath, TaskQueue<void(Reader &)> &tasks, LoadingParts &loadingParts)
-    : docPath_(docPath)
+static bool shouldDetectCharset(Charset current) {
+    if (current == Charset::Unknown) {
+        return true;
+    }
+    if (current == Charset::Ascii) {
+        return true;
+    }
+    // 已经识别到有效的非ASCII编码，则不再检测编码
+    return false;
+}
+
+Charset TextLoader::updateCharset(const MemBuff &data)
+{
+    {
+        std::unique_lock<std::mutex> lock(mtx_);
+
+        if (!shouldDetectCharset(charset_)) {
+            return charset_;
+        }
+    }
+
+    CharsetDetector charsetDetector;
+    charsetDetector.feed(data.data(), data.size());
+    charsetDetector.end();
+    const char *scharset = charsetDetector.charset();
+    assert(scharset);
+
+    LOGD << "=======> detect " << scharset;
+
+    const Charset detectedCharset = CharsetUtil::strToCharset(scharset);
+
+    {
+        std::unique_lock<std::mutex> lock(mtx_);
+        charset_ = detectedCharset;
+    }
+
+    return detectedCharset;
+}
+
+TextLoader::Reader::Reader(TextLoader &self, const fs::path &docPath, TaskQueue<void(Reader &)> &tasks, LoadingParts &loadingParts)
+    : self_(self)
+    , docPath_(docPath)
     , tasks_(tasks)
     , loadingParts_(loadingParts)
     , th_([this] { loop(); })
@@ -80,9 +120,6 @@ void TextLoader::Reader::readAll()
 
     std::ifstream ifs(docPath_, std::ios::binary);
 
-    
-    CharsetDetector charsetDetector;
-
     const uintmax_t partLen = partSize();
 
     uintmax_t partLenSum = 0;
@@ -97,11 +134,7 @@ void TextLoader::Reader::readAll()
         const uintmax_t gcount = ifs.gcount();
         readBuff.resize(gcount);
 
-        charsetDetector.feed(readBuff.data(), gcount);
-        charsetDetector.end();
-
-        const std::string scharset = charsetDetector.charset();
-        const Charset charset = CharsetUtil::strToCharset(scharset);
+        const Charset charset = self_.updateCharset(readBuff);
 
         skipRow(charset, ifs, readBuff);
 

@@ -50,7 +50,7 @@ private:
 
     class Reader {
     public:
-        Reader(const fs::path &docPath, TaskQueue<void(Reader &)> &tasks, LoadingParts &loadingParts);
+        Reader(TextLoader &self, const fs::path &docPath, TaskQueue<void(Reader &)> &tasks, LoadingParts &loadingParts);
 
         ~Reader();
 
@@ -60,6 +60,7 @@ private:
         void loop();
 
     private:
+        TextLoader &self_;
         const fs::path docPath_;
         TaskQueue<void(Reader &)> &tasks_;
         LoadingParts &loadingParts_;
@@ -86,6 +87,8 @@ private:
         std::atomic_bool stopping_{ false };
     };
 
+    Charset updateCharset(const MemBuff &data);
+
 private:
     TaskQueue<void(Reader &)> readerTasks_;
     LoadingParts loadingParts_;
@@ -95,6 +98,9 @@ private:
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
+
+    mutable std::mutex mtx_;
+    Charset charset_{Charset::Unknown};
 };
 
 }
