@@ -2,8 +2,7 @@
 
 #include <cstdint>
 #include <memory>
-
-#include <QString>
+#include <string>
 
 #include "doc_define.h"
 
@@ -14,6 +13,9 @@ namespace doc
 // 文档加载的比例，各属性单位都是字节
 class PartLoadedEvent {
 public:
+    PartLoadedEvent()
+        : content_(std::make_shared<std::string>()) {}
+
     bool isFirstPart() const {
         return partId_ == 0;
     }
@@ -50,12 +52,12 @@ public:
         partSize_ = partSize;
     }
 
-    const QString &utf16content() const {
-        return content_;
+    const std::string &utf8content() const {
+        return *content_;
     }
 
-    void setContent(QString &&content) {
-        content_ = std::move(content);
+    void setContent(std::string &&content) {
+        *content_ = std::move(content);
     }
 
 private:
@@ -63,7 +65,7 @@ private:
     uintmax_t fileSize_ = 0;
     uintmax_t byteOffset_ = 0;
     uintmax_t partSize_ = 0;
-    QString content_;
+    std::shared_ptr<std::string> content_;
 };
 
 

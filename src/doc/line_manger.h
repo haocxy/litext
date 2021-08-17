@@ -80,9 +80,9 @@ private:
 
         void setWidthLimit(int w);
 
-        PartInfo countLines(const QString &s);
+        PartInfo countLines(const std::string &s);
 
-        i64 savePart(i64 off, i64 nrows, i64 nlines, const QString &s);
+        i64 savePart(i64 off, i64 nrows, i64 nlines, const std::string &s);
 
     private:
         void loop();

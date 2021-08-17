@@ -2,14 +2,14 @@
 
 #include <chrono>
 
-#include <QTextCodec>
-
 #include "core/logger.h"
 #include "core/time.h"
 #include "core/system.h"
 #include "core/thread.h"
 #include "core/charset.h"
 #include "core/readable.h"
+
+#include "csconv/to_utf8.h"
 
 #include "skip_row.h"
 
@@ -83,8 +83,6 @@ Charset TextLoader::updateCharset(const MemBuff &data)
     charsetDetector.end();
     const char *scharset = charsetDetector.charset();
     assert(scharset);
-
-    LOGD << "=======> detect " << scharset;
 
     const Charset detectedCharset = CharsetUtil::strToCharset(scharset);
 
@@ -195,16 +193,7 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     ElapsedTime elapsedTime;
 
-    QTextCodec *codec = QTextCodec::codecForName(CharsetUtil::charsetToStr(p.charset));
-    if (!codec) {
-        std::ostringstream ss;
-        ss << "cannot get codec by charset name [" << CharsetUtil::charsetToStr(p.charset) << "]";
-        throw std::logic_error(ss.str());
-    }
-
-    std::unique_ptr<QTextDecoder> decoder(codec->makeDecoder());
-
-    QString content = decoder->toUnicode(reinterpret_cast<const char *>(p.data.data()), p.data.size());
+    std::string content = csconv::toUTF8(p.charset, p.data.data(), p.data.size());
 
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 

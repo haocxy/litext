@@ -3,16 +3,13 @@
 #include <string_view>
 #include <string>
 #include <sstream>
-#include <future>
-
-#include <QTextStream>
 
 #include "core/thread.h"
 #include "core/system.h"
 #include "core/time.h"
 #include "core/logger.h"
 #include "core/readable.h"
-#include "text/utf16char_in_stream.h"
+#include "text/utf8char_in_stream.h"
 #include "document.h"
 #include "row_walker.h"
 
@@ -104,7 +101,7 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
-        const QString &s = e.utf16content();
+        const std::string &s = e.utf8content();
         PartInfo info = worker.countLines(s);
         info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), info.lineCount, s);
         info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
@@ -256,22 +253,20 @@ void LineManager::Worker::setWidthLimit(int w)
     config_ = std::move(config);
 }
 
-LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
+LineManager::PartInfo LineManager::Worker::countLines(const std::string &content)
 {
     RowN rowCount = 0;
     RowN lineCount = 0;
 
-    QTextStream qtextStream(const_cast<QString *>(&content), QIODevice::ReadOnly);
+    std::istringstream ss(content);
 
-    while (!stopping_) {
-        QString line = qtextStream.readLine();
-        if (line.isNull()) {
-            break;
-        }
+    std::string line;
+
+    while (!stopping_ && std::getline(ss, line)) {
 
         ++rowCount;
-        UTF16CharInStream u16chars(line.data(), static_cast<size_t>(line.size()) * 2);
-        CharInStreamOverUTF16CharInStram charStream(u16chars);
+        UTF8CharInStream u8chars(line);
+        CharInStreamOverUTF8CharInStream charStream(u8chars);
         RowWalker walker(*widthProvider_, charStream, config_->hLayout(), config_->widthLimit());
 
         size_t lineCountInCurrentRow = 0;
@@ -287,9 +282,9 @@ LineManager::PartInfo LineManager::Worker::countLines(const QString &content)
     return PartInfo(rowCount, lineCount);
 }
 
-i64 LineManager::Worker::savePart(i64 off, i64 nrows, i64 nlines, const QString &s)
+i64 LineManager::Worker::savePart(i64 off, i64 nrows, i64 nlines, const std::string &s)
 {
-    return stmtSavePart_(off, nrows, nlines, s.constData(), static_cast<i64>(s.size()) * 2);
+    return stmtSavePart_(off, nrows, nlines, s.data(), s.size());
 }
 
 void LineManager::Worker::loop() {
