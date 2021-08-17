@@ -19,6 +19,8 @@ public:
 
 private:
     TextRepo::QueryPartDataByPartIdStmt stmtQueryPartDataByPartId_;
+
+    std::map<PartId, std::vector<std::string>> partRows_;
 };
 
 }

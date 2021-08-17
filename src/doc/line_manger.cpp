@@ -220,7 +220,7 @@ std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const
         } else if (row > part.rowRange.right()) {
             leftPartIndex = midPartIndex + 1;
         } else {
-            return RowIndex(part.id, part.byteRange);
+            return RowIndex(part.id, row - part.rowRange.off());
         }
     }
 

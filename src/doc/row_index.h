@@ -12,20 +12,20 @@ class RowIndex {
 public:
     RowIndex() {}
 
-    RowIndex(PartId partId, const Range<i64> &byteRange)
-        : partId_(partId), byteRange_(byteRange) {}
+    RowIndex(PartId partId, RowN rowOff)
+        : partId_(partId), rowOff_(rowOff) {}
 
     PartId partId() const {
         return partId_;
     }
 
-    Range<i64> byteRange() const {
-        return byteRange_;
+    RowN rowOff() const {
+        return rowOff_;
     }
 
 private:
     PartId partId_ = 0;
-    Range<i64> byteRange_;
+    RowN rowOff_ = 0;
 };
 
 }
