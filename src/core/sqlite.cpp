@@ -184,8 +184,6 @@ void Statement::open(Database &db, const std::string &sql)
 
 void Statement::reset()
 {
-    assertOpened();
-
     argBindIndex_ = 1;
 
     const int n = sqlite3_reset(stmt_);
@@ -197,7 +195,6 @@ void Statement::reset()
 void Statement::bindNull(int pos)
 {
     if (pos > 0) {
-        assertOpened();
         const int n = sqlite3_bind_null(stmt_, pos);
         if (n != SQLITE_OK) {
             throwError("bindNull", n);
@@ -208,7 +205,6 @@ void Statement::bindNull(int pos)
 void Statement::bind(int pos, const void *data, size_t len)
 {
     if (pos > 0 && data != nullptr && len > 0) {
-        assertOpened();
         const int n = sqlite3_bind_blob(stmt_, pos, data, static_cast<int>(len), SQLITE_TRANSIENT);
         if (n != SQLITE_OK) {
             throwError("bind", n);
@@ -219,7 +215,6 @@ void Statement::bind(int pos, const void *data, size_t len)
 void Statement::bind(int pos, int64_t value)
 {
     if (pos > 0) {
-        assertOpened();
         const int n = sqlite3_bind_int64(stmt_, pos, value);
         if (n != SQLITE_OK) {
             throwError("bind", n);
@@ -229,8 +224,6 @@ void Statement::bind(int pos, int64_t value)
 
 void Statement::step()
 {
-    assertOpened();
-
     argBindIndex_ = 1;
 
     const int n = sqlite3_step(stmt_);
@@ -239,8 +232,6 @@ void Statement::step()
 
 bool Statement::nextRow()
 {
-    assertOpened();
-
     const int n = sqlite3_step(stmt_);
 
     if (n == SQLITE_ROW) {
@@ -271,14 +262,11 @@ void Statement::getValue(int col, MemBuff &to)
 
 int64_t Statement::lastInsertRowId() const
 {
-    assertOpened();
     return sqlite3_last_insert_rowid(sqlite3_db_handle(stmt_));
 }
 
 void Statement::close()
 {
-    assertOpened();
-
     const int n = sqlite3_finalize(stmt_);
     if (n != SQLITE_OK) {
         std::ostringstream ss;
@@ -292,13 +280,6 @@ void Statement::close()
 bool Statement::isOpened() const
 {
     return stmt_;
-}
-
-void Statement::assertOpened() const
-{
-    if (!stmt_) {
-        throw std::logic_error("sqlite::Statement not opened");
-    }
 }
 
 void Statement::throwError(const char *func, int err)

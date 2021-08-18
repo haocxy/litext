@@ -103,9 +103,9 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
         ElapsedTime elapse;
         const std::string &s = e.utf8content();
         PartInfo info = worker.countLines(s);
-        info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), info.lineCount, s);
+        info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), s);
         info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
-        LOGD << "LineManager part[" << info.id << "], linecount[" << info.lineCount << "], time usage[" << elapse.milliSec() << "]";
+        LOGD << "LineManager part[" << info.id << "], nrows [" << info.rowRange.count() << "] , time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info);
         sigRowCountUpdated_(totalRowCount);
         sigPartLoaded_(e);
@@ -117,7 +117,6 @@ RowN LineManager::updatePartInfo(const PartInfo &info)
     std::unique_lock<std::mutex> lock(mtx_);
 
     rowCount_ += info.rowRange.count();
-    lineCount_ += info.lineCount;
 
     updateRowOff(info);
 
@@ -256,35 +255,21 @@ void LineManager::Worker::setWidthLimit(int w)
 LineManager::PartInfo LineManager::Worker::countLines(const std::string &content)
 {
     RowN rowCount = 0;
-    RowN lineCount = 0;
 
     std::istringstream ss(content);
 
     std::string line;
 
     while (!stopping_ && std::getline(ss, line)) {
-
         ++rowCount;
-        UTF8CharInStream u8chars(line);
-        CharInStreamOverUTF8CharInStream charStream(u8chars);
-        RowWalker walker(*widthProvider_, charStream, config_->hLayout(), config_->widthLimit());
-
-        size_t lineCountInCurrentRow = 0;
-
-        walker.forEachChar([&lineCount, &lineCountInCurrentRow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
-            if (lineIndex == lineCountInCurrentRow) {
-                ++lineCountInCurrentRow;
-                ++lineCount;
-            }
-        });
     }
 
-    return PartInfo(rowCount, lineCount);
+    return PartInfo(rowCount);
 }
 
-i64 LineManager::Worker::savePart(i64 off, i64 nrows, i64 nlines, const std::string &s)
+i64 LineManager::Worker::savePart(i64 off, i64 nrows, const std::string &s)
 {
-    return stmtSavePart_(off, nrows, nlines, s.data(), s.size());
+    return stmtSavePart_(off, nrows, s.data(), s.size());
 }
 
 void LineManager::Worker::loop() {

@@ -41,13 +41,12 @@ void TextRepo::clearDb()
     std::ofstream ofs(dbFile_, std::ios::binary);
 }
 
-i64 TextRepo::SavePartStmt::operator()(i64 off, i64 nrows, i64 nlines, const void *data, i64 nbytes)
+i64 TextRepo::SavePartStmt::operator()(i64 off, i64 nrows, const void *data, i64 nbytes)
 {
     stmt_.reset();
     stmt_.arg(); // id
     stmt_.arg(off); // off
     stmt_.arg(nrows); // nrows
-    stmt_.arg(nlines); // nlines
     stmt_.arg(data, nbytes); // data
     stmt_.step();
     return stmt_.lastInsertRowId();
@@ -55,7 +54,7 @@ i64 TextRepo::SavePartStmt::operator()(i64 off, i64 nrows, i64 nlines, const voi
 
 TextRepo::SavePartStmt::SavePartStmt(TextRepo &repo)
 {
-    stmt_.open(repo.db_, "INSERT INTO doc VALUES(?,?,?,?,?);");
+    stmt_.open(repo.db_, "INSERT INTO doc VALUES(?,?,?,?);");
 }
 
 TextRepo::QueryPartDataByPartIdStmt::QueryPartDataByPartIdStmt(TextRepo &repo)

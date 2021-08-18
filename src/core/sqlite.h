@@ -118,8 +118,6 @@ public:
 private:
     bool isOpened() const;
 
-    void assertOpened() const;
-
     static void throwError(const char *func, int err);
 
 private:

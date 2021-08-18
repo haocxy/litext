@@ -56,14 +56,12 @@ private:
     struct PartInfo {
         PartInfo() {}
 
-        PartInfo(RowN rowCount, RowN lineCount)
-            : rowRange(Ranges::byCount(rowCount))
-            , lineCount(lineCount) {}
+        PartInfo(RowN rowCount)
+            : rowRange(Ranges::byCount(rowCount)) {}
 
         i64 id = 0;
         Range<i64> byteRange;
         Range<RowN> rowRange;
-        RowN lineCount = 0;
     };
 
     class Worker {
@@ -82,7 +80,7 @@ private:
 
         PartInfo countLines(const std::string &s);
 
-        i64 savePart(i64 off, i64 nrows, i64 nlines, const std::string &s);
+        i64 savePart(i64 off, i64 nrows, const std::string &s);
 
     private:
         void loop();
@@ -132,7 +130,6 @@ private:
     std::map<i64, PartInfo> pendingInfos_;
 
     RowN rowCount_ = 0;
-    RowN lineCount_ = 0;
 
     struct WaitingRange {
 

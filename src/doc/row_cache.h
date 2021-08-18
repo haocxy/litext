@@ -1,5 +1,6 @@
 #pragma once
 
+#include <set>
 #include <map>
 #include <memory>
 
@@ -16,6 +17,9 @@ public:
     RowCache(TextRepo &repo);
 
     std::map<RowN, std::shared_ptr<Row>> loadRows(const std::map<RowN, RowIndex> &rowIndexes);
+
+private:
+
 
 private:
     TextRepo::QueryPartDataByPartIdStmt stmtQueryPartDataByPartId_;
