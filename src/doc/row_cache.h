@@ -2,6 +2,7 @@
 
 #include <set>
 #include <map>
+#include <vector>
 #include <memory>
 
 #include "text_repo.h"
