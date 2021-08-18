@@ -78,7 +78,7 @@ private:
 
         void setWidthLimit(int w);
 
-        PartInfo countLines(const std::string &s);
+        PartInfo countRows(const std::string &s);
 
         i64 savePart(i64 off, i64 nrows, const std::string &s);
 

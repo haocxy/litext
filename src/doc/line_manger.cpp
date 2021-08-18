@@ -102,7 +102,7 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
         const std::string &s = e.utf8content();
-        PartInfo info = worker.countLines(s);
+        PartInfo info = worker.countRows(s);
         info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), s);
         info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
         LOGD << "LineManager part[" << info.id << "], nrows [" << info.rowRange.count() << "] , time usage[" << elapse.milliSec() << "]";
@@ -252,7 +252,7 @@ void LineManager::Worker::setWidthLimit(int w)
     config_ = std::move(config);
 }
 
-LineManager::PartInfo LineManager::Worker::countLines(const std::string &content)
+LineManager::PartInfo LineManager::Worker::countRows(const std::string &content)
 {
     RowN rowCount = 0;
 
