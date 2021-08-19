@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/primitive_types.h"
+#include "core/basetype.h"
 #include "core/uchar.h"
 #include "core/font_old.h"
 #include "core/font_index.h"

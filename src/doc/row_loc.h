@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/flagset.h"
-#include "core/primitive_types.h"
+#include "core/basetype.h"
 
 
 namespace doc

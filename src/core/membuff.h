@@ -1,6 +1,6 @@
 #pragma once
 
-#include "primitive_types.h"
+#include "basetype.h"
 
 #include <cstring>
 

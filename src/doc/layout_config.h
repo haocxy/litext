@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/primitive_types.h"
+#include "core/basetype.h"
 
 
 // 控制水平方向文本布局的配置

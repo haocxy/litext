@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/primitive_types.h"
+#include "core/basetype.h"
 
 
 typedef i64 PartId;

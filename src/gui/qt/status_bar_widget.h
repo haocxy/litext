@@ -3,7 +3,7 @@
 #include <QWidget>
 
 #include "core/sigconns.h"
-#include "core/primitive_types.h"
+#include "core/basetype.h"
 #include "gui/declare_text_area.h"
 
 
