@@ -1,11 +1,11 @@
 #pragma once
 
-#include <atomic>
-#include <memory>
 #include <map>
 #include <set>
-#include <mutex>
 #include <vector>
+#include <atomic>
+#include <memory>
+#include <mutex>
 
 #include "core/range.h"
 #include "core/signal.h"
@@ -13,7 +13,6 @@
 #include "core/thread.h"
 #include "core/font_index.h"
 #include "part_loaded_event.h"
-#include "declare_document.h"
 #include "text_repo.h"
 #include "text_loader.h"
 #include "glyph_width_cache.h"

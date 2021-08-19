@@ -7,10 +7,10 @@
 #include <optional>
 
 #include "core/signal.h"
+#include "core/sigconns.h"
 #include "core/strong_type_integer.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
-#include "doc/line_manger.h"
 #include "doc/page.h"
 #include "doc/char_loc.h"
 #include "doc/view_loc.h"
