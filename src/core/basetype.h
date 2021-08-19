@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
+#include <memory>
+
 
 using i8 = int8_t;
 using u8 = uint8_t;
@@ -19,3 +22,11 @@ using f64 = double;
 static_assert(sizeof(double) == 8);
 
 using cstr = const char *;
+
+using str = std::string;
+
+template <typename T>
+using uptr = std::unique_ptr<T>;
+
+template <typename T>
+using sptr = std::shared_ptr<T>;

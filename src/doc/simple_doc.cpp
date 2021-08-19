@@ -79,7 +79,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
         return false;
     }
 
-    std::unique_ptr<QTextDecoder> decoder(codec->makeDecoder());
+    uptr<QTextDecoder> decoder(codec->makeDecoder());
     if (!decoder) {
         std::cerr << "cannot make decoder";
         return false;

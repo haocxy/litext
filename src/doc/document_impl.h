@@ -55,7 +55,7 @@ public:
 
 private:
     const fs::path path_;
-    std::unique_ptr<RenderConfig> config_;
+    uptr<RenderConfig> config_;
     TextRepo textRepo_;
     TextLoader loader_;
     LineManager lineManager_;

@@ -20,7 +20,7 @@ std::string toUTF8(Charset srcCharset, const void *data, i32 nbytes)
         throw std::logic_error(ss.str());
     }
 
-    std::unique_ptr<QTextDecoder> decoder{ codec->makeDecoder() };
+    uptr<QTextDecoder> decoder{ codec->makeDecoder() };
     if (!decoder) {
         std::ostringstream ss;
         ss << "cannot make decoder for srcCharset [" << CharsetUtil::charsetToStr(srcCharset) << "]";

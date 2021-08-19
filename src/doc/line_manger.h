@@ -90,8 +90,8 @@ private:
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
-        std::unique_ptr<RenderConfig> config_;
-        std::unique_ptr<GlyphWidthCache> widthProvider_;
+        uptr<RenderConfig> config_;
+        uptr<GlyphWidthCache> widthProvider_;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
@@ -114,7 +114,7 @@ private:
 private:
     RenderConfig config_;
     TaskQueue<void(Worker &worker)> taskQueue_;
-    std::vector<std::unique_ptr<Worker>> workers_;
+    std::vector<uptr<Worker>> workers_;
     
     SigConns sigConns_;
     Signal<void(RowN)> sigRowCountUpdated_;

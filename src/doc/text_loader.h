@@ -92,8 +92,8 @@ private:
 private:
     TaskQueue<void(Reader &)> readerTasks_;
     LoadingParts loadingParts_;
-    std::unique_ptr<Reader> reader_;
-    std::vector<std::unique_ptr<Decoder>> decoders_;
+    uptr<Reader> reader_;
+    std::vector<uptr<Decoder>> decoders_;
     
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;

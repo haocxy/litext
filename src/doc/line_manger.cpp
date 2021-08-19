@@ -247,7 +247,7 @@ void LineManager::Worker::init(const RenderConfig &config)
 
 void LineManager::Worker::setWidthLimit(int w)
 {
-    std::unique_ptr<RenderConfig> config(new RenderConfig(*config_));
+    uptr<RenderConfig> config(new RenderConfig(*config_));
     config->setWidthLimit(w);
     config_ = std::move(config);
 }
