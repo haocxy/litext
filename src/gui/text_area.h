@@ -109,6 +109,7 @@ private:
     doc::VCharLoc betterLocForVerticalMove(const doc::VCharLoc &charLoc) const;
     DocLoc getNextUpLoc(const DocLoc &docLoc) const;
     DocLoc getNextDownLoc(const DocLoc &docLoc) const;
+    DocLoc getNextLeftLoc(const DocLoc &docLoc) const;
     void makeVRow(const Row &row, doc::VRow &vrow);
 
     // 视图中最后一个可视line的LineLoc

@@ -220,6 +220,46 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
     return cvt_.toDocLoc(betterLocForVerticalMove(downCharLoc));
 }
 
+DocLoc TextArea::getNextLeftLoc(const DocLoc &docLoc) const
+{
+    if (docLoc.isNull()) {
+        return DocLoc();
+    }
+
+    if (docLoc.isAfterLastRow()) {
+        const RowN rowCount = editor_.doc().rowCnt();
+        if (rowCount > 0) {
+            return DocLoc::newDocLocAfterLastChar(rowCount - 1);
+        } else {
+            return DocLoc();
+        }
+    }
+
+    if (docLoc.isAfterLastChar()) {
+        const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
+        const CharN charCount = page_[charLoc.row()].charCount();
+        if (charCount > 0) {
+            return DocLoc(docLoc.row(), charCount - 1);
+        } else {
+            if (docLoc.row() > 0) {
+                return DocLoc::newDocLocAfterLastChar(docLoc.row() - 1);
+            } else {
+                return DocLoc();
+            }
+        }
+    }
+
+    if (docLoc.col() > 0) {
+        return docLoc.nextLeft();
+    } else {
+        if (docLoc.row() > 0) {
+            return DocLoc::newDocLocAfterLastChar(docLoc.row() - 1);
+        } else {
+            return DocLoc();
+        }
+    }
+}
+
 void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
 {
     if (curLineLoc.row() == 0 && curLineLoc.line() <= vloc_.line())

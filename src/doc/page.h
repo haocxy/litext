@@ -47,6 +47,13 @@ public:
     VRow(VRow &&row) : m_lines(std::move(row.m_lines)) {}
     VRow &operator=(VRow &&row) { m_lines = std::move(row.m_lines); return *this; }
     int size() const { return static_cast<int>(m_lines.size()); }
+    i64 charCount() const {
+        i64 n = 0;
+        for (const auto &line : m_lines) {
+            n += line.size();
+        }
+        return n;
+    }
     const VLine &operator[](i64 line) const { return m_lines[line]; }
     VLine &operator[](i64 line) { return m_lines[line]; }
     auto begin() const { return m_lines.begin(); }
