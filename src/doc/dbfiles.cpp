@@ -3,13 +3,14 @@
 #include <sstream>
 #include <iomanip>
 
+#include "core/logger.h"
 #include "core/system.h"
 
 
 namespace doc::dbfiles
 {
 
-static std::u32string makeRelativeDbPathForWindows(const fs::path & docPath) {
+static std::u32string docRelativePathForWindows(const fs::path & docPath) {
     std::u32string result;
     bool isFirst = true;
     for (const auto e : fs::absolute(docPath)) {
@@ -35,7 +36,7 @@ static std::u32string makeRelativeDbPathForWindows(const fs::path & docPath) {
     return result;
 }
 
-static std::u32string makeRelativeDbPathForUnix(const fs::path &docPath) {
+static std::u32string docRelativePathForUnix(const fs::path &docPath) {
     std::u32string result;
     bool isFirst = true;
     for (const auto e : fs::absolute(docPath)) {
@@ -55,11 +56,33 @@ static std::u32string makeRelativeDbPathForUnix(const fs::path &docPath) {
     return result;
 }
 
-static std::u32string makeRelativeDbPath(const fs::path &doc) {
+static std::u32string docRelativePath(const fs::path &doc) {
 #ifdef WIN32
-    return makeRelativeDbPathForWindows(doc);
+    return docRelativePathForWindows(doc);
 #else
-    return makeRelativeDbPathForUnix(doc);
+    return docRelativePathForUnix(doc);
+#endif
+}
+
+static fs::path docAbsolutePathForWindows(const std::u32string &p) {
+    // windows平台上参数的字符串格式应该类似于 "C/xxx" 或 "D/xxx"
+    // 必须的部分为第一个字符的盘符部分以第二个字符的斜杠
+    if (p.size() < 2) {
+        throw std::logic_error("docAbsolutePathForWindows() bad arg format");
+    }
+
+    return fs::path(p.substr(0, 1) + U":/") / p.substr(2);
+}
+
+static fs::path docAbsolutePathForUnix(const std::u32string &p) {
+    return fs::path("/") / p;
+}
+
+static fs::path docAbsolutePath(const std::u32string &p) {
+#ifdef WIN32
+    return docAbsolutePathForWindows(p);
+#else
+    return docAbsolutePathForUnix(p);
 #endif
 }
 
@@ -169,19 +192,43 @@ static fs::path dbDir() {
 fs::path docPathToDbPath(const fs::path &doc)
 {
     const fs::path dir = dbDir();
-    const std::u32string relativeDbPath = makeRelativeDbPath(doc);
+    const std::u32string relativeDbPath = docRelativePath(doc);
     const std::u32string dbFileName = encodeRelativePathToFileName(relativeDbPath);
     return dir / dbFileName;
+}
+
+static bool del(const fs::path &p) {
+    try {
+        fs::remove(p); // 只是尽量删除，忽略所有错误
+        return true;
+    }
+    catch (...) {
+        return false;
+    }
+}
+
+static void logDelDb(const fs::path &p, const char *reason) {
+    LOGD << "db file [" << p << "] removed because [" << reason << "]";
+}
+
+static void checkAndRemoveUselessDbFile(const fs::path &doc, const fs::path &db) {
+    const char *title = "checkAndRemoveUselessDbFile() ";
+    if (!fs::exists(doc) && del(db)) {
+        return logDelDb(db, "doc removed");
+    }
 }
 
 void removeUselessDbFiles()
 {
     const fs::path dir = dbDir();
 
-    for (const auto e : fs::directory_iterator(dir)) {
+    for (const fs::directory_entry e : fs::directory_iterator(dir)) {
         const std::u32string name = e.path().filename().generic_u32string();
-        const fs::path relativePath = decodeFileNameToRelativePath(name);
-        // TODO
+        const std::u32string relativeDocPath = decodeFileNameToRelativePath(name);
+        LOGD << "doc file rel path: [" << relativeDocPath << "]";
+        const fs::path absDocPath = docAbsolutePath(relativeDocPath);
+        LOGD << "doc file abs path: [" << absDocPath << "], is abs ? [" << absDocPath.is_absolute() << "]";
+        checkAndRemoveUselessDbFile(absDocPath, e.path());
     }
 }
 
