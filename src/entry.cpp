@@ -11,6 +11,7 @@
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"
+#include "doc/dbfiles.h"
 
 
 static void useDrawText()
@@ -79,6 +80,9 @@ static font::FontIndex selectFont()
 int entry(int argc, char *argv[])
 {
     try {
+
+        doc::dbfiles::removeUselessDbFiles();
+
         QApplication app(argc, argv);
 
         // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，

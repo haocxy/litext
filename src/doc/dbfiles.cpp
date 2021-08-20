@@ -162,9 +162,13 @@ static bool isDbFile(const fs::path &p) {
     }
 }
 
+static fs::path dbDir() {
+    return SystemUtil::userHome() / ".notesharp";
+}
+
 fs::path docPathToDbPath(const fs::path &doc)
 {
-    const fs::path dir = SystemUtil::userHome() / ".notesharp";
+    const fs::path dir = dbDir();
     const std::u32string relativeDbPath = makeRelativeDbPath(doc);
     const std::u32string dbFileName = encodeRelativePathToFileName(relativeDbPath);
     return dir / dbFileName;
@@ -172,6 +176,13 @@ fs::path docPathToDbPath(const fs::path &doc)
 
 void removeUselessDbFiles()
 {
+    const fs::path dir = dbDir();
+
+    for (const auto e : fs::directory_iterator(dir)) {
+        const std::u32string name = e.path().filename().generic_u32string();
+        const fs::path relativePath = decodeFileNameToRelativePath(name);
+        // TODO
+    }
 }
 
 }
