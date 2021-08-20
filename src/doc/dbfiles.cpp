@@ -1,5 +1,8 @@
 #include "dbfiles.h"
 
+#include <sstream>
+#include <iomanip>
+
 #include "core/system.h"
 
 
@@ -71,9 +74,19 @@ static std::u32string encodeRelativePathToFileName(const std::u32string &path) {
     for (char32_t c : path) {
         if (c == '/' || c == '\\') {
             result.push_back('-');
+            result.push_back('d');
         } else if (c == '-') {
             result.push_back('-');
             result.push_back('-');
+        } else if (c >= 0x80) {
+            result.push_back('-');
+            result.push_back('[');
+            std::ostringstream ss;
+            ss << std::hex << static_cast<uint32_t>(c);
+            for (char ch : ss.str()) {
+                result.push_back(ch);
+            }
+            result.push_back(']');
         } else {
             result.push_back(c);
         }
@@ -88,22 +101,53 @@ static std::u32string decodeFileNameToRelativePath(const std::u32string &name) {
     }
 
     std::u32string result;
-    bool meetEsc = false;
-    for (char32_t c : name.substr(0, name.size() - DbFileExt.size())) {
-        if (meetEsc) {
-            if (c == '-') {
-                result.push_back('-');
+
+    enum class State {
+        Normal,
+        MeetEsc,
+        MeetUnicode,
+    };
+    State st = State::Normal;
+    std::string unicodeBuff;
+
+    for (char32_t u : name.substr(0, name.size() - DbFileExt.size())) {
+        switch (st) {
+        case State::Normal:
+            if (u == '-') {
+                st = State::MeetEsc;
             } else {
+                result.push_back(u);
+            }
+            break;
+        case State::MeetEsc:
+            if (u == 'd') {
                 result.push_back('/');
-                result.push_back(c);
-            }
-            meetEsc = false;
-        } else {
-            if (c == '-') {
-                meetEsc = true;
+                st = State::Normal;
+            } else if (u == '-') {
+                result.push_back('-');
+                st = State::Normal;
+            } else if (u == '[') {
+                st = State::MeetUnicode;
             } else {
-                result.push_back(c);
+                st = State::Normal;
             }
+            break;
+        case State::MeetUnicode:
+            if (u == ']') {
+                uint32_t unicode = 0;
+                std::istringstream ss(unicodeBuff);
+                ss >> std::hex >> unicode;
+                result.push_back(static_cast<char32_t>(unicode));
+                unicodeBuff.clear();
+                st = State::Normal;
+            } else if (('0' <= u && u <= '9') || ('a' <= u && u <= 'f') || ('A' <= u && u <= 'F')) {
+                unicodeBuff.push_back(static_cast<char>(u));
+            } else {
+                st = State::Normal;
+            }
+            break;
+        default:
+            break;
         }
     }
     return result;
