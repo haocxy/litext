@@ -13,7 +13,6 @@
 #include "row_cache.h"
 #include "doc_define.h"
 #include "doc_row.h"
-#include "row_range.h"
 
 
 namespace doc

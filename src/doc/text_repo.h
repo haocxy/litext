@@ -3,7 +3,7 @@
 #include "core/sqlite.h"
 #include "core/membuff.h"
 
-#include "row_range.h"
+#include "doc_define.h"
 
 
 namespace doc

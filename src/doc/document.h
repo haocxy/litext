@@ -5,7 +5,6 @@
 #include "core/charset.h"
 
 #include "doc_row.h"
-#include "row_range.h"
 #include "render_config.h"
 #include "part_loaded_event.h"
 

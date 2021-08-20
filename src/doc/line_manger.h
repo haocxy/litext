@@ -19,7 +19,6 @@
 #include "render_config.h"
 #include "row_walker.h"
 #include "row_index.h"
-#include "row_range.h"
 
 
 namespace doc
