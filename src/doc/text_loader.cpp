@@ -9,7 +9,7 @@
 #include "core/charset.h"
 #include "core/readable.h"
 
-#include "csconv/to_utf8.h"
+#include "charset/to_utf8.h"
 
 #include "skip_row.h"
 
@@ -193,7 +193,7 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     ElapsedTime elapsedTime;
 
-    std::string content = csconv::toUTF8(p.charset, p.data.data(), p.data.size());
+    std::string content = charset::toUTF8(p.charset, p.data.data(), p.data.size());
 
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
