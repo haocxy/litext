@@ -6,12 +6,12 @@
 namespace doc::dbfiles
 {
 
-static std::string makeRelativeDbPathForWindows(const fs::path & docPath) {
-    std::string result;
+static std::u32string makeRelativeDbPathForWindows(const fs::path & docPath) {
+    std::u32string result;
     bool isFirst = true;
     for (const auto e : fs::absolute(docPath)) {
         if (isFirst) {
-            std::string s = e.generic_string();
+            std::u32string s = e.generic_u32string();
             if (s.empty() || s.back() != ':') {
                 throw std::logic_error("bad path format");
             }
@@ -27,13 +27,13 @@ static std::string makeRelativeDbPathForWindows(const fs::path & docPath) {
             continue;
         }
         result.push_back('/');
-        result += e.generic_u8string();
+        result += e.generic_u32string();
     }
     return result;
 }
 
-static std::string makeRelativeDbPathForUnix(const fs::path &docPath) {
-    std::string result;
+static std::u32string makeRelativeDbPathForUnix(const fs::path &docPath) {
+    std::u32string result;
     bool isFirst = true;
     for (const auto e : fs::absolute(docPath)) {
         if (e == "\\" || e == "/") {
@@ -47,12 +47,12 @@ static std::string makeRelativeDbPathForUnix(const fs::path &docPath) {
         } else {
             isFirst = false;
         }
-        result += e.generic_u8string();
+        result += e.generic_u32string();
     }
     return result;
 }
 
-static std::string makeRelativeDbPath(const fs::path &doc) {
+static std::u32string makeRelativeDbPath(const fs::path &doc) {
 #ifdef WIN32
     return makeRelativeDbPathForWindows(doc);
 #else
@@ -60,15 +60,15 @@ static std::string makeRelativeDbPath(const fs::path &doc) {
 #endif
 }
 
-static const std::string DbFileExt = ".db";
+static const std::u32string DbFileExt = U".db";
 
 // 把相对路径编码为一个单一的文件名
 // 这是因为目录本身会占用大量的硬盘容量，所以不能直接把文档路径映射为数据库的路径，
 // 而是应该把文档路径编码为一个单一的文件名
 // 编码时，把横杠作为转义字符对斜杠和横杠进行转义
-static std::string encodeRelativePathToFileName(const std::string &path) {
-    std::string result;
-    for (char c : path) {
+static std::u32string encodeRelativePathToFileName(const std::u32string &path) {
+    std::u32string result;
+    for (char32_t c : path) {
         if (c == '/' || c == '\\') {
             result.push_back('-');
         } else if (c == '-') {
@@ -82,14 +82,14 @@ static std::string encodeRelativePathToFileName(const std::string &path) {
     return result;
 }
 
-static std::string decodeFileNameToRelativePath(const std::string &name) {
+static std::u32string decodeFileNameToRelativePath(const std::u32string &name) {
     if (name.size() <= DbFileExt.size()) {
-        return std::string();
+        return std::u32string();
     }
 
-    std::string result;
+    std::u32string result;
     bool meetEsc = false;
-    for (char c : name.substr(0, name.size() - DbFileExt.size())) {
+    for (char32_t c : name.substr(0, name.size() - DbFileExt.size())) {
         if (meetEsc) {
             if (c == '-') {
                 result.push_back('-');
@@ -110,7 +110,7 @@ static std::string decodeFileNameToRelativePath(const std::string &name) {
 }
 
 static bool isDbFile(const fs::path &p) {
-    std::string s = p.generic_u8string();
+    std::u32string s = p.generic_u32string();
     if (s.size() > DbFileExt.size()) {
         return s.substr(s.size() - DbFileExt.size(), DbFileExt.size()) == DbFileExt;
     } else {
@@ -121,8 +121,8 @@ static bool isDbFile(const fs::path &p) {
 fs::path docPathToDbPath(const fs::path &doc)
 {
     const fs::path dir = SystemUtil::userHome() / ".notesharp";
-    const std::string relativeDbPath = makeRelativeDbPath(doc);
-    const std::string dbFileName = encodeRelativePathToFileName(relativeDbPath);
+    const std::u32string relativeDbPath = makeRelativeDbPath(doc);
+    const std::u32string dbFileName = encodeRelativePathToFileName(relativeDbPath);
     return dir / dbFileName;
 }
 
