@@ -60,6 +60,8 @@ static std::string makeRelativeDbPath(const fs::path &doc) {
 #endif
 }
 
+static const std::string DbFileExt = ".db";
+
 // 把相对路径编码为一个单一的文件名
 // 这是因为目录本身会占用大量的硬盘容量，所以不能直接把文档路径映射为数据库的路径，
 // 而是应该把文档路径编码为一个单一的文件名
@@ -76,8 +78,44 @@ static std::string encodeRelativePathToFileName(const std::string &path) {
             result.push_back(c);
         }
     }
-    result += ".db";
+    result += DbFileExt;
     return result;
+}
+
+static std::string decodeFileNameToRelativePath(const std::string &name) {
+    if (name.size() <= DbFileExt.size()) {
+        return std::string();
+    }
+
+    std::string result;
+    bool meetEsc = false;
+    for (char c : name.substr(0, name.size() - DbFileExt.size())) {
+        if (meetEsc) {
+            if (c == '-') {
+                result.push_back('-');
+            } else {
+                result.push_back('/');
+                result.push_back(c);
+            }
+            meetEsc = false;
+        } else {
+            if (c == '-') {
+                meetEsc = true;
+            } else {
+                result.push_back(c);
+            }
+        }
+    }
+    return result;
+}
+
+static bool isDbFile(const fs::path &p) {
+    std::string s = p.generic_u8string();
+    if (s.size() > DbFileExt.size()) {
+        return s.substr(s.size() - DbFileExt.size(), DbFileExt.size()) == DbFileExt;
+    } else {
+        return false;
+    }
 }
 
 fs::path docPathToDbPath(const fs::path &doc)
@@ -86,6 +124,10 @@ fs::path docPathToDbPath(const fs::path &doc)
     const std::string relativeDbPath = makeRelativeDbPath(doc);
     const std::string dbFileName = encodeRelativePathToFileName(relativeDbPath);
     return dir / dbFileName;
+}
+
+void removeUselessDbFiles()
+{
 }
 
 }
