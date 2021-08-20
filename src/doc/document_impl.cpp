@@ -3,65 +3,15 @@
 #include "core/logger.h"
 #include "core/system.h"
 
+#include "dbfiles.h"
+
 
 namespace doc
 {
 
-static const char *const ContentDbFileName = "content.db";
-
-static fs::path dbPathForWindows(const fs::path &docPath) {
-    fs::path result = SystemUtil::userHome() / ".notesharp";
-    bool isFirst = true;
-    for (const auto e : fs::absolute(docPath)) {
-        if (isFirst) {
-            std::string s = e.generic_string();
-            if (s.empty() || s.back() != ':') {
-                throw std::logic_error("bad path format");
-            }
-            s.pop_back();
-            result /= s;
-            isFirst = false;
-            continue;
-        }
-        if (e == "\\" || e == "/") {
-            continue;
-        }
-        if (e.empty()) {
-            continue;
-        }
-        result /= e;
-    }
-    result /= ContentDbFileName;
-    return result;
-}
-
-static fs::path dbPathForUnix(const fs::path &docPath) {
-    fs::path result = SystemUtil::userHome() / ".notesharp";
-    for (const auto e : fs::absolute(docPath)) {
-        if (e == "\\" || e == "/") {
-            continue;
-        }
-        if (e.empty()) {
-            continue;
-        }
-        
-        result /= e;
-    }
-    result /= ContentDbFileName;
-    return result;
-}
-
-static fs::path dbPath(const fs::path &docPath) {
-#ifdef WIN32
-    return dbPathForWindows(docPath);
-#else
-    return dbPathForUnix(docPath);
-#endif
-}
-
 DocumentImpl::DocumentImpl(const fs::path &path)
     : path_(path)
-    , textRepo_(dbPath(path))
+    , textRepo_(dbfiles::docPathToDbPath(path))
     , loader_(path)
     , lineManager_(textRepo_, loader_)
     , rowCache_(textRepo_)
