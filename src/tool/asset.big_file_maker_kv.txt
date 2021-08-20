@@ -1,3 +1,0 @@
-period:。
-beforeLineN:（这是第
-afterLineN:行）
