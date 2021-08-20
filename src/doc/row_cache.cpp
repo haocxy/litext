@@ -9,8 +9,7 @@
 namespace doc
 {
 
-RowCache::RowCache(TextRepo &repo)
-    : stmtQueryPartDataByPartId_(repo) {
+RowCache::RowCache(TextRepo &repo) {
 
 }
 

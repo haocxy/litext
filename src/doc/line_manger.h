@@ -19,6 +19,7 @@
 #include "render_config.h"
 #include "row_walker.h"
 #include "row_index.h"
+#include "doc_part.h"
 
 
 namespace doc
@@ -51,17 +52,6 @@ public:
 
 private:
 
-    struct PartInfo {
-        PartInfo() {}
-
-        PartInfo(RowN rowCount)
-            : rowRange(Ranges::byCount(rowCount)) {}
-
-        i64 id = 0;
-        Range<i64> byteRange;
-        Range<RowN> rowRange;
-    };
-
     class Worker {
     public:
         Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue);
@@ -76,9 +66,9 @@ private:
 
         void setWidthLimit(int w);
 
-        PartInfo countRows(const std::string &s);
+        RowN countRows(const std::string &s);
 
-        i64 savePart(i64 off, i64 nrows, const std::string &s);
+        PartId savePart(const DocPart &part);
 
     private:
         void loop();
@@ -94,18 +84,18 @@ private:
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
 
-    RowN updatePartInfo(const PartInfo &info);
+    RowN updatePartInfo(const DocPart &info);
 
     // 更新段偏移信息
     // 多线程加载导致各个片段不是完全有序的，但总体上是有序的
     // 所以每次加载完一个片段后检查下这个片段前的片段是否都加载完成
     // 如果这个片段的前面都加载完成，或者因为这一片段的完成使得位置在其后却先加载的先片段明确了段偏移，则更新它门段偏移
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
-    void updateRowOff(const PartInfo &info);
+    void updateRowOff(const DocPart &info);
 
-    void onRowOffDetected(const PartInfo &info);
+    void onRowOffDetected(const DocPart &info);
 
-    void checkWaitingRows(const PartInfo &info);
+    void checkWaitingRows(const DocPart &info);
 
     std::optional<RowIndex> queryRowIndex(RowN row) const;
 
@@ -121,11 +111,11 @@ private:
 private:
     mutable std::mutex mtx_;
 
-    std::vector<PartInfo> orderedInfos_;
+    std::vector<DocPart> orderedInfos_;
 
     // 未确定段数偏移的
     // 键：字节偏移
-    std::map<i64, PartInfo> pendingInfos_;
+    std::map<i64, DocPart> pendingInfos_;
 
     RowN rowCount_ = 0;
 

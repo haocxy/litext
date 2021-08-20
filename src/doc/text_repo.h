@@ -3,7 +3,7 @@
 #include "core/sqlite.h"
 #include "core/membuff.h"
 
-#include "doc_define.h"
+#include "doc_part.h"
 
 
 namespace doc
@@ -27,41 +27,10 @@ public:
         // data: 文本数据
         // nbytes: 文本数据字节数
         // 返回由数据库生成的文本段ID
-        i64 operator()(i64 off, i64 nrows, const void *data, i64 nbytes);
+        PartId operator()(const DocPart &docPart);
 
     private:
         sqlite::Statement stmt_;
-    };
-
-    class QueryPartDataByPartIdStmt {
-    public:
-        struct Result {
-            Result() {}
-
-            Result(Result &&b) {
-                move(*this, b);
-            }
-
-            Result &operator=(Result &&b) {
-                move(*this, b);
-                return *this;
-            }
-
-            static void move(Result &to, Result &from) {
-                to.partRange = std::move(from.partRange);
-                to.partData = std::move(from.partData);
-            }
-
-            RowRange partRange;
-            MemBuff partData;
-        };
-
-        QueryPartDataByPartIdStmt(TextRepo &repo);
-
-        Result operator()(i64 partId) const;
-
-    private:
-        mutable sqlite::Statement stmt_;
     };
 
 private:

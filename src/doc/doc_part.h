@@ -22,11 +22,19 @@ public:
         return rowRange_;
     }
 
+    RowRange &rowRange() {
+        return rowRange_;
+    }
+
     void setRowRange(const RowRange &rowRange) {
         rowRange_ = rowRange;
     }
 
     const ByteRange &byteRange() const {
+        return byteRange_;
+    }
+
+    ByteRange &byteRange() {
         return byteRange_;
     }
 

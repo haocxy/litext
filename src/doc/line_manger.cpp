@@ -67,7 +67,7 @@ void LineManager::loadRange(const RowRange &range, std::function<void(LoadRangeR
     if (!orderedInfos_.empty()) {
 
         // 找到最后一个可作为结果的段落偏移
-        const RowN lastUsable = std::min(right, orderedInfos_.back().rowRange.right());
+        const RowN lastUsable = std::min(right, orderedInfos_.back().rowRange().right());
 
         // 把可用部分取出来
         for (; row <= lastUsable; ++row) {
@@ -102,47 +102,48 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
         const std::string &s = e.utf8content();
-        PartInfo info = worker.countRows(s);
-        info.id = worker.savePart(e.byteOffset(), info.rowRange.count(), s);
-        info.byteRange = Ranges::byOffAndLen(e.byteOffset(), e.partSize());
-        LOGD << "LineManager part[" << info.id << "], nrows [" << info.rowRange.count() << "] , time usage[" << elapse.milliSec() << "]";
+        DocPart info;
+        info.rowRange().setLen(worker.countRows(s));
+        info.setId(worker.savePart(info));
+        info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
+        LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info);
         sigRowCountUpdated_(totalRowCount);
         sigPartLoaded_(e);
     });
 }
 
-RowN LineManager::updatePartInfo(const PartInfo &info)
+RowN LineManager::updatePartInfo(const DocPart &info)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
-    rowCount_ += info.rowRange.count();
+    rowCount_ += info.rowRange().count();
 
     updateRowOff(info);
 
     return rowCount_;
 }
 
-void LineManager::updateRowOff(const PartInfo &info)
+void LineManager::updateRowOff(const DocPart &info)
 {
-    pendingInfos_[info.byteRange.off()] = info;
+    pendingInfos_[info.byteRange().off()] = info;
 
     while (!pendingInfos_.empty()) {
-        const PartInfo &firstPending = pendingInfos_.begin()->second;
-        if (firstPending.byteRange.off() == 0) {
+        const DocPart &firstPending = pendingInfos_.begin()->second;
+        if (firstPending.byteRange().off() == 0) {
             orderedInfos_.push_back(firstPending);
-            orderedInfos_.back().rowRange.setOff(0);
+            orderedInfos_.back().rowRange().setOff(0);
             pendingInfos_.erase(pendingInfos_.begin());
             onRowOffDetected(orderedInfos_.back());
         } else {
             if (orderedInfos_.empty()) {
                 break;
             } else {
-                const PartInfo &lastOrdered = orderedInfos_.back();
-                if (orderedInfos_.back().byteRange.end() == firstPending.byteRange.off()) {
-                    const RowN oldLastRowEnd = lastOrdered.rowRange.end();
+                const DocPart &lastOrdered = orderedInfos_.back();
+                if (orderedInfos_.back().byteRange().end() == firstPending.byteRange().off()) {
+                    const RowN oldLastRowEnd = lastOrdered.rowRange().end();
                     orderedInfos_.push_back(firstPending);
-                    orderedInfos_.back().rowRange.setOff(oldLastRowEnd);
+                    orderedInfos_.back().rowRange().setOff(oldLastRowEnd);
                     pendingInfos_.erase(pendingInfos_.begin());
                     onRowOffDetected(orderedInfos_.back());
                 } else {
@@ -153,13 +154,13 @@ void LineManager::updateRowOff(const PartInfo &info)
     }
 }
 
-void LineManager::checkWaitingRows(const PartInfo &info)
+void LineManager::checkWaitingRows(const DocPart &info)
 {
     if (!waitingRange_) {
         return;
     }
 
-    const Range<RowN> detectedRowRange = info.rowRange;
+    const RowRange detectedRowRange = info.rowRange();
 
     if (!waitingRange_->rowRange.isIntersect(detectedRowRange)) {
         return;
@@ -185,14 +186,14 @@ void LineManager::checkWaitingRows(const PartInfo &info)
     }
 }
 
-void LineManager::onRowOffDetected(const PartInfo &i)
+void LineManager::onRowOffDetected(const DocPart &i)
 {
     LOGD << "LineManager::onRowOffDetected"
-        << ", part id: [" << i.id << "]"
-        << ", byte off: [" << i.byteRange.off() << "]"
-        << ", row off: [" << i.rowRange.off() << "]"
-        << ", row count: [" << i.rowRange.count() << "]"
-        << ", row end: [" << i.rowRange.end() << "]";
+        << ", part id: [" << i.id() << "]"
+        << ", byte off: [" << i.byteRange().off() << "]"
+        << ", row off: [" << i.rowRange().off() << "]"
+        << ", row count: [" << i.rowRange().count() << "]"
+        << ", row end: [" << i.rowRange().end() << "]";
 
     checkWaitingRows(i);
 }
@@ -203,7 +204,7 @@ std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const
         return std::nullopt;
     }
 
-    if (orderedInfos_.back().rowRange.right() < row) {
+    if (orderedInfos_.back().rowRange().right() < row) {
         return std::nullopt;
     }
 
@@ -212,14 +213,14 @@ std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const
 
     while (leftPartIndex <= rightPartIndex) {
         const size_t midPartIndex = (leftPartIndex + rightPartIndex) / 2;
-        const PartInfo &part = orderedInfos_[midPartIndex];
+        const DocPart &part = orderedInfos_[midPartIndex];
 
-        if (row < part.rowRange.left()) {
+        if (row < part.rowRange().left()) {
             rightPartIndex = midPartIndex - 1;
-        } else if (row > part.rowRange.right()) {
+        } else if (row > part.rowRange().right()) {
             leftPartIndex = midPartIndex + 1;
         } else {
-            return RowIndex(part.id, row - part.rowRange.off());
+            return RowIndex(part.id(), row - part.rowRange().off());
         }
     }
 
@@ -252,7 +253,7 @@ void LineManager::Worker::setWidthLimit(int w)
     config_ = std::move(config);
 }
 
-LineManager::PartInfo LineManager::Worker::countRows(const std::string &content)
+RowN LineManager::Worker::countRows(const std::string &content)
 {
     RowN rowCount = 0;
 
@@ -264,12 +265,12 @@ LineManager::PartInfo LineManager::Worker::countRows(const std::string &content)
         ++rowCount;
     }
 
-    return PartInfo(rowCount);
+    return rowCount;
 }
 
-i64 LineManager::Worker::savePart(i64 off, i64 nrows, const std::string &s)
+PartId LineManager::Worker::savePart(const DocPart &part)
 {
-    return stmtSavePart_(off, nrows, s.data(), s.size());
+    return stmtSavePart_(part);
 }
 
 void LineManager::Worker::loop() {
