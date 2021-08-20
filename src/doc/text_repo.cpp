@@ -41,16 +41,15 @@ void TextRepo::clearDb()
     std::ofstream ofs(dbFile_, std::ios::binary);
 }
 
-i64 TextRepo::SavePartStmt::operator()(const DocPart &docPart)
+void TextRepo::SavePartStmt::operator()(const DocPart &docPart)
 {
     stmt_.reset();
-    stmt_.arg(); // id
+    stmt_.arg(docPart.id()); // id
     stmt_.arg(docPart.rowRange().off()); // rowoff
     stmt_.arg(docPart.rowRange().count()); // rowcnt
     stmt_.arg(docPart.byteRange().off()); // byteoff
     stmt_.arg(docPart.byteRange().count()); // bytecnt
     stmt_.step();
-    return stmt_.lastInsertRowId();
 }
 
 TextRepo::SavePartStmt::SavePartStmt(TextRepo &repo)

@@ -12,6 +12,7 @@
 #include "core/sigconns.h"
 #include "core/thread.h"
 #include "core/font_index.h"
+#include "core/idgen.h"
 #include "part_loaded_event.h"
 #include "text_repo.h"
 #include "text_loader.h"
@@ -27,7 +28,7 @@ namespace doc
 
 class LineManager {
 public:
-    LineManager(TextRepo &textRespo, TextLoader &loader);
+    LineManager(TextRepo &textRepo, TextLoader &loader);
 
     ~LineManager();
 
@@ -54,7 +55,7 @@ private:
 
     class Worker {
     public:
-        Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue);
+        Worker(TaskQueue<void(Worker &worker)> &taskQueue);
 
         ~Worker();
 
@@ -68,13 +69,10 @@ private:
 
         RowN countRows(const std::string &s);
 
-        PartId savePart(const DocPart &part);
-
     private:
         void loop();
 
     private:
-        TextRepo::SavePartStmt stmtSavePart_;
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
@@ -93,13 +91,14 @@ private:
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
     void updateRowOff(const DocPart &info);
 
-    void onRowOffDetected(const DocPart &info);
+    void onRowOffDetected(DocPart &info);
 
     void checkWaitingRows(const DocPart &info);
 
     std::optional<RowIndex> queryRowIndex(RowN row) const;
 
 private:
+    TextRepo::SavePartStmt stmtSavePart_;
     RenderConfig config_;
     TaskQueue<void(Worker &worker)> taskQueue_;
     std::vector<uptr<Worker>> workers_;
@@ -109,6 +108,8 @@ private:
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
 
 private:
+    IdGen<PartId> idGen_{ 1 };
+
     mutable std::mutex mtx_;
 
     std::vector<DocPart> orderedInfos_;

@@ -25,12 +25,13 @@ static int decideWorkerCount()
 }
 
 LineManager::LineManager(TextRepo &textRepo, TextLoader &loader)
-    : taskQueue_(decideWorkerCount())
+    : stmtSavePart_(textRepo)
+    , taskQueue_(decideWorkerCount())
 {
     const int workerCount = decideWorkerCount();
 
     for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<Worker>(textRepo, taskQueue_));
+        workers_.push_back(std::make_unique<Worker>(taskQueue_));
     }
 
     sigConns_ += loader.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
@@ -104,7 +105,6 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
         const std::string &s = e.utf8content();
         DocPart info;
         info.rowRange().setLen(worker.countRows(s));
-        info.setId(worker.savePart(info));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
         LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info);
@@ -186,7 +186,7 @@ void LineManager::checkWaitingRows(const DocPart &info)
     }
 }
 
-void LineManager::onRowOffDetected(const DocPart &i)
+void LineManager::onRowOffDetected(DocPart &i)
 {
     LOGD << "LineManager::onRowOffDetected"
         << ", part id: [" << i.id() << "]"
@@ -194,6 +194,9 @@ void LineManager::onRowOffDetected(const DocPart &i)
         << ", row off: [" << i.rowRange().off() << "]"
         << ", row count: [" << i.rowRange().count() << "]"
         << ", row end: [" << i.rowRange().end() << "]";
+
+    i.setId(idGen_.next());
+    stmtSavePart_(i);
 
     checkWaitingRows(i);
 }
@@ -227,9 +230,8 @@ std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const
     throw std::logic_error("logic should never reach here");
 }
 
-LineManager::Worker::Worker(TextRepo &textRepo, TaskQueue<void(Worker &worker)> &taskQueue)
-    : stmtSavePart_(textRepo)
-    , taskQueue_(taskQueue)
+LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue)
+    : taskQueue_(taskQueue)
     , thread_([this] { loop(); })
 {
 
@@ -266,11 +268,6 @@ RowN LineManager::Worker::countRows(const std::string &content)
     }
 
     return rowCount;
-}
-
-PartId LineManager::Worker::savePart(const DocPart &part)
-{
-    return stmtSavePart_(part);
 }
 
 void LineManager::Worker::loop() {
