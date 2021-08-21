@@ -41,9 +41,7 @@ public:
         return rowCount_;
     }
 
-    using LoadRangeResult = std::shared_ptr<std::map<RowN, RowIndex>>;
-
-    void loadRange(const RowRange &range, std::function<void(LoadRangeResult)> &&cb);
+    std::map<RowN, RowIndex> findRange(const RowRange &range);
 
 private:
 
@@ -81,8 +79,6 @@ private:
 
     void onRowOffDetected(DocPart &info);
 
-    void checkWaitingRows(const DocPart &info);
-
     std::optional<RowIndex> queryRowIndex(RowN row) const;
 
 private:
@@ -106,39 +102,6 @@ private:
     std::map<i64, DocPart> pendingInfos_;
 
     RowN rowCount_ = 0;
-
-    struct WaitingRange {
-
-        WaitingRange() {}
-
-        WaitingRange(WaitingRange &&b) noexcept {
-            move(*this, b);
-        }
-
-        WaitingRange &operator=(WaitingRange &&b) noexcept {
-            move(*this, b);
-            return *this;
-        }
-
-        static void move(WaitingRange &to, WaitingRange &from) {
-            if (&to != &from) {
-                to.rowRange = from.rowRange;
-                from.rowRange = Range<RowN>();
-
-                to.waitingRows = std::move(from.waitingRows);
-
-                to.foundRows = std::move(from.foundRows);
-
-                to.cb = std::move(from.cb);
-            }
-        }
-
-        Range<RowN> rowRange;
-        std::set<RowN> waitingRows;
-        std::map<RowN, RowIndex> foundRows;
-        std::function<void(LoadRangeResult)> cb;
-    };
-    std::optional<WaitingRange> waitingRange_;
 };
 
 }

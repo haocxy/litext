@@ -45,9 +45,9 @@ public:
         return lineManager_.rowCnt();
     }
 
-    void loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb);
+    uptr<Row> rowAt(RowN row);
 
-    void loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb);
+    std::map<RowN, uptr<Row>> rowsAt(const RowRange &range);
 
 private:
     const fs::path path_;

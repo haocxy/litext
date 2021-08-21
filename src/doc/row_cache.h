@@ -17,7 +17,7 @@ class RowCache {
 public:
     RowCache(TextRepo &repo);
 
-    std::map<RowN, std::shared_ptr<Row>> loadRows(const std::map<RowN, RowIndex> &rowIndexes);
+    std::map<RowN, uptr<Row>> loadRows(const std::map<RowN, RowIndex> &rowIndexes);
 
 private:
 

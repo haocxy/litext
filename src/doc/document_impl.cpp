@@ -44,37 +44,21 @@ void DocumentImpl::start()
     loader_.loadAll();
 }
 
-void DocumentImpl::loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb)
+uptr<Row> DocumentImpl::rowAt(RowN row)
 {
-    loadRows(Ranges::byOffAndLen<RowN>(row, 1), [cb = std::move(cb)](std::vector<std::shared_ptr<Row>> &&rows) {
-        if (!rows.empty()) {
-            cb(rows[0]);
-        }
-    });
+    std::map<RowN, uptr<Row>> rows = rowsAt(Ranges::byOffAndLen<RowN>(row, 1));
+    auto it = rows.find(row);
+    if (it != rows.end()) {
+        return uptr<Row>(std::move(it->second));
+    } else {
+        return nullptr;
+    }
 }
 
-void DocumentImpl::loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb) {
-
-    lineManager_.loadRange(range, [this, range, cb = std::move(cb)](std::shared_ptr<std::map<RowN, RowIndex>> rowIndexes) {
-        if (!rowIndexes) {
-            return;
-        }
-
-        std::vector<std::shared_ptr<Row>> result;
-        result.resize(range.count());
-
-        const std::map<RowN, std::shared_ptr<Row>> foundRows = rowCache_.loadRows(*rowIndexes);
-
-        for (RowN row = range.beg(); row < range.end(); ++row) {
-            auto it = foundRows.find(row);
-            if (it != foundRows.end()) {
-                result[row - range.beg()] = it->second;
-            }
-        }
-
-        cb(std::move(result));
-    });
-
+std::map<RowN, uptr<Row>> DocumentImpl::rowsAt(const RowRange &range)
+{
+    std::map<RowN, RowIndex> indexes = lineManager_.findRange(range);
+    return rowCache_.loadRows(indexes);
 }
 
 }

@@ -46,7 +46,7 @@ LineManager::~LineManager()
     workers_.clear();
 }
 
-void LineManager::loadRange(const RowRange &range, std::function<void(LoadRangeResult)> &&cb)
+std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
@@ -67,26 +67,7 @@ void LineManager::loadRange(const RowRange &range, std::function<void(LoadRangeR
         }
     }
 
-    // 如果没有未排序的部分，则直接回调并返回
-    if (row > right) {
-        using Map = std::map<RowN, RowIndex>;
-        LoadRangeResult result = std::make_shared<Map>(std::move(foundRows));
-        cb(result);
-        return;
-    }
-
-    // 记录等待加载的信息
-    WaitingRange waiting;
-    waiting.rowRange = Ranges::byLeftAndRight(row, right);
-
-    for (; row <= right; ++row) {
-        waiting.waitingRows.insert(row);
-    }
-
-    waiting.foundRows = std::move(foundRows);
-    waiting.cb = std::move(cb);
-
-    waitingRange_ = std::move(waiting);
+    return foundRows;
 }
 
 void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
@@ -145,38 +126,6 @@ void LineManager::updateRowOff(const DocPart &info)
     }
 }
 
-void LineManager::checkWaitingRows(const DocPart &info)
-{
-    if (!waitingRange_) {
-        return;
-    }
-
-    const RowRange detectedRowRange = info.rowRange();
-
-    if (!waitingRange_->rowRange.isIntersect(detectedRowRange)) {
-        return;
-    }
-
-    std::set<RowN> &waitingRows = waitingRange_->waitingRows;
-
-    for (auto it = waitingRows.begin(); it != waitingRows.end(); ) {
-        const RowN row = *it;
-        if (detectedRowRange.contains(row)) {
-            it = waitingRows.erase(it);
-            waitingRange_->foundRows[row] = *queryRowIndex(row);
-        } else {
-            ++it;
-        }
-    }
-
-    if (waitingRows.empty()) {
-        if (waitingRange_->cb) {
-            waitingRange_->cb(std::make_shared<std::map<RowN, RowIndex>>(std::move(waitingRange_->foundRows)));
-        }
-        waitingRange_ = std::nullopt;
-    }
-}
-
 void LineManager::onRowOffDetected(DocPart &i)
 {
     LOGD << "LineManager::onRowOffDetected"
@@ -188,8 +137,6 @@ void LineManager::onRowOffDetected(DocPart &i)
 
     i.setId(idGen_.next());
     stmtSavePart_(i);
-
-    checkWaitingRows(i);
 }
 
 std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const

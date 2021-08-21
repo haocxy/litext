@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "core/fs.h"
 #include "core/signal.h"
 #include "core/charset.h"
@@ -32,9 +34,9 @@ public:
 
     RowN rowCnt() const;
 
-    void loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb);
+    uptr<Row> rowAt(RowN row);
 
-    void loadRows(const RowRange &range, std::function<void(std::vector<std::shared_ptr<Row>> &&rows)> &&cb);
+    std::map<RowN, uptr<Row>> rowsAt(const RowRange &range);
 
 private:
     doc::DocumentImpl *impl_ = nullptr;
