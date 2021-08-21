@@ -10,6 +10,7 @@
 #include "core/logger.h"
 #include "core/readable.h"
 #include "text/utf8char_in_stream.h"
+#include "text/count_rows.h"
 #include "document.h"
 #include "row_walker.h"
 
@@ -76,7 +77,7 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
         ElapsedTime elapse;
         const std::u32string &s = e.utf32content();
         DocPart info;
-        info.rowRange().setLen(worker.countRows(s));
+        info.rowRange().setLen(text::countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
         LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info);
@@ -178,21 +179,6 @@ LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue)
 LineManager::Worker::~Worker() {
     stopping_ = true;
     thread_.join();
-}
-
-RowN LineManager::Worker::countRows(const std::u32string &content)
-{
-    RowN rowCount = 0;
-
-    std::basic_istringstream<char32_t> ss(content);
-
-    std::u32string line;
-
-    while (!stopping_ && std::getline(ss, line)) {
-        ++rowCount;
-    }
-
-    return rowCount;
 }
 
 void LineManager::Worker::loop() {
