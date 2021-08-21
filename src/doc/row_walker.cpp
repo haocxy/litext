@@ -2,7 +2,6 @@
 
 #include <stdexcept>
 
-#include "text/ustring_char_in_stream.h"
 #include "text/txt_word_instream.h"
 
 
