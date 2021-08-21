@@ -26,12 +26,11 @@ public:
 
     virtual ~EditorWidget();
 
-private:
 signals:
-    void qtSigPartLoaded(double loadedPercent);
+    void qtSigDocFatalError(const QString &errmsg);
 
-private slots:
-    void qtSlotPartLoaded(double loadedPercent);
+private:
+    QString docErrToStr(doc::DocError err) const;
 
 private:
     const fs::path file_;

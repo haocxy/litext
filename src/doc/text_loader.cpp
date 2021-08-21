@@ -112,6 +112,8 @@ TextLoader::Reader::~Reader()
 
 void TextLoader::Reader::readAll()
 {
+    constexpr i32 SkipRowBytesLimit = 100 * 1024 * 1024;
+
     static const char *title = "TextLoader::loadAll() ";
 
     ElapsedTime elapsedTime;
@@ -134,7 +136,11 @@ void TextLoader::Reader::readAll()
 
         const Charset charset = self_.updateCharset(readBuff);
 
-        skipRow(charset, ifs, readBuff);
+        if (!skipRow(charset, ifs, readBuff, SkipRowBytesLimit)) {
+            self_.sigFatalError_(DocError::RowTooBig);
+            LOGE << title << "row too big in doc [" << docPath_ << "]";
+            return;
+        }
 
         LoadingPart p;
         p.off = offset;

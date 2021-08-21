@@ -6,6 +6,7 @@
 #include "core/signal.h"
 #include "core/charset.h"
 
+#include "doc_error.h"
 #include "doc_row.h"
 #include "render_config.h"
 #include "part_loaded_event.h"
@@ -23,6 +24,8 @@ public:
     ~Document();
 
     void start();
+
+    Signal<void(DocError)> &sigFatalError();
 
     Signal<void(Charset)> &sigCharsetDetected();
 

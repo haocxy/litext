@@ -24,6 +24,11 @@ void Document::start()
     impl_->start();
 }
 
+Signal<void(DocError)> &Document::sigFatalError()
+{
+    return impl_->sigFatalError();
+}
+
 Signal<void(Charset)> &Document::sigCharsetDetected()
 {
     return impl_->sigCharsetDetected();

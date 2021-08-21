@@ -11,6 +11,7 @@
 #include "core/membuff.h"
 #include "core/thread.h"
 
+#include "doc_error.h"
 #include "part_loaded_event.h"
 
 
@@ -24,6 +25,10 @@ public:
     ~TextLoader();
 
     void loadAll();
+
+    Signal<void(DocError)> &sigFatalError() {
+        return sigFatalError_;
+    }
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -94,7 +99,8 @@ private:
     LoadingParts loadingParts_;
     uptr<Reader> reader_;
     std::vector<uptr<Decoder>> decoders_;
-    
+
+    Signal<void(DocError)> sigFatalError_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;

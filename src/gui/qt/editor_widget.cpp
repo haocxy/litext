@@ -23,17 +23,16 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
 {
     doc::Document &document = editor_.document();
 
+    sigConns_ += document.sigFatalError().connect([this](doc::DocError err) {
+        emit qtSigDocFatalError(docErrToStr(err));
+    });
+
     ruler_ = new RulerWidget(textArea_);
 
     textAreaWidget_ = new TextAreaWidget(textArea_);
 
     vScrollBar_ = new QScrollBar;
     vScrollBar_->setRange(0, 0);
-    sigConns_ += document.sigPartLoaded().connect([this](const doc::PartLoadedEvent &p) {
-        const double loaded = static_cast<double>(p.byteOffset()) + static_cast<double>(p.partSize());
-        const double total = static_cast<double>(p.fileSize());
-        emit qtSigPartLoaded(loaded / total);
-    });
 
     statusBar_ = new StatusBarWidget(textArea_);
 
@@ -64,9 +63,14 @@ EditorWidget::~EditorWidget()
     statusBar_ = nullptr;
 }
 
-void EditorWidget::qtSlotPartLoaded(double percent)
+QString EditorWidget::docErrToStr(doc::DocError err) const
 {
-
+    switch (err) {
+    case doc::DocError::RowTooBig:
+        return tr("row too big");
+    default:
+        return QString();
+    }
 }
 
 }

@@ -6,6 +6,7 @@
 #include "core/sigconns.h"
 #include "core/charset.h"
 
+#include "doc_error.h"
 #include "text_repo.h"
 #include "text_loader.h"
 #include "line_manger.h"
@@ -24,6 +25,10 @@ public:
     ~DocumentImpl();
 
     void start();
+
+    Signal<void(DocError)> &sigFatalError() {
+        return sigFatalError_;
+    }
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -57,6 +62,8 @@ private:
     RowCache rowCache_;
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns sigConns_;
+
+    Signal<void(DocError)> sigFatalError_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;

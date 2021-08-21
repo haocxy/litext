@@ -9,6 +9,6 @@
 namespace doc
 {
 
-void skipRow(Charset charset, std::istream &in, MemBuff &buff);
+bool skipRow(Charset charset, std::istream &in, MemBuff &buff, i32 bytesLimit);
 
 }

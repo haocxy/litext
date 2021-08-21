@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QErrorMessage>
 
 #include "core/system.h"
 #include "gui/text_area.h"
@@ -92,6 +93,12 @@ void MainWindow::initToolBar()
 void MainWindow::openDocument(const fs::path &file)
 {
     editorWidget_ = new EditorWidget(config_.textAreaConfig(), file);
+
+    connect(editorWidget_, &EditorWidget::qtSigDocFatalError, this, [this](const QString &errmsg) {
+        QErrorMessage::qtHandler()->showMessage(errmsg);
+        setCentralWidget(nullptr);
+        setWindowTitle(QString("notesharp"));
+    });
 
     setCentralWidget(editorWidget_);
 

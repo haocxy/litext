@@ -18,6 +18,10 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
+    sigConns_ += loader_.sigFatalError().connect([this](DocError e) {
+        sigFatalError_(e);
+    });
+
     sigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
         charset_ = charset;
         sigCharsetDetected_(charset);
