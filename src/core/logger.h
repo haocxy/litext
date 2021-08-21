@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "fs.h"
-#include "charset/utf.h"
+#include "charset/to_utf8.h"
 
 
 namespace logger
@@ -158,7 +158,7 @@ public:
 
     LogLine &operator<<(const std::u32string &s) {
         if (shouldLog_) {
-            buffer_ << charset::utf::u32ToU8(s);
+            buffer_ << charset::toUTF8(s);
         }
         return *this;
     }
