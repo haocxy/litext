@@ -5,6 +5,7 @@ namespace text
 {
 
 i64 countRows(const std::u32string &s) {
+
     enum class State {
         Normal,
         MeetCR, // '\r'
@@ -34,6 +35,13 @@ i64 countRows(const std::u32string &s) {
             break;
         default:
             break;
+        }
+    }
+
+    if (!s.empty()) {
+        const char32_t lastCode = s.back();
+        if (lastCode != '\r' && lastCode != '\n') {
+            ++sum;
         }
     }
 
