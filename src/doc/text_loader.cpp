@@ -203,7 +203,7 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
-    PartLoadedEvent e;
+    LoadedPart e;
     e.setFileSize(p.filesize);
     e.setByteOffset(p.off);
     e.setPartSize(p.data.size());

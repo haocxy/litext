@@ -42,7 +42,7 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
     });
 
-    sigConns_ += doc.sigPartLoaded().connect([this](const doc::PartLoadedEvent &progress) {
+    sigConns_ += doc.sigPartLoaded().connect([this](const doc::LoadedPart &progress) {
         const i64 off = progress.byteOffset();
         if (off > maxOffset_) {
             maxOffset_ = off;

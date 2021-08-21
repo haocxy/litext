@@ -29,7 +29,7 @@ public:
 
     Signal<void(Charset)> &sigCharsetDetected();
 
-    Signal<void(const PartLoadedEvent &)> &sigPartLoaded();
+    Signal<void(const LoadedPart &)> &sigPartLoaded();
 
     Signal<void()> &sigAllLoaded();
 

@@ -34,7 +34,7 @@ Signal<void(Charset)> &Document::sigCharsetDetected()
     return impl_->sigCharsetDetected();
 }
 
-Signal<void(const PartLoadedEvent &)> &Document::sigPartLoaded()
+Signal<void(const LoadedPart &)> &Document::sigPartLoaded()
 {
     return impl_->sigPartLoaded();
 }

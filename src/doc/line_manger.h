@@ -28,7 +28,7 @@ public:
 
     ~LineManager();
 
-    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
+    Signal<void(const LoadedPart &)> &sigPartLoaded() {
         return sigPartLoaded_;
     }
 
@@ -64,7 +64,7 @@ private:
         std::atomic_bool stopping_{ false };
     };
 
-    void onPartLoaded(const doc::PartLoadedEvent &e);
+    void onPartLoaded(const doc::LoadedPart &e);
 
     RowN updatePartInfo(const DocPart &info);
 
@@ -86,7 +86,7 @@ private:
     
     SigConns sigConns_;
     Signal<void(RowN)> sigRowCountUpdated_;
-    Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
+    Signal<void(const LoadedPart &)> sigPartLoaded_;
 
 private:
     IdGen<PartId> idGen_{ 1 };

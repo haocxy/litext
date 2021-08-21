@@ -35,7 +35,7 @@ LineManager::LineManager(TextRepo &textRepo, TextLoader &loader)
         workers_.push_back(std::make_unique<Worker>(taskQueue_));
     }
 
-    sigConns_ += loader.sigPartLoaded().connect([this](const doc::PartLoadedEvent &e) {
+    sigConns_ += loader.sigPartLoaded().connect([this](const doc::LoadedPart &e) {
         onPartLoaded(e);
     });
 }
@@ -71,7 +71,7 @@ std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range)
     return foundRows;
 }
 
-void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
+void LineManager::onPartLoaded(const doc::LoadedPart &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;

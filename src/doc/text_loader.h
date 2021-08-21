@@ -34,7 +34,7 @@ public:
         return sigCharsetDetected_;
     }
 
-    Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
+    Signal<void(const LoadedPart &)> &sigPartLoaded() {
         return sigPartLoaded_;
     }
 
@@ -102,7 +102,7 @@ private:
 
     Signal<void(DocError)> sigFatalError_;
     Signal<void(Charset)> sigCharsetDetected_;
-    Signal<void(const PartLoadedEvent &)> sigPartLoaded_;
+    Signal<void(const LoadedPart &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 
     mutable std::mutex mtx_;

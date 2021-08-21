@@ -31,7 +31,7 @@ DocumentImpl::DocumentImpl(const fs::path &path)
         sigRowCountUpdated_(nrows);
     });
 
-    sigConns_ += lineManager_.sigPartLoaded().connect([this](const PartLoadedEvent &e) {
+    sigConns_ += lineManager_.sigPartLoaded().connect([this](const LoadedPart &e) {
         sigPartLoaded_(e);
     });
 

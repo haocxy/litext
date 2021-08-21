@@ -10,23 +10,10 @@
 namespace doc
 {
 
-// 文档加载的比例，各属性单位都是字节
-class PartLoadedEvent {
+class LoadedPart {
 public:
-    PartLoadedEvent()
+    LoadedPart()
         : content_(std::make_shared<std::u32string>()) {}
-
-    bool isFirstPart() const {
-        return partId_ == 0;
-    }
-
-    int64_t partId() const {
-        return partId_;
-    }
-
-    void setPartId(int64_t id) {
-        partId_ = id;
-    }
 
     uintmax_t fileSize() const {
         return fileSize_;
@@ -61,10 +48,9 @@ public:
     }
 
 private:
-    int64_t partId_ = 0;
-    uintmax_t fileSize_ = 0;
-    uintmax_t byteOffset_ = 0;
-    uintmax_t partSize_ = 0;
+    i64 fileSize_ = 0;
+    i64 byteOffset_ = 0;
+    i64 partSize_ = 0;
     std::shared_ptr<std::u32string> content_;
 };
 
