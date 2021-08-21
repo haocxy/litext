@@ -42,7 +42,7 @@ TextArea::~TextArea()
 
 void TextArea::start()
 {
-    editor_.start(config_.render());
+    editor_.start();
 }
 
 void TextArea::resize(const Size & size)

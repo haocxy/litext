@@ -19,14 +19,9 @@ Document::~Document()
     impl_ = nullptr;
 }
 
-void Document::start(const RenderConfig &config)
+void Document::start()
 {
-    impl_->start(config);
-}
-
-void Document::setAreaSize(int w, int h)
-{
-    impl_->setAreaSize(w, h);
+    impl_->start();
 }
 
 Signal<void(Charset)> &Document::sigCharsetDetected()

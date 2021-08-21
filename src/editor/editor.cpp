@@ -13,9 +13,9 @@ Editor::Editor(Doc *model, const fs::path &file)
     assert(model);
 }
 
-void Editor::start(const RenderConfig &renderConfig)
+void Editor::start()
 {
-    document_.start(renderConfig);
+    document_.start();
 }
 
 void Editor::onPrimaryKeyPress(const DocLoc & loc)

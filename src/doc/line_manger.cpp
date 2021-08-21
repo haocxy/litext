@@ -46,15 +46,6 @@ LineManager::~LineManager()
     workers_.clear();
 }
 
-void LineManager::init(const RenderConfig &config)
-{
-    config_ = config;
-
-    for (const auto &worker : workers_) {
-        worker->init(config);
-    }
-}
-
 void LineManager::loadRange(const RowRange &range, std::function<void(LoadRangeResult)> &&cb)
 {
     std::unique_lock<std::mutex> lock(mtx_);
@@ -240,19 +231,6 @@ LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue)
 LineManager::Worker::~Worker() {
     stopping_ = true;
     thread_.join();
-}
-
-void LineManager::Worker::init(const RenderConfig &config)
-{
-    config_ = std::make_unique<RenderConfig>(config);
-    widthProvider_ = std::make_unique<GlyphWidthCache>(config_->font(), 22);
-}
-
-void LineManager::Worker::setWidthLimit(int w)
-{
-    uptr<RenderConfig> config(new RenderConfig(*config_));
-    config->setWidthLimit(w);
-    config_ = std::move(config);
 }
 
 RowN LineManager::Worker::countRows(const std::string &content)

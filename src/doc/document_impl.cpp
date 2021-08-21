@@ -39,19 +39,9 @@ DocumentImpl::~DocumentImpl()
     LOGD << "Document::~Document() start, path: [" << path_ << "]";
 }
 
-void DocumentImpl::start(const RenderConfig &config)
+void DocumentImpl::start()
 {
-    config_ = std::make_unique<RenderConfig>(config);
-
-    lineManager_.init(config);
-
     loader_.loadAll();
-}
-
-void DocumentImpl::setAreaSize(int w, int h)
-{
-    config_->setWidthLimit(w);
-    config_->setHeightLimit(h);
 }
 
 void DocumentImpl::loadRow(RowN row, std::function<void(std::shared_ptr<Row>)> &&cb)

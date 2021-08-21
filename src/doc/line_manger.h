@@ -11,14 +11,10 @@
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/thread.h"
-#include "core/font_index.h"
 #include "core/idgen.h"
 #include "part_loaded_event.h"
 #include "text_repo.h"
 #include "text_loader.h"
-#include "glyph_width_cache.h"
-#include "render_config.h"
-#include "row_walker.h"
 #include "row_index.h"
 #include "doc_part.h"
 
@@ -31,8 +27,6 @@ public:
     LineManager(TextRepo &textRepo, TextLoader &loader);
 
     ~LineManager();
-
-    void init(const RenderConfig &config);
 
     Signal<void(const PartLoadedEvent &)> &sigPartLoaded() {
         return sigPartLoaded_;
@@ -63,10 +57,6 @@ private:
             stopping_ = true;
         }
 
-        void init(const RenderConfig &config);
-
-        void setWidthLimit(int w);
-
         RowN countRows(const std::string &s);
 
     private:
@@ -76,8 +66,6 @@ private:
         TaskQueue<void(Worker &worker)> &taskQueue_;
         std::thread thread_;
         std::atomic_bool stopping_{ false };
-        uptr<RenderConfig> config_;
-        uptr<GlyphWidthCache> widthProvider_;
     };
 
     void onPartLoaded(const doc::PartLoadedEvent &e);
@@ -99,7 +87,6 @@ private:
 
 private:
     TextRepo::SavePartStmt stmtSavePart_;
-    RenderConfig config_;
     TaskQueue<void(Worker &worker)> taskQueue_;
     std::vector<uptr<Worker>> workers_;
     

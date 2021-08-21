@@ -6,7 +6,6 @@
 #include "core/signal.h"
 #include "core/ustring.h"
 #include "doc/document.h"
-#include "doc/render_config.h"
 
 #include "cursor.h"
 
@@ -24,7 +23,7 @@ public:
 
     Editor(Doc * model, const fs::path &file);
 
-    void start(const RenderConfig &renderConfig);
+    void start();
 
     const doc::Document &doc() const { return document_; }
 

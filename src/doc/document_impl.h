@@ -6,7 +6,6 @@
 #include "core/sigconns.h"
 #include "core/charset.h"
 
-#include "render_config.h"
 #include "text_repo.h"
 #include "text_loader.h"
 #include "line_manger.h"
@@ -24,9 +23,7 @@ public:
 
     ~DocumentImpl();
 
-    void start(const RenderConfig &config);
-
-    void setAreaSize(int w, int h);
+    void start();
 
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
@@ -54,7 +51,6 @@ public:
 
 private:
     const fs::path path_;
-    uptr<RenderConfig> config_;
     TextRepo textRepo_;
     TextLoader loader_;
     LineManager lineManager_;

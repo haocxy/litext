@@ -20,9 +20,7 @@ public:
 
     ~Document();
 
-    void start(const RenderConfig &config);
-
-    void setAreaSize(int w, int h);
+    void start();
 
     Signal<void(Charset)> &sigCharsetDetected();
 
