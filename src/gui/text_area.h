@@ -82,7 +82,7 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
-    void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)> &&action) const;
+    void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, char32_t c)> &&action) const;
 
 public:
     auto &sigShouldRepaint() {

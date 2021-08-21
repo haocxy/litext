@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/ustring.h"
+#include <string>
 
 #include "doc_row.h"
 
@@ -16,7 +16,7 @@ public:
         return static_cast<CharN>(m_content.size());
     }
 
-    virtual UChar charAt(CharN i) const override
+    virtual char32_t charAt(CharN i) const override
     {
         return m_content[i];
     }
@@ -26,19 +26,14 @@ public:
         return m_rowEnd;
     }
 
-    void setContent(const UString &content)
+    void setContent(const std::u32string &content)
     {
         m_content = content;
     }
     
-    void setContent(UString &&content)
+    void setContent(std::u32string &&content)
     {
         m_content = std::move(content);
-    }
-
-    void Add(UChar c)
-    {
-        m_content.push_back(c);
     }
 
     void setRowEnd(RowEnd rowEnd)
@@ -47,6 +42,6 @@ public:
     }
 
 private:
-    UString m_content;
+    std::u32string m_content;
     RowEnd m_rowEnd = RowEnd::NO;
 };

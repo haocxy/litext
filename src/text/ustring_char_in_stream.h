@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/ustring.h"
+#include <string>
 
 #include "char_instream.h"
 
@@ -10,12 +10,12 @@ namespace gui
 
 class UStringCharInStream : public CharInStream {
 public:
-    UStringCharInStream(const UStringView &str)
+    UStringCharInStream(const std::u32string_view &str)
         : str_(str) {}
 
     virtual ~UStringCharInStream() {}
 
-    virtual UChar Next() override {
+    virtual char32_t Next() override {
         if (offset_ < str_.size()) {
             return str_[offset_++];
         } else {
@@ -24,7 +24,7 @@ public:
     }
 
 private:
-    const UStringView &str_;
+    const std::u32string_view &str_;
     size_t offset_ = 0;
 };
 

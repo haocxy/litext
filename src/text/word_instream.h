@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/ustring.h"
+#include <string>
 
 
 class WordInStream
@@ -8,5 +8,5 @@ class WordInStream
 public:
     virtual ~WordInStream() {}
 
-    virtual UString Next() = 0;
+    virtual std::u32string Next() = 0;
 };

@@ -4,7 +4,6 @@
 
 #include "core/fs.h"
 #include "core/signal.h"
-#include "core/ustring.h"
 #include "doc/document.h"
 
 #include "cursor.h"

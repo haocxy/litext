@@ -1,18 +1,13 @@
 #include "line_manger.h"
 
-#include <string_view>
 #include <string>
-#include <sstream>
 
 #include "core/thread.h"
 #include "core/system.h"
 #include "core/time.h"
 #include "core/logger.h"
 #include "core/readable.h"
-#include "text/utf8char_in_stream.h"
 #include "text/count_rows.h"
-#include "document.h"
-#include "row_walker.h"
 
 
 namespace doc

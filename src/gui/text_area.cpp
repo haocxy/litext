@@ -547,7 +547,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, Pixel::Raw basel
     }
 }
 
-void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, UChar c)>&& action) const
+void TextArea::drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, char32_t c)>&& action) const
 {
     const int rowCnt = page_.size();
     if (rowCnt == 0)

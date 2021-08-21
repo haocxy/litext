@@ -1,7 +1,5 @@
 #pragma once
 
-#include "core/uchar.h"
-
 #include "doc_define.h"
 #include "row_end_enum.h"
 
@@ -12,7 +10,7 @@ public:
 
     virtual CharN charCnt() const = 0;
 
-    virtual UChar charAt(CharN i) const = 0;
+    virtual char32_t charAt(CharN i) const = 0;
 
     virtual RowEnd rowEnd() const = 0;
 };

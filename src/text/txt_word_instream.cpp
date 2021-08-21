@@ -6,7 +6,7 @@
 
 namespace
 {
-    inline bool IsWordChar(UChar c)
+    inline bool IsWordChar(char32_t c)
     {
         return c >= 'a' && c <= 'z'
             || c >= 'A' && c <= 'Z'
@@ -14,28 +14,28 @@ namespace
             || c == '_';
     }
 
-    inline bool IsEmptyChar(UChar c)
+    inline bool IsEmptyChar(char32_t c)
     {
         return c == ' ' || c == '\t';
     }
 }
 
-UString TxtWordStream::Next()
+std::u32string TxtWordStream::Next()
 {
-    UChar next = PopNextChar();
+    char32_t next = PopNextChar();
     if (next == 0)
     {
-        return UString();
+        return std::u32string();
     }
 
-    UString result;
+    std::u32string result;
     result.push_back(next);
 
     if (IsWordChar(next))
     {
         while (true)
         {
-            UChar c = PopNextChar();
+            char32_t c = PopNextChar();
             if (c == 0)
             {
                 return result;
@@ -55,7 +55,7 @@ UString TxtWordStream::Next()
     {
         while (true)
         {
-            UChar c = PopNextChar();
+            char32_t c = PopNextChar();
             if (c == 0)
             {
                 return result;
@@ -75,11 +75,11 @@ UString TxtWordStream::Next()
     return result;
 }
 
-UChar TxtWordStream::PopNextChar()
+char32_t TxtWordStream::PopNextChar()
 {
     if (!m_buff.empty())
     {
-        UChar first = m_buff.front();
+        char32_t first = m_buff.front();
         m_buff.pop_front();
         return first;
     }

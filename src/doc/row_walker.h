@@ -38,7 +38,7 @@ private:
 
     void forEachCharNoWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action);
 
-    int charPixelWith(UChar c) const {
+    int charPixelWith(char32_t c) const {
         // 换行符不占用空间
         if (c == '\n' || c == '\r') {
             return 0;

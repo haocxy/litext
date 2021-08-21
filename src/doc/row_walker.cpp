@@ -19,13 +19,13 @@ void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size
     bool isCurrentLineEmpty = true;
 
     while (true) {
-        const UString word = wordStream.Next();
+        const std::u32string word = wordStream.Next();
         if (word.empty()) {
             break;
         }
 
         if (isCurrentLineEmpty) {
-            for (const UChar c : word) {
+            for (const char32_t c : word) {
                 const int charWidth = charPixelWith(c);
 
                 if (leftX + charWidth > widthLimit_) {
@@ -43,7 +43,7 @@ void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size
             }
         } else {
             int wordWidth = 0;
-            for (const UChar c : word) {
+            for (const char32_t c : word) {
                 wordWidth += charPixelWith(c);
                 wordWidth += hPad_;
             }
@@ -54,7 +54,7 @@ void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size
             } else {
                 isCurrentLineEmpty = false;
             }
-            for (const UChar c : word) {
+            for (const char32_t c : word) {
                 const int charWidth = charPixelWith(c);
 
                 if (leftX + charWidth > widthLimit_) {

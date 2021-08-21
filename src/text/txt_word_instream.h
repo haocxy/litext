@@ -1,7 +1,9 @@
 #pragma once
 
 #include <deque>
+
 #include "text/word_instream.h"
+
 
 class CharInStream;
 
@@ -16,15 +18,17 @@ public:
 
     virtual ~TxtWordStream() {}
 
-    virtual UString Next() override;
+    virtual std::u32string Next() override;
+
 private:
-    UChar PopNextChar();
-    void PushBackChar(UChar c)
+    char32_t PopNextChar();
+
+    void PushBackChar(char32_t c)
     {
         m_buff.push_front(c);
     }
 
 private:
     CharInStream & m_charInStream;
-    std::deque<UChar> m_buff;
+    std::deque<char32_t> m_buff;
 };

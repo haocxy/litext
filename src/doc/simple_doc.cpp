@@ -9,14 +9,15 @@
 #include <QTextStream>
 #include <QTextCodec>
 
+#include "core/uchar.h"
 #include "core/charset.h"
 
 
-static UString toUString(const QString &qstr)
+static std::u32string toUString(const QString &qstr)
 {
     const int u16count = qstr.length();
 
-    UString result;
+    std::u32string result;
     result.reserve(u16count);
 
     char16_t high = 0;

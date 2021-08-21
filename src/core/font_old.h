@@ -30,7 +30,7 @@ public:
 	
 	int descent() const { return metrics_.descent(); }
 
-    int charWidth(UChar unicode) const {
+    int charWidth(char32_t unicode) const {
         if (!UCharUtil::needSurrogate(unicode)) {
             return metrics_.horizontalAdvance(QChar(unicode));
         } else {

@@ -151,7 +151,7 @@ void TextAreaWidget::paintLastActLine(QPainter &p)
     }
 }
 
-static inline QString unicodeToUtf16SurrogatePairs(UChar unicode) {
+static inline QString unicodeToUtf16SurrogatePairs(char32_t unicode) {
     QChar high = QChar::highSurrogate(unicode);
     QChar low = QChar::lowSurrogate(unicode);
     QString surrogatedPairs;
@@ -169,7 +169,7 @@ void TextAreaWidget::prepareTextImage()
     fontToQFont(textArea_.config().font(), qfont);
     p.setFont(qfont);
 
-    textArea_.drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, UChar unicode) {
+    textArea_.drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, char32_t unicode) {
         if (!UCharUtil::needSurrogate(unicode)) {
             p.drawText(x, y, QChar(unicode));
         } else {
