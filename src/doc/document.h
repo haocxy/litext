@@ -9,7 +9,7 @@
 #include "doc_error.h"
 #include "doc_row.h"
 #include "render_config.h"
-#include "part_loaded_event.h"
+#include "loaded_part.h"
 
 
 namespace doc

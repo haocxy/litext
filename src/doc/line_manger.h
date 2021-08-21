@@ -12,7 +12,7 @@
 #include "core/sigconns.h"
 #include "core/thread.h"
 #include "core/idgen.h"
-#include "part_loaded_event.h"
+#include "loaded_part.h"
 #include "text_repo.h"
 #include "text_loader.h"
 #include "row_index.h"

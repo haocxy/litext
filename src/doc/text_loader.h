@@ -12,7 +12,7 @@
 #include "core/thread.h"
 
 #include "doc_error.h"
-#include "part_loaded_event.h"
+#include "loaded_part.h"
 
 
 namespace doc
