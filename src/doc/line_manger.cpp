@@ -74,7 +74,7 @@ void LineManager::onPartLoaded(const doc::PartLoadedEvent &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
-        const std::string &s = e.utf8content();
+        const std::u32string &s = e.utf32content();
         DocPart info;
         info.rowRange().setLen(worker.countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
@@ -180,13 +180,13 @@ LineManager::Worker::~Worker() {
     thread_.join();
 }
 
-RowN LineManager::Worker::countRows(const std::string &content)
+RowN LineManager::Worker::countRows(const std::u32string &content)
 {
     RowN rowCount = 0;
 
-    std::istringstream ss(content);
+    std::basic_istringstream<char32_t> ss(content);
 
-    std::string line;
+    std::u32string line;
 
     while (!stopping_ && std::getline(ss, line)) {
         ++rowCount;

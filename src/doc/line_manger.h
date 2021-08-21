@@ -55,7 +55,7 @@ private:
             stopping_ = true;
         }
 
-        RowN countRows(const std::string &s);
+        RowN countRows(const std::u32string &s);
 
     private:
         void loop();

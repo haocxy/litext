@@ -14,7 +14,7 @@ namespace doc
 class PartLoadedEvent {
 public:
     PartLoadedEvent()
-        : content_(std::make_shared<std::string>()) {}
+        : content_(std::make_shared<std::u32string>()) {}
 
     bool isFirstPart() const {
         return partId_ == 0;
@@ -52,11 +52,11 @@ public:
         partSize_ = partSize;
     }
 
-    const std::string &utf8content() const {
+    const std::u32string &utf32content() const {
         return *content_;
     }
 
-    void setContent(std::string &&content) {
+    void setContent(std::u32string &&content) {
         *content_ = std::move(content);
     }
 
@@ -65,7 +65,7 @@ private:
     uintmax_t fileSize_ = 0;
     uintmax_t byteOffset_ = 0;
     uintmax_t partSize_ = 0;
-    std::shared_ptr<std::string> content_;
+    std::shared_ptr<std::u32string> content_;
 };
 
 
