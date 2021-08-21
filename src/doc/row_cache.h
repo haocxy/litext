@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 
 #include "text_repo.h"
 #include "doc_row.h"
@@ -20,7 +21,7 @@ private:
 
 
 private:
-    std::map<PartId, std::vector<std::string>> partRows_;
+    std::map<PartId, std::vector<std::u32string>> partRows_;
 };
 
 }
