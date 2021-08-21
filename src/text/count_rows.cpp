@@ -17,12 +17,14 @@ i64 countRows(const std::u32string &s) {
     for (char32_t u : s) {
         switch (st) {
         case State::Normal:
-            if (u == '\r') {
-                st = State::MeetCR;
-            } else if (u == '\n') {
-                ++sum;
+            if (u != '\r' && u != '\n') {
+                // do nothing
             } else {
-                // TODO 这里考虑是否应该处理下Unicode中的其它的换行符，也许应该由配置决定
+                if (u == '\r') {
+                    st = State::MeetCR;
+                } else {
+                    ++sum;
+                }
             }
             break;
         case State::MeetCR:
