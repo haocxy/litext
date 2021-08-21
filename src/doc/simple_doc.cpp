@@ -54,9 +54,7 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
 {
     bool useSimpleDoc = false;
     if (!useSimpleDoc) {
-        SimpleRow row;
-        row.setRowEnd(RowEnd::NO);
-        m_lines.push_back(std::move(row));
+        m_lines.push_back(Row(RowEnd::NO));
         return true;
     }
 
@@ -108,11 +106,8 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
             }
             else if (c == '\n')
             {
-                SimpleRow row;
-                row.setContent(toUString(buff));
+                m_lines.push_back(Row(toUString(buff), RowEnd::LF));
                 buff.clear();
-                row.setRowEnd(RowEnd::LF);
-                m_lines.push_back(std::move(row));
             }
             else
             {
@@ -122,30 +117,19 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
         case ST_CR:
             if (c == '\r')
             {
-                SimpleRow row;
-                row.setContent(toUString(buff));
+                m_lines.push_back(Row(toUString(buff), RowEnd::CR));
                 buff.clear();
-                row.setRowEnd(RowEnd::CR);
-                m_lines.push_back(std::move(row));
             }
             else if (c == '\n')
             {
-                SimpleRow row;
-                row.setContent(toUString(buff));
+                m_lines.push_back(Row(toUString(buff), RowEnd::CRLF));
                 buff.clear();
-                row.setRowEnd(RowEnd::CRLF);
-                m_lines.push_back(std::move(row));
-
                 state = ST_Normal;
             }
             else
             {
-                SimpleRow row;
-                row.setContent(toUString(buff));
+                m_lines.push_back(Row(toUString(buff), RowEnd::CR));
                 buff.clear();
-                row.setRowEnd(RowEnd::CR);
-                m_lines.push_back(std::move(row));
-
                 state = ST_Normal;
             }
             break;
@@ -156,40 +140,30 @@ bool SimpleDoc::LoadFromFile(const std::string &path)
 
     if (state == ST_CR)
     {
-        SimpleRow row;
-        row.setContent(toUString(buff));
+        m_lines.push_back(Row(toUString(buff), RowEnd::CR));
         buff.clear();
-        row.setRowEnd(RowEnd::CR);
-        m_lines.push_back(std::move(row));
     }
     else
     {
         // 把buff中的残留字节解析并添加进去
         if (buff.length() > 0)
         {
-            SimpleRow row;
-            row.setContent(toUString(buff));
-            buff.clear();
-            m_lines.push_back(std::move(row));
+            m_lines.push_back(Row(toUString(buff), RowEnd::NO));
         }
     }
 
     // 如果最后一行以换行结束，则添加一个空行
     if (m_lines.empty())
     {
-        SimpleRow row;
-        row.setRowEnd(RowEnd::NO);
-        m_lines.push_back(std::move(row));
+        m_lines.push_back(Row(RowEnd::NO));
     }
     else
     {
-        const SimpleRow &lastRow = m_lines.back();
+        const Row &lastRow = m_lines.back();
 
         if (lastRow.rowEnd() != RowEnd::NO)
         {
-            SimpleRow row;
-            row.setRowEnd(RowEnd::NO);
-            m_lines.push_back(std::move(row));
+            m_lines.push_back(Row(RowEnd::NO));
         }
     }
 

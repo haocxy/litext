@@ -50,9 +50,9 @@ public:
         return lineManager_.rowCnt();
     }
 
-    uptr<Row> rowAt(RowN row);
+    std::optional<Row> rowAt(RowN row);
 
-    std::map<RowN, uptr<Row>> rowsAt(const RowRange &range);
+    std::map<RowN, Row> rowsAt(const RowRange &range);
 
 private:
     const fs::path path_;

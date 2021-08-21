@@ -48,18 +48,18 @@ void DocumentImpl::start()
     loader_.loadAll();
 }
 
-uptr<Row> DocumentImpl::rowAt(RowN row)
+std::optional<Row> DocumentImpl::rowAt(RowN row)
 {
-    std::map<RowN, uptr<Row>> rows = rowsAt(Ranges::byOffAndLen<RowN>(row, 1));
+    std::map<RowN, Row> rows = rowsAt(Ranges::byOffAndLen<RowN>(row, 1));
     auto it = rows.find(row);
     if (it != rows.end()) {
-        return uptr<Row>(std::move(it->second));
+        return std::optional<Row>(std::move(it->second));
     } else {
-        return nullptr;
+        return std::nullopt;
     }
 }
 
-std::map<RowN, uptr<Row>> DocumentImpl::rowsAt(const RowRange &range)
+std::map<RowN, Row> DocumentImpl::rowsAt(const RowRange &range)
 {
     std::map<RowN, RowIndex> indexes = lineManager_.findRange(range);
     return rowCache_.loadRows(indexes);

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <set>
 #include <map>
-#include <vector>
-#include <memory>
 
 #include "text_repo.h"
 #include "doc_row.h"
@@ -17,7 +14,7 @@ class RowCache {
 public:
     RowCache(TextRepo &repo);
 
-    std::map<RowN, uptr<Row>> loadRows(const std::map<RowN, RowIndex> &rowIndexes);
+    std::map<RowN, Row> loadRows(const std::map<RowN, RowIndex> &rowIndexes);
 
 private:
 

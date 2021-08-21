@@ -54,12 +54,12 @@ RowN Document::rowCnt() const
     return impl_->rowCnt();
 }
 
-uptr<Row> Document::rowAt(RowN row)
+std::optional<Row> Document::rowAt(RowN row)
 {
     return impl_->rowAt(row);
 }
 
-std::map<RowN, uptr<Row>> Document::rowsAt(const RowRange &range)
+std::map<RowN, Row> Document::rowsAt(const RowRange &range)
 {
     return impl_->rowsAt(range);
 }

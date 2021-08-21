@@ -5,7 +5,7 @@
 #include <QString>
 
 #include "core/fs.h"
-#include "simple_doc_row.h"
+#include "doc_row.h"
 #include "doc.h"
 
 
@@ -34,5 +34,5 @@ public:
     bool LoadFromFile(const std::string &path);
 
 private:
-    std::vector<SimpleRow> m_lines;
+    std::vector<Row> m_lines;
 };
