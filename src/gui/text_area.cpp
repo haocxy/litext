@@ -59,27 +59,10 @@ void TextArea::resize(const Size & size)
     sigShouldRepaint_();
 }
 
-void TextArea::lookAt(RowN row, const Size &size)
-{
-    std::unique_lock<std::mutex> lock(mtx_);
-
-    // 等待直到上一次的lookAt处理完成
-    while (!lookAtWaiting_.empty()) {
-        cvLookAtDone_.wait(lock);
-    }
-
-
-}
-
-i32 TextArea::getMaxShownLineCnt() const
+int TextArea::getMaxShownLineCnt() const
 {
     const i32 lineHeight = config_.lineHeight();
     return (size_.height() + lineHeight - 1) / lineHeight;
-}
-
-RowRange TextArea::lookAtRange(RowN row) const
-{
-    return RowRange::byOffAndLen(row, getMaxShownLineCnt());
 }
 
 LineBound TextArea::getLineBoundByLineOffset(i32 lineOffset) const
@@ -282,18 +265,18 @@ void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
     {
         if (vloc_.line() > 0)
         {
-            setViewLoc(ViewLoc(vloc_.rowRange(), vloc_.line() - 1));
+            setViewLoc(ViewLoc(vloc_.row(), vloc_.line() - 1));
         }
         else
         {
-            if (vloc_.rowRange().off() > 0)
+            if (vloc_.row() > 0)
             {
-                std::optional<Row> row = editor_.doc().rowAt(vloc_.rowRange().off() - 1);
+                std::optional<Row> row = editor_.doc().rowAt(vloc_.row() - 1);
                 VRow vrow;
                 makeVRow(*row, vrow);
                 const int newRowSize = vrow.size();
                 page_.pushBack(std::move(vrow));
-                setViewLoc(ViewLoc(vloc_.rowRange().shift(-1), newRowSize - 1));
+                setViewLoc(ViewLoc(vloc_.row() - 1, newRowSize - 1));
             }
         }
     }
@@ -319,7 +302,7 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 
 	// 当前坐标为文档最后一行则返回
 	const RowN docRowCnt = editor_.doc().rowCnt();
-	if (vloc_.rowRange().off() + curLineLoc.row() >= docRowCnt - 1)
+	if (vloc_.row() + curLineLoc.row() >= docRowCnt - 1)
 	{
 		return false;
 	}
@@ -332,7 +315,7 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 
 	if (isLastLineOfRow(VLineLoc(rowCnt - 1, lineIndex)))
 	{
-		const RowN newDocRowIndex = vloc_.rowRange().off() + rowCnt;
+		const RowN newDocRowIndex = vloc_.row() + rowCnt;
 		if (newDocRowIndex > docRowCnt - 1)
 		{
 			return false;
@@ -472,12 +455,12 @@ void TextArea::movePageHeadOneLine()
 {
 	if (isLastLineOfRow(VLineLoc(0, vloc_.line())))
 	{
-		setViewLoc(ViewLoc(vloc_.rowRange().shift(1), 0));
+		setViewLoc(ViewLoc(vloc_.row() + 1, 0));
         page_.popFront();
 	}
 	else
 	{
-		setViewLoc(ViewLoc(vloc_.rowRange(), vloc_.line() + 1));
+		setViewLoc(ViewLoc(vloc_.row(), vloc_.line() + 1));
 	}
 }
 
@@ -552,7 +535,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, co
     {
         const VRowLoc loc(r);
         const RowBound bound = getRowBound(loc);
-        const RowN lineNum = vloc_.rowRange().off() + r;
+        const RowN lineNum = vloc_.row() + r;
         const RowN lastAct = editor_.lastActRow();
         const bool isLastAct = lineNum == lastAct;
         const i32 baseline = cvt_.toBaselineY(offset);
@@ -628,7 +611,7 @@ bool TextArea::moveDownByOneLine()
 	}
 
 	// 视图位于文档最后一个line
-	if (vloc_.rowRange().off() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(page_.size() - 1, vloc_.line())))
+	if (vloc_.row() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(page_.size() - 1, vloc_.line())))
 	{
 		return false;
 	}
@@ -637,7 +620,7 @@ bool TextArea::moveDownByOneLine()
 	const VLineLoc shownLastLineLoc = getShownLastLineLoc();
 	if (isLastLineOfRow(shownLastLineLoc))
 	{
-		const RowN newDocRowIndex = vloc_.rowRange().off() + page_.size();
+		const RowN newDocRowIndex = vloc_.row() + page_.size();
 		if (newDocRowIndex <= docRowCnt - 1)
 		{
             std::optional<Row> row = editor_.doc().rowAt(newDocRowIndex);
@@ -670,7 +653,7 @@ void TextArea::remakePage()
 
     const int lineDelta = -vloc_.line();
 
-    const RowRange range = RowRange::byOffAndLen(vloc_.rowRange().off(), shownLineCnt);
+    const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), shownLineCnt);
 
     std::map<RowN, Row> rows = editor_.doc().rowsAt(range);
 

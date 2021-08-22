@@ -12,44 +12,30 @@ class ViewLoc {
 public:
     ViewLoc() {}
 
-    explicit ViewLoc(RowN row)
-        : rowRange_(RowRange::byOffAndLen(row, 0))
-        , line_(0) {}
+    explicit ViewLoc(RowN row) : row_(row), line_(0) {}
 
-    ViewLoc(const RowRange &rowRange)
-        : rowRange_(rowRange)
-        , line_(0) {}
+    ViewLoc(RowN row, LineN line) : row_(row), line_(line) {}
 
-    ViewLoc(const RowRange &rowRange, LineN lineOff)
-        : rowRange_(rowRange)
-        , line_(lineOff) {}
+    RowN row() const { return row_; }
 
-    const RowRange &rowRange() const {
-        return rowRange_;
+    void setRow(RowN row) { row_ = row; }
+
+    LineN line() const { return line_; }
+
+    void setLine(LineN line) { line_ = line; }
+
+    bool operator==(const ViewLoc &b) const
+    {
+        return row_ == b.row_ && line_ == b.line_;
     }
 
-    RowRange &rowRange() {
-        return rowRange_;
-    }
-
-    LineN line() const {
-        return line_;
-    }
-
-    void setLine(LineN line) {
-        line_ = line;
-    }
-
-    bool operator==(const ViewLoc &b) const {
-        return rowRange_ == b.rowRange_ && line_ == b.line_;
-    }
-
-    bool operator!=(const ViewLoc &b) const {
+    bool operator!=(const ViewLoc &b) const
+    {
         return !(*this == b);
     }
 
 private:
-    RowRange rowRange_;
+    RowN row_ = 0;
     LineN line_ = 0;
 };
 
