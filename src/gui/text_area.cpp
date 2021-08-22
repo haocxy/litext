@@ -5,15 +5,14 @@
 
 #include "doc/doc.h"
 #include "doc/doc_row.h"
-#include "doc/row_walker.h"
 #include "editor/editor.h"
 #include "text/doc_line_char_instream.h"
 #include "text/txt_word_instream.h"
 
 #include "text_area_config.h"
+#include "row_walker.h"
 
 namespace {
-using namespace doc;
 
 enum class LoadRowReason : i64 {
     EnsureHasNextLine,
@@ -679,7 +678,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
 
     DocLineCharInStream charStream(row);
 
-    class Provider : public doc::GlyphWidthProvider {
+    class Provider : public GlyphWidthProvider {
     public:
         Provider(const FontOld &font) : fontOld_(font) {}
         virtual ~Provider() {}
@@ -691,7 +690,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
     };
 
     Provider provider(config_.font());
-    doc::RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
+    RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {

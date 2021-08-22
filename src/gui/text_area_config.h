@@ -5,7 +5,7 @@
 #include "core/font_old.h"
 #include "core/font_index.h"
 
-#include "doc/render_config.h"
+#include "render_config.h"
 
 
 namespace gui

@@ -11,9 +11,8 @@
 #include "core/strong_type_integer.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
-#include "doc/page.h"
-#include "doc/char_loc.h"
-#include "doc/view_loc.h"
+#include "page.h"
+#include "view_locs.h"
 
 #include "line_offset.h"
 #include "rect.h"
@@ -97,34 +96,34 @@ private:
     int getMaxShownLineCnt() const;
 
     LineBound getLineBoundByLineOffset(LineOffset lineOffset) const;
-    LineBound getLineBound(const doc::VLineLoc &lineLoc) const;
-    RowBound getRowBound(const doc::VRowLoc &rowLoc) const;
-    bool hasPrevCharAtSameLine(const doc::VCharLoc &charLoc) const;
-    bool noPrevCharAtSameLine(const doc::VCharLoc &charLoc) const;
-    bool hasNextCharAtSameLine(const doc::VCharLoc &charLoc) const;
-    bool noNextCharAtSameLine(const doc::VCharLoc &charLoc) const;
-    bool needEnsureHasNextLine(const doc::VCharLoc &charLoc) const;
-    bool isLastLineOfRow(const doc::VLineLoc &lineLoc) const;
-    bool isEndOfVirtualLine(const doc::VCharLoc &charLoc) const;
-    doc::VCharLoc betterLocForVerticalMove(const doc::VCharLoc &charLoc) const;
+    LineBound getLineBound(const VLineLoc &lineLoc) const;
+    RowBound getRowBound(const VRowLoc &rowLoc) const;
+    bool hasPrevCharAtSameLine(const VCharLoc &charLoc) const;
+    bool noPrevCharAtSameLine(const VCharLoc &charLoc) const;
+    bool hasNextCharAtSameLine(const VCharLoc &charLoc) const;
+    bool noNextCharAtSameLine(const VCharLoc &charLoc) const;
+    bool needEnsureHasNextLine(const VCharLoc &charLoc) const;
+    bool isLastLineOfRow(const VLineLoc &lineLoc) const;
+    bool isEndOfVirtualLine(const VCharLoc &charLoc) const;
+    VCharLoc betterLocForVerticalMove(const VCharLoc &charLoc) const;
     DocLoc getNextUpLoc(const DocLoc &docLoc) const;
     DocLoc getNextDownLoc(const DocLoc &docLoc) const;
     DocLoc getNextLeftLoc(const DocLoc &docLoc) const;
-    void makeVRow(const Row &row, doc::VRow &vrow);
+    void makeVRow(const Row &row, VRow &vrow);
 
     // 视图中最后一个可视line的LineLoc
-    doc::VLineLoc getShownLastLineLoc() const;
+    VLineLoc getShownLastLineLoc() const;
 
 private:
     // 调用这个函数后，需要在合适的时刻调用removeSpareRow
-    void ensureHasPrevLine(const doc::VLineLoc &curLineLoc);
+    void ensureHasPrevLine(const VLineLoc &curLineLoc);
 
     // 确保参数行有下一行
     // 如果需要把页面头部向后移动则返回true
     // 返回true则需要在合适的时刻调用movePageHeadOneLine
-    bool ensureHasNextLine(const doc::VLineLoc &curLineLoc);
+    bool ensureHasNextLine(const VLineLoc &curLineLoc);
 
-    void setViewLoc(const doc::ViewLoc &viewLoc);
+    void setViewLoc(const ViewLoc &viewLoc);
 
     // 根据当前游标位置更新stableX
     // 当视口大小调整时调用，视口大小调整时之前计算的stableX已经没有意义，需要重新计算
@@ -142,9 +141,9 @@ private:
     Editor &editor_;
     TextAreaConfig config_;
     Size size_;
-    doc::Page page_;
+    Page page_;
     
-    doc::ViewLoc vloc_{ 0, 0 };
+    ViewLoc vloc_{ 0, 0 };
     const CoordinateConverter cvt_;
 
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置

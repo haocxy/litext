@@ -2,10 +2,8 @@
 
 #include "doc/doc_loc.h"
 #include "editor/declare_editor.h"
-#include "doc/page.h"
-#include "doc/view_loc.h"
-#include "doc/line_loc.h"
-#include "doc/char_loc.h"
+#include "page.h"
+#include "view_locs.h"
 #include "row_offset.h"
 #include "line_offset.h"
 #include "pixel.h"
@@ -24,8 +22,8 @@ public:
 	CoordinateConverter(
 		const Editor &editor,
 		const Size &size,
-		const doc::Page &page,
-		const doc::ViewLoc &vloc,
+		const Page &page,
+		const ViewLoc &vloc,
 		const TextAreaConfig &config)
 		: editor_(editor)
 		, size_(size)
@@ -40,38 +38,38 @@ public:
 	CoordinateConverter &operator=(const CoordinateConverter &) = delete;
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
-	LineOffset::Raw toLineOffset(const doc::VRowLoc &vRowLoc) const;
+	LineOffset::Raw toLineOffset(const VRowLoc &vRowLoc) const;
 
-	LineOffset::Raw toLineOffset(const doc::VLineLoc &vLineLoc) const;
+	LineOffset::Raw toLineOffset(const VLineLoc &vLineLoc) const;
 
 	LineOffset::Raw toLineOffset(Pixel y) const;
 
-	Pixel::Raw toX(const doc::VCharLoc &charLoc) const;
+	Pixel::Raw toX(const VCharLoc &charLoc) const;
 
 	Pixel::Raw toBaselineY(LineOffset lineOffset) const;
 
-    doc::VRowLoc toRowLoc(VRowOffset vRowOffset) const;
+    VRowLoc toRowLoc(VRowOffset vRowOffset) const;
 
-    doc::VLineLoc toVLineLoc(LineOffset lineOffset) const;
+    VLineLoc toVLineLoc(LineOffset lineOffset) const;
 
-    doc::VCharLoc toCharLoc(const doc::VLineLoc &vLineLoc, Pixel x) const;
+    VCharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
 
-    doc::VCharLoc toCharLoc(Pixel x, Pixel y) const;
+    VCharLoc toCharLoc(Pixel x, Pixel y) const;
 
-    doc::VCharLoc toCharLoc(const DocLoc &docLoc) const;
+    VCharLoc toCharLoc(const DocLoc &docLoc) const;
 
-	DocLoc toDocLoc(const doc::VCharLoc &vCharLoc) const;
+	DocLoc toDocLoc(const VCharLoc &vCharLoc) const;
 
 	DocLoc toDocLoc(Pixel x, Pixel y) const;
 
 private:
-	bool isLastLineOfRow(const doc::VLineLoc &lineLoc) const;
+	bool isLastLineOfRow(const VLineLoc &lineLoc) const;
 
 private:
 	const Editor &editor_;
 	const Size &size_;
-	const doc::Page &page_;
-	const doc::ViewLoc &vloc_;
+	const Page &page_;
+	const ViewLoc &vloc_;
 	const TextAreaConfig &config_;
 };
 

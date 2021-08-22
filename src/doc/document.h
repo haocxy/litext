@@ -8,7 +8,6 @@
 
 #include "doc_error.h"
 #include "doc_row.h"
-#include "render_config.h"
 #include "loaded_part.h"
 
 

@@ -5,7 +5,7 @@
 #include "text/txt_word_instream.h"
 
 
-namespace doc
+namespace gui
 {
 
 void RowWalker::forEachCharWithWrapLine(std::function<void(bool isEmptyRow, size_t lineIndex, const VChar &vchar)> &&action)

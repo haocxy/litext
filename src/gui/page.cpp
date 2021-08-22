@@ -3,7 +3,7 @@
 #include <assert.h>
 
 
-namespace doc
+namespace gui
 {
 
 

@@ -8,7 +8,7 @@
 #include "view_char.h"
 
 
-namespace doc
+namespace gui
 {
 
 class RowWalker {

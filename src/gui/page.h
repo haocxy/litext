@@ -4,10 +4,10 @@
 #include <deque>
 
 #include "view_char.h"
-#include "line_loc.h"
+#include "view_locs.h"
 
 
-namespace doc
+namespace gui
 {
 
 
