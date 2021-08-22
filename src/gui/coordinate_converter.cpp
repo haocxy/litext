@@ -78,7 +78,7 @@ i32 CoordinateConverter::toBaselineY(i32 off) const
 VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const
 {
     const VRowOffset::Raw row = vRowOffset.value();
-    const int vrowIndex = row - vloc_.row();
+    const int vrowIndex = row - vloc_.rowRange().off();
     const int vrowCnt = page_.size();
     if (vrowIndex < 0 || vrowIndex >= vrowCnt) {
         if (row >= editor_.doc().rowCnt()) {
@@ -220,7 +220,7 @@ VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
         return VCharLoc::newCharLocAfterLastRow();
     }
 
-    const int r = docLoc.row() - vloc_.row();
+    const int r = docLoc.row() - vloc_.rowRange().off();
     const int rowCnt = page_.size();
     if (r < 0 || r >= rowCnt) {
         return VCharLoc();
@@ -269,7 +269,7 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
 
     if (charLoc.isAfterLastChar()) {
         if (isLastLineOfRow(charLoc)) {
-            return DocLoc::newDocLocAfterLastChar(vloc_.row() + charLoc.row());
+            return DocLoc::newDocLocAfterLastChar(vloc_.rowRange().off() + charLoc.row());
         } else {
             // 如果不是最后一个显示行，则把光标放在下一个显示行最开始处
             return toDocLoc(VCharLoc(charLoc.row(), charLoc.line() + 1, 0));
@@ -279,7 +279,7 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
 
     const VRow &vrow = page_[charLoc.row()];
     int lastLine = charLoc.line();
-    if (vloc_.row() == 0) {
+    if (vloc_.rowRange().off() == 0) {
         // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
         lastLine += vloc_.line();
     }
@@ -288,7 +288,7 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
         col += vrow[i].size();
     }
 
-    return DocLoc(vloc_.row() + charLoc.row(), col);
+    return DocLoc(vloc_.rowRange().off() + charLoc.row(), col);
 }
 
 DocLoc CoordinateConverter::toDocLoc(i32 x, i32 y) const

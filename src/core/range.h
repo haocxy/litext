@@ -16,6 +16,34 @@ public:
         return *this;
     }
 
+    static Range byOffAndLen(T off, T len) {
+        return Range(off, len);
+    }
+
+    static Range byBegAndEnd(T beg, T end) {
+        return Range(beg, end - beg);
+    }
+
+    static Range byLeftAndRight(T left, T right) {
+        return Range(left, right - left + 1);
+    }
+
+    static Range byCount(T count) {
+        return Range(0, count);
+    }
+
+    Range shift(T delta) {
+        return Range(off_ + delta, len_);
+    }
+
+    bool empty() const {
+        return len_ <= 0;
+    }
+
+    bool operator==(const Range &b) const {
+        return off_ == b.off_ && len_ == b.len_;
+    }
+
     T off() const {
         return off_;
     }

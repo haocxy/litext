@@ -4,6 +4,7 @@
 #include <vector>
 #include <deque>
 #include <bitset>
+#include <mutex>
 #include <optional>
 
 #include "core/signal.h"
@@ -45,6 +46,8 @@ public:
 public:
 
     void resize(const Size &size);
+
+    void lookAt(RowN row, const Size &size);
 
     void onPrimaryButtomPress(i32 x, i32 y);
 
@@ -89,8 +92,8 @@ public:
     }
 
 private:
-    int getMaxShownLineCnt() const;
-
+    i32 getMaxShownLineCnt() const;
+    RowRange lookAtRange(RowN row) const;
     LineBound getLineBoundByLineOffset(i32 lineOffset) const;
     LineBound getLineBound(const VLineLoc &lineLoc) const;
     RowBound getRowBound(const VRowLoc &rowLoc) const;
@@ -136,15 +139,27 @@ private:
 private:
     Editor &editor_;
     TextAreaConfig config_;
-    Size size_;
-    Page page_;
-    
-    ViewLoc vloc_{ 0, 0 };
     const CoordinateConverter cvt_;
 
-    // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
+    mutable std::mutex mtx_;
+
+    ViewLoc vloc_;
+    Size size_;
+    Page page_;
+
+    // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，
+    // 记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
     i32 stableX_ = 0;
+
+    // 视图正在看的区域
+    RowRange lookAt_;
+
+    // 视图正在看的区域中未加载完成的部分
+    RowRange lookAtWaiting_;
+
+    // lookAt操作完成，视图正在看的区域已更新
+    mutable std::condition_variable cvLookAtDone_;
 
 private:
     Signal<void()> sigShouldRepaint_;
