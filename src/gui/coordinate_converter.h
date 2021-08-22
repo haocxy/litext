@@ -5,8 +5,6 @@
 #include "page.h"
 #include "view_locs.h"
 #include "row_offset.h"
-#include "line_offset.h"
-#include "pixel.h"
 #include "size.h"
 #include "declare_text_area_config.h"
 
@@ -38,29 +36,29 @@ public:
 	CoordinateConverter &operator=(const CoordinateConverter &) = delete;
 	CoordinateConverter &operator=(CoordinateConverter &&) = delete;
 
-	LineOffset::Raw toLineOffset(const VRowLoc &vRowLoc) const;
+	i32 toLineOffset(const VRowLoc &vRowLoc) const;
 
-	LineOffset::Raw toLineOffset(const VLineLoc &vLineLoc) const;
+	i32 toLineOffset(const VLineLoc &vLineLoc) const;
 
-	LineOffset::Raw toLineOffset(Pixel y) const;
+	i32 toLineOffset(i32 y) const;
 
-	Pixel::Raw toX(const VCharLoc &charLoc) const;
+	i32 toX(const VCharLoc &charLoc) const;
 
-	Pixel::Raw toBaselineY(LineOffset lineOffset) const;
+	i32 toBaselineY(i32 lineOffset) const;
 
     VRowLoc toRowLoc(VRowOffset vRowOffset) const;
 
-    VLineLoc toVLineLoc(LineOffset lineOffset) const;
+    VLineLoc toVLineLoc(i32 lineOffset) const;
 
-    VCharLoc toCharLoc(const VLineLoc &vLineLoc, Pixel x) const;
+    VCharLoc toCharLoc(const VLineLoc &vLineLoc, i32 x) const;
 
-    VCharLoc toCharLoc(Pixel x, Pixel y) const;
+    VCharLoc toCharLoc(i32 x, i32 y) const;
 
     VCharLoc toCharLoc(const DocLoc &docLoc) const;
 
 	DocLoc toDocLoc(const VCharLoc &vCharLoc) const;
 
-	DocLoc toDocLoc(Pixel x, Pixel y) const;
+	DocLoc toDocLoc(i32 x, i32 y) const;
 
 private:
 	bool isLastLineOfRow(const VLineLoc &lineLoc) const;

@@ -8,21 +8,17 @@
 
 #include "core/signal.h"
 #include "core/sigconns.h"
-#include "core/strong_type_integer.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
+
 #include "page.h"
 #include "view_locs.h"
-
-#include "line_offset.h"
 #include "rect.h"
 #include "vertical_line.h"
 #include "view_define.h"
-#include "declare_text_area_config.h"
 #include "size.h"
 #include "line_bound.h"
 #include "row_bound.h"
-#include "pixel.h"
 #include "text_area_config.h"
 #include "coordinate_converter.h"
 
@@ -50,7 +46,7 @@ public:
 
     void resize(const Size &size);
 
-    void onPrimaryButtomPress(Pixel x, Pixel y);
+    void onPrimaryButtomPress(i32 x, i32 y);
 
     void onDirUpKeyPress();
 
@@ -79,9 +75,9 @@ public:
 
     int getLineNumBarWidth() const;
 
-    void drawEachLineNum(std::function<void(RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct)> &&action) const;
+    void drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
-    void drawEachChar(std::function<void(Pixel::Raw x, Pixel::Raw y, char32_t c)> &&action) const;
+    void drawEachChar(std::function<void(i32 x, i32 y, char32_t c)> &&action) const;
 
 public:
     auto &sigShouldRepaint() {
@@ -95,7 +91,7 @@ public:
 private:
     int getMaxShownLineCnt() const;
 
-    LineBound getLineBoundByLineOffset(LineOffset lineOffset) const;
+    LineBound getLineBoundByLineOffset(i32 lineOffset) const;
     LineBound getLineBound(const VLineLoc &lineLoc) const;
     RowBound getRowBound(const VRowLoc &rowLoc) const;
     bool hasPrevCharAtSameLine(const VCharLoc &charLoc) const;
@@ -148,7 +144,7 @@ private:
 
     // 对于非等宽字体，当光标多次上下移动时，希望横坐标相对稳定，记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
-    Pixel::Raw stableX_ = 0;
+    i32 stableX_ = 0;
 
 private:
     Signal<void()> sigShouldRepaint_;

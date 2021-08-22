@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pixel.h"
+#include "core/basetype.h"
 
 
 namespace gui
@@ -9,16 +9,16 @@ namespace gui
 
 class VerticalLine {
 public:
-	Pixel::Raw x() const { return x_; }
-	void setX(Pixel::Raw x) { x_ = x; }
-	Pixel::Raw top() const { return top_; }
-	void setTop(Pixel::Raw top) { top_ = top; }
-	Pixel::Raw bottom() const { return bottom_; }
-	void setBottom(Pixel::Raw bottom) { bottom_ = bottom; }
+    i32 x() const { return x_; }
+	void setX(i32 x) { x_ = x; }
+    i32 top() const { return top_; }
+	void setTop(i32 top) { top_ = top; }
+    i32 bottom() const { return bottom_; }
+	void setBottom(i32 bottom) { bottom_ = bottom; }
 private:
-	Pixel::Raw x_ = 0;
-	Pixel::Raw top_ = 0;
-	Pixel::Raw bottom_ = 0;
+    i32 x_ = 0;
+    i32 top_ = 0;
+    i32 bottom_ = 0;
 };
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pixel.h"
+#include "core/basetype.h"
 
 
 namespace gui
@@ -8,18 +8,18 @@ namespace gui
     class Rect
     {
     public:
-        Pixel::Raw top() const { return m_top; }
-        void setTop(Pixel::Raw top) { m_top = top; }
-        Pixel::Raw left() const { return m_left; }
-        void setLeft(Pixel::Raw left) { m_left = left; }
-        Pixel::Raw width() const { return m_width; }
-        void setWidth(Pixel::Raw width) { m_width = width; }
-        Pixel::Raw height() const { return m_height; }
-        void setHeight(Pixel::Raw height) { m_height = height; }
+        i32 top() const { return m_top; }
+        void setTop(i32 top) { m_top = top; }
+        i32 left() const { return m_left; }
+        void setLeft(i32 left) { m_left = left; }
+        i32 width() const { return m_width; }
+        void setWidth(i32 width) { m_width = width; }
+        i32 height() const { return m_height; }
+        void setHeight(i32 height) { m_height = height; }
     private:
-        Pixel::Raw m_top{ 0 };
-        Pixel::Raw m_left{ 0 };
-        Pixel::Raw m_width{ 0 };
-        Pixel::Raw m_height{ 0 };
+        i32 m_top{ 0 };
+        i32 m_left{ 0 };
+        i32 m_width{ 0 };
+        i32 m_height{ 0 };
     };
 }

@@ -10,11 +10,11 @@ namespace gui
 {
 
 
-LineOffset::Raw CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
+i32 CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
 {
     const RowN row = vRowLoc.row();
 
-    LineOffset::Raw sum = 0;
+    i32 sum = 0;
 
     const RowN rowCnt = page_.size();
 
@@ -27,9 +27,9 @@ LineOffset::Raw CoordinateConverter::toLineOffset(const VRowLoc &vRowLoc) const
     return sum;
 }
 
-LineOffset::Raw CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
+i32 CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
 {
-    LineOffset::Raw sum = vLineLoc.line();
+    i32 sum = vLineLoc.line();
 
     const RowN rowCnt = page_.size();
     const RowN row = vLineLoc.row();
@@ -43,12 +43,12 @@ LineOffset::Raw CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) cons
     return sum;
 }
 
-LineOffset::Raw CoordinateConverter::toLineOffset(Pixel y) const
+i32 CoordinateConverter::toLineOffset(i32 y) const
 {
-    return y.value() / config_.lineHeight();
+    return y / config_.lineHeight();
 }
 
-Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
+i32 CoordinateConverter::toX(const VCharLoc &charLoc) const
 {
     if (charLoc.isNull()) {
         return 0;
@@ -70,9 +70,9 @@ Pixel::Raw CoordinateConverter::toX(const VCharLoc &charLoc) const
     return page_[charLoc.row()][charLoc.line()][charLoc.col()].x();
 }
 
-Pixel::Raw CoordinateConverter::toBaselineY(LineOffset off) const
+i32 CoordinateConverter::toBaselineY(i32 off) const
 {
-    return (1 + off.value()) * config_.lineHeight() - config_.font().descent();
+    return (1 + off) * config_.lineHeight() - config_.font().descent();
 }
 
 VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const
@@ -94,10 +94,9 @@ VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const
     return VRowLoc(vrowIndex);
 }
 
-VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
+VLineLoc CoordinateConverter::toVLineLoc(i32 offset) const
 {
-    const int rowCnt = page_.size();
-    const int offset = lineOffset.value();
+    const i64 rowCnt = page_.size();
 
     if (vloc_.line() == 0) {
         int sum = 0;
@@ -142,14 +141,14 @@ VLineLoc CoordinateConverter::toVLineLoc(LineOffset lineOffset) const
     return VLineLoc::newLineLocAfterLastRow();
 }
 
-static inline Pixel::Raw calcLeftBound(Pixel::Raw x, Pixel::Raw leftWidth, Pixel::Raw pad)
+static i32 calcLeftBound(i32 x, i32 leftWidth, i32 pad)
 {
     assert(leftWidth > 0);
 
     return x - (leftWidth >> 1) - pad;
 }
 
-static inline Pixel::Raw calcRightBound(Pixel::Raw x, Pixel::Raw curWidth)
+static i32 calcRightBound(i32 x, i32 curWidth)
 {
     assert(curWidth > 0);
 
@@ -160,27 +159,26 @@ static inline Pixel::Raw calcRightBound(Pixel::Raw x, Pixel::Raw curWidth)
     }
 }
 
-VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) const
+VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, i32 x) const
 {
     if (lineLoc.isNull() || lineLoc.isAfterLastRow()) {
         return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
     const VLine &line = page_.getLine(lineLoc);
-    const Pixel::Raw x = xPixel.value();
     const int charCnt = line.size();
 
     if (charCnt == 0) {
         return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }
 
-    const Pixel::Raw pad = config_.hLayout().pad();
+    const i32 pad = config_.hLayout().pad();
 
     // 为了简化处理，把第一个字符单独处理，因为第一个字符没有前一个字符
     const VChar &firstChar = line[0];
-    const Pixel::Raw firstX = firstChar.x();
-    const Pixel::Raw firstWidth = firstChar.width();
-    const Pixel::Raw firstCharRightBound = calcRightBound(firstX, firstWidth);
+    const i32 firstX = firstChar.x();
+    const i32 firstWidth = firstChar.width();
+    const i32 firstCharRightBound = calcRightBound(firstX, firstWidth);
     if (x <= firstCharRightBound) {
         return VCharLoc(lineLoc, 0);
     }
@@ -190,9 +188,9 @@ VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) c
     while (left <= right) {
         const int mid = ((left + right) >> 1);
         const VChar &c = line[mid];
-        const Pixel::Raw cx = c.x();
-        const Pixel::Raw a = calcLeftBound(cx, line[mid - 1].width(), pad);
-        const Pixel::Raw b = calcRightBound(cx, c.width());
+        const i32 cx = c.x();
+        const i32 a = calcLeftBound(cx, line[mid - 1].width(), pad);
+        const i32 b = calcRightBound(cx, c.width());
         if (x < a) {
             right = mid - 1;
         } else if (x > b) {
@@ -205,10 +203,10 @@ VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, Pixel xPixel) c
     return VCharLoc::newCharLocAfterLastChar(lineLoc);
 }
 
-VCharLoc CoordinateConverter::toCharLoc(Pixel x, Pixel y) const
+VCharLoc CoordinateConverter::toCharLoc(i32 x, i32 y) const
 {
-    const LineOffset::Raw lineOffset = toLineOffset(y);
-    const VLineLoc lineLoc = toVLineLoc(LineOffset(lineOffset));
+    const i32 lineOffset = toLineOffset(y);
+    const VLineLoc lineLoc = toVLineLoc(lineOffset);
     return toCharLoc(lineLoc, x);
 }
 
@@ -293,7 +291,7 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
     return DocLoc(vloc_.row() + charLoc.row(), col);
 }
 
-DocLoc CoordinateConverter::toDocLoc(Pixel x, Pixel y) const
+DocLoc CoordinateConverter::toDocLoc(i32 x, i32 y) const
 {
     const VCharLoc charLoc = toCharLoc(x, y);
     const DocLoc docLoc = toDocLoc(charLoc);

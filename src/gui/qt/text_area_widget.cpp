@@ -132,7 +132,7 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 void TextAreaWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
-        textArea_.onPrimaryButtomPress(Pixel(e->x()), Pixel(e->y()));
+        textArea_.onPrimaryButtomPress(e->x(), e->y());
         update();
     }
 }
@@ -169,7 +169,7 @@ void TextAreaWidget::prepareTextImage()
     fontToQFont(textArea_.config().font(), qfont);
     p.setFont(qfont);
 
-    textArea_.drawEachChar([&p](Pixel::Raw x, Pixel::Raw y, char32_t unicode) {
+    textArea_.drawEachChar([&p](i32 x, i32 y, char32_t unicode) {
         if (!UCharUtil::needSurrogate(unicode)) {
             p.drawText(x, y, QChar(unicode));
         } else {

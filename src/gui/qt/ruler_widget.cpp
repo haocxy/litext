@@ -65,7 +65,7 @@ void RulerWidget::paintLineNum(QPainter &p)
 
     const int32_t lineNumOffset = textArea_.config().lineNumOffset();
 
-    textArea_.drawEachLineNum([&p, lineNumOffset](RowN lineNum, Pixel::Raw baseline, const RowBound &bound, bool isLastAct) {
+    textArea_.drawEachLineNum([&p, lineNumOffset](RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct) {
         const QString s = QString::number(lineNum + lineNumOffset);
 
         if (isLastAct) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pixel.h"
+#include "core/basetype.h"
 
 
 namespace gui
@@ -10,14 +10,14 @@ namespace gui
 class RowBound {
 public:
     RowBound() = default;
-    RowBound(Pixel::Raw top, Pixel::Raw height) :m_top(top), m_height(height) {}
-    Pixel::Raw top() const { return m_top; }
-    void setTop(Pixel::Raw top) { m_top = top; }
-    Pixel::Raw height() const { return m_height; }
-    void setHeight(Pixel::Raw height) { m_height = height; }
+    RowBound(i32 top, i32 height) :m_top(top), m_height(height) {}
+    i32 top() const { return m_top; }
+    void setTop(i32 top) { m_top = top; }
+    i32 height() const { return m_height; }
+    void setHeight(i32 height) { m_height = height; }
 private:
-    Pixel::Raw m_top{ 0 };
-    Pixel::Raw m_height{ 0 };
+    i32 m_top{ 0 };
+    i32 m_height{ 0 };
 };
 
 
