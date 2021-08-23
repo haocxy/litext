@@ -42,7 +42,7 @@ TextLoader::~TextLoader()
     decoders_.clear();
 }
 
-static uintmax_t partSize() {
+static i64 partSize() {
 #ifndef NDEBUG
     return SystemUtil::pageSize() * 128;
 #else
@@ -120,18 +120,18 @@ void TextLoader::Reader::readAll()
 
     std::ifstream ifs(docPath_, std::ios::binary);
 
-    const uintmax_t partLen = partSize();
+    const i64 partLen = partSize();
 
-    uintmax_t partLenSum = 0;
+    i64 partLenSum = 0;
 
-    for (uintmax_t partIndex = 0; (!stopping_) && ifs; ++partIndex) {
+    for (i64 partIndex = 0; (!stopping_) && ifs; ++partIndex) {
 
-        const uintmax_t offset = ifs.tellg();
+        const i64 offset = ifs.tellg();
 
         MemBuff readBuff;
         readBuff.reverse(partLen);
         ifs.read(reinterpret_cast<char *>(readBuff.data()), partLen);
-        const uintmax_t gcount = ifs.gcount();
+        const i64 gcount = ifs.gcount();
         readBuff.resize(gcount);
 
         const Charset charset = self_.updateCharset(readBuff);

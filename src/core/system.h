@@ -3,15 +3,16 @@
 #include <cstddef>
 #include <vector>
 
-#include "core/fs.h"
+#include "fs.h"
+#include "basetype.h"
 
 
 namespace SystemUtil
 {
 
-size_t pageSize();
+i32 pageSize();
 
-int processorCount();
+i32 processorCount();
 
 fs::path userHome();
 
@@ -19,10 +20,10 @@ std::vector<fs::path> fonts();
 
 // 屏幕水平方向 DPI
 // 注意：内部实现用到了 QWidget ，所以需要先构造 QApplication
-int screenHorizontalDpi();
+i32 screenHorizontalDpi();
 
 // 屏幕竖直方向 DPI
 // 注意：内部实现用到了 QWidget ，所以需要先构造 QApplication
-int screenVerticalDpi();
+i32 screenVerticalDpi();
 
 }

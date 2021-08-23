@@ -11,7 +11,7 @@
 namespace charset
 {
 
-std::u32string toUTF32(Charset srcCharset, const void *data, i32 nbytes)
+std::u32string toUTF32(Charset srcCharset, const void *data, i64 nbytes)
 {
     QTextCodec *codec = QTextCodec::codecForName(CharsetUtil::charsetToStr(srcCharset));
     if (!codec) {

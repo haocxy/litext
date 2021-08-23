@@ -26,11 +26,11 @@ public:
 		init();
 	}
 
-	size_t pageSize() const {
+	i32 pageSize() const {
 		return pageSize_;
 	}
 
-	int procCount() const {
+	i32 procCount() const {
 		return procCount_;
 	}
 
@@ -41,19 +41,19 @@ private:
 		SYSTEM_INFO systemInfo;
 		std::memset(&systemInfo, 0, sizeof(systemInfo));
 		GetSystemInfo(&systemInfo);
-		pageSize_ = systemInfo.dwPageSize;
-		procCount_ = systemInfo.dwNumberOfProcessors;
+		pageSize_ = static_cast<i32>(systemInfo.dwPageSize);
+		procCount_ = static_cast<i32>(systemInfo.dwNumberOfProcessors);
 	}
 #else
 	void init() {
-		pageSize_ = sysconf(_SC_PAGE_SIZE);
-		procCount_ = get_nprocs();
+		pageSize_ = static_cast<i32>(sysconf(_SC_PAGE_SIZE));
+		procCount_ = static_cast<i32>(get_nprocs());
 	}
 #endif
 
 private:
-	size_t pageSize_ = 0;
-	int procCount_ = 0;
+	i32 pageSize_ = 0;
+	i32 procCount_ = 0;
 };
 
 static const Initer g_initer;
@@ -86,12 +86,12 @@ static fs::path userHomeForNotWindows() {
 namespace SystemUtil
 {
 
-size_t pageSize()
+i32 pageSize()
 {
 	return g_initer.pageSize();
 }
 
-int processorCount() {
+i32 processorCount() {
 	return g_initer.procCount();
 }
 
@@ -192,7 +192,7 @@ std::vector<fs::path> fonts()
 #endif
 }
 
-int screenHorizontalDpi()
+i32 screenHorizontalDpi()
 {
     // 利用 QWidget 的成员函数获取屏幕水平方向 DPI
     // 定义一个子类是因为要用的函数是 protected 的
@@ -200,8 +200,8 @@ int screenHorizontalDpi()
     public:
         virtual ~Widget() {}
 
-        int screenHorizontalDpi() const {
-            return physicalDpiX();
+        i32 screenHorizontalDpi() const {
+            return static_cast<i32>(physicalDpiX());
         }
     };
 
@@ -210,7 +210,7 @@ int screenHorizontalDpi()
     return widget.screenHorizontalDpi();
 }
 
-int screenVerticalDpi()
+i32 screenVerticalDpi()
 {
     // 利用 QWidget 的成员函数获取屏幕竖直方向 DPI
     // 定义一个子类是因为要用的函数是 protected 的
@@ -218,8 +218,8 @@ int screenVerticalDpi()
     public:
         virtual ~Widget() {}
 
-        int screenVerticalDpi() const {
-            return physicalDpiY();
+        i32 screenVerticalDpi() const {
+            return static_cast<i32>(physicalDpiY());
         }
     };
 

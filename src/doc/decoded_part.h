@@ -15,27 +15,27 @@ public:
     DecodedPart()
         : content_(std::make_shared<std::u32string>()) {}
 
-    uintmax_t fileSize() const {
+    i64 fileSize() const {
         return fileSize_;
     }
 
-    void setFileSize(uintmax_t fileSize) {
+    void setFileSize(i64 fileSize) {
         fileSize_ = fileSize;
     }
 
-    uintmax_t byteOffset() const {
+    i64 byteOffset() const {
         return byteOffset_;
     }
 
-    void setByteOffset(uintmax_t byteOffset) {
+    void setByteOffset(i64 byteOffset) {
         byteOffset_ = byteOffset;
     }
 
-    uintmax_t partSize() const {
+    i64 partSize() const {
         return partSize_;
     }
 
-    void setPartSize(uintmax_t partSize) {
+    void setPartSize(i64 partSize) {
         partSize_ = partSize;
     }
 
@@ -60,7 +60,7 @@ private:
     i64 byteOffset_ = 0;
     i64 partSize_ = 0;
     bool isLast_ = false;
-    std::shared_ptr<std::u32string> content_;
+    sptr<std::u32string> content_;
 };
 
 

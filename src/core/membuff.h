@@ -11,9 +11,9 @@ public:
 
     MemBuff() {}
 
-    explicit MemBuff(i32 capacity) { reverse(capacity); }
+    explicit MemBuff(i64 capacity) { reverse(capacity); }
 
-    MemBuff(const void *buff, i32 len) { write(buff, len); }
+    MemBuff(const void *buff, i64 len) { write(buff, len); }
 
     MemBuff(const MemBuff &b) {
         write(b.data(), b.size());
@@ -59,29 +59,29 @@ public:
 
     void *data() { return beg_; }
 
-    i32 size() const { return size_; }
+    i64 size() const { return size_; }
 
-    void resize(i32 len);
+    void resize(i64 len);
 
-    i32 read(i32 offset, void *to, i32 len) const;
+    i64 read(i64 offset, void *to, i64 len) const;
 
-    i32 read(void *to, i32 len) const { return read(0, to, len); }
+    i64 read(void *to, i64 len) const { return read(0, to, len); }
 
-    i32 remove(i32 offset, i32 len);
+    i64 remove(i64 offset, i64 len);
 
-    i32 popFront(i32 len) {
+    i64 popFront(i64 len) {
         return remove(0, len);
     }
 
-    i32 take(i32 offset, void *to, i32 len);
+    i64 take(i64 offset, void *to, i64 len);
 
-    void write(i32 offset, const void *data, i32 len);
+    void write(i64 offset, const void *data, i64 len);
 
-    void write(const void *data, i32 len) { write(0, data, len); }
+    void write(const void *data, i64 len) { write(0, data, len); }
 
-    void reverse(i32 len) { ensureCapacity(len); }
+    void reverse(i64 len) { ensureCapacity(len); }
 
-    void append(const void *from, i32 len);
+    void append(const void *from, i64 len);
 
 private:
     using byte = unsigned char;
@@ -89,22 +89,22 @@ private:
     static_assert(sizeof(unsigned char) == 1);
     static_assert(sizeof(byte) == 1);
 
-    static i32 calcRealNewCapacity(
-        i32 curCapacity,
-        i32 newCapacity);
+    static i64 calcRealNewCapacity(
+        i64 curCapacity,
+        i64 newCapacity);
 
-    void ensureCapacity(i32 required) {
+    void ensureCapacity(i64 required) {
         if (capacity_ >= required) {
             return;
         }
         realloc(calcRealNewCapacity(capacity_, required));
     }
 
-    void realloc(i32 newcapacity);
+    void realloc(i64 newcapacity);
 
 private:
     byte *beg_ = nullptr;
-    i32 size_ = 0;
-    i32 capacity_ = 0;
+    i64 size_ = 0;
+    i64 capacity_ = 0;
 };
 
