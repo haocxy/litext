@@ -74,6 +74,7 @@ void LineManager::onPartDecoded(const DecodedPart &e)
         DocPart info;
         info.rowRange().setLen(text::countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
+        info.setIsLast(e.isLast());
         LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
         updatePartInfo(info, e.fileSize());
     });

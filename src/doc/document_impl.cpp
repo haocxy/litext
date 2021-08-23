@@ -33,6 +33,9 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 
     sigConns_ += lineManager_.sigLoadProgress().connect([this](const LoadProgress &e) {
         sigLoadProgress_(e);
+        if (e.done()) {
+            sigAllLoaded_();
+        }
     });
 
     LOGD << "Document::Document() end, path: [" << path_ << "]";

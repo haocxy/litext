@@ -69,7 +69,7 @@ bool skipRow(Charset charset, std::istream &in, MemBuff &buff, i32 bytesLimit)
     bytes skiped;
     const bool result = skipRow(in, charset, skiped, bytesLimit);
     if (!skiped.empty()) {
-        buff.append(skiped.data(), skiped.size());
+        buff.append(skiped.data(), static_cast<i32>(skiped.size()));
     }
     return result;
 }
