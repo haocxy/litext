@@ -88,7 +88,8 @@ public:
     }
 
 private:
-    int getMaxShownLineCnt() const;
+    void setSize(const Size &size);
+    int calcMaxShownLineCnt() const;
 
     LineBound getLineBoundByLineOffset(i32 lineOffset) const;
     LineBound getLineBound(const VLineLoc &lineLoc) const;
@@ -140,6 +141,10 @@ private:
     ViewLoc vloc_{ 0, 0 };
 
     Size size_;
+
+    // 最多可显式的行的数量，包括最后的不能完整显式的行
+    // 这个值仅取决于视口大小，和文档位置无关
+    i32 lineCountLimit_ = 0;
 
     Page page_;
 

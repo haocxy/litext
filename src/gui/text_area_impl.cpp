@@ -52,7 +52,18 @@ void TextArea::resize(const Size & size)
     sigShouldRepaint_();
 }
 
-int TextArea::getMaxShownLineCnt() const
+void TextArea::setSize(const Size &size)
+{
+    if (size_ == size) {
+        return;
+    }
+
+    size_ = size;
+
+    lineCountLimit_ = calcMaxShownLineCnt();
+}
+
+int TextArea::calcMaxShownLineCnt() const
 {
     const i32 lineHeight = config_.lineHeight();
     return (size_.height() + lineHeight - 1) / lineHeight;
@@ -277,8 +288,6 @@ void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
 
 bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 {
-	const int maxShownLineCnt = getMaxShownLineCnt();
-
 	const int rowCnt = page_.size();
 
 	// 没有内容则返回
@@ -304,7 +313,7 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 
 	const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
 
-	const int lineIndex = maxShownLineCnt - prevLineCnt - 1;
+	const int lineIndex = lineCountLimit_ - prevLineCnt - 1;
 
 	if (isLastLineOfRow(VLineLoc(rowCnt - 1, lineIndex)))
 	{
@@ -325,14 +334,12 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
 
 void TextArea::removeSpareRow()
 {
-    const int maxShownLineCnt = getMaxShownLineCnt();
-
     int remainLineCnt = page_.lineCnt() - vloc_.line();
 
     for (int r = page_.size() - 1; r >= 0; --r)
     {
         remainLineCnt -= page_[r].size();
-        if (remainLineCnt >= maxShownLineCnt)
+        if (remainLineCnt >= lineCountLimit_)
         {
             page_.popBack();
         }
@@ -642,17 +649,15 @@ void TextArea::remakePage()
 
     const RowN rowCnt = editor_.doc().rowCnt();
 
-    const int shownLineCnt = getMaxShownLineCnt();
-
     const int lineDelta = -vloc_.line();
 
-    const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), shownLineCnt);
+    const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_);
 
     std::map<RowN, Row> rows = editor_.doc().rowsAt(range);
 
     int h = lineDelta;
     for (RowN row = range.left(); row <= range.right(); ++row) {
-        if (h >= shownLineCnt) {
+        if (h >= lineCountLimit_) {
             break;
         }
 
@@ -710,16 +715,14 @@ VLineLoc TextArea::getShownLastLineLoc() const
 
 	const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
 
-	const int maxShownLineCnt = getMaxShownLineCnt();
-
-	if (page_.lineCnt() - vloc_.line() < maxShownLineCnt)
+	if (page_.lineCnt() - vloc_.line() < lineCountLimit_)
 	{
 		const int lastLineIndex = page_.lineCnt() - vloc_.line() - prevLineCnt - 1;
 		return VLineLoc(page_.size() - 1, lastLineIndex);
 	}
 	else
 	{
-		const int lastLineIndex = getMaxShownLineCnt() - prevLineCnt - 1;
+		const int lastLineIndex = lineCountLimit_ - prevLineCnt - 1;
 		return VLineLoc(page_.size() - 1, lastLineIndex);
 	}
 }
