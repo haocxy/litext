@@ -1,6 +1,7 @@
 #include "status_bar_widget.h"
 
 #include <cassert>
+#include <algorithm>
 
 #include <QPainter>
 
@@ -24,6 +25,18 @@ enum {
 namespace gui::qt
 {
 
+static i64 loadPercent(const doc::LoadProgress &p) {
+    if (p.done()) {
+        return 100;
+    }
+
+    const i64 total = p.totalByteCount();
+    if (total <= 0) {
+        return 100;
+    }
+
+    return p.loadedByteCount() * 100 / total;
+}
 
 StatusBarWidget::StatusBarWidget(TextArea &textArea)
 	: textArea_(textArea)
@@ -42,13 +55,8 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
     });
 
-    sigConns_ += doc.sigPartLoaded().connect([this](const doc::DecodedPart &progress) {
-        const i64 off = progress.byteOffset();
-        if (off > maxOffset_) {
-            maxOffset_ = off;
-            const int percent = progress.fileSize() == 0 ? 100 : (off + progress.partSize()) * 100 / progress.fileSize();
-            emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", percent));
-        }
+    sigConns_ += doc.sigLoadProgress().connect([this](const doc::LoadProgress &p) {
+        emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", loadPercent(p)));
     });
 
     sigConns_ += doc.sigAllLoaded().connect([this]{

@@ -13,6 +13,7 @@
 #include "core/thread.h"
 #include "core/idgen.h"
 #include "decoded_part.h"
+#include "load_progress.h"
 #include "text_repo.h"
 #include "text_loader.h"
 #include "row_index.h"
@@ -28,8 +29,8 @@ public:
 
     ~LineManager();
 
-    Signal<void(const DecodedPart &)> &sigPartDecoded() {
-        return sigPartDecoded_;
+    Signal<void(const LoadProgress &)> &sigLoadProgress() {
+        return sigLoadProgress_;
     }
 
     Signal<void(RowN)> &sigRowCountUpdated() {
@@ -66,16 +67,16 @@ private:
 
     void onPartDecoded(const DecodedPart &e);
 
-    RowN updatePartInfo(const DocPart &info);
+    RowN updatePartInfo(const DocPart &info, i64 totalByteCount);
 
     // 更新段偏移信息
     // 多线程加载导致各个片段不是完全有序的，但总体上是有序的
     // 所以每次加载完一个片段后检查下这个片段前的片段是否都加载完成
     // 如果这个片段的前面都加载完成，或者因为这一片段的完成使得位置在其后却先加载的先片段明确了段偏移，则更新它门段偏移
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
-    void updateRowOff(const DocPart &info);
+    void updateRowOff(const DocPart &info, i64 totalByteCount);
 
-    void onRowOffDetected(DocPart &info);
+    void onRowOffDetected(DocPart &info, i64 totalByteCount);
 
     std::optional<RowIndex> queryRowIndex(RowN row) const;
 
@@ -86,7 +87,7 @@ private:
     
     SigConns sigConns_;
     Signal<void(RowN)> sigRowCountUpdated_;
-    Signal<void(const DecodedPart &)> sigPartDecoded_;
+    Signal<void(const LoadProgress &)> sigLoadProgress_;
 
 private:
     IdGen<PartId> idGen_{ 1 };

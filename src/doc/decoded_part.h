@@ -39,6 +39,14 @@ public:
         partSize_ = partSize;
     }
 
+    bool isLast() const {
+        return isLast_;
+    }
+
+    void setIsLast(bool isLast) {
+        isLast_ = isLast;
+    }
+
     const std::u32string &utf32content() const {
         return *content_;
     }
@@ -51,6 +59,7 @@ private:
     i64 fileSize_ = 0;
     i64 byteOffset_ = 0;
     i64 partSize_ = 0;
+    bool isLast_ = false;
     std::shared_ptr<std::u32string> content_;
 };
 

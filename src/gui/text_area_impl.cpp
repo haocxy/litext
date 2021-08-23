@@ -52,7 +52,7 @@ void TextArea::lookAt(const ViewLoc &loc, const Size &size)
         sigShouldRepaint_();
     } else {
         waitingRange_ = docRange;
-        sigConnForWaitingRange_ += editor_.doc().sigPartLoaded().connect([this](const doc::DecodedPart &e) {
+        sigConnForWaitingRange_ += editor_.doc().sigLoadProgress().connect([this](const doc::LoadProgress &p) {
             // TODO
         });
     }

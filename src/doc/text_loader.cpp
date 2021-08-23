@@ -146,6 +146,7 @@ void TextLoader::Reader::readAll()
         p.off = offset;
         p.filesize = fs::file_size(docPath_);
         p.charset = charset;
+        p.isLast = ifs.eof();
         p.data = std::move(readBuff);
 
         loadingParts_.push(std::move(p));
@@ -207,6 +208,7 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
     e.setFileSize(p.filesize);
     e.setByteOffset(p.off);
     e.setPartSize(p.data.size());
+    e.setIsLast(p.isLast);
     e.setContent(std::move(content));
 
     self_.sigPartDecoded_(e);

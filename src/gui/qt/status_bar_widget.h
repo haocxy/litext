@@ -42,9 +42,6 @@ private:
     QString rowCount_;
 	QString content_;
     SigConns sigConns_;
-    // 因为多线程处理，进度的报告也是乱序的，
-    // 所以需要记录收到的最大偏移量
-    i64 maxOffset_ = -1;
 };
 
 

@@ -42,10 +42,19 @@ public:
         byteRange_ = byteRange;
     }
 
+    bool isLast() const {
+        return isLast_;
+    }
+
+    void setIsLast(bool isLast) {
+        isLast_ = isLast;
+    }
+
 private:
     PartId id_{ 0 };
     RowRange rowRange_;
     ByteRange byteRange_;
+    bool isLast_ = false;
 };
 
 }

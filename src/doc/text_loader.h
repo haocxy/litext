@@ -48,6 +48,7 @@ private:
         i64 off = 0;
         i64 filesize = 0;
         Charset charset = Charset::Unknown;
+        bool isLast = false;
         MemBuff data;
     };
 

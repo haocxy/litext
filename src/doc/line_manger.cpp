@@ -75,24 +75,22 @@ void LineManager::onPartDecoded(const DecodedPart &e)
         info.rowRange().setLen(text::countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
         LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
-        const RowN totalRowCount = updatePartInfo(info);
-        sigRowCountUpdated_(totalRowCount);
-        sigPartDecoded_(e);
+        updatePartInfo(info, e.fileSize());
     });
 }
 
-RowN LineManager::updatePartInfo(const DocPart &info)
+RowN LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
 {
     std::unique_lock<std::mutex> lock(mtx_);
 
     rowCount_ += info.rowRange().count();
 
-    updateRowOff(info);
+    updateRowOff(info, totalByteCount);
 
     return rowCount_;
 }
 
-void LineManager::updateRowOff(const DocPart &info)
+void LineManager::updateRowOff(const DocPart &info, i64 totalByteCount)
 {
     pendingInfos_[info.byteRange().off()] = info;
 
@@ -102,7 +100,7 @@ void LineManager::updateRowOff(const DocPart &info)
             orderedInfos_.push_back(firstPending);
             orderedInfos_.back().rowRange().setOff(0);
             pendingInfos_.erase(pendingInfos_.begin());
-            onRowOffDetected(orderedInfos_.back());
+            onRowOffDetected(orderedInfos_.back(), totalByteCount);
         } else {
             if (orderedInfos_.empty()) {
                 break;
@@ -113,7 +111,7 @@ void LineManager::updateRowOff(const DocPart &info)
                     orderedInfos_.push_back(firstPending);
                     orderedInfos_.back().rowRange().setOff(oldLastRowEnd);
                     pendingInfos_.erase(pendingInfos_.begin());
-                    onRowOffDetected(orderedInfos_.back());
+                    onRowOffDetected(orderedInfos_.back(), totalByteCount);
                 } else {
                     break;
                 }
@@ -122,7 +120,7 @@ void LineManager::updateRowOff(const DocPart &info)
     }
 }
 
-void LineManager::onRowOffDetected(DocPart &i)
+void LineManager::onRowOffDetected(DocPart &i, i64 totalByteCount)
 {
     LOGD << "LineManager::onRowOffDetected"
         << ", part id: [" << i.id() << "]"
@@ -133,6 +131,9 @@ void LineManager::onRowOffDetected(DocPart &i)
 
     i.setId(idGen_.next());
     stmtSavePart_(i);
+
+    sigRowCountUpdated_(rowCount_);
+    sigLoadProgress_(LoadProgress(i.rowRange().end(), i.byteRange().end(), totalByteCount, i.isLast()));
 }
 
 std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const

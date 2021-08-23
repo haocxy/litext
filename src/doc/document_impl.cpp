@@ -31,8 +31,8 @@ DocumentImpl::DocumentImpl(const fs::path &path)
         sigRowCountUpdated_(nrows);
     });
 
-    sigConns_ += lineManager_.sigPartDecoded().connect([this](const DecodedPart &e) {
-        sigPartLoaded_(e);
+    sigConns_ += lineManager_.sigLoadProgress().connect([this](const LoadProgress &e) {
+        sigLoadProgress_(e);
     });
 
     LOGD << "Document::Document() end, path: [" << path_ << "]";
