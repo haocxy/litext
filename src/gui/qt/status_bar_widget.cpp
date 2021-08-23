@@ -56,7 +56,7 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
     });
 
     sigConns_ += doc.sigLoadProgress().connect([this](const doc::LoadProgress &p) {
-        emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", loadPercent(p)));
+        emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", static_cast<int>(loadPercent(p))));
     });
 
     sigConns_ += doc.sigAllLoaded().connect([this]{
