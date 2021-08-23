@@ -14,7 +14,7 @@ public:
         conn_.disconnect();
     }
 
-    void set(boost::signals2::connection &conn) {
+    void set(boost::signals2::connection &&conn) {
         conn_ = std::move(conn);
     }
 
