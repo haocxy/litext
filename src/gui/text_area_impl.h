@@ -142,7 +142,7 @@ private:
 
     using Mtx = std::recursive_mutex;
     mutable Mtx mtx_;
-    using Lock = std::unique_lock<Mtx>;
+    using Lock = std::lock_guard<Mtx>;
 
     ViewLoc vloc_{ 0, 0 };
 
@@ -151,10 +151,6 @@ private:
     // 最多可显式的行的数量，包括最后的不能完整显式的行
     // 这个值仅取决于视口大小，和文档位置无关
     i32 lineCountLimit_ = 0;
-
-    // 如果试图显式的某段文本未完成加载，则记录等待加载的部分
-    // 加载完成后清除这一信息
-    std::optional<RowRange> waitingRange_;
 
     Page page_;
 

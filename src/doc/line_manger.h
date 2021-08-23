@@ -38,7 +38,7 @@ public:
     }
 
     RowN rowCnt() const {
-        std::unique_lock<std::mutex> lock(mtx_);
+        Lock lock(mtx_);
         return rowCount_;
     }
 
@@ -92,7 +92,9 @@ private:
 private:
     IdGen<PartId> idGen_{ 1 };
 
-    mutable std::mutex mtx_;
+    using Mtx = std::recursive_mutex;
+    mutable Mtx mtx_;
+    using Lock = std::lock_guard<Mtx>;
 
     std::vector<DocPart> orderedInfos_;
 

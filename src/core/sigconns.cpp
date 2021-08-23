@@ -16,6 +16,11 @@ public:
         }
     }
 
+    void set(boost::signals2::connection &&conn) {
+        conns_.clear();
+        conns_.push_back(std::move(conn));
+    }
+
     void add(boost::signals2::connection &&conn) {
         conns_.push_back(std::move(conn));
     }
@@ -42,6 +47,12 @@ SigConns::~SigConns()
 {
     delete impl_;
     impl_ = nullptr;
+}
+
+SigConns &SigConns::operator=(boost::signals2::connection &&conn)
+{
+    impl_->set(std::move(conn));
+    return *this;
 }
 
 SigConns &SigConns::operator+=(boost::signals2::connection &&conn)

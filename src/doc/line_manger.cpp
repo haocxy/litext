@@ -44,7 +44,7 @@ LineManager::~LineManager()
 
 std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range)
 {
-    std::unique_lock<std::mutex> lock(mtx_);
+    Lock lock(mtx_);
 
     const RowN right = range.right();
 
@@ -81,7 +81,7 @@ void LineManager::onPartDecoded(const DecodedPart &e)
 
 RowN LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
 {
-    std::unique_lock<std::mutex> lock(mtx_);
+    Lock lock(mtx_);
 
     rowCount_ += info.rowRange().count();
 

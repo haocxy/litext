@@ -17,6 +17,8 @@ public:
 
     ~SigConns();
 
+    SigConns &operator=(boost::signals2::connection &&conn);
+
     SigConns &operator+=(boost::signals2::connection &&conn);
 
     void clear();

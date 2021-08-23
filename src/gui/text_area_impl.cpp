@@ -42,7 +42,7 @@ void TextArea::lookAt(const ViewLoc &loc, const Size &size)
     Lock lock(mtx_);
 
     vloc_ = loc;
-    vloc_.setRow(10000);
+
     setSize(size);
 
     const RowRange docRange = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_ - vloc_.line());
@@ -51,9 +51,14 @@ void TextArea::lookAt(const ViewLoc &loc, const Size &size)
         updateStableXByCurrentCursor();
         sigShouldRepaint_();
     } else {
-        waitingRange_ = docRange;
-        sigConnForWaitingRange_ += editor_.doc().sigLoadProgress().connect([this](const doc::LoadProgress &p) {
-            // TODO
+        sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this, docRange](const doc::LoadProgress &p) {
+            if (p.loadedRowCount() >= docRange.end()) {
+                Lock lock(mtx_);
+                remakePage();
+                updateStableXByCurrentCursor();
+                sigShouldRepaint_();
+                sigConnForWaitingRange_.clear();
+            }
         });
     }
 }
