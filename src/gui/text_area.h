@@ -1,26 +1,21 @@
 #pragma once
 
-#include <vector>
 #include <optional>
 
 #include "core/signal.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
 
-#include "view_locs.h"
-#include "rect.h"
-#include "vertical_line.h"
-#include "view_define.h"
 #include "size.h"
-#include "line_bound.h"
+#include "rect.h"
+#include "view_locs.h"
 #include "row_bound.h"
+#include "line_bound.h"
+#include "view_define.h"
+#include "vertical_line.h"
 #include "text_area_config.h"
-#include "coordinate_converter.h"
 
 
-
-class Row;
-class DocLoc;
 class Editor;
 
 
