@@ -10,9 +10,9 @@
 namespace doc
 {
 
-class LoadedPart {
+class DecodedPart {
 public:
-    LoadedPart()
+    DecodedPart()
         : content_(std::make_shared<std::u32string>()) {}
 
     uintmax_t fileSize() const {

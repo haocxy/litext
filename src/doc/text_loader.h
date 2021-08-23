@@ -12,7 +12,7 @@
 #include "core/thread.h"
 
 #include "doc_error.h"
-#include "loaded_part.h"
+#include "decoded_part.h"
 
 
 namespace doc
@@ -34,8 +34,8 @@ public:
         return sigCharsetDetected_;
     }
 
-    Signal<void(const LoadedPart &)> &sigPartLoaded() {
-        return sigPartLoaded_;
+    Signal<void(const DecodedPart &)> &sigPartDecoded() {
+        return sigPartDecoded_;
     }
 
     Signal<void()> &sigAllLoaded() {
@@ -102,7 +102,7 @@ private:
 
     Signal<void(DocError)> sigFatalError_;
     Signal<void(Charset)> sigCharsetDetected_;
-    Signal<void(const LoadedPart &)> sigPartLoaded_;
+    Signal<void(const DecodedPart &)> sigPartDecoded_;
     Signal<void()> sigAllLoaded_;
 
     mutable std::mutex mtx_;

@@ -30,8 +30,8 @@ LineManager::LineManager(TextRepo &textRepo, TextLoader &loader)
         workers_.push_back(std::make_unique<Worker>(taskQueue_));
     }
 
-    sigConns_ += loader.sigPartLoaded().connect([this](const doc::LoadedPart &e) {
-        onPartLoaded(e);
+    sigConns_ += loader.sigPartDecoded().connect([this](const DecodedPart &e) {
+        onPartDecoded(e);
     });
 }
 
@@ -66,7 +66,7 @@ std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range)
     return foundRows;
 }
 
-void LineManager::onPartLoaded(const doc::LoadedPart &e)
+void LineManager::onPartDecoded(const DecodedPart &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
@@ -77,7 +77,7 @@ void LineManager::onPartLoaded(const doc::LoadedPart &e)
         LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
         const RowN totalRowCount = updatePartInfo(info);
         sigRowCountUpdated_(totalRowCount);
-        sigPartLoaded_(e);
+        sigPartDecoded_(e);
     });
 }
 

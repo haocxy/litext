@@ -203,13 +203,13 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
 
-    LoadedPart e;
+    DecodedPart e;
     e.setFileSize(p.filesize);
     e.setByteOffset(p.off);
     e.setPartSize(p.data.size());
     e.setContent(std::move(content));
 
-    self_.sigPartLoaded_(e);
+    self_.sigPartDecoded_(e);
 }
 
 }

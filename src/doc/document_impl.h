@@ -34,7 +34,7 @@ public:
         return sigCharsetDetected_;
     }
 
-    Signal<void(const LoadedPart &)> &sigPartLoaded() {
+    Signal<void(const DecodedPart &)> &sigPartLoaded() {
         return sigPartLoaded_;
     }
 
@@ -65,7 +65,7 @@ private:
 
     Signal<void(DocError)> sigFatalError_;
     Signal<void(Charset)> sigCharsetDetected_;
-    Signal<void(const LoadedPart &)> sigPartLoaded_;
+    Signal<void(const DecodedPart &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
     Signal<void(RowN nrows)> sigRowCountUpdated_;
 };

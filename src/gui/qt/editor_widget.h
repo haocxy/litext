@@ -5,7 +5,7 @@
 
 #include "core/fs.h"
 #include "core/sigconns.h"
-#include "doc/loaded_part.h"
+#include "doc/decoded_part.h"
 #include "doc/simple_doc.h"
 #include "editor/editor.h"
 #include "gui/text_area.h"

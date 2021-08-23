@@ -8,7 +8,7 @@
 
 #include "doc_error.h"
 #include "doc_row.h"
-#include "loaded_part.h"
+#include "decoded_part.h"
 
 
 namespace doc
@@ -28,7 +28,7 @@ public:
 
     Signal<void(Charset)> &sigCharsetDetected();
 
-    Signal<void(const LoadedPart &)> &sigPartLoaded();
+    Signal<void(const DecodedPart &)> &sigPartLoaded();
 
     Signal<void()> &sigAllLoaded();
 

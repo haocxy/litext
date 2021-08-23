@@ -5,6 +5,7 @@
 #include <deque>
 #include <bitset>
 #include <optional>
+#include <mutex>
 
 #include "core/signal.h"
 #include "core/sigconns.h"
@@ -41,8 +42,6 @@ public:
     ~TextArea();
 
     void start();
-
-public:
 
     void resize(const Size &size);
 
@@ -88,7 +87,10 @@ public:
     }
 
 private:
+    void lookAt(const ViewLoc &loc, const Size &size);
+
     void setSize(const Size &size);
+
     int calcMaxShownLineCnt() const;
 
     LineBound getLineBoundByLineOffset(i32 lineOffset) const;
@@ -138,6 +140,10 @@ private:
     TextAreaConfig config_;
     const CoordinateConverter cvt_;
 
+    using Mtx = std::recursive_mutex;
+    mutable Mtx mtx_;
+    using Lock = std::unique_lock<Mtx>;
+
     ViewLoc vloc_{ 0, 0 };
 
     Size size_;
@@ -145,6 +151,10 @@ private:
     // 最多可显式的行的数量，包括最后的不能完整显式的行
     // 这个值仅取决于视口大小，和文档位置无关
     i32 lineCountLimit_ = 0;
+
+    // 如果试图显式的某段文本未完成加载，则记录等待加载的部分
+    // 加载完成后清除这一信息
+    std::optional<RowRange> waitingRange_;
 
     Page page_;
 
@@ -159,6 +169,7 @@ private:
 
 private:
     SigConns editorSigConns_;
+    SigConns sigConnForWaitingRange_;
 };
 
 

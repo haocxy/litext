@@ -37,14 +37,36 @@ void TextArea::start()
     editor_.start();
 }
 
-void TextArea::resize(const Size & size)
+void TextArea::lookAt(const ViewLoc &loc, const Size &size)
 {
-    if (size_ == size)
-    {
+    Lock lock(mtx_);
+
+    vloc_ = loc;
+    vloc_.setRow(10000);
+    setSize(size);
+
+    const RowRange docRange = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_ - vloc_.line());
+    if (editor_.doc().rowCnt() >= docRange.end()) {
+        remakePage();
+        updateStableXByCurrentCursor();
+        sigShouldRepaint_();
+    } else {
+        waitingRange_ = docRange;
+        sigConnForWaitingRange_ += editor_.doc().sigPartLoaded().connect([this](const doc::DecodedPart &e) {
+            // TODO
+        });
+    }
+}
+
+void TextArea::resize(const Size &size)
+{
+    lookAt(vloc_, size);
+    return;
+    if (size_ == size) {
         return;
     }
 
-    size_ = size;
+    setSize(size);
 
     remakePage();
 

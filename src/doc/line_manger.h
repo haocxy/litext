@@ -12,7 +12,7 @@
 #include "core/sigconns.h"
 #include "core/thread.h"
 #include "core/idgen.h"
-#include "loaded_part.h"
+#include "decoded_part.h"
 #include "text_repo.h"
 #include "text_loader.h"
 #include "row_index.h"
@@ -28,8 +28,8 @@ public:
 
     ~LineManager();
 
-    Signal<void(const LoadedPart &)> &sigPartLoaded() {
-        return sigPartLoaded_;
+    Signal<void(const DecodedPart &)> &sigPartDecoded() {
+        return sigPartDecoded_;
     }
 
     Signal<void(RowN)> &sigRowCountUpdated() {
@@ -64,7 +64,7 @@ private:
         std::atomic_bool stopping_{ false };
     };
 
-    void onPartLoaded(const doc::LoadedPart &e);
+    void onPartDecoded(const DecodedPart &e);
 
     RowN updatePartInfo(const DocPart &info);
 
@@ -86,7 +86,7 @@ private:
     
     SigConns sigConns_;
     Signal<void(RowN)> sigRowCountUpdated_;
-    Signal<void(const LoadedPart &)> sigPartLoaded_;
+    Signal<void(const DecodedPart &)> sigPartDecoded_;
 
 private:
     IdGen<PartId> idGen_{ 1 };
