@@ -165,7 +165,7 @@ private:
 
 private:
     SigConns editorSigConns_;
-    SigConns sigConnForWaitingRange_;
+    SigConn sigConnForWaitingRange_;
 };
 
 

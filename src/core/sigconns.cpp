@@ -6,6 +6,26 @@
 namespace detail
 {
 
+class SigConnImpl {
+public:
+    SigConnImpl() {}
+
+    ~SigConnImpl() {
+        conn_.disconnect();
+    }
+
+    void set(boost::signals2::connection &conn) {
+        conn_ = std::move(conn);
+    }
+
+    void disconnect() {
+        conn_.disconnect();
+    }
+
+private:
+    boost::signals2::connection conn_;
+};
+
 class SigConnsImpl {
 public:
     SigConnsImpl() {}
@@ -14,11 +34,6 @@ public:
         for (boost::signals2::connection &conn : conns_) {
             conn.disconnect();
         }
-    }
-
-    void set(boost::signals2::connection &&conn) {
-        conns_.clear();
-        conns_.push_back(std::move(conn));
     }
 
     void add(boost::signals2::connection &&conn) {
@@ -49,12 +64,6 @@ SigConns::~SigConns()
     impl_ = nullptr;
 }
 
-SigConns &SigConns::operator=(boost::signals2::connection &&conn)
-{
-    impl_->set(std::move(conn));
-    return *this;
-}
-
 SigConns &SigConns::operator+=(boost::signals2::connection &&conn)
 {
     impl_->add(std::move(conn));
@@ -64,3 +73,29 @@ SigConns &SigConns::operator+=(boost::signals2::connection &&conn)
 void SigConns::clear() {
     impl_->clear();
 }
+
+SigConn::SigConn()
+    : impl_(new detail::SigConnImpl)
+{
+}
+
+SigConn::~SigConn()
+{
+    delete impl_;
+    impl_ = nullptr;
+}
+
+SigConn &SigConn::operator=(boost::signals2::connection &&conn)
+{
+    impl_->set(std::move(conn));
+    return *this;
+}
+
+void SigConn::disconnect()
+{
+    impl_->disconnect();
+}
+
+
+
+

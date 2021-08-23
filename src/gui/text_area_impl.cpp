@@ -50,6 +50,7 @@ void TextArea::lookAt(const ViewLoc &loc, const Size &size)
         remakePage();
         updateStableXByCurrentCursor();
         sigShouldRepaint_();
+        sigConnForWaitingRange_.disconnect();
     } else {
         sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this, docRange](const doc::LoadProgress &p) {
             if (p.loadedRowCount() >= docRange.end()) {
@@ -57,7 +58,7 @@ void TextArea::lookAt(const ViewLoc &loc, const Size &size)
                 remakePage();
                 updateStableXByCurrentCursor();
                 sigShouldRepaint_();
-                sigConnForWaitingRange_.clear();
+                sigConnForWaitingRange_.disconnect();
             }
         });
     }
