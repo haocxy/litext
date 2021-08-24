@@ -13,6 +13,8 @@
 #include "gui/text_area_config.h"
 #include "doc/dbfiles.h"
 
+#include "cmdopt.h"
+
 
 static void useDrawText()
 {
@@ -82,6 +84,17 @@ int entry(int argc, char *argv[])
     try {
 
         doc::dbfiles::removeUselessDbFiles();
+
+        CmdOpt cmdOpt(argc, argv);
+        if (cmdOpt.needHelp()) {
+            cmdOpt.help(std::cout);
+            return 0;
+        }
+
+        const std::vector<doc::OpenInfo> &files = cmdOpt.files();
+        for (const doc::OpenInfo &e : files) {
+            LOGI << "open info: file [" << e.file() << "], row [" << e.row() << "]";
+        }
 
         QApplication app(argc, argv);
 

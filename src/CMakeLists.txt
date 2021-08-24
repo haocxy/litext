@@ -17,7 +17,7 @@ set(CMAKE_AUTOMOC ON)
 
 
 find_package(Boost 1.76 REQUIRED
-    COMPONENTS filesystem)
+    COMPONENTS filesystem program_options)
 
 if(NOT MSVC)
     find_package(Fontconfig REQUIRED)
