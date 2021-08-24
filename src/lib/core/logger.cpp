@@ -176,6 +176,11 @@ static std::string makeContent(logger::Level level, const LogDebugInfo &info, co
 
 static std::mutex g_writeLogMutex;
 
+static bool isConsole(const FILE *f)
+{
+    return true; // TODO
+}
+
 void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &content) {
     std::string data = makeContent(level, info, content);
 
@@ -193,7 +198,11 @@ void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &
 
     // 不管是否配置了有效的文件输出，都会检查是否设置了输出到标准输出或调试器
     if (gShouldWriteToStdout) {
-        std::fwrite(data.data(), 1, data.size(), stdout);
+        std::FILE *stdo = stdout;
+        std::fwrite(data.data(), 1, data.size(), stdo);
+        if (isConsole(stdo)) {
+            std::fflush(stdo);
+        }
     } else {
 #ifdef WIN32
         if (gHasWindowsDebuger) {
