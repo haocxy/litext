@@ -61,8 +61,6 @@ set(deps
     ${Boost_LIBRARIES}
 )
 
-
-
 if(NOT MSVC)
     list(APPEND deps dl)
     list(APPEND deps ${Fontconfig_LIBRARIES})
@@ -71,3 +69,10 @@ endif()
 target_link_libraries(notesharp
     ${deps}
 )
+
+# 为Windows平台增加命令行启动方式的程序，便于通过命令行调试
+if(MSVC)
+    add_executable(notesharpcmd ${src_files})
+    target_compile_definitions(notesharpcmd PRIVATE NOTESHARP_WINDOWS_CONSOLE)
+    target_link_libraries(notesharpcmd ${deps})
+endif()

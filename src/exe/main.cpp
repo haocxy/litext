@@ -1,10 +1,14 @@
-#ifdef WIN32
+#if defined(WIN32) && (!defined(NOTESHARP_WINDOWS_CONSOLE))
+#define NOTESHARP_ENTRY_WINDOWS_GUI
+#endif
+
+#if defined(NOTESHARP_ENTRY_WINDOWS_GUI)
 #include <Windows.h>
 #endif
 
 int entry(int argc, char *argv[]);
 
-#ifdef WIN32
+#if defined(NOTESHARP_ENTRY_WINDOWS_GUI)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     return entry(__argc, __argv);
 }
