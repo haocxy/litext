@@ -54,10 +54,15 @@ public:
         return logLevel_;
     }
 
+    bool shouldLogToStdout() const {
+        return varmap_.count("stdout") != 0;
+    }
+
 private:
     void addOptions(boost::program_options::options_description_easy_init &add) {
         add("help,h", "Show this message");
         add("loglevel", po::value<std::string>(&logLevel_), "Set Log Level");
+        add("stdout", "Log will be also written to stdout");
     }
 
     static bool isNum(const std::string &s) {
@@ -146,4 +151,9 @@ const std::vector<doc::OpenInfo> &CmdOpt::files() const
 const std::string CmdOpt::logLevel() const
 {
     return impl_->logLevel();
+}
+
+bool CmdOpt::shouldLogToStdout() const
+{
+    return impl_->shouldLogToStdout();
 }

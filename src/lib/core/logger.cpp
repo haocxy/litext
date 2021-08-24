@@ -123,6 +123,11 @@ static const bool DefaultAlwaysFlush = false;
 
 static bool gAlwaysFlush = DefaultAlwaysFlush;
 
+static bool gShouldWriteToStdout = false;
+
+#ifdef WIN32
+static bool gHasWindowsDebuger = false;
+#endif
 
 static bool shouldFlush(logger::Level level) {
     if (gAlwaysFlush) {
@@ -184,22 +189,19 @@ void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &
         if (shouldFlush(level)) {
             g_writer->flush();
         }
-    } else {
-#ifndef WIN32
+    }
+
+    // 不管是否配置了有效的文件输出，都会尝试输出到标准输出或调试器
+    // 这是为了确保在需要时有个足够方便的日志输出途径
+    if (gShouldWriteToStdout) {
         std::fwrite(data.data(), 1, data.size(), stdout);
-#endif
-    }
-
+    } else {
 #ifdef WIN32
-    if (IsDebuggerPresent()) {
-        OutputDebugStringA(data.c_str());
-    }
-#else
-
-#ifndef NDEBUG
-    std::fwrite(data.data(), 1, data.size(), stdout);
- #endif
+        if (gHasWindowsDebuger) {
+            OutputDebugStringA(data.c_str());
+        }
 #endif
+    }
 }
 
 void LogLine::printPath(const fs::path &p) {
@@ -236,6 +238,12 @@ void init(const Option &opt) {
     }
 
     gAlwaysFlush = opt.isAlwaysFlush();
+
+    gShouldWriteToStdout = opt.shouldWriteToStdout();
+
+#ifdef WIN32
+    gHasWindowsDebuger = IsDebuggerPresent();
+#endif
 }
 
 static Level toLevel(const std::string &str) {

@@ -23,6 +23,8 @@ public:
 
     const std::string logLevel() const;
 
+    bool shouldLogToStdout() const;
+
 private:
     CmdOptImpl *impl_ = nullptr;
 };

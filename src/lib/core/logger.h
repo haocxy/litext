@@ -99,11 +99,20 @@ public:
         alwaysFlush_ = alwaysFlush;
     }
 
+    bool shouldWriteToStdout() const {
+        return writeToStdout_;
+    }
+
+    void setWriteToStdout(bool writeToStdout) {
+        writeToStdout_ = writeToStdout;
+    }
+
 private:
     Level level_ = Level::Info;
     fs::path dir_;
     std::string basename_;
     bool alwaysFlush_ = false;
+    bool writeToStdout_ = false;
 };
 
 void init(const Option &opt);

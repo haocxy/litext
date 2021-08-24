@@ -96,6 +96,7 @@ int entry(int argc, char *argv[])
         logOpt.setDir("./tmp/log");
         logOpt.setBasename("notesharplog");
         logOpt.setAlwaysFlush(true);
+        logOpt.setWriteToStdout(cmdOpt.shouldLogToStdout());
         logger::control::init(logOpt);
 
         // 删除无用的由程序创建的辅助文件
