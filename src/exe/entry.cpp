@@ -83,13 +83,23 @@ int entry(int argc, char *argv[])
 {
     try {
 
-        doc::dbfiles::removeUselessDbFiles();
-
+        // 解析程序命令行参数
         CmdOpt cmdOpt(argc, argv);
         if (cmdOpt.needHelp()) {
             cmdOpt.help(std::cout);
             return 0;
         }
+
+        // 初始化日志模块
+        logger::control::Option logOpt;
+        logOpt.setLevel(cmdOpt.logLevel());
+        logOpt.setDir("./tmp/log");
+        logOpt.setBasename("notesharplog");
+        logOpt.setAlwaysFlush(true);
+        logger::control::init(logOpt);
+
+        // 删除无用的由程序创建的辅助文件
+        doc::dbfiles::removeUselessDbFiles();
 
         const std::vector<doc::OpenInfo> &files = cmdOpt.files();
         for (const doc::OpenInfo &e : files) {
@@ -103,13 +113,6 @@ int entry(int argc, char *argv[])
         // 虽然没有看 Qt 的内部实现，但猜测是由于某种延迟加载的机制导致的，
         // 所以解决办法就是在窗口显示前提前使用这个函数（注意，绘制的文本不能为空字符串）
         useDrawText();
-
-        logger::control::Option logOpt;
-        logOpt.setLevel("all");
-        logOpt.setDir("./tmp/log");
-        logOpt.setBasename("notesharplog");
-        logOpt.setAlwaysFlush(true);
-        logger::control::init(logOpt);
 
         gui::Config config;
         const font::FontIndex fontIndex = selectFont();

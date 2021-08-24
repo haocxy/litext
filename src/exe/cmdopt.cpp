@@ -7,11 +7,14 @@
 
 #include <boost/program_options.hpp>
 
+namespace
+{
+namespace po = boost::program_options;
+}
 
 class CmdOptImpl {
 public:
     CmdOptImpl(int argc, char *argv[]) {
-        namespace po = boost::program_options;
         using strvec = std::vector<std::string>;
 
         std::vector<std::string> posArgs;
@@ -38,7 +41,7 @@ public:
         return hasError_ || varmap_.count("help") != 0;
     }
 
-    void help(std::ostream &out) {
+    void help(std::ostream &out) const {
         out << "Help:" << std::endl;
         out << desc_ << std::endl;
     }
@@ -47,9 +50,14 @@ public:
         return files_;
     }
 
+    const std::string &logLevel() const {
+        return logLevel_;
+    }
+
 private:
     void addOptions(boost::program_options::options_description_easy_init &add) {
         add("help,h", "Show this message");
+        add("loglevel", po::value<std::string>(&logLevel_), "Set Log Level");
     }
 
     static bool isNum(const std::string &s) {
@@ -106,6 +114,7 @@ private:
     boost::program_options::variables_map varmap_;
     bool hasError_ = false;
     std::vector<doc::OpenInfo> files_;
+    std::string logLevel_;
 };
 
 CmdOpt::CmdOpt(int argc, char *argv[])
@@ -129,7 +138,12 @@ void CmdOpt::help(std::ostream &out) const
     impl_->help(out);
 }
 
-const std::vector<doc::OpenInfo> &CmdOpt::files()
+const std::vector<doc::OpenInfo> &CmdOpt::files() const
 {
     return impl_->files();
+}
+
+const std::string CmdOpt::logLevel() const
+{
+    return impl_->logLevel();
 }

@@ -19,7 +19,9 @@ public:
 
     void help(std::ostream &out) const;
 
-    const std::vector<doc::OpenInfo> &files();
+    const std::vector<doc::OpenInfo> &files() const;
+
+    const std::string logLevel() const;
 
 private:
     CmdOptImpl *impl_ = nullptr;

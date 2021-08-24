@@ -14,9 +14,13 @@
 #include <Windows.h>
 #endif
 
+#ifndef NDEBUG
+static const logger::Level DefaultLogLevel = logger::Level::All;
+#else
+static const logger::Level DefaultLogLevel = logger::Level::Error;
+#endif
 
-// before logger initalized, all log should be recorded
-static logger::Level g_Level = logger::Level::All;
+static logger::Level g_Level = DefaultLogLevel;
 
 static logger::Writer *g_writer = nullptr;
 
@@ -250,7 +254,7 @@ static Level toLevel(const std::string &str) {
     if (str.find("e") == 0 || str.find("E") == 0) {
         return Level::Error;
     }
-    return Level::Info;
+    return DefaultLogLevel;
 }
 
 void Option::setLevel(const std::string &str) {
