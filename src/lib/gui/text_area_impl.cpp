@@ -88,6 +88,22 @@ void TextArea::resize(const Size &size)
     sigShouldRepaint_();
 }
 
+void TextArea::jumpTo(RowN row)
+{
+    Lock lock(mtx_);
+
+    if (!opened_) {
+        return;
+    }
+
+    vloc_.setRow(row);
+    vloc_.setLine(0);
+
+    remakePage();
+
+    sigShouldRepaint_();
+}
+
 RowN TextArea::rowOffset() const
 {
     Lock lock(mtx_);

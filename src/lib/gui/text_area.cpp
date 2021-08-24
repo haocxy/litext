@@ -27,6 +27,11 @@ void TextArea::resize(const Size &size)
     impl_->resize(size);
 }
 
+void TextArea::jumpTo(RowN row)
+{
+    impl_->jumpTo(row);
+}
+
 RowN TextArea::rowOffset() const
 {
     return impl_->rowOffset();

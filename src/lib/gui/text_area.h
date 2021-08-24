@@ -40,6 +40,8 @@ public:
 
     void resize(const Size &size);
 
+    void jumpTo(RowN row);
+
     RowN rowOffset() const;
 
     LineN lineCountLimit() const;
