@@ -16,6 +16,25 @@ public:
         return *this;
     }
 
+    template <typename T1, typename T2>
+    static Range byOffAndLen(T1 off, T2 len) {
+        return Range(off, len);
+    }
+
+    template <typename T1, typename T2>
+    static Range byBegAndEnd(T1 beg, T2 end) {
+        return Range(beg, end - beg);
+    }
+
+    template <typename T1, typename T2>
+    static Range byLeftAndRight(T1 left, T2 right) {
+        return Range(left, right - left + 1);
+    }
+
+    static Range byCount(T count) {
+        return Range(0, count);
+    }
+
     T off() const {
         return off_;
     }
@@ -34,6 +53,19 @@ public:
 
     void setLen(T n) {
         len_ = n;
+    }
+
+    void setEnd(T n) {
+        //    end = off + len
+        // => len = end - off
+        len_ = n - off_;
+    }
+
+    void setRight(T n) {
+        //    right = end - 1
+        // => right = off + len - 1
+        // => len = right + 1 - off
+        len_ = n + 1 - off_;
     }
 
     T beg() const {

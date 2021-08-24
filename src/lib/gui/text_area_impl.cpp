@@ -41,7 +41,7 @@ void TextArea::open(const Size &size, RowN row)
 
     setSize(size);
 
-    const RowRange docRange = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_ - vloc_.line());
+    const RowRange docRange = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_ - vloc_.line());
     if (editor_.doc().rowCnt() >= docRange.end()) {
         remakePage();
         updateStableXByCurrentCursor();
@@ -51,7 +51,10 @@ void TextArea::open(const Size &size, RowN row)
     } else {
         sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this](const doc::LoadProgress &p) {
             // 在加载过程中视口尺寸可能被改变，所以每次都要获取当前的可以显式的行数
-            const RowRange curRange = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_ - vloc_.line());
+            RowRange curRange = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_ - vloc_.line());
+            if (p.done() && p.loadedRowCount() < curRange.end()) {
+                curRange.setEnd(p.loadedRowCount());
+            }
             if (p.loadedRowCount() >= curRange.end()) {
                 Lock lock(mtx_);
                 remakePage();
@@ -684,7 +687,10 @@ void TextArea::remakePage()
 
     const int lineDelta = -vloc_.line();
 
-    const RowRange range = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_);
+    RowRange range = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_);
+    if (rowCnt < range.end()) {
+        range.setEnd(rowCnt);
+    }
 
     std::map<RowN, Row> rows = editor_.doc().rowsAt(range);
 

@@ -150,7 +150,7 @@ private:
 
     // 最多可显式的行的数量，包括最后的不能完整显式的行
     // 这个值仅取决于视口大小，和文档位置无关
-    i32 lineCountLimit_ = 0;
+    i64 lineCountLimit_ = 0;
 
     Page page_;
 
