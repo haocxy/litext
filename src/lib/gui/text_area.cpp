@@ -6,8 +6,8 @@
 namespace gui
 {
 
-TextArea::TextArea(Editor &editor, const TextAreaConfig &config, const Size &size)
-    : impl_(new impl::TextArea(editor, config, size))
+TextArea::TextArea(Editor &editor, const TextAreaConfig &config)
+    : impl_(new impl::TextArea(editor, config))
 {
 }
 
@@ -17,9 +17,9 @@ TextArea::~TextArea()
     impl_ = nullptr;
 }
 
-void TextArea::start()
+void TextArea::open(const Size &size, RowN row)
 {
-    impl_->start();
+    impl_->open(size, row);
 }
 
 void TextArea::resize(const Size &size)

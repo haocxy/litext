@@ -31,11 +31,11 @@ class TextArea;
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
-    TextArea(Editor &editor, const TextAreaConfig &config, const Size &size);
+    TextArea(Editor &editor, const TextAreaConfig &config);
 
     ~TextArea();
 
-    void start();
+    void open(const Size &size, RowN row = 0);
 
     void resize(const Size &size);
 

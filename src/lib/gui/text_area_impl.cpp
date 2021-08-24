@@ -16,10 +16,9 @@
 namespace gui::impl
 {
 
-TextArea::TextArea(Editor &editor, const TextAreaConfig &config, const Size &size)
+TextArea::TextArea(Editor &editor, const TextAreaConfig &config)
     : editor_(editor)
     , config_(config)
-    , size_(size)
     , cvt_(editor_, size_, page_, vloc_, config_)
 {
     editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
@@ -32,7 +31,7 @@ TextArea::~TextArea()
 
 }
 
-void TextArea::start()
+void TextArea::open(const Size &size, RowN row)
 {
     editor_.start();
 }

@@ -13,13 +13,11 @@
 namespace gui::qt
 {
 
-static const int ProgressTotal = 1000000;
-
 EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file)
     : file_(file)
     , doc_(file)
     , editor_(&doc_, file)
-    , textArea_(editor_, textAreaConfig, gui::Size(800, 600))
+    , textArea_(editor_, textAreaConfig)
 {
     doc::Document &document = editor_.document();
 
@@ -52,7 +50,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
 
     setLayout(vlayout);
 
-    textArea_.start();
+    textArea_.open(Size(textAreaWidget_->width(), textAreaWidget_->height()));
 }
 
 EditorWidget::~EditorWidget()

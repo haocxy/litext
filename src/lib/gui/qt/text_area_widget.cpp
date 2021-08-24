@@ -33,12 +33,14 @@ static QImage::Format BuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 namespace gui::qt
 {
 
+static constexpr int DefaultWidth = 800;
+static constexpr int DefaultHeight = 600;
 
 TextAreaWidget::TextAreaWidget(TextArea &textArea)
     : textArea_(textArea)
-    , textPaintBuff_(QSize(textArea_.width(), textArea_.height()), BuffImageFormat)
+    , textPaintBuff_(QSize(DefaultWidth, DefaultHeight), BuffImageFormat)
 {
-    resize(textArea_.width(), textArea_.height());
+    resize(DefaultWidth, DefaultHeight);
 
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
