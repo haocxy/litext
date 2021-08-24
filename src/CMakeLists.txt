@@ -4,6 +4,7 @@ generate_src_file_for_all_assets()
 
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
+
 add_subdirectory(lib)
-add_subdirectory(entry)
+add_subdirectory(exe)
 
