@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <mutex>
 
 #include "core/signal.h"
 #include "doc/doc_define.h"
@@ -38,6 +39,10 @@ public:
     void open(const Size &size, RowN row = 0);
 
     void resize(const Size &size);
+
+    RowN rowOffset() const;
+
+    LineN lineCountLimit() const;
 
     void onPrimaryButtomPress(i32 x, i32 y);
 

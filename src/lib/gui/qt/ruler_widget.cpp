@@ -2,6 +2,8 @@
 
 #include <QPainter>
 
+#include "doc/document.h"
+#include "editor/editor.h"
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
 #include "font_to_qfont.h"
@@ -9,15 +11,14 @@
 
 namespace
 {
-    const QColor kBgColor = QColor(Qt::blue).lighter(190);
-    const QColor kNormalColor = QColor(Qt::gray);
-    const QColor kLastActColor = QColor(Qt::black);
+const QColor kBgColor = QColor(Qt::blue).lighter(190);
+const QColor kNormalColor = QColor(Qt::gray);
+const QColor kLastActColor = QColor(Qt::black);
+const int Margin = 10;
 }
-
 
 namespace gui::qt
 {
-
 
 RulerWidget::RulerWidget(TextArea &textArea)
     : textArea_(textArea)
@@ -26,17 +27,22 @@ RulerWidget::RulerWidget(TextArea &textArea)
     sizePolicy.setHorizontalPolicy(QSizePolicy::Fixed);
     sizePolicy.setVerticalPolicy(QSizePolicy::Expanding);
 
-    setFixedWidth(50);
     setSizePolicy(sizePolicy);
+    setFixedWidth(0);
 
-    connect(this, &RulerWidget::qtSigShouldRepaint, [this] {
-        update();
-    });
+    setFont(fontToQFont(textArea_.config().font()));
+
+    connect(this, &RulerWidget::qtSigUpdateContent, this, &RulerWidget::qtSlotUpdateContent);
+    connect(this, &RulerWidget::qtSigUpdateWidth, this, &RulerWidget::qtSlotUpdateWidth);
+
     textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
-        emit qtSigShouldRepaint();
+        emit qtSigUpdateContent();
     });
     textAreaSigConns_ += textArea_.sigShouldRepaint().connect([this] {
-        emit qtSigShouldRepaint();
+        emit qtSigUpdateContent();
+    });
+    textAreaSigConns_ += textArea_.editor().doc().sigRowCountUpdated().connect([this](RowN row) {
+        emit qtSigUpdateWidth(QString::number(row));
     });
 }
 
@@ -59,8 +65,6 @@ void RulerWidget::paintBackground(QPainter &p)
 
 void RulerWidget::paintLineNum(QPainter &p)
 {
-    const QFont font = fontToQFont(textArea_.config().font());
-    p.setFont(font);
     p.setPen(kNormalColor);
 
     const int32_t lineNumOffset = textArea_.config().lineNumOffset();
@@ -72,7 +76,7 @@ void RulerWidget::paintLineNum(QPainter &p)
             p.setPen(kLastActColor);
         }
 
-        p.drawText(10, baseline, s);
+        p.drawText(Margin, baseline, s);
 
         if (isLastAct) {
             p.setPen(kNormalColor);
@@ -80,6 +84,19 @@ void RulerWidget::paintLineNum(QPainter &p)
     });
 }
 
-
+void RulerWidget::qtSlotUpdateContent()
+{
+    update();
 }
 
+void RulerWidget::qtSlotUpdateWidth(QString placeholder)
+{
+    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * placeholder.size();
+    if (w > width()) {
+        setFixedWidth(w);
+    }
+
+    update();
+}
+
+}

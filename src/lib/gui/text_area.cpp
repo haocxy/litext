@@ -27,6 +27,16 @@ void TextArea::resize(const Size &size)
     impl_->resize(size);
 }
 
+RowN TextArea::rowOffset() const
+{
+    return impl_->rowOffset();
+}
+
+LineN TextArea::lineCountLimit() const
+{
+    return impl_->lineCountLimit();
+}
+
 void TextArea::onPrimaryButtomPress(i32 x, i32 y)
 {
     impl_->onPrimaryButtomPress(x, y);

@@ -37,6 +37,7 @@ namespace gui::impl
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
 class TextArea {
 public:
+
     TextArea(Editor &editor, const TextAreaConfig &config);
 
     ~TextArea();
@@ -44,6 +45,10 @@ public:
     void open(const Size &size, RowN row);
 
     void resize(const Size &size);
+
+    RowN rowOffset() const;
+
+    LineN lineCountLimit() const;
 
     void onPrimaryButtomPress(i32 x, i32 y);
 
@@ -139,8 +144,8 @@ private:
     const CoordinateConverter cvt_;
 
     using Mtx = std::recursive_mutex;
-    mutable Mtx mtx_;
     using Lock = std::lock_guard<Mtx>;
+    mutable Mtx mtx_;
 
     bool opened_ = false;
 
@@ -150,7 +155,7 @@ private:
 
     // 最多可显式的行的数量，包括最后的不能完整显式的行
     // 这个值仅取决于视口大小，和文档位置无关
-    i64 lineCountLimit_ = 0;
+    LineN lineCountLimit_ = 0;
 
     Page page_;
 

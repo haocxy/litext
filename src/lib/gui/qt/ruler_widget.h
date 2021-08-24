@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+#include "core/basetype.h"
 #include "core/sigconns.h"
 #include "gui/declare_text_area.h"
 
@@ -23,10 +24,16 @@ public:
 
 private:
     void paintBackground(QPainter &p);
+
     void paintLineNum(QPainter &p);
 
 signals:
-    void qtSigShouldRepaint();
+    void qtSigUpdateContent();
+    void qtSigUpdateWidth(QString placeholder);
+
+private slots:
+    void qtSlotUpdateContent();
+    void qtSlotUpdateWidth(QString placeholder);
 
 private:
     TextArea &textArea_;
