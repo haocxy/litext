@@ -94,9 +94,8 @@ void RulerWidget::qtSlotUpdateWidth(QString placeholder)
     const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * placeholder.size();
     if (w > width()) {
         setFixedWidth(w);
+        update();
     }
-
-    update();
 }
 
 }
