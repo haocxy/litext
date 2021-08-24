@@ -34,13 +34,10 @@ TextArea::~TextArea()
 void TextArea::open(const Size &size, RowN row)
 {
     editor_.start();
-}
 
-void TextArea::lookAt(const ViewLoc &loc, const Size &size)
-{
     Lock lock(mtx_);
 
-    vloc_ = loc;
+    vloc_ = ViewLoc(row, 0);
 
     setSize(size);
 
@@ -50,28 +47,37 @@ void TextArea::lookAt(const ViewLoc &loc, const Size &size)
         updateStableXByCurrentCursor();
         sigShouldRepaint_();
         sigConnForWaitingRange_.disconnect();
+        opened_ = true;
     } else {
-        sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this, docRange](const doc::LoadProgress &p) {
-            if (p.loadedRowCount() >= docRange.end()) {
+        sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this](const doc::LoadProgress &p) {
+            // 在加载过程中视口尺寸可能被改变，所以每次都要获取当前的可以显式的行数
+            const RowRange curRange = Ranges::byOffAndLen<RowN>(vloc_.row(), lineCountLimit_ - vloc_.line());
+            if (p.loadedRowCount() >= curRange.end()) {
                 Lock lock(mtx_);
                 remakePage();
                 updateStableXByCurrentCursor();
                 sigShouldRepaint_();
                 sigConnForWaitingRange_.disconnect();
+                opened_ = true;
             }
+            // TODO 没有处理文档段落数超过了需求段落数的情况
         });
     }
 }
 
 void TextArea::resize(const Size &size)
 {
-    lookAt(vloc_, size);
-    return;
+    Lock lock(mtx_);
+
     if (size_ == size) {
         return;
     }
 
     setSize(size);
+
+    if (!opened_) {
+        return;
+    }
 
     remakePage();
 

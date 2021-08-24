@@ -3,6 +3,7 @@
 #include <QMainWindow>
 
 #include "core/fs.h"
+#include "doc/doc_define.h"
 #include "gui/declare_config.h"
 #include "declare_editor_widget.h"
 
@@ -16,11 +17,9 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(Config &config);
 
-    MainWindow(Config &config, const fs::path &filePath);
-
     virtual ~MainWindow();
 
-    void openDocument(const fs::path &file);
+    void openDocument(const fs::path &file, RowN row);
 
 protected:
     virtual void keyReleaseEvent(QKeyEvent *e) override;

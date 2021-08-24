@@ -22,7 +22,7 @@ namespace gui::qt
 class EditorWidget : public QWidget {
     Q_OBJECT
 public:
-    EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file);
+    EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file, RowN row);
 
     virtual ~EditorWidget();
 

@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 
+#include "core/logger.h"
 #include "gui/text_area.h"
 #include "gui/text_area_config.h"
 #include "editor/editor.h"
@@ -33,8 +34,8 @@ static QImage::Format BuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 namespace gui::qt
 {
 
-static constexpr int DefaultWidth = 800;
-static constexpr int DefaultHeight = 600;
+static constexpr int DefaultWidth = 300;
+static constexpr int DefaultHeight = 200;
 
 TextAreaWidget::TextAreaWidget(TextArea &textArea)
     : textArea_(textArea)
@@ -88,10 +89,15 @@ void TextAreaWidget::showEvent(QShowEvent *e)
 
 void TextAreaWidget::resizeEvent(QResizeEvent *e)
 {
+    LOGD << "TextAreaWidget::resizeEvent(), "
+        << "ow: [" << e->oldSize().width() << "], "
+        << "oh: [" << e->oldSize().height() << "], "
+        << "w: [" << size().width() << "], "
+        << "h: [" << size().height() << "]";
 
     const QSize sz(size());
 
-    if (e->oldSize().isValid() && sz != e->oldSize()) {
+    if (e->oldSize().isValid() || sz != e->oldSize()) {
         textPaintBuff_ = std::move(QImage(sz, BuffImageFormat));
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
     }

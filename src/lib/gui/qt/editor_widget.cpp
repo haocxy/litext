@@ -13,7 +13,7 @@
 namespace gui::qt
 {
 
-EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file)
+EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file, RowN row)
     : file_(file)
     , doc_(file)
     , editor_(&doc_, file)
@@ -50,7 +50,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
 
     setLayout(vlayout);
 
-    textArea_.open(Size(textAreaWidget_->width(), textAreaWidget_->height()));
+    textArea_.open(Size(textAreaWidget_->width(), textAreaWidget_->height()), row);
 }
 
 EditorWidget::~EditorWidget()

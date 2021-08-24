@@ -87,8 +87,6 @@ public:
     }
 
 private:
-    void lookAt(const ViewLoc &loc, const Size &size);
-
     void setSize(const Size &size);
 
     int calcMaxShownLineCnt() const;
@@ -143,6 +141,8 @@ private:
     using Mtx = std::recursive_mutex;
     mutable Mtx mtx_;
     using Lock = std::lock_guard<Mtx>;
+
+    bool opened_ = false;
 
     ViewLoc vloc_{ 0, 0 };
 

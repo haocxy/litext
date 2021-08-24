@@ -55,12 +55,6 @@ MainWindow::MainWindow(Config &config)
     resize(800, 600);
 }
 
-MainWindow::MainWindow(Config &config, const fs::path &filePath)
-    : MainWindow(config)
-{
-    openDocument(filePath);
-}
-
 MainWindow::~MainWindow()
 {
     editorWidget_ = nullptr;
@@ -90,9 +84,9 @@ void MainWindow::initToolBar()
 {
 }
 
-void MainWindow::openDocument(const fs::path &file)
+void MainWindow::openDocument(const fs::path &file, RowN row)
 {
-    editorWidget_ = new EditorWidget(config_.textAreaConfig(), file);
+    editorWidget_ = new EditorWidget(config_.textAreaConfig(), file, row);
 
     connect(editorWidget_, &EditorWidget::qtSigDocFatalError, this, [this](const QString &errmsg) {
         QErrorMessage::qtHandler()->showMessage(errmsg);
@@ -113,7 +107,7 @@ void MainWindow::fileMenuOpenActionTriggered()
     const fs::path path = fileName.toStdU16String();
 
     if (!path.empty()) {
-        openDocument(path);
+        openDocument(path, 0);
     }
 }
 

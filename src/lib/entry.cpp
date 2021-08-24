@@ -125,7 +125,8 @@ int entry(int argc, char *argv[])
 
         gui::qt::MainWindow mainWindow(config);
         if (!cmdOpt.files().empty()) {
-            mainWindow.openDocument(cmdOpt.files()[0].file());
+            const doc::OpenInfo &info = cmdOpt.files()[0];
+            mainWindow.openDocument(info.file(), info.row());
         }
         mainWindow.show();
 
