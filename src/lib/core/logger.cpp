@@ -191,8 +191,7 @@ void writeLog(logger::Level level, const LogDebugInfo &info, const std::string &
         }
     }
 
-    // 不管是否配置了有效的文件输出，都会尝试输出到标准输出或调试器
-    // 这是为了确保在需要时有个足够方便的日志输出途径
+    // 不管是否配置了有效的文件输出，都会检查是否设置了输出到标准输出或调试器
     if (gShouldWriteToStdout) {
         std::fwrite(data.data(), 1, data.size(), stdout);
     } else {
