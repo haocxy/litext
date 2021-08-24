@@ -95,7 +95,6 @@ int entry(int argc, char *argv[])
         logOpt.setLevel(cmdOpt.logLevel());
         logOpt.setDir("./tmp/log");
         logOpt.setBasename("notesharplog");
-        logOpt.setAlwaysFlush(true);
         logOpt.setWriteToStdout(cmdOpt.shouldLogToStdout());
         logger::control::init(logOpt);
 
@@ -125,8 +124,8 @@ int entry(int argc, char *argv[])
         config.textAreaConfig().setFontIndex(fontIndex);
 
         gui::qt::MainWindow mainWindow(config);
-        if (argc > 1) {
-            mainWindow.openDocument(argv[1]);
+        if (!cmdOpt.files().empty()) {
+            mainWindow.openDocument(cmdOpt.files()[0].file());
         }
         mainWindow.show();
 
