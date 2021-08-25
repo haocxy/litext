@@ -1,5 +1,7 @@
 #include "sqlite.h"
 
+#include <cstring>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -198,6 +200,26 @@ void Statement::bindNull(int pos)
         const int n = sqlite3_bind_null(stmt_, pos);
         if (n != SQLITE_OK) {
             throwError("bindNull", n);
+        }
+    }
+}
+
+void Statement::bind(int pos, const char *cstr)
+{
+    if (pos > 0 && cstr) {
+        const int n = sqlite3_bind_text(stmt_, pos, cstr, static_cast<int>(std::strlen(cstr)), SQLITE_TRANSIENT);
+        if (n != SQLITE_OK) {
+            throwError("bind", n);
+        }
+    }
+}
+
+void Statement::bind(int pos, const std::string_view &utf8str)
+{
+    if (pos > 0) {
+        const int n = sqlite3_bind_text(stmt_, pos, utf8str.data(), static_cast<int>(utf8str.size()), SQLITE_TRANSIENT);
+        if (n != SQLITE_OK) {
+            throwError("bind", n);
         }
     }
 }

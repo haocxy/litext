@@ -46,6 +46,14 @@ static void setupConfig(TextAreaConfig &c)
     c.setFont(f);
 }
 
+namespace prop
+{
+static const std::string_view width = "width";
+static const std::string_view height = "height";
+static const std::string_view x = "x";
+static const std::string_view y = "y";
+}
+
 MainWindow::MainWindow(Engine &engine, Config &config)
     : engine_(engine)
     , config_(config)
@@ -57,11 +65,31 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
     initToolBar();
 
-    resize(800, 600);
+    // 尝试获取之前保存到数据库中的宽度和高度，
+    // 如果失败则使用默认值
+    int width = 800, height = 600;
+    propRepo_.get(prop::width, width);
+    propRepo_.get(prop::height, height);
+    resize(width, height);
+
+    // 尝试获取之前保存到数据库中的位置
+    // 如果失败则不做任何事情（默认的位置应该由GUI库决定）
+    int x = 0, y = 0;
+    if (propRepo_.get(prop::x, x) && propRepo_.get(prop::y, y)) {
+        move(x, y);
+    }
 }
 
 MainWindow::~MainWindow()
 {
+    const QSize sz = size();
+    propRepo_.set(prop::width, sz.width());
+    propRepo_.set(prop::height, sz.height());
+
+    const QPoint ps = pos();
+    propRepo_.set(prop::x, ps.x());
+    propRepo_.set(prop::y, ps.y());
+
     editorWidget_ = nullptr;
 }
 

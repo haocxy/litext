@@ -78,6 +78,20 @@ public:
         return *this;
     }
 
+    void bind(int pos, const char *cstr);
+
+    Statement &arg(int pos, const char *cstr) {
+        bind(argBindIndex_++, cstr);
+        return *this;
+    }
+
+    void bind(int pos, const std::string_view &utf8str);
+
+    Statement &arg(const std::string_view &utf8str) {
+        bind(argBindIndex_++, utf8str);
+        return *this;
+    }
+
     void bind(int pos, const void *data, size_t len);
 
     Statement &arg(const void *data, size_t len) {
