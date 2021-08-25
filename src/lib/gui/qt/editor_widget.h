@@ -26,6 +26,8 @@ public:
 
     virtual ~EditorWidget();
 
+    const TextAreaWidget &textAreaWidget() const;
+
     void jumpTo(RowN row);
 
 signals:

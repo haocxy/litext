@@ -61,6 +61,11 @@ EditorWidget::~EditorWidget()
     statusBar_ = nullptr;
 }
 
+const TextAreaWidget &EditorWidget::textAreaWidget() const
+{
+    return *textAreaWidget_;
+}
+
 void EditorWidget::jumpTo(RowN row)
 {
     textArea_.jumpTo(row);

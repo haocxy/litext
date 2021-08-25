@@ -7,12 +7,14 @@
 #include <QErrorMessage>
 
 #include "core/system.h"
+#include "doc/simple_doc.h"
+#include "editor/editor.h"
 #include "gui/text_area.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"
-#include "editor/editor.h"
-#include "doc/simple_doc.h"
+
 #include "editor_widget.h"
+#include "text_area_widget.h"
 
 
 namespace gui::qt
@@ -89,7 +91,7 @@ void MainWindow::initToolBar()
 static RowN goToLineToRowOff(int goToLine)
 {
     if (goToLine > 0) {
-        return goToLine - 1;
+        return static_cast<RowN>(goToLine) - 1;
     } else if (goToLine < 0) {
         return goToLine;
     } else {
@@ -99,9 +101,21 @@ static RowN goToLineToRowOff(int goToLine)
 
 void MainWindow::viewMenuGoLineActionTriggered()
 {
-    if (editorWidget_) {
-        const int goToLine = QInputDialog::getInt(this, tr("GoLine"), tr("Jump to line in doument"));
-        editorWidget_->jumpTo(goToLineToRowOff(goToLine));
+    EditorWidget *curEditor = editorWidget_;
+
+    if (curEditor) {
+
+        bool ok = false;
+
+        const int goToLine = QInputDialog::getInt(
+            this, tr("GoLine"), tr("Jump to line in doument"),
+            curEditor->textAreaWidget().rowOffset() + 1,
+            std::numeric_limits<int>::min(), std::numeric_limits<int>::max(),
+            1, &ok);
+
+        if (ok) {
+            curEditor->jumpTo(goToLineToRowOff(goToLine));
+        }
     }
 }
 

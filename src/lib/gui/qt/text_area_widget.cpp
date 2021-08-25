@@ -139,6 +139,11 @@ void TextAreaWidget::mousePressEvent(QMouseEvent *e)
     }
 }
 
+RowN TextAreaWidget::rowOffset() const
+{
+    return textArea_.rowOffset();
+}
+
 void TextAreaWidget::paintBackground(QPainter &p)
 {
     p.fillRect(rect(), Qt::white);

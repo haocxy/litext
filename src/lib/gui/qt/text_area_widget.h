@@ -5,6 +5,7 @@
 
 #include "core/flagset.h"
 #include "core/sigconns.h"
+#include "doc/doc_define.h"
 #include "gui/declare_text_area.h"
 
 
@@ -31,6 +32,8 @@ public:
     virtual void keyPressEvent(QKeyEvent *e) override;
 
     virtual void mousePressEvent(QMouseEvent *e) override;
+
+    RowN rowOffset() const;
 
 private:
     void paintBackground(QPainter &p);
