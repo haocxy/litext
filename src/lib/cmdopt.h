@@ -4,6 +4,7 @@
 #include <tuple>
 #include <ostream>
 
+#include "core/logger.h"
 #include "doc/open_info.h"
 
 
@@ -21,7 +22,7 @@ public:
 
     const std::vector<doc::OpenInfo> &files() const;
 
-    const std::string logLevel() const;
+    logger::Level logLevel() const;
 
     bool shouldLogToStdout() const;
 

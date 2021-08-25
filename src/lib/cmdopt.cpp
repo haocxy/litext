@@ -7,6 +7,9 @@
 
 #include <boost/program_options.hpp>
 
+#include "core/logger.h"
+
+
 namespace
 {
 namespace po = boost::program_options;
@@ -50,8 +53,21 @@ public:
         return files_;
     }
 
-    const std::string &logLevel() const {
-        return logLevel_;
+    logger::Level logLevel() const {
+        using Level = logger::Level;
+        if (varmap_.count("logverbose") != 0) {
+            return Level::All;
+        }
+        if (varmap_.count("logdebug") != 0) {
+            return Level::Debug;
+        }
+        if (varmap_.count("logerror") != 0) {
+            return Level::Error;
+        }
+        if (varmap_.count("loginfo") != 0) {
+            return Level::Info;
+        }
+        return Level::Error;
     }
 
     bool shouldLogToStdout() const {
@@ -61,8 +77,11 @@ public:
 private:
     void addOptions(boost::program_options::options_description_easy_init &add) {
         add("help,h", "Show this message");
-        add("loglevel", po::value<std::string>(&logLevel_), "Set Log Level");
-        add("stdout", "Log will be also written to stdout");
+        add("stdout,o", "Log will be also written to stdout");
+        add("loginfo,i", "Record logs for important information");
+        add("logerror,e", "Record logs for error message");
+        add("logdebug,d", "Record logs for debug information");
+        add("logverbose,v", "Record all logs");
     }
 
     static bool isNum(const std::string &s) {
@@ -119,7 +138,7 @@ private:
     boost::program_options::variables_map varmap_;
     bool hasError_ = false;
     std::vector<doc::OpenInfo> files_;
-    std::string logLevel_;
+    logger::Level logLevel_;
 };
 
 CmdOpt::CmdOpt(int argc, char *argv[])
@@ -148,7 +167,7 @@ const std::vector<doc::OpenInfo> &CmdOpt::files() const
     return impl_->files();
 }
 
-const std::string CmdOpt::logLevel() const
+logger::Level CmdOpt::logLevel() const
 {
     return impl_->logLevel();
 }
