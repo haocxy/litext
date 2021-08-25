@@ -34,26 +34,15 @@ static QImage::Format BuffImageFormat = QImage::Format_ARGB32_Premultiplied;
 namespace gui::qt
 {
 
-static constexpr int DefaultWidth = 300;
-static constexpr int DefaultHeight = 200;
-
 TextAreaWidget::TextAreaWidget(TextArea &textArea)
     : textArea_(textArea)
-    , textPaintBuff_(QSize(DefaultWidth, DefaultHeight), BuffImageFormat)
 {
-    resize(DefaultWidth, DefaultHeight);
-
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
 
-    dirtyBuffFlags_.set(DirtyBuffFlag::Text);
-
-    connect(this, &TextAreaWidget::qtSigShouldRepaint, [this] {
-        dirtyBuffFlags_.set(DirtyBuffFlag::Text);
-        update();
-    });
-    textArea_.sigShouldRepaint().connect([this] {
+    connect(this, &TextAreaWidget::qtSigShouldRepaint, this, &TextAreaWidget::qtSlotShouldRepaint);
+    sigConns_ += textArea_.sigShouldRepaint().connect([this] {
         emit qtSigShouldRepaint();
     });
 }
@@ -61,11 +50,6 @@ TextAreaWidget::TextAreaWidget(TextArea &textArea)
 TextAreaWidget::~TextAreaWidget()
 {
 
-}
-
-QSize TextAreaWidget::sizeHint() const
-{
-    return QSize(DefaultWidth, DefaultHeight);
 }
 
 void TextAreaWidget::paintEvent(QPaintEvent *e)
@@ -92,7 +76,7 @@ void TextAreaWidget::resizeEvent(QResizeEvent *e)
     const QSize sz(size());
 
     if (e->oldSize().isValid() || sz != e->oldSize()) {
-        textPaintBuff_ = std::move(QImage(sz, BuffImageFormat));
+        textPaintBuff_ = QImage(sz, BuffImageFormat);
         dirtyBuffFlags_.set(DirtyBuffFlag::Text);
     }
 
@@ -201,5 +185,10 @@ void TextAreaWidget::paintCursor(QPainter &p)
     }
 }
 
+void TextAreaWidget::qtSlotShouldRepaint()
+{
+    dirtyBuffFlags_.set(DirtyBuffFlag::Text);
+    update();
+}
 
 }

@@ -21,8 +21,6 @@ public:
 
     virtual ~TextAreaWidget();
 
-    virtual QSize sizeHint() const override;
-
     virtual void paintEvent(QPaintEvent *e) override;
 
     virtual void showEvent(QShowEvent *e) override;
@@ -49,6 +47,9 @@ private:
 signals:
     void qtSigShouldRepaint();
 
+private slots:
+    void qtSlotShouldRepaint();
+
 private:
     class DirtyBuffFlag {
     public:
@@ -62,7 +63,7 @@ private:
     TextArea &textArea_;
     FlagSet<DirtyBuffFlag::FlagCount> dirtyBuffFlags_;
     QImage textPaintBuff_;
-    SigConns textAreaSigConns_;
+    SigConns sigConns_;
 };
 
 
