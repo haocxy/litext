@@ -30,8 +30,8 @@ private:
 
     void initToolBar();
 
-    template <typename R>
-    void bind(QMenu *menu, const QString &name, R(MainWindow:: *f)())
+    template <typename T, typename R>
+    void bind(QMenu *menu, const QString &name, R(T:: *f)())
     {
         QAction *action = menu->addAction(name);
         connect(action, &QAction::triggered, this, f);

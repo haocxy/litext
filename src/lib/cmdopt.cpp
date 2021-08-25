@@ -159,7 +159,6 @@ private:
     boost::program_options::variables_map varmap_;
     bool hasError_ = false;
     std::vector<doc::OpenInfo> files_;
-    logger::Level logLevel_ = logger::Level::Unkown;
 };
 
 CmdOpt::CmdOpt(int argc, char *argv[])
