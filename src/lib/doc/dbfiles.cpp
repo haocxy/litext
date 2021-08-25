@@ -223,6 +223,9 @@ void removeUselessDbFiles()
     const fs::path dir = dbDir();
 
     for (const fs::directory_entry e : fs::directory_iterator(dir)) {
+        if (e.path().extension().generic_u32string() != DbFileExt) {
+            continue;
+        }
         const std::u32string name = e.path().filename().generic_u32string();
         const std::u32string relativeDocPath = decodeFileNameToRelativePath(name);
         LOGD << "doc file rel path: [" << relativeDocPath << "]";
