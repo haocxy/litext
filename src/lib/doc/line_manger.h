@@ -44,6 +44,8 @@ public:
 
     std::map<RowN, RowIndex> findRange(const RowRange &range);
 
+    Range<i64> findByteRange(PartId partId) const;
+
 private:
 
     class Worker {

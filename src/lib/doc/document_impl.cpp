@@ -14,7 +14,7 @@ DocumentImpl::DocumentImpl(const fs::path &path)
     , textRepo_(dbfiles::docPathToDbPath(path))
     , loader_(path)
     , lineManager_(textRepo_, loader_)
-    , rowCache_(textRepo_)
+    , rowCache_(lineManager_, path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
@@ -24,6 +24,7 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 
     sigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
         charset_ = charset;
+        rowCache_.updateCharset(charset);
         sigCharsetDetected_(charset);
     });
 

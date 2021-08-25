@@ -66,6 +66,21 @@ std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range)
     return foundRows;
 }
 
+Range<i64> LineManager::findByteRange(PartId partId) const
+{
+    Lock lock(mtx_);
+
+    auto it = std::find_if(orderedInfos_.begin(), orderedInfos_.end(), [partId](const DocPart &e) {
+        return e.id() == partId;
+    });
+
+    if (it != orderedInfos_.end()) {
+        return it->byteRange();
+    } else {
+        throw std::logic_error("LineManager::findByteRange(): part not found");
+    }
+}
+
 void LineManager::onPartDecoded(const DecodedPart &e)
 {
     taskQueue_.push([this, e](Worker &worker) {

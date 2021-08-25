@@ -91,6 +91,7 @@ Charset TextLoader::updateCharset(const MemBuff &data)
         charset_ = detectedCharset;
     }
 
+    sigCharsetDetected_(detectedCharset);
     return detectedCharset;
 }
 
