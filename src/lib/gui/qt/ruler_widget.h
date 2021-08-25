@@ -27,6 +27,8 @@ private:
 
     void paintLineNum(QPainter &p);
 
+    void setRulerWidth(int digitCount);
+
 signals:
     void qtSigUpdateContent();
     void qtSigUpdateWidth(int digitCount);

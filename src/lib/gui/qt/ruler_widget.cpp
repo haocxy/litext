@@ -38,9 +38,10 @@ RulerWidget::RulerWidget(TextArea &textArea)
     sizePolicy.setVerticalPolicy(QSizePolicy::Expanding);
 
     setSizePolicy(sizePolicy);
-    setFixedWidth(0);
 
     setFont(fontToQFont(textArea_.config().font()));
+
+    setRulerWidth(3);
 
     connect(this, &RulerWidget::qtSigUpdateContent, this, &RulerWidget::qtSlotUpdateContent);
     connect(this, &RulerWidget::qtSigUpdateWidth, this, &RulerWidget::qtSlotUpdateWidth);
@@ -94,6 +95,13 @@ void RulerWidget::paintLineNum(QPainter &p)
     });
 }
 
+void RulerWidget::setRulerWidth(int digitCount)
+{
+    maxDigitCount_ = digitCount;
+    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * digitCount;
+    setFixedWidth(w);
+}
+
 void RulerWidget::qtSlotUpdateContent()
 {
     update();
@@ -105,10 +113,7 @@ void RulerWidget::qtSlotUpdateWidth(int digitCount)
         return;
     }
 
-    maxDigitCount_ = digitCount;
-
-    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * digitCount;
-    setFixedWidth(w);
+    setRulerWidth(digitCount);
 
     update();
 }
