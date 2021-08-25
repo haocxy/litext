@@ -20,6 +20,16 @@ const int Margin = 10;
 namespace gui::qt
 {
 
+static int digitCount(RowN n)
+{
+    int count = 0;
+    while (n > 0) {
+        n /= 10;
+        ++count;
+    }
+    return count;
+}
+
 RulerWidget::RulerWidget(TextArea &textArea)
     : textArea_(textArea)
 {
@@ -42,7 +52,7 @@ RulerWidget::RulerWidget(TextArea &textArea)
         emit qtSigUpdateContent();
     });
     textAreaSigConns_ += textArea_.editor().doc().sigRowCountUpdated().connect([this](RowN row) {
-        emit qtSigUpdateWidth(QString::number(row));
+        emit qtSigUpdateWidth(digitCount(row));
     });
 }
 
@@ -89,13 +99,18 @@ void RulerWidget::qtSlotUpdateContent()
     update();
 }
 
-void RulerWidget::qtSlotUpdateWidth(QString placeholder)
+void RulerWidget::qtSlotUpdateWidth(int digitCount)
 {
-    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * placeholder.size();
-    if (w > width()) {
-        setFixedWidth(w);
-        update();
+    if (digitCount <= maxDigitCount_) {
+        return;
     }
+
+    maxDigitCount_ = digitCount;
+
+    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * digitCount;
+    setFixedWidth(w);
+
+    update();
 }
 
 }

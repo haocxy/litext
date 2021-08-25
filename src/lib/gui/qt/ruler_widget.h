@@ -29,15 +29,16 @@ private:
 
 signals:
     void qtSigUpdateContent();
-    void qtSigUpdateWidth(QString placeholder);
+    void qtSigUpdateWidth(int digitCount);
 
 private slots:
     void qtSlotUpdateContent();
-    void qtSlotUpdateWidth(QString placeholder);
+    void qtSlotUpdateWidth(int digitCount);
 
 private:
     TextArea &textArea_;
     SigConns textAreaSigConns_;
+    int maxDigitCount_ = 0;
 };
 
 
