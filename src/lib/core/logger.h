@@ -12,6 +12,7 @@ namespace logger
 {
 
 enum class Level {
+    Unkown,
     All,
     Debug,
     Info,

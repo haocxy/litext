@@ -20,6 +20,12 @@ public:
     CmdOptImpl(int argc, char *argv[]) {
         using strvec = std::vector<std::string>;
 
+        if (argc == 0) {
+            throw std::logic_error("bad cmd line");
+        }
+
+        exe_ = fs::absolute(argv[0]);
+
         std::vector<std::string> posArgs;
         po::options_description_easy_init add = desc_.add_options();
         addOptions(add);
@@ -45,8 +51,21 @@ public:
     }
 
     void help(std::ostream &out) const {
-        out << "Help:" << std::endl;
+        const std::string tab = "    ";
+        const std::string app = exe_.filename().generic_string();
+        out << "Usage:" << std::endl;
+        out << tab << app << " [Options] file(s)" << std::endl;
+        out << std::endl;
+        out << "Examples:" << std::endl;
+        out << tab << "> " << app << " a.txt" << std::endl;
+        out << tab << tab << "open 'a.txt'" << std::endl;
+        out << tab << "> " << app << " a.txt b.txt" << std::endl;
+        out << tab << tab << "open 'a.txt' and 'b.txt'" << std::endl;
+        out << tab << "> " << app << " a.txt 100 b.txt" << std::endl;
+        out << tab << tab << "open 'a.txt' at line 100, open 'b.txt' at default line" << std::endl;
+        out << std::endl;
         out << desc_ << std::endl;
+        out << std::endl;
     }
 
     const std::vector<doc::OpenInfo> &files() const {
@@ -115,7 +134,8 @@ private:
                 lastPath = std::move(path);
                 rows.clear();
             } else if (isNum(arg)) {
-                rows.insert(static_cast<RowN>(std::stoi(arg)));
+                // 命令行参数传入的段落数的下标从1开始的，而程序内部使用的下标从0开始
+                rows.insert(static_cast<RowN>(std::stoi(arg)) - 1);
             } else {
                 // do nothing
             }
@@ -135,10 +155,11 @@ private:
 private:
     boost::program_options::options_description desc_{ "Options" };
     boost::program_options::positional_options_description posdesc_;
+    fs::path exe_;
     boost::program_options::variables_map varmap_;
     bool hasError_ = false;
     std::vector<doc::OpenInfo> files_;
-    logger::Level logLevel_;
+    logger::Level logLevel_ = logger::Level::Unkown;
 };
 
 CmdOpt::CmdOpt(int argc, char *argv[])
