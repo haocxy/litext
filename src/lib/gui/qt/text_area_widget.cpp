@@ -65,7 +65,7 @@ TextAreaWidget::~TextAreaWidget()
 
 QSize TextAreaWidget::sizeHint() const
 {
-    return QSize(textArea_.width(), textArea_.height());
+    return QSize(DefaultWidth, DefaultHeight);
 }
 
 void TextAreaWidget::paintEvent(QPaintEvent *e)
@@ -89,12 +89,6 @@ void TextAreaWidget::showEvent(QShowEvent *e)
 
 void TextAreaWidget::resizeEvent(QResizeEvent *e)
 {
-    LOGD << "TextAreaWidget::resizeEvent(), "
-        << "ow: [" << e->oldSize().width() << "], "
-        << "oh: [" << e->oldSize().height() << "], "
-        << "w: [" << size().width() << "], "
-        << "h: [" << size().height() << "]";
-
     const QSize sz(size());
 
     if (e->oldSize().isValid() || sz != e->oldSize()) {
