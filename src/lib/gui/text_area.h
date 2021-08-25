@@ -4,8 +4,7 @@
 #include <mutex>
 
 #include "core/signal.h"
-#include "doc/doc_define.h"
-#include "doc/doc_loc.h"
+#include "doc/document.h"
 
 #include "size.h"
 #include "rect.h"
@@ -35,6 +34,10 @@ public:
     TextArea(Editor &editor, const TextAreaConfig &config);
 
     ~TextArea();
+
+    const doc::Document &doc() const;
+
+    doc::Document &doc();
 
     void open(const Size &size, RowN row = 0);
 

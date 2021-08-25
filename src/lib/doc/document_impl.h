@@ -1,10 +1,12 @@
 #pragma once
 
 #include <atomic>
+#include <mutex>
 
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "core/charset.h"
+#include "core/time.h"
 
 #include "doc_error.h"
 #include "text_repo.h"
@@ -68,6 +70,8 @@ private:
     Signal<void(const LoadProgress &)> sigLoadProgress_;
     Signal<void()> sigAllLoaded_;
     Signal<void(RowN nrows)> sigRowCountUpdated_;
+
+    AtomicElapsedTime openTimeusage_;
 };
 
 }

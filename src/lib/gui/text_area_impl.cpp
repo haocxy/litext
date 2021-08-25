@@ -104,18 +104,6 @@ void TextArea::jumpTo(RowN row)
     sigShouldRepaint_();
 }
 
-RowN TextArea::rowOffset() const
-{
-    Lock lock(mtx_);
-    return vloc_.row();
-}
-
-LineN TextArea::lineCountLimit() const
-{
-    Lock lock(mtx_);
-    return lineCountLimit_;
-}
-
 void TextArea::setSize(const Size &size)
 {
     if (size_ == size) {

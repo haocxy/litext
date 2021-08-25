@@ -117,6 +117,7 @@ void TextLoader::Reader::readAll()
     static const char *title = "TextLoader::loadAll() ";
 
     ElapsedTime elapsedTime;
+    elapsedTime.start();
 
     std::ifstream ifs(docPath_, std::ios::binary);
 
@@ -157,7 +158,7 @@ void TextLoader::Reader::readAll()
     }
 
     LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
-    LOGD << title << "time usage : " << elapsedTime.milliSec() << "ms";
+    LOGD << title << "time usage : " << elapsedTime.ms() << "ms";
 }
 
 void TextLoader::Reader::loop()
@@ -199,10 +200,11 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
     const char *title = "TextLoader::loadPart() ";
 
     ElapsedTime elapsedTime;
+    elapsedTime.start();
 
     std::u32string content = charset::toUTF32(p.charset, p.data.data(), p.data.size());
 
-    LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.milliSec() << " ms]";
+    LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.ms() << " ms]";
 
     DecodedPart e;
     e.setFileSize(p.filesize);

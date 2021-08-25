@@ -70,12 +70,13 @@ void LineManager::onPartDecoded(const DecodedPart &e)
 {
     taskQueue_.push([this, e](Worker &worker) {
         ElapsedTime elapse;
+        elapse.start();
         const std::u32string &s = e.utf32content();
         DocPart info;
         info.rowRange().setLen(text::countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
         info.setIsLast(e.isLast());
-        LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.milliSec() << "]";
+        LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.ms() << "]";
         updatePartInfo(info, e.fileSize());
     });
 }

@@ -17,6 +17,16 @@ TextArea::~TextArea()
     impl_ = nullptr;
 }
 
+const doc::Document &TextArea::doc() const
+{
+    return impl_->doc();
+}
+
+doc::Document &TextArea::doc()
+{
+    return impl_->doc();
+}
+
 void TextArea::open(const Size &size, RowN row)
 {
     impl_->open(size, row);

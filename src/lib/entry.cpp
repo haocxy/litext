@@ -26,6 +26,7 @@ static void useDrawText()
 static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
     static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC"};
     ElapsedTime elapsed;
+    elapsed.start();
 
     const std::vector<fs::path> fontFiles = SystemUtil::fonts();
 
@@ -44,7 +45,7 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
             if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
                 fileTo = std::move(fontFile);
                 faceTo = std::move(face);
-                LOGI << "selectFont time usage: [" << elapsed.milliSec() << " ms]";
+                LOGI << "selectFont time usage: [" << elapsed.ms() << " ms]";
                 return;
             }
         }
@@ -58,7 +59,7 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
                 if (face) {
                     fileTo = std::move(fontFile);
                     faceTo = std::move(face);
-                    LOGI << "selectFont done without bad font, time usage: [" << elapsed.milliSec() << " ms]";
+                    LOGI << "selectFont done without bad font, time usage: [" << elapsed.ms() << " ms]";
                     return;
                 }
             }

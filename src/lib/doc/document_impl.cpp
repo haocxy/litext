@@ -34,6 +34,7 @@ DocumentImpl::DocumentImpl(const fs::path &path)
     sigConns_ += lineManager_.sigLoadProgress().connect([this](const LoadProgress &e) {
         sigLoadProgress_(e);
         if (e.done()) {
+            LOGI << "Document loaded for [" << path_ << "] by [" << openTimeusage_.ms() << "ms]";
             sigAllLoaded_();
         }
     });
@@ -48,6 +49,10 @@ DocumentImpl::~DocumentImpl()
 
 void DocumentImpl::start()
 {
+    LOGI << "Document start load [" << path_ << "]";
+
+    openTimeusage_.start();
+
     loader_.loadAll();
 }
 

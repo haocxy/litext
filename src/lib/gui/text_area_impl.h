@@ -11,6 +11,7 @@
 #include "core/sigconns.h"
 #include "doc/doc_define.h"
 #include "doc/doc_loc.h"
+#include "editor/editor.h"
 
 #include "page.h"
 #include "view_locs.h"
@@ -42,15 +43,33 @@ public:
 
     ~TextArea();
 
+    const doc::Document &doc() const
+    {
+        return editor_.doc();
+    }
+
+    doc::Document &doc()
+    {
+        return editor_.doc();
+    }
+
     void open(const Size &size, RowN row);
 
     void resize(const Size &size);
 
     void jumpTo(RowN row);
 
-    RowN rowOffset() const;
+    RowN rowOffset() const
+    {
+        Lock lock(mtx_);
+        return vloc_.row();
+    }
 
-    LineN lineCountLimit() const;
+    LineN lineCountLimit() const
+    {
+        Lock lock(mtx_);
+        return lineCountLimit_;
+    }
 
     void onPrimaryButtomPress(i32 x, i32 y);
 
