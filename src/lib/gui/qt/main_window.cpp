@@ -1,7 +1,7 @@
 #include "main_window.h"
 
-#include <QKeyEvent>
 #include <QMenuBar>
+#include <QKeyEvent>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QErrorMessage>
