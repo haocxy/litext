@@ -6,6 +6,7 @@
 
 #include "core/fs.h"
 #include "doc/doc_define.h"
+#include "gui/engine.h"
 #include "gui/declare_config.h"
 #include "declare_editor_widget.h"
 
@@ -17,7 +18,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(Config &config);
+    MainWindow(Engine &engine, Config &config);
 
     virtual ~MainWindow();
 
@@ -44,7 +45,9 @@ private slots:
     void viewMenuGoLineActionTriggered();
 
 private:
+    Engine &engine_;
     Config &config_;
+    PropRepo propRepo_;
     EditorWidget *editorWidget_ = nullptr;
 };
 

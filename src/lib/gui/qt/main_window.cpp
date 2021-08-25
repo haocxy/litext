@@ -46,8 +46,10 @@ static void setupConfig(TextAreaConfig &c)
     c.setFont(f);
 }
 
-MainWindow::MainWindow(Config &config)
-    : config_(config)
+MainWindow::MainWindow(Engine &engine, Config &config)
+    : engine_(engine)
+    , config_(config)
+    , propRepo_(engine_.propDb(), "MainWindow")
 {
     setupConfig(config_.textAreaConfig());
 

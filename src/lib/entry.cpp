@@ -11,6 +11,7 @@
 #include "gui/qt/main_window.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"
+#include "gui/engine.h"
 #include "doc/dbfiles.h"
 
 #include "cmdopt.h"
@@ -99,6 +100,8 @@ int entry(int argc, char *argv[])
         logOpt.setWriteToStdout(cmdOpt.shouldLogToStdout());
         logger::control::init(logOpt);
 
+        gui::Engine engine;
+
         // 删除无用的由程序创建的辅助文件
         doc::dbfiles::removeUselessDbFiles();
 
@@ -124,7 +127,7 @@ int entry(int argc, char *argv[])
 
         config.textAreaConfig().setFontIndex(fontIndex);
 
-        gui::qt::MainWindow mainWindow(config);
+        gui::qt::MainWindow mainWindow(engine, config);
         if (!cmdOpt.files().empty()) {
             const doc::OpenInfo &info = cmdOpt.files()[0];
             mainWindow.openDocument(info.file(), info.row());
