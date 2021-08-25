@@ -26,6 +26,8 @@ public:
 
     virtual ~EditorWidget();
 
+    void jumpTo(RowN row);
+
 signals:
     void qtSigDocFatalError(const QString &errmsg);
 

@@ -61,6 +61,11 @@ EditorWidget::~EditorWidget()
     statusBar_ = nullptr;
 }
 
+void EditorWidget::jumpTo(RowN row)
+{
+    textArea_.jumpTo(row);
+}
+
 QString EditorWidget::docErrToStr(doc::DocError err) const
 {
     switch (err) {

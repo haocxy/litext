@@ -29,8 +29,17 @@ private:
 
     void initToolBar();
 
+    template <typename R>
+    void bind(QMenu *menu, const QString &name, R(MainWindow:: *f)())
+    {
+        QAction *action = menu->addAction(name);
+        connect(action, &QAction::triggered, this, f);
+    }
+
 private slots:
     void fileMenuOpenActionTriggered();
+
+    void viewMenuGoLineActionTriggered();
 
 private:
     Config &config_;

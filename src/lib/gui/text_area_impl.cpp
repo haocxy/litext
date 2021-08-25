@@ -96,6 +96,10 @@ void TextArea::jumpTo(RowN row)
         return;
     }
 
+    if (row < 0) {
+        row = editor_.doc().rowCnt() + row;
+    }
+
     vloc_.setRow(row);
     vloc_.setLine(0);
 

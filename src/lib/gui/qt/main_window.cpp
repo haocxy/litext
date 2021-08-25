@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include <QMenuBar>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QErrorMessage>
 
 #include "core/system.h"
@@ -74,14 +75,34 @@ void MainWindow::initMenuBar()
     QMenuBar *bar = menuBar();
 
     QMenu *fileMenu = bar->addMenu(tr("&File"));
-    QAction *openAction = fileMenu->addAction(tr("&Open"));
-    connect(openAction, &QAction::triggered, this, &MainWindow::fileMenuOpenActionTriggered);
-    QAction *quitAction = fileMenu->addAction(tr("&Quit"));
-    connect(quitAction, &QAction::triggered, this, &MainWindow::close);
+    bind(fileMenu, tr("&Open"), &MainWindow::fileMenuOpenActionTriggered);
+    bind(fileMenu, tr("&Quit"), &MainWindow::close);
+
+    QMenu *viewMenu = bar->addMenu(tr("&View"));
+    bind(viewMenu, tr("&GoLine"), &MainWindow::viewMenuGoLineActionTriggered);
 }
 
 void MainWindow::initToolBar()
 {
+}
+
+static RowN goToLineToRowOff(int goToLine)
+{
+    if (goToLine > 0) {
+        return goToLine - 1;
+    } else if (goToLine < 0) {
+        return goToLine;
+    } else {
+        return 0;
+    }
+}
+
+void MainWindow::viewMenuGoLineActionTriggered()
+{
+    if (editorWidget_) {
+        const int goToLine = QInputDialog::getInt(this, tr("GoLine"), tr("Jump to line in doument"));
+        editorWidget_->jumpTo(goToLineToRowOff(goToLine));
+    }
 }
 
 void MainWindow::openDocument(const fs::path &file, RowN row)
