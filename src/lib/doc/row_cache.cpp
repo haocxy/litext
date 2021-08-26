@@ -102,7 +102,7 @@ RowCache::PartCache &RowCache::ensurePartCached(PartId partId)
         partCache.lastUse = std::chrono::steady_clock::now();
         partCache.rows = std::move(rows);
         using Str = std::u32string;
-        for (const Str &row : rows) {
+        for (const Str &row : partCache.rows) {
             partCache.byteCount += row.size() * sizeof(Str::value_type);
         }
         cachedByteCount_ += partCache.byteCount;
