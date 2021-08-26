@@ -16,7 +16,7 @@ static std::u32string toUTF32ForAscii(const void *data, i64 nbytes)
     std::u32string s(nbytes, 0);
     const char *str = reinterpret_cast<const char *>(data);
     for (i64 i = 0; i < nbytes; ++i) {
-        s.push_back(str[i]);
+        s[i] = str[i];
     }
     return s;
 }
