@@ -272,10 +272,14 @@ VCharLoc TextArea::betterLocForVerticalMove(const VCharLoc & charLoc) const
 }
 
 DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
-{
+{   
     const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
     if (charLoc.isNull())
     {
+        return DocLoc();
+    }
+
+    if (charLoc.row() == 0 && charLoc.line() == 0) {
         return DocLoc();
     }
 
@@ -356,7 +360,7 @@ bool TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
                 VRow vrow;
                 makeVRow(*row, vrow);
                 const int newRowSize = vrow.size();
-                page_.pushBack(std::move(vrow));
+                page_.pushFront(std::move(vrow));
                 setViewLoc(ViewLoc(vloc_.row() - 1, newRowSize - 1));
                 return true;
             }
