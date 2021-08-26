@@ -671,8 +671,7 @@ void TextArea::onPrimaryButtomPress(i32 x, i32 y)
 {
     const VCharLoc charLoc = cvt_.toCharLoc(x, y);
     const DocLoc docLoc = cvt_.toDocLoc(charLoc);
-    editor_.onPrimaryKeyPress(docLoc);
-
+    editor_.setNormalCursor(docLoc);
     stableX_ = cvt_.toX(charLoc);
 }
 

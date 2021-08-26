@@ -36,11 +36,9 @@ public:
 
     RowN lastActRow() { return m_lastActRow; }
 
-    void onPrimaryKeyPress(const DocLoc & loc);
+    void setNormalCursor(const DocLoc &loc);
 
-    void setNormalCursor(const DocLoc & loc);
-
-    void setNormalCursor(const DocCursor & cursor);
+    void setNormalCursor(const DocCursor &cursor);
 
     // 以字符为单位，获得向左移动光标时的下一个字符位置
     DocLoc getNextLeftLocByChar(const DocLoc & loc) const;

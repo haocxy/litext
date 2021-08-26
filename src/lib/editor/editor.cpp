@@ -18,23 +18,18 @@ void Editor::start()
     document_.start();
 }
 
-void Editor::onPrimaryKeyPress(const DocLoc & loc)
+void Editor::setNormalCursor(const DocLoc &loc)
 {
-    if (loc.isAfterLastRow())
-    {
-        const RowN rowCnt = m_model.rowCnt();
-        assert(rowCnt > 0);
-        setNormalCursor(DocCursor(DocLoc::newDocLocAfterLastChar(rowCnt - 1)));
-    }
-    else
-    {
+    if (!loc.isAfterLastRow()) {
         setNormalCursor(DocCursor(loc));
+    } else {
+        const RowN rowCount = document_.rowCnt();
+        if (rowCount > 0) {
+            setNormalCursor(DocCursor(DocLoc::newDocLocAfterLastChar(rowCount - 1)));
+        } else {
+            setNormalCursor(DocCursor());
+        }
     }
-}
-
-void Editor::setNormalCursor(const DocLoc & loc)
-{
-    setNormalCursor(DocCursor(loc));
 }
 
 void Editor::setNormalCursor(const DocCursor & cursor)
