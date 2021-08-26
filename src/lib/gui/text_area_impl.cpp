@@ -339,13 +339,14 @@ DocLoc TextArea::getNextLeftLoc(const DocLoc &docLoc) const
     }
 }
 
-void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
+bool TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
 {
     if (curLineLoc.row() == 0 && curLineLoc.line() <= vloc_.line())
     {
         if (vloc_.line() > 0)
         {
             setViewLoc(ViewLoc(vloc_.row(), vloc_.line() - 1));
+            return true;
         }
         else
         {
@@ -357,9 +358,12 @@ void TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
                 const int newRowSize = vrow.size();
                 page_.pushBack(std::move(vrow));
                 setViewLoc(ViewLoc(vloc_.row() - 1, newRowSize - 1));
+                return true;
             }
         }
     }
+
+    return false;
 }
 
 bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
@@ -405,7 +409,9 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
         page_.pushBack(std::move(vrow));
 	}
 
-	return true;
+    const i32 lineOff = cvt_.toLineOffset(curLineLoc);
+    const i32 requiredHeight = (lineOff + 1) * config_.lineHeight();
+    return height() < requiredHeight;
 }
 
 void TextArea::removeSpareRow()
@@ -428,6 +434,8 @@ void TextArea::removeSpareRow()
 
 void TextArea::onDirUpKeyPress()
 {
+    Lock lock(mtx_);
+
 	// TODO !!!
 	// 如果光标位置不在视图内，则只做一件事：把文档视图滚动到恰好显示光标所在行
 
@@ -435,7 +443,7 @@ void TextArea::onDirUpKeyPress()
     // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
     const DocLoc & oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
-    ensureHasPrevLine(oldCharLoc);
+    const bool viewportMoved = ensureHasPrevLine(oldCharLoc);
 
     // 第二步：使用第一步更新后的新的视图数据取目标位置
     const DocLoc newLoc = getNextUpLoc(editor_.normalCursor().to());
@@ -445,7 +453,10 @@ void TextArea::onDirUpKeyPress()
     }
 
 	// 第三步：移除尾部多余的行
-	removeSpareRow();
+    if (viewportMoved) {
+        removeSpareRow();
+        sigViewportChanged_();
+    }
 }
 
 void TextArea::onDirDownKeyPress()

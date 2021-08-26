@@ -150,7 +150,8 @@ private:
 
 private:
     // 调用这个函数后，需要在合适的时刻调用removeSpareRow
-    void ensureHasPrevLine(const VLineLoc &curLineLoc);
+    // 返回true表示视口位置变化了
+    bool ensureHasPrevLine(const VLineLoc &curLineLoc);
 
     // 确保参数行有下一行
     // 如果需要把页面头部向后移动则返回true
