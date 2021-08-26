@@ -120,6 +120,10 @@ public:
         return sigViewLocChanged_;
     }
 
+    Signal<void()> &sigViewportChanged() {
+        return sigViewportChanged_;
+    }
+
 private:
     void setSize(const Size &size);
 
@@ -196,6 +200,7 @@ private:
 private:
     Signal<void()> sigShouldRepaint_;
     Signal<void()> sigViewLocChanged_;
+    Signal<void()> sigViewportChanged_;
 
 private:
     SigConns editorSigConns_;

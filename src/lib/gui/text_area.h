@@ -90,6 +90,8 @@ public:
 
     Signal<void()> &sigViewLocChanged();
 
+    Signal<void()> &sigViewportChanged();
+
 private:
     impl::TextArea *impl_ = nullptr;
 };

@@ -278,11 +278,7 @@ DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
 
 
     const VRow &vrow = page_[charLoc.row()];
-    int lastLine = charLoc.line();
-    if (vloc_.row() == 0) {
-        // 如果在第一个VRow，则需要把偏移量加上，因为ViewLoc中的line属性为行偏移
-        lastLine += vloc_.line();
-    }
+    const int lastLine = charLoc.line();
     CharN col = charLoc.col();
     for (int i = 0; i < lastLine; ++i) {
         col += vrow[i].size();

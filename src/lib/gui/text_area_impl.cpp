@@ -450,6 +450,8 @@ void TextArea::onDirUpKeyPress()
 
 void TextArea::onDirDownKeyPress()
 {
+    Lock lock(mtx_);
+
 	// 第一步，确保当前位置在视图中有下一行
 	const DocLoc & oldDocLoc = editor_.normalCursor().to();
 	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
@@ -466,6 +468,7 @@ void TextArea::onDirDownKeyPress()
 	if (shouldMovePageHead)
 	{
 		movePageHeadOneLine();
+        sigViewportChanged_();
 	}
 }
 
@@ -669,6 +672,7 @@ void TextArea::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& acti
 
 void TextArea::onPrimaryButtomPress(i32 x, i32 y)
 {
+    Lock lock(mtx_);
     const VCharLoc charLoc = cvt_.toCharLoc(x, y);
     const DocLoc docLoc = cvt_.toDocLoc(charLoc);
     editor_.setNormalCursor(docLoc);
@@ -677,6 +681,8 @@ void TextArea::onPrimaryButtomPress(i32 x, i32 y)
 
 bool TextArea::moveDownByOneLine()
 {
+    Lock lock(mtx_);
+
 	const RowN docRowCnt = editor_.doc().rowCnt();
 
 	// 文档没有内容则不能移动
