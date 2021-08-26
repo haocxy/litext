@@ -45,6 +45,7 @@ void TextArea::open(const Size &size, RowN row)
     if (editor_.doc().rowCnt() >= docRange.end()) {
         remakePage();
         updateStableXByCurrentCursor();
+        sigViewLocChanged_();
         sigShouldRepaint_();
         sigConnForWaitingRange_.disconnect();
         opened_ = true;
@@ -59,6 +60,7 @@ void TextArea::open(const Size &size, RowN row)
                 Lock lock(mtx_);
                 remakePage();
                 updateStableXByCurrentCursor();
+                sigViewLocChanged_();
                 sigShouldRepaint_();
                 sigConnForWaitingRange_.disconnect();
                 opened_ = true;
@@ -105,7 +107,25 @@ void TextArea::jumpTo(RowN row)
 
     remakePage();
 
+    sigViewLocChanged_();
     sigShouldRepaint_();
+}
+
+void TextArea::jumpTo(float ratio)
+{
+    if (ratio < 0) {
+        ratio = 0;
+    } else if (ratio > 1) {
+        ratio = 1;
+    }
+
+    Lock lock(mtx_);
+
+    // 不应该使用浮点数计算，会有各种意想不到的问题，
+    // 应该用整数表示由参数传入的比例
+    const RowN row = double(ratio) * doc().rowCnt();
+
+    jumpTo(row);
 }
 
 void TextArea::setSize(const Size &size)

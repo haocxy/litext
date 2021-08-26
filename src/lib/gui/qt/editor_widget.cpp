@@ -21,10 +21,6 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
 {
     doc::Document &document = editor_.document();
 
-    sigConns_ += document.sigFatalError().connect([this](doc::DocError err) {
-        emit qtSigDocFatalError(docErrToStr(err));
-    });
-
     ruler_ = new RulerWidget(textArea_);
 
     textAreaWidget_ = new TextAreaWidget(textArea_);
@@ -49,6 +45,23 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
     vlayout->addWidget(statusBar_);
 
     setLayout(vlayout);
+
+    sigConns_ += document.sigFatalError().connect([this](doc::DocError err) {
+        emit qtSigDocFatalError(docErrToStr(err));
+    });
+
+    sigConns_ += document.sigRowCountUpdated().connect([this](RowN rowCount) {
+        RowN newValue = rowCount - 1;
+        if (newValue <= static_cast<RowN>(std::numeric_limits<decltype(vScrollBar_->maximum())>::max())) {
+            vScrollBar_->setMaximum(static_cast<int>(newValue));
+        } else {
+            throw std::logic_error("document row count overflow max value supported by Qt");
+        }
+    });
+
+    connect(vScrollBar_, &QScrollBar::valueChanged, this, [this] (int value) {
+        textArea_.jumpTo(static_cast<RowN>(vScrollBar_->value()));
+    });
 
     textArea_.open(Size(textAreaWidget_->width(), textAreaWidget_->height()), row);
 }

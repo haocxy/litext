@@ -21,6 +21,7 @@
 #include "size.h"
 #include "line_bound.h"
 #include "row_bound.h"
+#include "scroll_ratio.h"
 #include "text_area_config.h"
 #include "coordinate_converter.h"
 
@@ -59,10 +60,17 @@ public:
 
     void jumpTo(RowN row);
 
-    RowN rowOffset() const
-    {
+    void jumpTo(float ratio);
+
+    RowN rowOff() const {
         Lock lock(mtx_);
         return vloc_.row();
+    }
+
+    ScrollRatio scrollRatio() const
+    {
+        Lock lock(mtx_);
+        return ScrollRatio(vloc_.row(), doc().rowCnt());
     }
 
     LineN lineCountLimit() const

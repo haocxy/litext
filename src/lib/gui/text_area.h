@@ -9,6 +9,7 @@
 #include "size.h"
 #include "rect.h"
 #include "view_locs.h"
+#include "scroll_ratio.h"
 #include "row_bound.h"
 #include "line_bound.h"
 #include "view_define.h"
@@ -45,7 +46,11 @@ public:
 
     void jumpTo(RowN row);
 
-    RowN rowOffset() const;
+    void jumpTo(float ratio);
+
+    RowN rowOff() const;
+
+    ScrollRatio scrollRatio() const;
 
     LineN lineCountLimit() const;
 

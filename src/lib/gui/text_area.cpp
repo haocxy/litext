@@ -42,9 +42,19 @@ void TextArea::jumpTo(RowN row)
     impl_->jumpTo(row);
 }
 
-RowN TextArea::rowOffset() const
+void TextArea::jumpTo(float ratio)
 {
-    return impl_->rowOffset();
+    impl_->jumpTo(ratio);
+}
+
+RowN TextArea::rowOff() const
+{
+    return impl_->rowOff();
+}
+
+ScrollRatio TextArea::scrollRatio() const
+{
+    return impl_->scrollRatio();
 }
 
 LineN TextArea::lineCountLimit() const
