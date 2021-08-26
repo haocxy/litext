@@ -71,7 +71,7 @@ static bool shouldDetectCharset(Charset current) {
 Charset TextLoader::updateCharset(const MemBuff &data)
 {
     {
-        std::unique_lock<std::mutex> lock(mtx_);
+        Lock lock(mtx_);
 
         if (!shouldDetectCharset(charset_)) {
             return charset_;
@@ -87,7 +87,7 @@ Charset TextLoader::updateCharset(const MemBuff &data)
     const Charset detectedCharset = CharsetUtil::strToCharset(scharset);
 
     {
-        std::unique_lock<std::mutex> lock(mtx_);
+        Lock lock(mtx_);
         charset_ = detectedCharset;
     }
 

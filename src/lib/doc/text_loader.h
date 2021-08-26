@@ -106,7 +106,9 @@ private:
     Signal<void(const DecodedPart &)> sigPartDecoded_;
     Signal<void()> sigAllLoaded_;
 
-    mutable std::mutex mtx_;
+    using Mtx = std::recursive_mutex;
+    using Lock = std::unique_lock<Mtx>;
+    mutable Mtx mtx_;
     Charset charset_{Charset::Unknown};
 };
 
