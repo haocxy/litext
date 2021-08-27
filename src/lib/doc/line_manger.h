@@ -69,7 +69,7 @@ private:
 
     void onPartDecoded(const DecodedPart &e);
 
-    RowN updatePartInfo(const DocPart &info, i64 totalByteCount);
+    void updatePartInfo(const DocPart &info, i64 totalByteCount);
 
     // 更新段偏移信息
     // 多线程加载导致各个片段不是完全有序的，但总体上是有序的

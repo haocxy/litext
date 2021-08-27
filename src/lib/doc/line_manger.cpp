@@ -13,8 +13,6 @@
 namespace doc
 {
 
-// 工作线程数量
-// 使用一半的CPU，确保用户体验
 static int decideWorkerCount()
 {
     return std::max(1, SystemUtil::processorCount() / 2);
@@ -86,12 +84,11 @@ void LineManager::onPartDecoded(const DecodedPart &e)
     });
 }
 
-RowN LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
+void LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
 {
     RowN rowCount = 0;
 
-    std::vector<DocPart> newlyOrderedParts;
-    std::vector<LoadProgress> loadProgresses;
+    std::vector<LoadProgress> progresses;
 
     {
         Lock lock(mtx_);
@@ -100,22 +97,26 @@ RowN LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
         rowCount = rowCount_;
 
         std::vector<PartId> newlyOrderedPartIds = updateRowOff(info);
+
         const size_t newlyOrderedPartCount = newlyOrderedPartIds.size();
-        newlyOrderedParts.resize(newlyOrderedPartCount);
+        progresses.resize(newlyOrderedPartCount);
 
         for (size_t i = 0; i < newlyOrderedPartCount; ++i) {
-            newlyOrderedParts[i] = orderedInfos_[newlyOrderedPartIds[i]];
+            const DocPart &part = orderedInfos_[newlyOrderedPartIds[i]];
+            stmtSavePart_(part);
+            progresses[i] = LoadProgress(part.rowRange().end(), part.byteRange().end(), totalByteCount, part.isLast());
         }
     }
 
-    sigRowCountUpdated_(rowCount);
+    if (!progresses.empty()) {
 
-    for (const DocPart &part : newlyOrderedParts) {
-        stmtSavePart_(part);
-        sigLoadProgress_(LoadProgress(part.rowRange().end(), part.byteRange().end(), totalByteCount, part.isLast()));
+        sigRowCountUpdated_(rowCount);
+
+        for (const LoadProgress &p : progresses) {
+            sigLoadProgress_(p);
+        }
+
     }
-
-    return rowCount_;
 }
 
 std::vector<PartId> LineManager::updateRowOff(const DocPart &info)
