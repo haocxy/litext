@@ -13,10 +13,10 @@
 #include "row_walker.h"
 
 
-namespace gui::impl
+namespace gui
 {
 
-TextArea::TextArea(Editor &editor, const TextAreaConfig &config)
+TextAreaImpl::TextAreaImpl(Editor &editor, const TextAreaConfig &config)
     : editor_(editor)
     , config_(config)
     , cvt_(editor_, size_, page_, vloc_, config_)
@@ -26,12 +26,12 @@ TextArea::TextArea(Editor &editor, const TextAreaConfig &config)
     });
 }
 
-TextArea::~TextArea()
+TextAreaImpl::~TextAreaImpl()
 {
 
 }
 
-void TextArea::open(const Size &size, RowN row)
+void TextAreaImpl::open(const Size &size, RowN row)
 {
     editor_.start();
 
@@ -70,7 +70,7 @@ void TextArea::open(const Size &size, RowN row)
     }
 }
 
-void TextArea::resize(const Size &size)
+void TextAreaImpl::resize(const Size &size)
 {
     Lock lock(mtx_);
 
@@ -90,7 +90,7 @@ void TextArea::resize(const Size &size)
     sigShouldRepaint_();
 }
 
-void TextArea::jumpTo(RowN row)
+void TextAreaImpl::jumpTo(RowN row)
 {
     Lock lock(mtx_);
 
@@ -111,7 +111,7 @@ void TextArea::jumpTo(RowN row)
     sigShouldRepaint_();
 }
 
-void TextArea::jumpTo(float ratio)
+void TextAreaImpl::jumpTo(float ratio)
 {
     if (ratio < 0) {
         ratio = 0;
@@ -128,7 +128,7 @@ void TextArea::jumpTo(float ratio)
     jumpTo(row);
 }
 
-void TextArea::setSize(const Size &size)
+void TextAreaImpl::setSize(const Size &size)
 {
     if (size_ == size) {
         return;
@@ -139,13 +139,13 @@ void TextArea::setSize(const Size &size)
     lineCountLimit_ = calcMaxShownLineCnt();
 }
 
-int TextArea::calcMaxShownLineCnt() const
+int TextAreaImpl::calcMaxShownLineCnt() const
 {
     const i32 lineHeight = config_.lineHeight();
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
-LineBound TextArea::getLineBoundByLineOffset(i32 lineOffset) const
+LineBound TextAreaImpl::getLineBoundByLineOffset(i32 lineOffset) const
 {
     const i32 lineHeight = config_.lineHeight();
     const i32 top = lineHeight * lineOffset;
@@ -154,7 +154,7 @@ LineBound TextArea::getLineBoundByLineOffset(i32 lineOffset) const
     return LineBound(top, bottom);
 }
 
-LineBound TextArea::getLineBound(const VLineLoc & lineLoc) const
+LineBound TextAreaImpl::getLineBound(const VLineLoc & lineLoc) const
 {
     if (lineLoc.isAfterLastRow())
     {
@@ -164,7 +164,7 @@ LineBound TextArea::getLineBound(const VLineLoc & lineLoc) const
     return getLineBoundByLineOffset(lineOffset);
 }
 
-RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
+RowBound TextAreaImpl::getRowBound(const VRowLoc & rowLoc) const
 {
     if (rowLoc.isNull())
     {
@@ -186,12 +186,12 @@ RowBound TextArea::getRowBound(const VRowLoc & rowLoc) const
     return RowBound(top, height);
 }
 
-bool TextArea::hasPrevCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::hasPrevCharAtSameLine(const VCharLoc & charLoc) const
 {
     return !noPrevCharAtSameLine(charLoc);
 }
 
-bool TextArea::noPrevCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::noPrevCharAtSameLine(const VCharLoc & charLoc) const
 {
     if (charLoc.isAfterLastChar())
     {
@@ -203,12 +203,12 @@ bool TextArea::noPrevCharAtSameLine(const VCharLoc & charLoc) const
     }
 }
 
-bool TextArea::hasNextCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::hasNextCharAtSameLine(const VCharLoc & charLoc) const
 {
     return !noNextCharAtSameLine(charLoc);
 }
 
-bool TextArea::noNextCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::noNextCharAtSameLine(const VCharLoc & charLoc) const
 {
     if (charLoc.isAfterLastChar())
     {
@@ -221,7 +221,7 @@ bool TextArea::noNextCharAtSameLine(const VCharLoc & charLoc) const
     }
 }
 
-bool TextArea::needEnsureHasNextLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::needEnsureHasNextLine(const VCharLoc & charLoc) const
 {
 	if (hasNextCharAtSameLine(charLoc))
 	{
@@ -242,18 +242,18 @@ bool TextArea::needEnsureHasNextLine(const VCharLoc & charLoc) const
 	}
 }
 
-bool TextArea::isLastLineOfRow(const VLineLoc & lineLoc) const
+bool TextAreaImpl::isLastLineOfRow(const VLineLoc & lineLoc) const
 {
     return lineLoc.line() == page_[lineLoc.row()].size() - 1;
 }
 
-bool TextArea::isEndOfVirtualLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::isEndOfVirtualLine(const VCharLoc & charLoc) const
 {
     return charLoc.isAfterLastChar() && !isLastLineOfRow(charLoc);
 }
 
 // 避免出现因为定位到虚拟行尾部而使虚拟行被跳过的情况
-VCharLoc TextArea::betterLocForVerticalMove(const VCharLoc & charLoc) const
+VCharLoc TextAreaImpl::betterLocForVerticalMove(const VCharLoc & charLoc) const
 {
     if (!isEndOfVirtualLine(charLoc))
     {
@@ -271,7 +271,7 @@ VCharLoc TextArea::betterLocForVerticalMove(const VCharLoc & charLoc) const
     return charLoc;
 }
 
-DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
+DocLoc TextAreaImpl::getNextUpLoc(const DocLoc & docLoc) const
 {   
     const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
     if (charLoc.isNull())
@@ -289,7 +289,7 @@ DocLoc TextArea::getNextUpLoc(const DocLoc & docLoc) const
     return cvt_.toDocLoc(betterLocForVerticalMove(upCharLoc));
 }
 
-DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
+DocLoc TextAreaImpl::getNextDownLoc(const DocLoc & docLoc) const
 {
     const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
     if (charLoc.isNull())
@@ -303,7 +303,7 @@ DocLoc TextArea::getNextDownLoc(const DocLoc & docLoc) const
     return cvt_.toDocLoc(betterLocForVerticalMove(downCharLoc));
 }
 
-DocLoc TextArea::getNextLeftLoc(const DocLoc &docLoc) const
+DocLoc TextAreaImpl::getNextLeftLoc(const DocLoc &docLoc) const
 {
     if (docLoc.isNull()) {
         return DocLoc();
@@ -343,7 +343,7 @@ DocLoc TextArea::getNextLeftLoc(const DocLoc &docLoc) const
     }
 }
 
-bool TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
+bool TextAreaImpl::ensureHasPrevLine(const VLineLoc & curLineLoc)
 {
     if (curLineLoc.row() == 0 && curLineLoc.line() <= vloc_.line())
     {
@@ -370,7 +370,7 @@ bool TextArea::ensureHasPrevLine(const VLineLoc & curLineLoc)
     return false;
 }
 
-bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
+bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
 {
 	const int rowCnt = page_.size();
 
@@ -418,7 +418,7 @@ bool TextArea::ensureHasNextLine(const VLineLoc &curLineLoc)
     return height() < requiredHeight;
 }
 
-void TextArea::removeSpareRow()
+void TextAreaImpl::removeSpareRow()
 {
     int remainLineCnt = page_.lineCnt() - vloc_.line();
 
@@ -436,7 +436,7 @@ void TextArea::removeSpareRow()
     }
 }
 
-void TextArea::onDirUpKeyPress()
+void TextAreaImpl::onDirUpKeyPress()
 {
     Lock lock(mtx_);
 
@@ -463,7 +463,7 @@ void TextArea::onDirUpKeyPress()
     }
 }
 
-void TextArea::onDirDownKeyPress()
+void TextAreaImpl::onDirDownKeyPress()
 {
     Lock lock(mtx_);
 
@@ -487,7 +487,7 @@ void TextArea::onDirDownKeyPress()
 	}
 }
 
-void TextArea::onDirLeftKeyPress()
+void TextAreaImpl::onDirLeftKeyPress()
 {
     const DocLoc oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
@@ -508,7 +508,7 @@ void TextArea::onDirLeftKeyPress()
 	removeSpareRow();
 }
 
-void TextArea::onDirRightKeyPress()
+void TextAreaImpl::onDirRightKeyPress()
 {
     Lock lock(mtx_);
 
@@ -536,7 +536,7 @@ void TextArea::onDirRightKeyPress()
 	}
 }
 
-void TextArea::setViewLoc(const ViewLoc & viewLoc)
+void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
 {
     if (vloc_ == viewLoc)
     {
@@ -546,7 +546,7 @@ void TextArea::setViewLoc(const ViewLoc & viewLoc)
     vloc_ = viewLoc;
 }
 
-void TextArea::movePageHeadOneLine()
+void TextAreaImpl::movePageHeadOneLine()
 {
 	if (isLastLineOfRow(VLineLoc(0, vloc_.line())))
 	{
@@ -559,7 +559,7 @@ void TextArea::movePageHeadOneLine()
 	}
 }
 
-std::optional<Rect> TextArea::getLastActLineDrawRect() const
+std::optional<Rect> TextAreaImpl::getLastActLineDrawRect() const
 {
     const RowN row = editor_.lastActRow();
     const VRowLoc loc = cvt_.toRowLoc(VRowOffset(row));
@@ -578,7 +578,7 @@ std::optional<Rect> TextArea::getLastActLineDrawRect() const
     return rect;
 }
 
-std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
+std::optional<VerticalLine> TextAreaImpl::getNormalCursorDrawData() const
 {
     enum { kHorizontalDelta = -1 };
     enum { kVerticalShrink = 2 };
@@ -615,12 +615,12 @@ std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
     return vl;
 }
 
-int TextArea::getLineNumBarWidth() const
+int TextAreaImpl::getLineNumBarWidth() const
 {
     return 100;
 }
 
-void TextArea::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> && action) const
+void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> && action) const
 {
     const int rowCnt = page_.size();
 
@@ -641,7 +641,7 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, co
     }
 }
 
-void TextArea::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& action) const
+void TextAreaImpl::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& action) const
 {
     const int rowCnt = page_.size();
     if (rowCnt == 0)
@@ -686,7 +686,7 @@ void TextArea::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& acti
     }
 }
 
-void TextArea::onPrimaryButtomPress(i32 x, i32 y)
+void TextAreaImpl::onPrimaryButtomPress(i32 x, i32 y)
 {
     Lock lock(mtx_);
     const VCharLoc charLoc = cvt_.toCharLoc(x, y);
@@ -695,7 +695,7 @@ void TextArea::onPrimaryButtomPress(i32 x, i32 y)
     stableX_ = cvt_.toX(charLoc);
 }
 
-bool TextArea::moveDownByOneLine()
+bool TextAreaImpl::moveDownByOneLine()
 {
     Lock lock(mtx_);
 
@@ -732,7 +732,7 @@ bool TextArea::moveDownByOneLine()
 	return true;
 }
 
-void TextArea::updateStableXByCurrentCursor()
+void TextAreaImpl::updateStableXByCurrentCursor()
 {
     const DocLoc docLoc = editor_.normalCursor().to();
     const VCharLoc vCharLoc = cvt_.toCharLoc(docLoc);
@@ -740,7 +740,7 @@ void TextArea::updateStableXByCurrentCursor()
     stableX_ = cvt_.toX(vCharLoc);
 }
 
-void TextArea::remakePage()
+void TextAreaImpl::remakePage()
 {
     page_.clear();
 
@@ -770,7 +770,7 @@ void TextArea::remakePage()
     }
 }
 
-void TextArea::makeVRow(const Row &row, VRow &vrow)
+void TextAreaImpl::makeVRow(const Row &row, VRow &vrow)
 {
     assert(vrow.size() == 0);
 
@@ -807,7 +807,7 @@ void TextArea::makeVRow(const Row &row, VRow &vrow)
     });
 }
 
-VLineLoc TextArea::getShownLastLineLoc() const
+VLineLoc TextAreaImpl::getShownLastLineLoc() const
 {
 	const int rowCnt = page_.size();
 

@@ -32,17 +32,15 @@ class DocLoc;
 class Editor;
 
 
-namespace gui::impl
+namespace gui
 {
 
-
-// 实现GUI相关的逻辑中和具体GUI工具包无关的部分
-class TextArea {
+class TextAreaImpl {
 public:
 
-    TextArea(Editor &editor, const TextAreaConfig &config);
+    TextAreaImpl(Editor &editor, const TextAreaConfig &config);
 
-    ~TextArea();
+    ~TextAreaImpl();
 
     const doc::Document &doc() const
     {

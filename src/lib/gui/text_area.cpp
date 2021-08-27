@@ -7,7 +7,7 @@ namespace gui
 {
 
 TextArea::TextArea(Editor &editor, const TextAreaConfig &config)
-    : impl_(new impl::TextArea(editor, config))
+    : impl_(new TextAreaImpl(editor, config))
 {
 }
 

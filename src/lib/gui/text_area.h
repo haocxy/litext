@@ -23,10 +23,7 @@ class Editor;
 namespace gui
 {
 
-namespace impl
-{
-class TextArea;
-}
+class TextAreaImpl;
 
 
 // 实现GUI相关的逻辑中和具体GUI工具包无关的部分
@@ -91,7 +88,7 @@ public:
     Signal<void()> &sigViewportChanged();
 
 private:
-    impl::TextArea *impl_ = nullptr;
+    TextAreaImpl *impl_ = nullptr;
 };
 
 
