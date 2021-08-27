@@ -68,7 +68,7 @@ public:
     ScrollRatio scrollRatio() const
     {
         Lock lock(mtx_);
-        return ScrollRatio(vloc_.row(), doc().rowCnt());
+        return ScrollRatio(0, doc().rowCnt() - 1);
     }
 
     LineN lineCountLimit() const
@@ -165,6 +165,13 @@ private:
     void movePageHeadOneLine();
     // 删除多余的row
     void removeSpareRow();
+
+    // 在滚动逻辑中，
+    // 为了防止最后一个段落过长导致无法滚动到文档最后，
+    // 需要使滚动范围比实际的段落数多一些
+    RowN scrollReserve() const {
+        return lineCountLimit_ - 1;
+    }
 
 private:
     Editor &editor_;

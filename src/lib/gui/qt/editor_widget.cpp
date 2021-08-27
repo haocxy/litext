@@ -51,7 +51,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
     });
 
     sigConns_ += document.sigRowCountUpdated().connect([this](RowN rowCount) {
-        RowN newValue = rowCount - 1;
+        RowN newValue = textArea_.scrollRatio().total();
         if (newValue <= static_cast<RowN>(std::numeric_limits<decltype(vScrollBar_->maximum())>::max())) {
             vScrollBar_->setMaximum(static_cast<int>(newValue));
         } else {

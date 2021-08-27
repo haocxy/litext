@@ -69,16 +69,7 @@ std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range) const
 Range<i64> LineManager::findByteRange(PartId partId) const
 {
     Lock lock(mtx_);
-
-    auto it = std::find_if(orderedInfos_.begin(), orderedInfos_.end(), [partId](const DocPart &e) {
-        return e.id() == partId;
-    });
-
-    if (it != orderedInfos_.end()) {
-        return it->byteRange();
-    } else {
-        throw std::logic_error("LineManager::findByteRange(): part not found");
-    }
+    return orderedInfos_[partId].byteRange();
 }
 
 void LineManager::onPartDecoded(const DecodedPart &e)
@@ -91,33 +82,56 @@ void LineManager::onPartDecoded(const DecodedPart &e)
         info.rowRange().setLen(text::countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
         info.setIsLast(e.isLast());
-        LOGD << "LineManager part[" << info.id() << "], nrows [" << info.rowRange().count() << "] , time usage[" << elapse.ms() << "]";
         updatePartInfo(info, e.fileSize());
     });
 }
 
 RowN LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
 {
-    Lock lock(mtx_);
+    RowN rowCount = 0;
 
-    rowCount_ += info.rowRange().count();
+    std::vector<DocPart> newlyOrderedParts;
+    std::vector<LoadProgress> loadProgresses;
 
-    updateRowOff(info, totalByteCount);
+    {
+        Lock lock(mtx_);
+
+        rowCount_ += info.rowRange().count();
+        rowCount = rowCount_;
+
+        std::vector<PartId> newlyOrderedPartIds = updateRowOff(info);
+        const size_t newlyOrderedPartCount = newlyOrderedPartIds.size();
+        newlyOrderedParts.resize(newlyOrderedPartCount);
+
+        for (size_t i = 0; i < newlyOrderedPartCount; ++i) {
+            newlyOrderedParts[i] = orderedInfos_[newlyOrderedPartIds[i]];
+        }
+    }
+
+    sigRowCountUpdated_(rowCount);
+
+    for (const DocPart &part : newlyOrderedParts) {
+        stmtSavePart_(part);
+        sigLoadProgress_(LoadProgress(part.rowRange().end(), part.byteRange().end(), totalByteCount, part.isLast()));
+    }
 
     return rowCount_;
 }
 
-void LineManager::updateRowOff(const DocPart &info, i64 totalByteCount)
+std::vector<PartId> LineManager::updateRowOff(const DocPart &info)
 {
+    std::vector<PartId> newlyOrderedParts;
+
     pendingInfos_[info.byteRange().off()] = info;
 
     while (!pendingInfos_.empty()) {
         const DocPart &firstPending = pendingInfos_.begin()->second;
         if (firstPending.byteRange().off() == 0) {
             orderedInfos_.push_back(firstPending);
+            orderedInfos_.back().setId(orderedInfos_.size() - 1);
             orderedInfos_.back().rowRange().setOff(0);
             pendingInfos_.erase(pendingInfos_.begin());
-            onRowOffDetected(orderedInfos_.back(), totalByteCount);
+            newlyOrderedParts.push_back(orderedInfos_.back().id());
         } else {
             if (orderedInfos_.empty()) {
                 break;
@@ -126,15 +140,18 @@ void LineManager::updateRowOff(const DocPart &info, i64 totalByteCount)
                 if (orderedInfos_.back().byteRange().end() == firstPending.byteRange().off()) {
                     const RowN oldLastRowEnd = lastOrdered.rowRange().end();
                     orderedInfos_.push_back(firstPending);
+                    orderedInfos_.back().setId(orderedInfos_.size() - 1);
                     orderedInfos_.back().rowRange().setOff(oldLastRowEnd);
                     pendingInfos_.erase(pendingInfos_.begin());
-                    onRowOffDetected(orderedInfos_.back(), totalByteCount);
+                    newlyOrderedParts.push_back(orderedInfos_.back().id());
                 } else {
                     break;
                 }
             }
         }
     }
+
+    return newlyOrderedParts;
 }
 
 void LineManager::onRowOffDetected(DocPart &i, i64 totalByteCount)
@@ -145,12 +162,6 @@ void LineManager::onRowOffDetected(DocPart &i, i64 totalByteCount)
         << ", row off: [" << i.rowRange().off() << "]"
         << ", row count: [" << i.rowRange().count() << "]"
         << ", row end: [" << i.rowRange().end() << "]";
-
-    i.setId(idGen_.next());
-    stmtSavePart_(i);
-
-    sigRowCountUpdated_(rowCount_);
-    sigLoadProgress_(LoadProgress(i.rowRange().end(), i.byteRange().end(), totalByteCount, i.isLast()));
 }
 
 std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const

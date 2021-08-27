@@ -76,7 +76,7 @@ private:
     // 所以每次加载完一个片段后检查下这个片段前的片段是否都加载完成
     // 如果这个片段的前面都加载完成，或者因为这一片段的完成使得位置在其后却先加载的先片段明确了段偏移，则更新它门段偏移
     // 如果没有加载完成，则临时存下来，等后面的片段来更新
-    void updateRowOff(const DocPart &info, i64 totalByteCount);
+    std::vector<PartId> updateRowOff(const DocPart &info);
 
     void onRowOffDetected(DocPart &info, i64 totalByteCount);
 
