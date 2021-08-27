@@ -57,7 +57,7 @@ void DocumentImpl::start()
     loader_.loadAll();
 }
 
-std::optional<Row> DocumentImpl::rowAt(RowN row)
+std::optional<Row> DocumentImpl::rowAt(RowN row) const
 {
     std::map<RowN, Row> rows = rowsAt(Ranges::byOffAndLen<RowN>(row, 1));
     auto it = rows.find(row);
@@ -68,7 +68,7 @@ std::optional<Row> DocumentImpl::rowAt(RowN row)
     }
 }
 
-std::map<RowN, Row> DocumentImpl::rowsAt(const RowRange &range)
+std::map<RowN, Row> DocumentImpl::rowsAt(const RowRange &range) const
 {
     std::map<RowN, RowIndex> indexes = lineManager_.findRange(range);
     return rowCache_.loadRows(indexes);

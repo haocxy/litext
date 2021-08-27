@@ -116,10 +116,6 @@ public:
         return sigShouldRepaint_;
     }
 
-    Signal<void()> &sigViewLocChanged() {
-        return sigViewLocChanged_;
-    }
-
     Signal<void()> &sigViewportChanged() {
         return sigViewportChanged_;
     }
@@ -200,7 +196,6 @@ private:
 
 private:
     Signal<void()> sigShouldRepaint_;
-    Signal<void()> sigViewLocChanged_;
     Signal<void()> sigViewportChanged_;
 
 private:

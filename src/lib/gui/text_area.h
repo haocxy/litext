@@ -88,8 +88,6 @@ public:
 
     Signal<void()> &sigShouldRepaint();
 
-    Signal<void()> &sigViewLocChanged();
-
     Signal<void()> &sigViewportChanged();
 
 private:

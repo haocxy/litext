@@ -100,11 +100,11 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
 
     if (loc.isAfterLastChar())
     {
-        const RowN rowCnt = m_model.rowCnt();
+        const RowN rowCnt = document_.rowCnt();
         if (loc.row() < rowCnt - 1)
         {
-            const Row & nextRow = m_model.rowAt(loc.row() + 1);
-            if (nextRow.charCnt() > 0)
+            const std::optional<Row> nextRow = document_.rowAt(loc.row() + 1);
+            if (nextRow->charCnt() > 0)
             {
                 return DocLoc(loc.row() + 1, 0);
             }
@@ -119,8 +119,8 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
         }
     }
 
-    const Row & row = m_model.rowAt(loc.row());
-    if (loc.col() < row.charCnt() - 1)
+    const std::optional<Row> row = document_.rowAt(loc.row());
+    if (loc.col() < row->charCnt() - 1)
     {
         return loc.nextRight();
     }

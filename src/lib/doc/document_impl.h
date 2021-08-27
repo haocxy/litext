@@ -52,16 +52,16 @@ public:
         return lineManager_.rowCnt();
     }
 
-    std::optional<Row> rowAt(RowN row);
+    std::optional<Row> rowAt(RowN row) const;
 
-    std::map<RowN, Row> rowsAt(const RowRange &range);
+    std::map<RowN, Row> rowsAt(const RowRange &range) const;
 
 private:
     const fs::path path_;
     TextRepo textRepo_;
     TextLoader loader_;
     LineManager lineManager_;
-    RowCache rowCache_;
+    mutable RowCache rowCache_;
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns sigConns_;
 

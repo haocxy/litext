@@ -45,7 +45,7 @@ void TextArea::open(const Size &size, RowN row)
     if (editor_.doc().rowCnt() >= docRange.end()) {
         remakePage();
         updateStableXByCurrentCursor();
-        sigViewLocChanged_();
+        sigViewportChanged_();
         sigShouldRepaint_();
         sigConnForWaitingRange_.disconnect();
         opened_ = true;
@@ -60,7 +60,7 @@ void TextArea::open(const Size &size, RowN row)
                 Lock lock(mtx_);
                 remakePage();
                 updateStableXByCurrentCursor();
-                sigViewLocChanged_();
+                sigViewportChanged_();
                 sigShouldRepaint_();
                 sigConnForWaitingRange_.disconnect();
                 opened_ = true;
@@ -107,7 +107,7 @@ void TextArea::jumpTo(RowN row)
 
     remakePage();
 
-    sigViewLocChanged_();
+    sigViewportChanged_();
     sigShouldRepaint_();
 }
 
@@ -510,6 +510,8 @@ void TextArea::onDirLeftKeyPress()
 
 void TextArea::onDirRightKeyPress()
 {
+    Lock lock(mtx_);
+
 	const DocLoc oldDocLoc = editor_.normalCursor().to();
 	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
 	bool needMoveHead = false;
@@ -530,6 +532,7 @@ void TextArea::onDirRightKeyPress()
 	if (needMoveHead)
 	{
 		movePageHeadOneLine();
+        sigViewportChanged_();
 	}
 }
 
@@ -541,8 +544,6 @@ void TextArea::setViewLoc(const ViewLoc & viewLoc)
     }
 
     vloc_ = viewLoc;
-
-    sigViewLocChanged_();
 }
 
 void TextArea::movePageHeadOneLine()

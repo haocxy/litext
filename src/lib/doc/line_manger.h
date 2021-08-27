@@ -42,7 +42,7 @@ public:
         return rowCount_;
     }
 
-    std::map<RowN, RowIndex> findRange(const RowRange &range);
+    std::map<RowN, RowIndex> findRange(const RowRange &range) const;
 
     Range<i64> findByteRange(PartId partId) const;
 

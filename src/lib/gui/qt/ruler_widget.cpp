@@ -46,10 +46,7 @@ RulerWidget::RulerWidget(TextArea &textArea)
     connect(this, &RulerWidget::qtSigUpdateContent, this, &RulerWidget::qtSlotUpdateContent);
     connect(this, &RulerWidget::qtSigUpdateWidth, this, &RulerWidget::qtSlotUpdateWidth);
 
-    textAreaSigConns_ += textArea_.sigViewLocChanged().connect([this] {
-        emit qtSigUpdateContent();
-    });
-    textAreaSigConns_ += textArea_.sigShouldRepaint().connect([this] {
+    textAreaSigConns_ += textArea_.sigViewportChanged().connect([this] {
         emit qtSigUpdateContent();
     });
     textAreaSigConns_ += textArea_.editor().doc().sigRowCountUpdated().connect([this](RowN row) {

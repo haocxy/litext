@@ -142,11 +142,6 @@ Signal<void()> &TextArea::sigShouldRepaint()
     return impl_->sigShouldRepaint();
 }
 
-Signal<void()> &TextArea::sigViewLocChanged()
-{
-    return impl_->sigViewLocChanged();
-}
-
 Signal<void()> &TextArea::sigViewportChanged()
 {
     return impl_->sigViewportChanged();

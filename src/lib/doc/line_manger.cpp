@@ -42,7 +42,7 @@ LineManager::~LineManager()
     workers_.clear();
 }
 
-std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range)
+std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range) const
 {
     Lock lock(mtx_);
 
