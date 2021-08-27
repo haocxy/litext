@@ -7,7 +7,6 @@
 #include <QErrorMessage>
 
 #include "core/system.h"
-#include "doc/simple_doc.h"
 #include "editor/editor.h"
 #include "gui/text_area.h"
 #include "gui/config.h"

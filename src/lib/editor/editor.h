@@ -9,18 +9,11 @@
 #include "cursor.h"
 
 
-class Doc;
-
-/*
-逻辑上操作文档
-用于提供操作文档数据的接口
-如，选择文档中某些字符由这个接口支持
-*/
 class Editor
 {
 public:
 
-    Editor(Doc * model, const fs::path &file);
+    Editor(const fs::path &file);
 
     void start();
 
@@ -55,8 +48,6 @@ private:
     void setLastActRow(RowN row);
 
 private:
-    Doc & m_model;
-
     doc::Document document_;
 
     // 普通模式光标

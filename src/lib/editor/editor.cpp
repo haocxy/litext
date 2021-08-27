@@ -1,17 +1,11 @@
 #include "editor.h"
 
-#include <assert.h>
-
-#include "doc/doc.h"
 #include "doc/doc_row.h"
 
 
-Editor::Editor(Doc *model, const fs::path &file)
-    : m_model(*model)
-    , document_(file)
-{
-    assert(model);
-}
+Editor::Editor(const fs::path &file)
+    : document_(file)
+{}
 
 void Editor::start()
 {

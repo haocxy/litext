@@ -5,8 +5,6 @@
 
 #include "core/fs.h"
 #include "core/sigconns.h"
-#include "doc/decoded_part.h"
-#include "doc/simple_doc.h"
 #include "editor/editor.h"
 #include "gui/text_area.h"
 #include "gui/declare_text_area_config.h"
@@ -38,7 +36,6 @@ private:
 
 private:
     const fs::path file_;
-    SimpleDoc doc_;
     Editor editor_;
     TextArea textArea_;
     RulerWidget *ruler_ = nullptr;
