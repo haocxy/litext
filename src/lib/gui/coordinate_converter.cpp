@@ -51,23 +51,23 @@ i32 CoordinateConverter::toLineOffset(i32 y) const
 i32 CoordinateConverter::toX(const VCharLoc &charLoc) const
 {
     if (charLoc.isNull()) {
-        return rulerWidth_;
+        return 0;
     }
 
     if (charLoc.isAfterLastRow()) {
-        return rulerWidth_ + config_.hLayout().gap();
+        return config_.hLayout().gap();
     }
 
     if (charLoc.isAfterLastChar()) {
         const VLine &line = page_[charLoc.row()][charLoc.line()];
         if (line.empty()) {
-            return rulerWidth_ + config_.hLayout().gap();
+            return config_.hLayout().gap();
         }
         const VChar &vc = page_[charLoc.row()][charLoc.line()].last();
-        return rulerWidth_ + vc.x() + vc.width();
+        return vc.x() + vc.width();
     }
 
-    return rulerWidth_ + page_[charLoc.row()][charLoc.line()][charLoc.col()].x();
+    return page_[charLoc.row()][charLoc.line()][charLoc.col()].x();
 }
 
 i32 CoordinateConverter::toBaselineY(i32 off) const
@@ -161,8 +161,6 @@ static i32 calcRightBound(i32 x, i32 curWidth)
 
 VCharLoc CoordinateConverter::toCharLoc(const VLineLoc &lineLoc, i32 x) const
 {
-    x -= rulerWidth_;
-
     if (lineLoc.isNull() || lineLoc.isAfterLastRow()) {
         return VCharLoc::newCharLocAfterLastChar(lineLoc);
     }

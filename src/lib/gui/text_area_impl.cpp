@@ -22,7 +22,7 @@ namespace gui
 TextAreaImpl::TextAreaImpl(Editor &editor, const TextAreaConfig &config)
     : editor_(editor)
     , config_(config)
-    , cvt_(editor_, size_, rulerWidth_, page_, vloc_, config_)
+    , cvt_(editor_, size_, page_, vloc_, config_)
 {
     editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
         sigShouldRepaint_();
@@ -473,7 +473,7 @@ void TextAreaImpl::repaint()
         const VRowLoc loc = cvt_.toRowLoc(VRowOffset(row));
         if (!loc.isNull()) {
             const RowBound b = getRowBound(loc);
-            p.fillRect(rulerWidth_, b.top(), size_.width() - rulerWidth_, b.height(), QColor(Qt::green).lighter(192));
+            p.fillRect(0, b.top(), size_.width(), b.height(), QColor(Qt::green).lighter(192));
         }
     }
 
@@ -675,7 +675,7 @@ void TextAreaImpl::drawEachChar(QPainter &p) const
 
         for (const VChar &c : line)
         {
-            drawChar(p, rulerWidth_ + c.x(), baseline, c.uchar());
+            drawChar(p, c.x(), baseline, c.uchar());
         }
 
         ++lineOffset;
@@ -691,7 +691,7 @@ void TextAreaImpl::drawEachChar(QPainter &p) const
 
             for (const VChar & c : line)
             {
-                drawChar(p, rulerWidth_ + c.x(), baseline, c.uchar());
+                drawChar(p, c.x(), baseline, c.uchar());
             }
 
             ++lineOffset;
@@ -825,7 +825,7 @@ void TextAreaImpl::makeVRow(const Row &row, VRow &vrow)
     };
 
     Provider provider(config_.font());
-    RowWalker walker(provider, charStream, config_.hLayout(), size_.width() - rulerWidth_);
+    RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {
         if (lineIndex == vrow.size()) {
