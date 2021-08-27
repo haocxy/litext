@@ -489,11 +489,14 @@ void TextAreaImpl::onDirDownKeyPress()
 
 void TextAreaImpl::onDirLeftKeyPress()
 {
+    Lock lock(mtx_);
+
     const DocLoc oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
+    bool viewportChanged = false;
     if (noPrevCharAtSameLine(oldCharLoc))
     {
-        ensureHasPrevLine(oldCharLoc);
+        viewportChanged = ensureHasPrevLine(oldCharLoc);
     }
 
     const DocLoc newLoc = editor_.getNextLeftLocByChar(oldDocLoc);
@@ -504,8 +507,11 @@ void TextAreaImpl::onDirLeftKeyPress()
 		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
         stableX_ = cvt_.toX(charLoc);
     }
-    
-	removeSpareRow();
+
+    if (viewportChanged) {
+        removeSpareRow();
+        sigViewportChanged_();
+    }
 }
 
 void TextAreaImpl::onDirRightKeyPress()

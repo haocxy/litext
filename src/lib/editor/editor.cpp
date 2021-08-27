@@ -50,7 +50,7 @@ DocLoc Editor::getNextLeftLocByChar(const DocLoc & loc) const
 
     if (loc.isAfterLastRow())
     {
-        const RowN rowCnt = m_model.rowCnt();
+        const RowN rowCnt = document_.rowCnt();
         if (rowCnt <= 0)
         {
             return DocLoc();
@@ -61,7 +61,7 @@ DocLoc Editor::getNextLeftLocByChar(const DocLoc & loc) const
 
     if (loc.isAfterLastChar())
     {
-        const CharN charCnt = m_model.rowAt(loc.row()).charCnt();
+        const CharN charCnt = document_.rowAt(loc.row())->charCnt();
         if (charCnt <= 0)
         {
             if (loc.row() > 0)
