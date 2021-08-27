@@ -22,6 +22,7 @@
 #include "line_bound.h"
 #include "row_bound.h"
 #include "scroll_ratio.h"
+#include "text_area.h"
 #include "text_area_config.h"
 #include "coordinate_converter.h"
 
@@ -77,15 +78,9 @@ public:
         return lineCountLimit_;
     }
 
-    void onPrimaryButtomPress(i32 x, i32 y);
+    void moveCursor(TextArea::Dir dir);
 
-    void onDirUpKeyPress();
-
-    void onDirDownKeyPress();
-
-    void onDirLeftKeyPress();
-
-    void onDirRightKeyPress();
+    void putCursor(i32 x, i32 y);
 
     // 向后移动一个line，移动成功则返回true，移动失败则返回false
     // 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
@@ -119,6 +114,15 @@ public:
     }
 
 private:
+
+    void moveCursorUp();
+
+    void moveCursorDown();
+
+    void moveCursorLeft();
+
+    void moveCursorRight();
+
     void setSize(const Size &size);
 
     int calcMaxShownLineCnt() const;

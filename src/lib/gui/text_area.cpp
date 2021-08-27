@@ -62,29 +62,14 @@ LineN TextArea::lineCountLimit() const
     return impl_->lineCountLimit();
 }
 
-void TextArea::onPrimaryButtomPress(i32 x, i32 y)
+void TextArea::moveCursor(Dir dir)
 {
-    impl_->onPrimaryButtomPress(x, y);
+    impl_->moveCursor(dir);
 }
 
-void TextArea::onDirUpKeyPress()
+void TextArea::putCursor(i32 x, i32 y)
 {
-    impl_->onDirUpKeyPress();
-}
-
-void TextArea::onDirDownKeyPress()
-{
-    impl_->onDirDownKeyPress();
-}
-
-void TextArea::onDirLeftKeyPress()
-{
-    impl_->onDirLeftKeyPress();
-}
-
-void TextArea::onDirRightKeyPress()
-{
-    impl_->onDirRightKeyPress();
+    impl_->putCursor(x, y);
 }
 
 bool TextArea::moveDownByOneLine()

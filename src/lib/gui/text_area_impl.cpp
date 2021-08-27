@@ -436,9 +436,8 @@ void TextAreaImpl::removeSpareRow()
     }
 }
 
-void TextAreaImpl::onDirUpKeyPress()
+void TextAreaImpl::moveCursorUp()
 {
-    Lock lock(mtx_);
 
 	// TODO !!!
 	// 如果光标位置不在视图内，则只做一件事：把文档视图滚动到恰好显示光标所在行
@@ -463,10 +462,8 @@ void TextAreaImpl::onDirUpKeyPress()
     }
 }
 
-void TextAreaImpl::onDirDownKeyPress()
+void TextAreaImpl::moveCursorDown()
 {
-    Lock lock(mtx_);
-
 	// 第一步，确保当前位置在视图中有下一行
 	const DocLoc & oldDocLoc = editor_.normalCursor().to();
 	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
@@ -487,10 +484,8 @@ void TextAreaImpl::onDirDownKeyPress()
 	}
 }
 
-void TextAreaImpl::onDirLeftKeyPress()
+void TextAreaImpl::moveCursorLeft()
 {
-    Lock lock(mtx_);
-
     const DocLoc oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
     bool viewportChanged = false;
@@ -514,10 +509,8 @@ void TextAreaImpl::onDirLeftKeyPress()
     }
 }
 
-void TextAreaImpl::onDirRightKeyPress()
+void TextAreaImpl::moveCursorRight()
 {
-    Lock lock(mtx_);
-
 	const DocLoc oldDocLoc = editor_.normalCursor().to();
 	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
 	bool needMoveHead = false;
@@ -692,13 +685,37 @@ void TextAreaImpl::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& 
     }
 }
 
-void TextAreaImpl::onPrimaryButtomPress(i32 x, i32 y)
+void TextAreaImpl::moveCursor(TextArea::Dir dir)
+{
+    Lock lock(mtx_);
+
+    switch (dir) {
+    case TextArea::Dir::Up:
+        moveCursorUp();
+        break;
+    case TextArea::Dir::Down:
+        moveCursorDown();
+        break;
+    case TextArea::Dir::Left:
+        moveCursorLeft();
+        break;
+    case TextArea::Dir::Right:
+        moveCursorRight();
+        break;
+    default:
+        break;
+    }
+}
+
+void TextAreaImpl::putCursor(i32 x, i32 y)
 {
     Lock lock(mtx_);
     const VCharLoc charLoc = cvt_.toCharLoc(x, y);
     const DocLoc docLoc = cvt_.toDocLoc(charLoc);
     editor_.setNormalCursor(docLoc);
     stableX_ = cvt_.toX(charLoc);
+
+    sigShouldRepaint_();
 }
 
 bool TextAreaImpl::moveDownByOneLine()

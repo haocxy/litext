@@ -94,19 +94,19 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 
     switch (key) {
     case Qt::Key_Up:
-        textArea_.onDirUpKeyPress();
+        textArea_.moveCursor(TextArea::Dir::Up);
         update();
         break;
     case Qt::Key_Down:
-        textArea_.onDirDownKeyPress();
+        textArea_.moveCursor(TextArea::Dir::Down);
         update();
         break;
     case Qt::Key_Left:
-        textArea_.onDirLeftKeyPress();
+        textArea_.moveCursor(TextArea::Dir::Left);
         update();
         break;
     case Qt::Key_Right:
-        textArea_.onDirRightKeyPress();
+        textArea_.moveCursor(TextArea::Dir::Right);
         update();
         break;
     case Qt::Key_S:
@@ -121,7 +121,7 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
 void TextAreaWidget::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton) {
-        textArea_.onPrimaryButtomPress(e->x(), e->y());
+        textArea_.putCursor(e->x(), e->y());
         update();
     }
 }
