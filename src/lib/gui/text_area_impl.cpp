@@ -459,10 +459,13 @@ void TextAreaImpl::repaint()
     p.fillRect(0, 0, size_.width(), size_.height(), Qt::white);
 
     // last act line
-    std::optional<Rect> r = getLastActLineDrawRect();
-    if (r) {
-        p.fillRect(r->left(), r->top(), r->width(), r->height(),
-            QColor(Qt::green).lighter(192));
+    {
+        const RowN row = editor_.lastActRow();
+        const VRowLoc loc = cvt_.toRowLoc(VRowOffset(row));
+        if (!loc.isNull()) {
+            const RowBound b = getRowBound(loc);
+            p.fillRect(0, b.top(), size_.width(), b.height(), QColor(Qt::green).lighter(192));
+        }
     }
 
     // text
@@ -614,25 +617,6 @@ void TextAreaImpl::movePageHeadOneLine()
 	{
 		setViewLoc(ViewLoc(vloc_.row(), vloc_.line() + 1));
 	}
-}
-
-std::optional<Rect> TextAreaImpl::getLastActLineDrawRect() const
-{
-    const RowN row = editor_.lastActRow();
-    const VRowLoc loc = cvt_.toRowLoc(VRowOffset(row));
-    if (loc.isNull())
-    {
-        return std::nullopt;
-    }
-
-    const RowBound bound = getRowBound(loc);
-
-    Rect rect;
-    rect.setLeft(0);
-    rect.setTop(bound.top());
-    rect.setWidth(size_.width());
-    rect.setHeight(bound.height());
-    return rect;
 }
 
 std::optional<VerticalLine> TextAreaImpl::getNormalCursorDrawData() const

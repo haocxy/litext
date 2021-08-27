@@ -102,11 +102,6 @@ const TextAreaConfig &TextArea::config() const
     return impl_->config();
 }
 
-std::optional<Rect> TextArea::getLastActLineDrawRect() const
-{
-    return impl_->getLastActLineDrawRect();
-}
-
 std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
 {
     return impl_->getNormalCursorDrawData();

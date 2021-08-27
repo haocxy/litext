@@ -17,7 +17,6 @@
 
 #include "page.h"
 #include "view_locs.h"
-#include "rect.h"
 #include "vertical_line.h"
 #include "view_define.h"
 #include "size.h"
@@ -102,8 +101,6 @@ public:
     Editor &editor() { return editor_; }
 
     const TextAreaConfig &config() const { return config_; }
-
-    std::optional<Rect> getLastActLineDrawRect() const;
 
     std::optional<VerticalLine> getNormalCursorDrawData() const;
 

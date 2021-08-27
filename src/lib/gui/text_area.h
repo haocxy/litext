@@ -9,7 +9,6 @@
 #include "doc/document.h"
 
 #include "size.h"
-#include "rect.h"
 #include "view_locs.h"
 #include "scroll_ratio.h"
 #include "row_bound.h"
@@ -72,8 +71,6 @@ public:
     Editor &editor();
 
     const TextAreaConfig &config() const;
-
-    std::optional<Rect> getLastActLineDrawRect() const;
 
     std::optional<VerticalLine> getNormalCursorDrawData() const;
 
