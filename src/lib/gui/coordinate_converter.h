@@ -17,14 +17,16 @@ namespace gui
 // 这部分逻辑属于TextArea，但是因为类似函数太多且实现代码较长，所以单独放置
 class CoordinateConverter {
 public:
-	CoordinateConverter(
-		const Editor &editor,
-		const Size &size,
-		const Page &page,
-		const ViewLoc &vloc,
-		const TextAreaConfig &config)
-		: editor_(editor)
-		, size_(size)
+    CoordinateConverter(
+        const Editor &editor,
+        const Size &size,
+        const i32 &rulerWidth,
+        const Page &page,
+        const ViewLoc &vloc,
+        const TextAreaConfig &config)
+        : editor_(editor)
+        , size_(size)
+        , rulerWidth_(rulerWidth)
 		, page_(page)
 		, vloc_(vloc)
 		, config_(config) {
@@ -66,6 +68,7 @@ private:
 private:
 	const Editor &editor_;
 	const Size &size_;
+    const i32 &rulerWidth_;
 	const Page &page_;
 	const ViewLoc &vloc_;
 	const TextAreaConfig &config_;

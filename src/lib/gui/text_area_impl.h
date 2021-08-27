@@ -204,6 +204,8 @@ private:
 
     Size size_;
 
+    i32 rulerWidth_ = 300;
+
     // 最多可显式的行的数量，包括最后的不能完整显式的行
     // 这个值仅取决于视口大小，和文档位置无关
     LineN lineCountLimit_ = 0;
