@@ -77,6 +77,11 @@ bool TextArea::moveDownByOneLine()
     return impl_->moveDownByOneLine();
 }
 
+const QImage &TextArea::widgetImg() const
+{
+    return impl_->widgetImg();
+}
+
 int TextArea::width() const
 {
     return impl_->width();

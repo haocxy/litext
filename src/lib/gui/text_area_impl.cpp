@@ -3,6 +3,8 @@
 #include <cassert>
 #include <stdexcept>
 
+#include <QPainter>
+
 #include "doc/doc.h"
 #include "doc/doc_row.h"
 #include "editor/editor.h"
@@ -11,6 +13,7 @@
 
 #include "text_area_config.h"
 #include "row_walker.h"
+#include "qt/font_to_qfont.h"
 
 
 namespace gui
@@ -137,6 +140,9 @@ void TextAreaImpl::setSize(const Size &size)
     size_ = size;
 
     lineCountLimit_ = calcMaxShownLineCnt();
+
+    widgetImg_ = QImage(size.width(), size.height(), QImage::Format_ARGB32_Premultiplied);
+    textImg_ = QImage(size.width(), size.height(), QImage::Format_ARGB32_Premultiplied);
 }
 
 int TextAreaImpl::calcMaxShownLineCnt() const
@@ -433,6 +439,58 @@ void TextAreaImpl::removeSpareRow()
         {
             break;
         }
+    }
+}
+
+static inline QString unicodeToUtf16SurrogatePairs(char32_t unicode) {
+    QChar high = QChar::highSurrogate(unicode);
+    QChar low = QChar::lowSurrogate(unicode);
+    QString surrogatedPairs;
+    surrogatedPairs.push_back(high);
+    surrogatedPairs.push_back(low);
+    return surrogatedPairs;
+}
+
+void TextAreaImpl::repaint()
+{
+    QPainter p(&widgetImg_);
+
+    // background
+    p.fillRect(0, 0, size_.width(), size_.height(), Qt::white);
+
+    // last act line
+    std::optional<Rect> r = getLastActLineDrawRect();
+    if (r) {
+        p.fillRect(r->left(), r->top(), r->width(), r->height(),
+            QColor(Qt::green).lighter(192));
+    }
+
+    // text
+    if (true || isTextImgDirty()) {
+        QPainter textPainter(&textImg_);
+        textImg_.fill(QColor(0, 0, 0, 0));
+
+        QFont qfont;
+        fontToQFont(config_.font(), qfont);
+        p.setFont(qfont);
+
+        drawEachChar([&p](i32 x, i32 y, char32_t unicode) {
+            if (!UCharUtil::needSurrogate(unicode)) {
+                p.drawText(x, y, QChar(unicode));
+            } else {
+                p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
+            }
+        });
+
+        markTextImgClean();
+    }
+
+    p.drawImage(0, 0, textImg_);
+
+    // cursor
+    std::optional<VerticalLine> vl = getNormalCursorDrawData();
+    if (vl) {
+        p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
     }
 }
 

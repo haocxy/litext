@@ -7,6 +7,8 @@
 #include <optional>
 #include <mutex>
 
+#include <QImage>
+
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "doc/doc_define.h"
@@ -85,6 +87,12 @@ public:
     // 向后移动一个line，移动成功则返回true，移动失败则返回false
     // 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
     bool moveDownByOneLine();
+
+    const QImage &widgetImg() const {
+        Lock lock(mtx_);
+        const_cast<TextAreaImpl*>(this)->repaint(); // TODO 为了看效果临时这样
+        return widgetImg_;
+    }
 
 public:
     int width() const { return size_.width(); }
@@ -177,6 +185,20 @@ private:
         return lineCountLimit_ - 1;
     }
 
+    bool isTextImgDirty() const {
+        return isTextImgDirty_;
+    }
+
+    void markTextImgDirty() {
+        isTextImgDirty_ = true;
+    }
+
+    void markTextImgClean() {
+        isTextImgDirty_ = false;
+    }
+
+    void repaint();
+
 private:
     Editor &editor_;
     TextAreaConfig config_;
@@ -202,6 +224,12 @@ private:
     // 记录一个稳定位置，每次上下移动时尽可能选取与之接近的位置
     // 在某些操作后更新，如左右移动光标等操作
     i32 stableX_ = 0;
+
+    QImage widgetImg_;
+
+    QImage textImg_;
+
+    bool isTextImgDirty_ = true;
 
 private:
     Signal<void()> sigShouldRepaint_;
