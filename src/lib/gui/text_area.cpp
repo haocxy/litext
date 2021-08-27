@@ -102,16 +102,6 @@ const TextAreaConfig &TextArea::config() const
     return impl_->config();
 }
 
-std::optional<VerticalLine> TextArea::getNormalCursorDrawData() const
-{
-    return impl_->getNormalCursorDrawData();
-}
-
-int TextArea::getLineNumBarWidth() const
-{
-    return impl_->getLineNumBarWidth();
-}
-
 void TextArea::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const
 {
     return impl_->drawEachLineNum(std::move(action));

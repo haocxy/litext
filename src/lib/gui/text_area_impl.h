@@ -17,7 +17,6 @@
 
 #include "page.h"
 #include "view_locs.h"
-#include "vertical_line.h"
 #include "view_define.h"
 #include "size.h"
 #include "line_bound.h"
@@ -102,10 +101,6 @@ public:
 
     const TextAreaConfig &config() const { return config_; }
 
-    std::optional<VerticalLine> getNormalCursorDrawData() const;
-
-    int getLineNumBarWidth() const;
-
     void drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
     void drawEachChar(QPainter &p) const;
@@ -175,13 +170,6 @@ private:
     // 删除多余的row
     void removeSpareRow();
 
-    // 在滚动逻辑中，
-    // 为了防止最后一个段落过长导致无法滚动到文档最后，
-    // 需要使滚动范围比实际的段落数多一些
-    RowN scrollReserve() const {
-        return lineCountLimit_ - 1;
-    }
-
     bool isTextImgDirty() const {
         return isTextImgDirty_;
     }
@@ -222,8 +210,10 @@ private:
     // 在某些操作后更新，如左右移动光标等操作
     i32 stableX_ = 0;
 
+    // 整个文本区域控件的图像，即最终提供给外部的图像
     QImage widgetImg_;
 
+    // 文本的图像
     QImage textImg_;
 
     bool isTextImgDirty_ = true;

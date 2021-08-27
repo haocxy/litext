@@ -14,7 +14,6 @@
 #include "row_bound.h"
 #include "line_bound.h"
 #include "view_define.h"
-#include "vertical_line.h"
 #include "text_area_config.h"
 
 
@@ -71,10 +70,6 @@ public:
     Editor &editor();
 
     const TextAreaConfig &config() const;
-
-    std::optional<VerticalLine> getNormalCursorDrawData() const;
-
-    int getLineNumBarWidth() const;
 
     void drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 

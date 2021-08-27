@@ -467,7 +467,7 @@ void TextAreaImpl::repaint()
     // background
     p.fillRect(0, 0, size_.width(), size_.height(), Qt::white);
 
-    // last act line
+    // last act row
     {
         const RowN row = editor_.lastActRow();
         const VRowLoc loc = cvt_.toRowLoc(VRowOffset(row));
@@ -493,10 +493,21 @@ void TextAreaImpl::repaint()
 
     p.drawImage(0, 0, textImg_);
 
-    // cursor
-    std::optional<VerticalLine> vl = getNormalCursorDrawData();
-    if (vl) {
-        p.drawLine(vl->x(), vl->top(), vl->x(), vl->bottom());
+    // normal cursor
+    {
+        constexpr int HorizontalDelta = -1;
+        constexpr int VerticalShrink = 2;
+
+        const DocCursor &cursor = editor_.normalCursor();
+        if (!cursor.isNull() && cursor.isInsert()) {
+            const DocLoc &docLoc = cursor.loc();
+            const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
+            if (!charLoc.isNull()) {
+                const LineBound b = getLineBound(charLoc);
+                const i32 x = cvt_.toX(charLoc) + HorizontalDelta;
+                p.drawLine(x, b.top() + VerticalShrink, x, b.bottom() - VerticalShrink);
+            }
+        }
     }
 }
 
@@ -620,48 +631,6 @@ void TextAreaImpl::movePageHeadOneLine()
 	{
 		setViewLoc(ViewLoc(vloc_.row(), vloc_.line() + 1));
 	}
-}
-
-std::optional<VerticalLine> TextAreaImpl::getNormalCursorDrawData() const
-{
-    enum { kHorizontalDelta = -1 };
-    enum { kVerticalShrink = 2 };
-
-    const DocCursor & cursor = editor_.normalCursor();
-
-    if (cursor.isNull())
-    {
-        return std::nullopt;
-    }
-
-    if (!cursor.isInsert())
-    {
-        return std::nullopt;
-    }
-
-    const DocLoc & docLoc = cursor.loc();
-
-    const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
-
-    if (charLoc.isNull())
-    {
-        return std::nullopt;
-    }
-
-    const LineBound bound = getLineBound(charLoc);
-
-    const i32 x = cvt_.toX(charLoc) + kHorizontalDelta;
-
-    VerticalLine vl;
-    vl.setX(x);
-    vl.setTop(bound.top() + kVerticalShrink);
-    vl.setBottom(bound.bottom() - kVerticalShrink);
-    return vl;
-}
-
-int TextAreaImpl::getLineNumBarWidth() const
-{
-    return 100;
 }
 
 void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> && action) const
