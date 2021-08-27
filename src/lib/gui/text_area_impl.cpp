@@ -451,6 +451,15 @@ static inline QString unicodeToUtf16SurrogatePairs(char32_t unicode) {
     return surrogatedPairs;
 }
 
+static void drawChar(QPainter &p, i32 x, i32 y, char32_t unicode)
+{
+    if (!UCharUtil::needSurrogate(unicode)) {
+        p.drawText(x, y, QChar(unicode));
+    } else {
+        p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
+    }
+}
+
 void TextAreaImpl::repaint()
 {
     QPainter p(&widgetImg_);
@@ -475,15 +484,9 @@ void TextAreaImpl::repaint()
 
         QFont qfont;
         fontToQFont(config_.font(), qfont);
-        p.setFont(qfont);
+        textPainter.setFont(qfont);
 
-        drawEachChar([&p](i32 x, i32 y, char32_t unicode) {
-            if (!UCharUtil::needSurrogate(unicode)) {
-                p.drawText(x, y, QChar(unicode));
-            } else {
-                p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
-            }
-        });
+        drawEachChar(textPainter);
 
         markTextImgClean();
     }
@@ -682,7 +685,7 @@ void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline
     }
 }
 
-void TextAreaImpl::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& action) const
+void TextAreaImpl::drawEachChar(QPainter &p) const
 {
     const int rowCnt = page_.size();
     if (rowCnt == 0)
@@ -703,7 +706,7 @@ void TextAreaImpl::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& 
 
         for (const VChar &c : line)
         {
-            action(c.x(), baseline, c.uchar());
+            drawChar(p, c.x(), baseline, c.uchar());
         }
 
         ++lineOffset;
@@ -719,7 +722,7 @@ void TextAreaImpl::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)>&& 
 
             for (const VChar & c : line)
             {
-                action(c.x(), baseline, c.uchar());
+                drawChar(p, c.x(), baseline, c.uchar());
             }
 
             ++lineOffset;

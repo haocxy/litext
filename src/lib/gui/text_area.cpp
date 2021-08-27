@@ -117,11 +117,6 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, co
     return impl_->drawEachLineNum(std::move(action));
 }
 
-void TextArea::drawEachChar(std::function<void(i32 x, i32 y, char32_t c)> &&action) const
-{
-    return impl_->drawEachChar(std::move(action));
-}
-
 Signal<void()> &TextArea::sigShouldRepaint()
 {
     return impl_->sigShouldRepaint();

@@ -78,8 +78,6 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
-    void drawEachChar(std::function<void(i32 x, i32 y, char32_t c)> &&action) const;
-
     Signal<void()> &sigShouldRepaint();
 
     Signal<void()> &sigViewportChanged();
