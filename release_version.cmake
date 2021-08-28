@@ -34,5 +34,3 @@ function(get_release_version outvar)
     endforeach()
     set(${outvar} ${head_obj_id} PARENT_SCOPE)
 endfunction()
-
-get_release_version(release_version)
