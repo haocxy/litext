@@ -1,10 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cstring>
+
 #include <string>
-#include <mutex>
-
-
 #include <sstream>
 #include <stdexcept>
 #include <freetype/freetype.h>
