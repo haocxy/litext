@@ -478,7 +478,7 @@ void TextAreaImpl::repaint()
     }
 
     // text
-    if (true || isTextImgDirty()) {
+    if (isTextImgDirty()) {
         QPainter textPainter(&textImg_);
         textImg_.fill(QColor(0, 0, 0, 0));
 
@@ -618,6 +618,8 @@ void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
     }
 
     vloc_ = viewLoc;
+
+    markTextImgDirty();
 }
 
 void TextAreaImpl::movePageHeadOneLine()
@@ -780,6 +782,8 @@ void TextAreaImpl::updateStableXByCurrentCursor()
 void TextAreaImpl::remakePage()
 {
     page_.clear();
+
+    markTextImgDirty();
 
     const RowN rowCnt = editor_.doc().rowCnt();
 
