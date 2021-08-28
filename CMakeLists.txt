@@ -41,3 +41,4 @@ if(MSVC)
     include(install_for_windows.cmake)
 endif()
 
+include(release_version.cmake)
