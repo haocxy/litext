@@ -236,11 +236,11 @@ public:
     }
 
     i32 descender() const {
-        return -ftFace_->descender >> 6;
+        return (-ftFace_->descender) >> 6;
     }
 
     i32 height() const {
-        return ftFace_->height >> 6;
+        return ascender() + descender();
     }
 
 private:
