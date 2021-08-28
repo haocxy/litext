@@ -24,6 +24,8 @@ public:
 
     void set(const std::string_view &key, const std::string &val);
 
+    void set(const std::string_view &key, const std::u32string &val);
+
     void set(const std::string_view &key, i32 val);
 
     void set(const std::string_view &key, i64 val);
@@ -31,6 +33,8 @@ public:
     bool get(const std::string_view &key, i32 &to);
 
     bool get(const std::string_view &key, i64 &to);
+
+    bool get(const std::string_view &key, std::u32string &to);
 
 private:
     sqlite::Statement stmtSelect_;

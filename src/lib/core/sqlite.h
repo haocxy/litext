@@ -92,6 +92,13 @@ public:
         return *this;
     }
 
+    void bind(int pos, const std::u32string_view &utf32str);
+
+    Statement &arg(const std::u32string_view &utf32str) {
+        bind(argBindIndex_++, utf32str);
+        return *this;
+    }
+
     void bind(int pos, const void *data, size_t len);
 
     Statement &arg(const void *data, size_t len) {
@@ -124,6 +131,8 @@ public:
     void getValue(int col, int64_t &to);
 
     void getValue(int col, MemBuff &to);
+
+    void getValue(int col, std::u32string &to);
 
     int64_t lastInsertRowId() const;
 

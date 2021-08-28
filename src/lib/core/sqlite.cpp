@@ -224,6 +224,11 @@ void Statement::bind(int pos, const std::string_view &utf8str)
     }
 }
 
+void Statement::bind(int pos, const std::u32string_view &utf32str)
+{
+    bind(pos, utf32str.data(), utf32str.size() * sizeof(std::u32string_view::value_type));
+}
+
 void Statement::bind(int pos, const void *data, size_t len)
 {
     if (pos > 0 && data != nullptr && len > 0) {
@@ -280,6 +285,13 @@ void Statement::getValue(int col, MemBuff &to)
 {
     to.resize(sqlite3_column_bytes(stmt_, col));
     to.write(0, sqlite3_column_blob(stmt_, col), to.size());
+}
+
+void Statement::getValue(int col, std::u32string &to)
+{
+    size_t nbytes = sqlite3_column_bytes(stmt_, col);
+    to.resize(nbytes / sizeof(std::u32string::value_type));
+    std::memcpy(to.data(), sqlite3_column_blob(stmt_, col), nbytes);
 }
 
 int64_t Statement::lastInsertRowId() const

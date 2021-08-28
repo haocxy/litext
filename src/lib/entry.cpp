@@ -4,14 +4,10 @@
 #include <QApplication>
 #include <QPainter>
 
-#include "core/system.h"
-#include "core/font.h"
 #include "core/logger.h"
-#include "core/time.h"
-#include "gui/qt/main_window.h"
 #include "gui/config.h"
-#include "gui/text_area_config.h"
 #include "gui/engine.h"
+#include "gui/qt/main_window.h"
 #include "doc/dbfiles.h"
 
 #include "cmdopt.h"
@@ -24,62 +20,6 @@ static void useDrawText()
     painter.drawText(0, 0, "0");
 }
 
-static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
-    static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC"};
-    ElapsedTime elapsed;
-    elapsed.start();
-
-    const std::vector<fs::path> fontFiles = SystemUtil::fonts();
-
-    for (const fs::path &file : fontFiles) {
-        font::FontFile fontFile(context, file);
-        if (!fontFile) {
-            continue;
-        }
-
-        for (long i = 0; i < fontFile.faceCount(); ++i) {
-            font::FontFace face(fontFile, i);
-            if (!face || face.isBold() || face.isItalic() || !face.isScalable()) {
-                continue;
-            }
-
-            if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
-                fileTo = std::move(fontFile);
-                faceTo = std::move(face);
-                LOGI << "selectFont time usage: [" << elapsed.ms() << " ms]";
-                return;
-            }
-        }
-    }
-
-    for (const fs::path &file : fontFiles) {
-        font::FontFile fontFile(context, file);
-        if (fontFile) {
-            for (long i = 0; i < fontFile.faceCount(); ++i) {
-                font::FontFace face(fontFile, i);
-                if (face) {
-                    fileTo = std::move(fontFile);
-                    faceTo = std::move(face);
-                    LOGI << "selectFont done without bad font, time usage: [" << elapsed.ms() << " ms]";
-                    return;
-                }
-            }
-        }
-    }
-}
-
-static font::FontIndex selectFont()
-{
-    font::FontContext context;
-    font::FontFile fontFile;
-    font::FontFace fontFace;
-    selectFont(context, fontFile, fontFace);
-    if (fontFile && fontFace) {
-        return font::FontIndex(fontFile.path(), fontFace.faceIndex());
-    } else {
-        return font::FontIndex();
-    }
-}
 
 int entry(int argc, char *argv[])
 {
@@ -119,13 +59,6 @@ int entry(int argc, char *argv[])
         useDrawText();
 
         gui::Config config;
-        const font::FontIndex fontIndex = selectFont();
-        if (!fontIndex) {
-            LOGE << "select font failed";
-            return 1;
-        }
-
-        config.textAreaConfig().setFontIndex(fontIndex);
 
         gui::qt::MainWindow mainWindow(engine, config);
         if (!cmdOpt.files().empty()) {

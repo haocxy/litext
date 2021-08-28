@@ -1,11 +1,16 @@
 #include "main_window.h"
 
+#include <set>
+
 #include <QMenuBar>
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QErrorMessage>
 
+#include "core/font.h"
+#include "core/time.h"
+#include "core/logger.h"
 #include "core/system.h"
 #include "editor/editor.h"
 #include "gui/text_area.h"
@@ -22,6 +27,64 @@ namespace gui::qt
 
 static const char *kFontFamilyTimes = "Times";
 static const char *kFontFamilyYaHei = "Microsoft YaHei";
+
+static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
+    static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC" };
+    ElapsedTime elapsed;
+    elapsed.start();
+
+    const std::vector<fs::path> fontFiles = SystemUtil::fonts();
+
+    for (const fs::path &file : fontFiles) {
+        font::FontFile fontFile(context, file);
+        if (!fontFile) {
+            continue;
+        }
+
+        for (long i = 0; i < fontFile.faceCount(); ++i) {
+            font::FontFace face(fontFile, i);
+            if (!face || face.isBold() || face.isItalic() || !face.isScalable()) {
+                continue;
+            }
+
+            if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
+                fileTo = std::move(fontFile);
+                faceTo = std::move(face);
+                LOGI << "selectFont time usage: [" << elapsed.ms() << " ms]";
+                return;
+            }
+        }
+    }
+
+    for (const fs::path &file : fontFiles) {
+        font::FontFile fontFile(context, file);
+        if (fontFile) {
+            for (long i = 0; i < fontFile.faceCount(); ++i) {
+                font::FontFace face(fontFile, i);
+                if (face) {
+                    fileTo = std::move(fontFile);
+                    faceTo = std::move(face);
+                    LOGI << "selectFont done without bad font, time usage: [" << elapsed.ms() << " ms]";
+                    return;
+                }
+            }
+        }
+    }
+}
+
+static font::FontIndex selectFont()
+{
+    font::FontContext context;
+    font::FontFile fontFile;
+    font::FontFace fontFace;
+    selectFont(context, fontFile, fontFace);
+    if (fontFile && fontFace) {
+        return font::FontIndex(fontFile.path(), fontFace.faceIndex());
+    } else {
+        return font::FontIndex();
+    }
+}
+
 
 static void setupConfig(TextAreaConfig &c)
 {
@@ -51,6 +114,8 @@ static const std::string_view width = "width";
 static const std::string_view height = "height";
 static const std::string_view x = "x";
 static const std::string_view y = "y";
+static const std::string_view fontFile = "fontFile";
+static const std::string_view fontFace = "fontFace";
 }
 
 MainWindow::MainWindow(Engine &engine, Config &config)
@@ -76,6 +141,18 @@ MainWindow::MainWindow(Engine &engine, Config &config)
     int x = 0, y = 0;
     if (propRepo_.get(prop::x, x) && propRepo_.get(prop::y, y)) {
         move(x, y);
+    }
+
+    std::u32string fontFile;
+    i64 fontFace = 0;
+    if (propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
+        config_.textAreaConfig().setFontIndex(font::FontIndex(fontFile, fontFace));
+        LOGI << "got font from prop db";
+    } else {
+        const font::FontIndex fontIndex = selectFont();
+        config_.textAreaConfig().setFontIndex(fontIndex);
+        propRepo_.set(prop::fontFile, fontIndex.file().generic_u32string());
+        propRepo_.set(prop::fontFace, fontIndex.faceIndex());
     }
 }
 

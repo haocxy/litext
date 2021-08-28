@@ -88,6 +88,11 @@ void PropRepo::set(const std::string_view &key, const std::string &val)
     setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
 }
 
+void PropRepo::set(const std::string_view &key, const std::u32string &val)
+{
+    setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
+}
+
 void PropRepo::set(const std::string_view &key, i32 val)
 {
     setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
@@ -121,7 +126,9 @@ bool PropRepo::get(const std::string_view &key, i64 &to)
     return getValue(stmtSelect_, key, to);
 }
 
-
-
+bool PropRepo::get(const std::string_view &key, std::u32string &to)
+{
+    return getValue(stmtSelect_, key, to);
+}
 
 }
