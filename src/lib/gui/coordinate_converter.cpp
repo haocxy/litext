@@ -4,6 +4,7 @@
 #include "editor/editor.h"
 #include "text_area_config.h"
 
+#include "glyph_cache.h"
 
 
 namespace gui
@@ -45,7 +46,7 @@ i32 CoordinateConverter::toLineOffset(const VLineLoc &vLineLoc) const
 
 i32 CoordinateConverter::toLineOffset(i32 y) const
 {
-    return y / config_.lineHeight();
+    return y / glyphCache_.face().height();
 }
 
 i32 CoordinateConverter::toX(const VCharLoc &charLoc) const
@@ -72,7 +73,7 @@ i32 CoordinateConverter::toX(const VCharLoc &charLoc) const
 
 i32 CoordinateConverter::toBaselineY(i32 off) const
 {
-    return (1 + off) * config_.lineHeight() - config_.font().descent();
+    return off * glyphCache_.face().height() + glyphCache_.face().ascender();
 }
 
 VRowLoc CoordinateConverter::toRowLoc(VRowOffset vRowOffset) const

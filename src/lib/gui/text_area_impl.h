@@ -9,6 +9,7 @@
 
 #include <QImage>
 
+#include "core/font.h"
 #include "core/signal.h"
 #include "core/sigconns.h"
 #include "doc/doc_define.h"
@@ -26,6 +27,7 @@
 #include "text_area_config.h"
 #include "coordinate_converter.h"
 
+#include "glyph_cache.h"
 
 
 class Row;
@@ -108,7 +110,7 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
-    void drawEachChar(QPainter &p) const;
+    void drawEachChar(QPainter &p);
 
     Signal<void()> &sigShouldRepaint() {
         return sigShouldRepaint_;
@@ -189,6 +191,8 @@ private:
 
     void repaint();
 
+    void drawChar(QPainter &p, i32 x, i32 y, char32_t unicode);
+
 private:
     Editor &editor_;
     TextAreaConfig config_;
@@ -222,6 +226,10 @@ private:
     QImage textImg_;
 
     bool isTextImgDirty_ = true;
+
+    QVector<QRgb> colorTable_;
+
+    GlyphCache glyphCache_;
 
 private:
     Signal<void()> sigShouldRepaint_;

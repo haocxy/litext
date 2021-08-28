@@ -103,7 +103,7 @@ int64_t FontFace::mapUnicodeToGlyphIndex(char32_t unicode) const
 
 void FontFace::loadGlyph(int64_t glyphIndex)
 {
-    const FT_Error error = FT_Load_Glyph(ftFace_, static_cast<FT_UInt>(glyphIndex), FT_LOAD_DEFAULT);
+    const FT_Error error = FT_Load_Glyph(ftFace_, static_cast<FT_UInt>(glyphIndex), FT_LOAD_NO_SCALE);
     if (error != 0) {
         std::ostringstream ss;
         ss << "FontFace::loadGlyph() failed with glyphIndex [" << glyphIndex << "]";

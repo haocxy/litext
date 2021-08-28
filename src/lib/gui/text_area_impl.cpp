@@ -22,11 +22,17 @@ namespace gui
 TextAreaImpl::TextAreaImpl(Editor &editor, const TextAreaConfig &config)
     : editor_(editor)
     , config_(config)
-    , cvt_(editor_, size_, page_, vloc_, config_)
+    , cvt_(editor_, size_, page_, vloc_, config_, glyphCache_)
 {
     editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
         sigShouldRepaint_();
     });
+
+    glyphCache_.setFont(config_.fontIndex(), config_.font().size());
+
+    for (int i = 0; i < 256; ++i) {
+        colorTable_ << qRgba(0, 0, 0, i);
+    }
 }
 
 TextAreaImpl::~TextAreaImpl()
@@ -147,13 +153,13 @@ void TextAreaImpl::setSize(const Size &size)
 
 int TextAreaImpl::calcMaxShownLineCnt() const
 {
-    const i32 lineHeight = config_.lineHeight();
+    const i32 lineHeight = glyphCache_.face().height();
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
 LineBound TextAreaImpl::getLineBoundByLineOffset(i32 lineOffset) const
 {
-    const i32 lineHeight = config_.lineHeight();
+    const i32 lineHeight = glyphCache_.face().height();
     const i32 top = lineHeight * lineOffset;
     const i32 bottom = top + lineHeight;
 
@@ -180,13 +186,13 @@ RowBound TextAreaImpl::getRowBound(const VRowLoc & rowLoc) const
     if (rowLoc.isAfterLastRow())
     {
         const i32 lineOffset = page_.lineCnt();
-        const i32 lineHeight = config_.lineHeight();
+        const i32 lineHeight = glyphCache_.face().height();
         const i32 top = lineHeight * lineOffset;
         return RowBound(top, lineHeight);
     }
 
     const i32 lineOffset = cvt_.toLineOffset(rowLoc);
-    const i32 lineHeight = config_.lineHeight();
+    const i32 lineHeight = glyphCache_.face().height();
     const i32 top = lineHeight * lineOffset;
     const i32 height = lineHeight * page_[rowLoc.row()].size();
     return RowBound(top, height);
@@ -420,7 +426,7 @@ bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
 	}
 
     const i32 lineOff = cvt_.toLineOffset(curLineLoc);
-    const i32 requiredHeight = (lineOff + 1) * config_.lineHeight();
+    const i32 requiredHeight = (lineOff + 1) * glyphCache_.face().height();
     return height() < requiredHeight;
 }
 
@@ -451,8 +457,18 @@ static inline QString unicodeToUtf16SurrogatePairs(char32_t unicode) {
     return surrogatedPairs;
 }
 
-static void drawChar(QPainter &p, i32 x, i32 y, char32_t unicode)
+void TextAreaImpl::drawChar(QPainter & p, i32 x, i32 y, char32_t unicode)
 {
+    const font::Glyph &g = glyphCache_.glyphOf(unicode);
+
+    QImage glyphImg(reinterpret_cast<const uchar *>(g.bitmapData()),
+        g.bitmapWidth(), g.bitmapHeight(), g.bitmapPitch(), QImage::Format_Indexed8);
+
+    glyphImg.setColorTable(colorTable_);
+
+    p.drawImage(x + g.leftBear(), y - g.topBear(), glyphImg);
+    return;
+
     if (!UCharUtil::needSurrogate(unicode)) {
         p.drawText(x, y, QChar(unicode));
     } else {
@@ -481,10 +497,6 @@ void TextAreaImpl::repaint()
     if (isTextImgDirty()) {
         QPainter textPainter(&textImg_);
         textImg_.fill(QColor(0, 0, 0, 0));
-
-        QFont qfont;
-        fontToQFont(config_.font(), qfont);
-        textPainter.setFont(qfont);
 
         drawEachChar(textPainter);
 
@@ -656,7 +668,7 @@ void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline
     }
 }
 
-void TextAreaImpl::drawEachChar(QPainter &p) const
+void TextAreaImpl::drawEachChar(QPainter &p)
 {
     const int rowCnt = page_.size();
     if (rowCnt == 0)
@@ -819,16 +831,16 @@ void TextAreaImpl::makeVRow(const Row &row, VRow &vrow)
 
     class Provider : public GlyphWidthProvider {
     public:
-        Provider(const FontOld &font) : fontOld_(font) {}
+        Provider(GlyphCache &glyphCache) : glyphCache_(glyphCache) {}
         virtual ~Provider() {}
         virtual int glyphWidth(char32_t unicode) override {
-            return fontOld_.charWidth(unicode);
+            return glyphCache_.advance(unicode);
         }
     private:
-        const FontOld &fontOld_;
+        GlyphCache &glyphCache_;
     };
 
-    Provider provider(config_.font());
+    Provider provider(glyphCache_);
     RowWalker walker(provider, charStream, config_.hLayout(), size_.width());
 
     walker.forEachChar([&vrow](bool isEmptyRow, size_t lineIndex, const VChar &vchar) {

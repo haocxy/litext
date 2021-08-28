@@ -2,11 +2,16 @@
 
 #include <cstdint>
 #include <string>
-#include "fs.h"
+#include <mutex>
+
 
 #include <sstream>
 #include <stdexcept>
 #include <freetype/freetype.h>
+
+#include "fs.h"
+#include "basetype.h"
+#include "system.h"
 
 
 namespace font
@@ -139,6 +144,21 @@ private:
     friend class FontFace;
 };
 
+inline i32 ftSizeToPointSize(i32 ftSize)
+{
+    return ftSize / 64;
+}
+
+inline i32 pointSizeToPixSize(i32 pt, i32 dpi)
+{
+    return pt * dpi / 72;
+}
+
+inline i32 ftSizeToPixSize(i32 ftSize, i32 dpi)
+{
+    const i32 pt = ftSizeToPointSize(ftSize);
+    return pointSizeToPixSize(pt, dpi);
+}
 
 class FontFace {
 public:
@@ -203,6 +223,11 @@ public:
         return hasFlag(ftFace_->style_flags, FT_STYLE_FLAG_BOLD);
     }
 
+    void setDpi(i32 h, i32 v) {
+        hDpi_ = h;
+        vDpi_ = v;
+    }
+
     void setPointSize(int pt);
 
     int64_t mapUnicodeToGlyphIndex(char32_t unicode) const;
@@ -228,6 +253,22 @@ public:
         return bv;
     }
 
+    i32 ascender() const {
+        i32 point = ftFace_->ascender / 64;
+        i32 pix = point * vDpi_ / 72;
+        return ftSizeToPixSize(ftFace_->ascender, vDpi_);
+    }
+
+    i32 descender() const {
+        i32 point = ftFace_->descender / 64;
+        i32 pix = point * vDpi_ / 72;
+        return -ftSizeToPixSize(ftFace_->descender, vDpi_);
+    }
+
+    i32 height() const {
+        return ascender() + descender();
+    }
+
 private:
     static const char *strOrEmpty(const char *s) {
         if (s) {
@@ -249,6 +290,10 @@ private:
         }
     }
 
+    static const i32 DefaultHDpi = 100;
+
+    static const i32 DefaultVDpi = 100;
+
     static void move(FontFace &to, FontFace &from) {
         if (&to != &from) {
             to.close();
@@ -256,6 +301,10 @@ private:
             from.file_ = nullptr;
             to.ftFace_ = from.ftFace_;
             from.ftFace_ = nullptr;
+            to.hDpi_ = from.hDpi_;
+            from.hDpi_ = DefaultHDpi;
+            to.vDpi_ = from.vDpi_;
+            from.vDpi_ = DefaultVDpi;
         }
     }
 
@@ -264,10 +313,89 @@ private:
 private:
     const FontFile *file_ = nullptr;
     FT_Face ftFace_ = nullptr;
+    i32 hDpi_ = DefaultHDpi;
+    i32 vDpi_ = DefaultVDpi;
+
+    friend class Bitmap;
+    friend class Glyph;
 };
 
-class FontMetrics {
+class Glyph {
+public:
+    Glyph() {}
 
+    //Glyph(const Glyph &) = delete;
+
+    //Glyph(Glyph &&b) = delete;
+
+    //Glyph &operator=(const Glyph &) = delete;
+
+    //Glyph &operator=(Glyph &&) = delete;
+
+    void init(const FontFace &face) {
+        init(*(face.ftFace_->glyph), face.hDpi_);
+    }
+
+    operator bool() const {
+        return advance_ > 0;
+    }
+
+    // 从落笔点到下一个落笔点的距离
+    i32 advance() const {
+        return advance_;
+    }
+
+    // 从落笔点到位图左边界的距离
+    i32 leftBear() const {
+        return leftBear_;
+    }
+
+    // 从落笔点到位图上边界距离
+    i32 topBear() const {
+        return topBear_;
+    }
+
+    // 字符最小有效区域的位图
+    const void *bitmapData() const {
+        return bitmapData_.data();
+    }
+
+    i32 bitmapWidth() const {
+        return bitmapWidth_;
+    }
+
+    i32 bitmapHeight() const {
+        return bitmapHeight_;
+    }
+
+    i32 bitmapPitch() const {
+        return bitmapPitch_;
+    }
+
+
+
+private:
+    void init(const FT_GlyphSlotRec &slot, i32 hDpi) {
+        const FT_Glyph_Metrics &metrics = slot.metrics;
+        const FT_Bitmap &bitmap = slot.bitmap;
+        advance_ = ftSizeToPixSize(metrics.horiAdvance, hDpi);
+        leftBear_ = ftSizeToPixSize(metrics.horiBearingX, hDpi);
+        topBear_ = ftSizeToPixSize(metrics.horiBearingY, hDpi);
+        bitmapWidth_ = bitmap.width;
+        bitmapHeight_ = bitmap.rows;
+        bitmapPitch_ = bitmap.pitch;
+        bitmapData_.resize(static_cast<size_t>(bitmap.rows) * static_cast<size_t>(bitmap.pitch));
+        std::memcpy(bitmapData_.data(), bitmap.buffer, bitmapData_.size());
+    }
+
+private:
+    i32 advance_ = 0;
+    i32 leftBear_ = 0;
+    i32 topBear_ = 0;
+    i32 bitmapWidth_ = 0;
+    i32 bitmapHeight_ = 0;
+    i32 bitmapPitch_ = 0;
+    std::basic_string<unsigned char> bitmapData_;
 };
 
 }

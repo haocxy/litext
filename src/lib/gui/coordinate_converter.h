@@ -12,6 +12,9 @@
 namespace gui
 {
 
+class GlyphCache;
+
+
 // 把不同坐标系中的位置相互转换
 // 包括的坐标系：文档坐标、视图坐标、GUI像素坐标
 // 这部分逻辑属于TextArea，但是因为类似函数太多且实现代码较长，所以单独放置
@@ -22,12 +25,14 @@ public:
 		const Size &size,
 		const Page &page,
 		const ViewLoc &vloc,
-		const TextAreaConfig &config)
+		const TextAreaConfig &config,
+        const GlyphCache &glyphCache)
 		: editor_(editor)
 		, size_(size)
 		, page_(page)
 		, vloc_(vloc)
-		, config_(config) {
+		, config_(config)
+        , glyphCache_(glyphCache) {
 	}
 
 	CoordinateConverter() = delete;
@@ -69,6 +74,7 @@ private:
 	const Page &page_;
 	const ViewLoc &vloc_;
 	const TextAreaConfig &config_;
+    const GlyphCache &glyphCache_;
 };
 
 
