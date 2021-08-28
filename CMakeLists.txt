@@ -22,6 +22,8 @@ if(MSVC)
     add_compile_options(/wd4819)
     # 关闭丢弃掉标有 [nodiscard] 的函数的返回值的编译警告
     add_compile_options(/wd4834)
+    # 多处理器编译
+    add_compile_options(/MP)
 else()
     # 关闭丢弃掉标有 [nodiscard] 的函数的返回值的编译警告
     add_compile_options(-Wno-unused-result)
