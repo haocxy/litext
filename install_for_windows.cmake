@@ -1,7 +1,9 @@
 file(GLOB_RECURSE asset_files "assets/*")
 install(FILES ${asset_files} DESTINATION assets)
 
-install(TARGETS notesharp RUNTIME DESTINATION bin CONFIGURATIONS RelWithDebInfo)
+install(TARGETS notesharp
+    CONFIGURATIONS Release
+    RUNTIME DESTINATION bin)
 
 find_file(dlib_qt5core "Qt5Core.dll")
 install(FILES ${dlib_qt5core} DESTINATION bin)

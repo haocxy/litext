@@ -3,17 +3,8 @@ project(notesharp)
 
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE "Debug")
+set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
-
-
-# 根据是否有环境变量 NOTESHARP_THIS_IS_DEBUG_MACHINE 决定
-# 构建为Debug还是Release
-if(DEFINED ENV{NOTESHARP_THIS_IS_DEBUG_MACHINE})
-    set(CMAKE_BUILD_TYPE "Debug")
-else()
-    set(CMAKE_BUILD_TYPE "Release")
-endif()
 
 
 # VS专用全局设置
@@ -44,11 +35,9 @@ endif()
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
 
-if(MSVC)
-    file(COPY "${CMAKE_SOURCE_DIR}/scripts/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
-endif()
 
 if(MSVC)
+    file(COPY "${CMAKE_SOURCE_DIR}/scripts/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
     include(install_for_windows.cmake)
 endif()
 
