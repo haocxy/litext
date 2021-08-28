@@ -15,6 +15,7 @@ TextAreaWidget::TextAreaWidget(TextArea &textArea)
 {
     setCursor(Qt::IBeamCursor);
     setAttribute(Qt::WA_InputMethodEnabled);
+    setAttribute(Qt::WA_PaintOnScreen);
     setFocusPolicy(Qt::ClickFocus);
 
     connect(this, &TextAreaWidget::qtSigShouldRepaint, this, &TextAreaWidget::qtSlotShouldRepaint);
