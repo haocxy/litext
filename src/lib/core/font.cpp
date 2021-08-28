@@ -86,9 +86,8 @@ FontFace::FontFace(const FontFile &file, long faceIndex)
 
 void FontFace::setPointSize(int pt)
 {
-    thread_local int hDpi = SystemUtil::screenHorizontalDpi();
-    thread_local int vDpi = SystemUtil::screenVerticalDpi();
-    const FT_Error error = FT_Set_Char_Size(ftFace_, 0, pt * 64, hDpi, vDpi);
+    const i32 ftSize = pointSizeToFtSize(pt);
+    const FT_Error error = FT_Set_Char_Size(ftFace_, 0, ftSize, hDpi_, vDpi_);
     if (error != 0) {
         std::ostringstream ss;
         ss << "FontFace::setPointSize() failed";
@@ -103,7 +102,7 @@ int64_t FontFace::mapUnicodeToGlyphIndex(char32_t unicode) const
 
 void FontFace::loadGlyph(int64_t glyphIndex)
 {
-    const FT_Error error = FT_Load_Glyph(ftFace_, static_cast<FT_UInt>(glyphIndex), FT_LOAD_NO_SCALE);
+    const FT_Error error = FT_Load_Glyph(ftFace_, static_cast<FT_UInt>(glyphIndex), FT_LOAD_DEFAULT);
     if (error != 0) {
         std::ostringstream ss;
         ss << "FontFace::loadGlyph() failed with glyphIndex [" << glyphIndex << "]";

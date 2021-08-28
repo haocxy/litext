@@ -148,6 +148,11 @@ inline i32 ftSizeToPointSize(i32 ftSize)
     return ftSize / 64;
 }
 
+inline i32 pointSizeToFtSize(i32 pt)
+{
+    return pt * 64;
+}
+
 inline i32 pointSizeToPixSize(i32 pt, i32 dpi)
 {
     return pt * dpi / 72;
@@ -255,12 +260,14 @@ public:
     i32 ascender() const {
         i32 point = ftFace_->ascender / 64;
         i32 pix = point * vDpi_ / 72;
+        //return ftFace_->ascender;
         return ftSizeToPixSize(ftFace_->ascender, vDpi_);
     }
 
     i32 descender() const {
         i32 point = ftFace_->descender / 64;
         i32 pix = point * vDpi_ / 72;
+        //return -ftFace_->descender;
         return -ftSizeToPixSize(ftFace_->descender, vDpi_);
     }
 
@@ -289,9 +296,9 @@ private:
         }
     }
 
-    static const i32 DefaultHDpi = 100;
+    static const i32 DefaultHDpi = -1;
 
-    static const i32 DefaultVDpi = 100;
+    static const i32 DefaultVDpi = -1;
 
     static void move(FontFace &to, FontFace &from) {
         if (&to != &from) {
@@ -332,7 +339,7 @@ public:
     //Glyph &operator=(Glyph &&) = delete;
 
     void init(const FontFace &face) {
-        init(*(face.ftFace_->glyph), face.hDpi_);
+        init(*(face.ftFace_->glyph), face.hDpi_, face.vDpi_);
     }
 
     operator bool() const {
@@ -374,12 +381,12 @@ public:
 
 
 private:
-    void init(const FT_GlyphSlotRec &slot, i32 hDpi) {
+    void init(const FT_GlyphSlotRec &slot, i32 hDpi, i32 vDpi) {
         const FT_Glyph_Metrics &metrics = slot.metrics;
         const FT_Bitmap &bitmap = slot.bitmap;
-        advance_ = ftSizeToPixSize(metrics.horiAdvance, hDpi);
-        leftBear_ = ftSizeToPixSize(metrics.horiBearingX, hDpi);
-        topBear_ = ftSizeToPixSize(metrics.horiBearingY, hDpi);
+        advance_ = slot.bitmap.width;
+        leftBear_ = slot.bitmap_left;
+        topBear_ = slot.bitmap_top;
         bitmapWidth_ = bitmap.width;
         bitmapHeight_ = bitmap.rows;
         bitmapPitch_ = bitmap.pitch;

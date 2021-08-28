@@ -448,15 +448,6 @@ void TextAreaImpl::removeSpareRow()
     }
 }
 
-static inline QString unicodeToUtf16SurrogatePairs(char32_t unicode) {
-    QChar high = QChar::highSurrogate(unicode);
-    QChar low = QChar::lowSurrogate(unicode);
-    QString surrogatedPairs;
-    surrogatedPairs.push_back(high);
-    surrogatedPairs.push_back(low);
-    return surrogatedPairs;
-}
-
 void TextAreaImpl::drawChar(QPainter & p, i32 x, i32 y, char32_t unicode)
 {
     const font::Glyph &g = glyphCache_.glyphOf(unicode);
@@ -466,14 +457,10 @@ void TextAreaImpl::drawChar(QPainter & p, i32 x, i32 y, char32_t unicode)
 
     glyphImg.setColorTable(colorTable_);
 
-    p.drawImage(x + g.leftBear(), y - g.topBear(), glyphImg);
-    return;
+    //p.drawLine(x, y, x + 10, y);
+    //p.drawLine(x, y, x, y - 10);
 
-    if (!UCharUtil::needSurrogate(unicode)) {
-        p.drawText(x, y, QChar(unicode));
-    } else {
-        p.drawText(x, y, unicodeToUtf16SurrogatePairs(unicode));
-    }
+    p.drawImage(x + g.leftBear(), y - g.topBear(), glyphImg);
 }
 
 void TextAreaImpl::repaint()
