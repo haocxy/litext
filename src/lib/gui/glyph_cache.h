@@ -32,8 +32,10 @@ public:
         file_ = font::FontFile();
         file_ = font::FontFile(context_, index.file());
         face_ = font::FontFace(file_, index.faceIndex());
-        face_.setDpi(SystemUtil::screenHorizontalDpi(), SystemUtil::screenVerticalDpi());
-        face_.setPointSize(pointSize);
+
+        const i32 hDpi = SystemUtil::screenHorizontalDpi();
+        const i32 vDpi = SystemUtil::screenVerticalDpi();
+        face_.setPointSize(pointSize, hDpi, vDpi);
     }
 
     const font::Glyph &glyphOf(char32_t unicode) const {

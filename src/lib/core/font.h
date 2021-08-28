@@ -143,27 +143,6 @@ private:
     friend class FontFace;
 };
 
-inline i32 ftSizeToPointSize(i32 ftSize)
-{
-    return ftSize / 64;
-}
-
-inline i32 pointSizeToFtSize(i32 pt)
-{
-    return pt * 64;
-}
-
-inline i32 pointSizeToPixSize(i32 pt, i32 dpi)
-{
-    return pt * dpi / 72;
-}
-
-inline i32 ftSizeToPixSize(i32 ftSize, i32 dpi)
-{
-    const i32 pt = ftSizeToPointSize(ftSize);
-    return pointSizeToPixSize(pt, dpi);
-}
-
 class FontFace {
 public:
     FontFace() {}
@@ -227,12 +206,7 @@ public:
         return hasFlag(ftFace_->style_flags, FT_STYLE_FLAG_BOLD);
     }
 
-    void setDpi(i32 h, i32 v) {
-        hDpi_ = h;
-        vDpi_ = v;
-    }
-
-    void setPointSize(int pt);
+    void setPointSize(int pt, i32 hDpi, i32 vDpi);
 
     int64_t mapUnicodeToGlyphIndex(char32_t unicode) const;
 
@@ -258,21 +232,15 @@ public:
     }
 
     i32 ascender() const {
-        i32 point = ftFace_->ascender / 64;
-        i32 pix = point * vDpi_ / 72;
-        //return ftFace_->ascender;
-        return ftSizeToPixSize(ftFace_->ascender, vDpi_);
+        return ftFace_->ascender >> 6;
     }
 
     i32 descender() const {
-        i32 point = ftFace_->descender / 64;
-        i32 pix = point * vDpi_ / 72;
-        //return -ftFace_->descender;
-        return -ftSizeToPixSize(ftFace_->descender, vDpi_);
+        return -ftFace_->descender >> 6;
     }
 
     i32 height() const {
-        return ascender() + descender();
+        return ftFace_->height >> 6;
     }
 
 private:
@@ -307,20 +275,12 @@ private:
             from.file_ = nullptr;
             to.ftFace_ = from.ftFace_;
             from.ftFace_ = nullptr;
-            to.hDpi_ = from.hDpi_;
-            from.hDpi_ = DefaultHDpi;
-            to.vDpi_ = from.vDpi_;
-            from.vDpi_ = DefaultVDpi;
         }
     }
-
-
 
 private:
     const FontFile *file_ = nullptr;
     FT_Face ftFace_ = nullptr;
-    i32 hDpi_ = DefaultHDpi;
-    i32 vDpi_ = DefaultVDpi;
 
     friend class Bitmap;
     friend class Glyph;
@@ -330,16 +290,16 @@ class Glyph {
 public:
     Glyph() {}
 
-    //Glyph(const Glyph &) = delete;
+    Glyph(const Glyph &) = delete;
 
-    //Glyph(Glyph &&b) = delete;
+    Glyph(Glyph &&b) = delete;
 
-    //Glyph &operator=(const Glyph &) = delete;
+    Glyph &operator=(const Glyph &) = delete;
 
-    //Glyph &operator=(Glyph &&) = delete;
+    Glyph &operator=(Glyph &&) = delete;
 
     void init(const FontFace &face) {
-        init(*(face.ftFace_->glyph), face.hDpi_, face.vDpi_);
+        init(*(face.ftFace_->glyph));
     }
 
     operator bool() const {
@@ -381,12 +341,12 @@ public:
 
 
 private:
-    void init(const FT_GlyphSlotRec &slot, i32 hDpi, i32 vDpi) {
+    void init(const FT_GlyphSlotRec &slot) {
         const FT_Glyph_Metrics &metrics = slot.metrics;
         const FT_Bitmap &bitmap = slot.bitmap;
-        advance_ = slot.bitmap.width;
-        leftBear_ = slot.bitmap_left;
-        topBear_ = slot.bitmap_top;
+        advance_ = slot.advance.x >> 6;
+        leftBear_ = metrics.horiBearingX >> 6;
+        topBear_ = metrics.horiBearingY >> 6;
         bitmapWidth_ = bitmap.width;
         bitmapHeight_ = bitmap.rows;
         bitmapPitch_ = bitmap.pitch;

@@ -84,10 +84,10 @@ FontFace::FontFace(const FontFile &file, long faceIndex)
     }
 }
 
-void FontFace::setPointSize(int pt)
+void FontFace::setPointSize(int pt, i32 hDpi, i32 vDpi)
 {
-    const i32 ftSize = pointSizeToFtSize(pt);
-    const FT_Error error = FT_Set_Char_Size(ftFace_, 0, ftSize, hDpi_, vDpi_);
+    const i32 ftSize = pt << 6;
+    const FT_Error error = FT_Set_Char_Size(ftFace_, 0, ftSize, hDpi, vDpi);
     if (error != 0) {
         std::ostringstream ss;
         ss << "FontFace::setPointSize() failed";
