@@ -43,4 +43,5 @@ install(FILES ${dlib_qtplugin_styles_vistastyle} DESTINATION bin/styles)
 
 set(CPACK_GENERATOR ZIP)
 set(CPACK_PACKAGE_NAME "NoteSharp")
+set(CPACK_PACKAGE_VERSION ${NOTESHARP_RELEASE_VERSION})
 include(CPack)

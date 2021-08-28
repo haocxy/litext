@@ -35,10 +35,13 @@ endif()
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
 
+include(release_version.cmake)
+get_release_version(release_version)
+
+set(NOTESHARP_RELEASE_VERSION ${release_version})
+message(STATUS "Release Version: [${release_version}]")
 
 if(MSVC)
     file(COPY "${CMAKE_SOURCE_DIR}/scripts/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
     include(install_for_windows.cmake)
 endif()
-
-include(release_version.cmake)
