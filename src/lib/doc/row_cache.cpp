@@ -53,8 +53,6 @@ std::map<RowN, sptr<Row>> RowCache::loadRows(const std::map<RowN, RowIndex> &row
     // 加载每个片段中的需要的段落
     for (const auto &pair : partToRowOffs) {
         const PartId partId = pair.first;
-        sptr<PartCache::Part> part = partCache_.partAt(partId);
-
         for (const auto [globalRowOff, localRowOff] : pair.second) {
             result[globalRowOff] = ensureRowCached(globalRowOff, partId, localRowOff);
         }
