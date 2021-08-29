@@ -368,7 +368,7 @@ bool TextAreaImpl::ensureHasPrevLine(const VLineLoc & curLineLoc)
         {
             if (vloc_.row() > 0)
             {
-                std::optional<Row> row = editor_.doc().rowAt(vloc_.row() - 1);
+                sptr<Row> row = editor_.doc().rowAt(vloc_.row() - 1);
                 VRow vrow;
                 makeVRow(*row, vrow);
                 const int newRowSize = vrow.size();
@@ -419,7 +419,7 @@ bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
 			return false;
 		}
 
-        std::optional<Row> row = editor_.doc().rowAt(newDocRowIndex);
+        sptr<Row> row = editor_.doc().rowAt(newDocRowIndex);
         VRow vrow;
         makeVRow(*row, vrow);
         page_.pushBack(std::move(vrow));
@@ -758,7 +758,7 @@ bool TextAreaImpl::moveDownByOneLine()
 		const RowN newDocRowIndex = vloc_.row() + page_.size();
 		if (newDocRowIndex <= docRowCnt - 1)
 		{
-            std::optional<Row> row = editor_.doc().rowAt(newDocRowIndex);
+            sptr<Row> row = editor_.doc().rowAt(newDocRowIndex);
             VRow vrow;
             makeVRow(*row, vrow);
             page_.pushBack(std::move(vrow));
@@ -793,7 +793,7 @@ void TextAreaImpl::remakePage()
         range.setEnd(rowCnt);
     }
 
-    std::map<RowN, Row> rows = editor_.doc().rowsAt(range);
+    std::map<RowN, sptr<Row>> rows = editor_.doc().rowsAt(range);
 
     int h = lineDelta;
     for (RowN row = range.left(); row <= range.right(); ++row) {
@@ -802,7 +802,7 @@ void TextAreaImpl::remakePage()
         }
 
         VRow vrow;
-        makeVRow(rows[row], vrow);
+        makeVRow(*(rows[row]), vrow);
 
         const int rowSize = vrow.size();
         page_.pushBack(std::move(vrow));

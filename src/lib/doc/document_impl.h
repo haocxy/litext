@@ -52,9 +52,9 @@ public:
         return lineManager_.rowCnt();
     }
 
-    std::optional<Row> rowAt(RowN row) const;
+    sptr<Row> rowAt(RowN row) const;
 
-    std::map<RowN, Row> rowsAt(const RowRange &range) const;
+    std::map<RowN, sptr<Row>> rowsAt(const RowRange &range) const;
 
 private:
     const fs::path path_;

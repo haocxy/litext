@@ -36,9 +36,9 @@ public:
 
     RowN rowCnt() const;
 
-    std::optional<Row> rowAt(RowN row) const;
+    sptr<Row> rowAt(RowN row) const;
 
-    std::map<RowN, Row> rowsAt(const RowRange &range) const;
+    std::map<RowN, sptr<Row>> rowsAt(const RowRange &range) const;
 
 private:
     doc::DocumentImpl *impl_ = nullptr;

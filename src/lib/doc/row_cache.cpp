@@ -13,8 +13,7 @@ namespace doc
 static const i64 CacheLimit = 100 * 1024 * 1024;
 
 RowCache::RowCache(LineManager &lineManager, const fs::path &file)
-    : lineManager_(lineManager)
-    , ifs_(file, std::ios::binary) {
+    : partCache_(lineManager, file) {
 
 }
 
@@ -22,16 +21,16 @@ void RowCache::updateCharset(Charset charset)
 {
     Lock lock(mtx_);
 
-    if (charset_ == charset) {
+    if (partCache_.charset() == charset) {
         return;
     }
 
-    charset_ = charset;
+    partCache_.updateCharset(charset);
 
     clearAllCache();
 }
 
-std::map<RowN, Row> RowCache::loadRows(const std::map<RowN, RowIndex> &rowIndexes)
+std::map<RowN, sptr<Row>> RowCache::loadRows(const std::map<RowN, RowIndex> &rowIndexes)
 {
     Lock lock(mtx_);
 
@@ -49,23 +48,15 @@ std::map<RowN, Row> RowCache::loadRows(const std::map<RowN, RowIndex> &rowIndexe
         partToRowOffs[partId][globalRowOff] = localRowOff;
     }
 
-    std::map<RowN, Row> result;
+    std::map<RowN, sptr<Row>> result;
 
     // 加载每个片段中的需要的段落
     for (const auto &pair : partToRowOffs) {
         const PartId partId = pair.first;
-        PartCache &partCache = ensurePartCached(partId);
-
-        partCache.lastUse = std::chrono::steady_clock::now();
-
-        const std::vector<std::u32string> &rows = partCache.rows;
+        sptr<PartCache::Part> part = partCache_.partAt(partId);
 
         for (const auto [globalRowOff, localRowOff] : pair.second) {
-            if (static_cast<i64>(rows.size()) > localRowOff) {
-                result[globalRowOff] = Row(std::u32string(rows[localRowOff]), RowEnd::CRLF);
-            } else {
-                LOGE << "RowCache::loadRows() logic error, bad local row offset";
-            }
+            result[globalRowOff] = ensureRowCached(globalRowOff, partId, localRowOff);
         }
     }
 
@@ -74,62 +65,30 @@ std::map<RowN, Row> RowCache::loadRows(const std::map<RowN, RowIndex> &rowIndexe
 
 void RowCache::clearAllCache()
 {
-    partCaches_.clear();
-    cachedByteCount_ = 0;
+    rows_.clear();
 }
 
-RowCache::PartCache &RowCache::ensurePartCached(PartId partId)
+sptr<Row> RowCache::ensureRowCached(RowN row, PartId partId, RowN rowOff)
 {
-    auto it = partCaches_.find(partId);
-    if (it != partCaches_.end()) {
+    auto it = rows_.find(row);
+    if (it != rows_.end()) {
         return it->second;
     }
 
-    const Range<i64> byteRange = lineManager_.findByteRange(partId);
-
-    MemBuff buff;
-    buff.resize(byteRange.count());
-
-    ifs_.seekg(byteRange.off());
-    ifs_.read(reinterpret_cast<char *>(buff.data()), buff.size());
-
-    const std::u32string partContent = charset::toUTF32(charset_, buff.data(), buff.size());
-
-    std::vector<std::u32string> rows = text::cutRows(partContent);
-
-    if (!rows.empty()) {
-        PartCache &partCache = partCaches_[partId];
-        partCache.lastUse = std::chrono::steady_clock::now();
-        partCache.rows = std::move(rows);
-        using Str = std::u32string;
-        for (const Str &row : partCache.rows) {
-            partCache.byteCount += row.size() * sizeof(Str::value_type);
-        }
-        cachedByteCount_ += partCache.byteCount;
-        checkAndRemoveCache();
-        return partCache;
-    } else {
-        throw std::logic_error("RowCache::ensurePartCached() part has no row");
+    sptr<PartCache::Part> partPtr = partCache_.partAt(partId);
+    if (!partPtr) {
+        return nullptr;
     }
-}
 
-void RowCache::checkAndRemoveCache()
-{
-    while (!partCaches_.empty() && cachedByteCount_ > CacheLimit) {
-        auto begIt = partCaches_.begin();
-        auto endIt = partCaches_.end();
-        auto oldestIt = begIt;
-        std::chrono::time_point<std::chrono::steady_clock> oldestTime = oldestIt->second.lastUse;
-        for (auto it = begIt; it != endIt; ++it) {
-            const PartCache &partCache = it->second;
-            if (partCache.lastUse < oldestTime) {
-                oldestTime = partCache.lastUse;
-                oldestIt = it;
-            }
-        }
-        cachedByteCount_ -= oldestIt->second.byteCount;
-        partCaches_.erase(oldestIt);
+    const PartCache::Part &part = *partPtr;
+    if (rowOff >= static_cast<i64>(part.size())) {
+        return nullptr;
     }
+
+    const text::UTF16Row &u16row = part[rowOff];
+    sptr<Row> &rowPtr = rows_[row];
+    rowPtr = std::make_shared<Row>(u16row.toUTF32(), u16row.rowEnd());
+    return rowPtr;
 }
 
 }

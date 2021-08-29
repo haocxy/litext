@@ -1,15 +1,9 @@
 #pragma once
 
+#include "core/row_end.h"
+
 #include "doc_define.h"
 
-
-enum class RowEnd {
-    Unknown = 0, // 结束符未知
-    NO, // 没有结束符，只存在于最后一行
-    CR, // 以 \r 结束
-    LF, // 以 \n 结束
-    CRLF, // 以 \r\n 结束
-};
 
 class Row {
 public:
@@ -50,10 +44,10 @@ private:
     static void move(Row &to, Row &from) {
         to.content_ = std::move(from.content_);
         to.rowEnd_ = from.rowEnd_;
-        from.rowEnd_ = RowEnd::Unknown;
+        from.rowEnd_ = RowEnd::NoEnd;
     }
 
 private:
     std::u32string content_;
-    RowEnd rowEnd_ = RowEnd::Unknown;
+    RowEnd rowEnd_ = RowEnd::NoEnd;
 };

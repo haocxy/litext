@@ -1,4 +1,4 @@
-#include "to_utf32.h"
+#include "to_utf16.h"
 
 #include <stdexcept>
 #include <sstream>
@@ -7,15 +7,13 @@
 #include <QString>
 #include <QTextCodec>
 
-#include "core/uchar.h"
-
 
 namespace charset
 {
 
-static std::u32string toUTF32ForAscii(const void *data, i64 nbytes)
+static std::u16string toUTF16ForAscii(const void *data, i64 nbytes)
 {
-    std::u32string s(nbytes, 0);
+    std::u16string s(nbytes, 0);
     const char *str = reinterpret_cast<const char *>(data);
     for (i64 i = 0; i < nbytes; ++i) {
         s[i] = str[i];
@@ -23,11 +21,11 @@ static std::u32string toUTF32ForAscii(const void *data, i64 nbytes)
     return s;
 }
 
-std::u32string toUTF32(Charset srcCharset, const void *data, i64 nbytes)
+std::u16string toUTF16(Charset srcCharset, const void *data, i64 nbytes)
 {
     // Qt库没有提供ASCII的解码器，所以使用Qt库解码时需要单独处理ASCII
     if (srcCharset == Charset::Ascii) {
-        return toUTF32ForAscii(data, nbytes);
+        return toUTF16ForAscii(data, nbytes);
     }
 
     QTextCodec *codec = QTextCodec::codecForName(CharsetUtil::charsetToStr(srcCharset));
@@ -45,7 +43,7 @@ std::u32string toUTF32(Charset srcCharset, const void *data, i64 nbytes)
     }
 
     QString qs = decoder->toUnicode(reinterpret_cast<const char *>(data), static_cast<int>(nbytes));
-    return qs.toStdU32String();
+    return qs.toStdU16String();
 }
 
 }

@@ -31,3 +31,28 @@ inline constexpr char32_t u16SurrogatePairToUnicode(T high, T low) {
 }
 
 }
+
+namespace utf16
+{
+
+inline bool needSuggorate(char32_t unicode) {
+    return UCharUtil::needSurrogate(unicode);
+}
+
+inline bool isSuggorate(char16_t c16) {
+    return UCharUtil::isSurrogate(c16);
+}
+
+inline bool isHiSuggorate(char16_t c16) {
+    return UCharUtil::isHighSurrogate(c16);
+}
+
+inline bool isLoSuggorate(char16_t c16) {
+    return UCharUtil::isLowSurrogate(c16);
+}
+
+inline char32_t toUnicode(char16_t hi, char16_t lo) {
+    return UCharUtil::u16SurrogatePairToUnicode(hi, lo);
+}
+
+}

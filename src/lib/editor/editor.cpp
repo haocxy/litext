@@ -97,7 +97,7 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
         const RowN rowCnt = document_.rowCnt();
         if (loc.row() < rowCnt - 1)
         {
-            const std::optional<Row> nextRow = document_.rowAt(loc.row() + 1);
+            sptr<Row> nextRow = document_.rowAt(loc.row() + 1);
             if (nextRow->charCnt() > 0)
             {
                 return DocLoc(loc.row() + 1, 0);
@@ -113,7 +113,7 @@ DocLoc Editor::getNextRightLocByChar(const DocLoc & loc) const
         }
     }
 
-    const std::optional<Row> row = document_.rowAt(loc.row());
+    sptr<Row> row = document_.rowAt(loc.row());
     if (loc.col() < row->charCnt() - 1)
     {
         return loc.nextRight();
