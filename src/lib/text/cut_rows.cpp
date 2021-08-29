@@ -58,16 +58,16 @@ std::vector<std::u32string> cutRows(const std::u32string &s)
     return result;
 }
 
-std::vector<UTF16Row> cutRows(const std::u16string &s)
+std::pmr::vector<UTF16Row> cutRows(const std::u16string_view &s, std::pmr::memory_resource *memres)
 {
     enum class State {
         Normal,
         MeetCR, // '\r'
     };
 
-    std::vector<UTF16Row> result;
+    std::pmr::vector<UTF16Row> result(memres);
     State st = State::Normal;
-    std::u16string buff;
+    std::pmr::u16string buff(memres);
     bool partHasSuggorate = false;
 
     const i64 u16Len = s.size();
@@ -98,13 +98,13 @@ std::vector<UTF16Row> cutRows(const std::u16string &s)
             } else if (unicode == '\r') {
                 st = State::MeetCR;
             } else { // unicode == '\n'
-                result.push_back(UTF16Row(RowEnd::LF, partHasSuggorate, std::move(buff)));
+                result.push_back(UTF16Row(RowEnd::LF, partHasSuggorate, std::move(buff), memres));
                 partHasSuggorate = false;
             }
             break;
         case State::MeetCR:
             if (unicode != '\r' && unicode != '\n') {
-                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff)));
+                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff), memres));
                 if (!curIsSuggorate) {
                     buff.push_back(cur16ch);
                     partHasSuggorate = false;
@@ -114,10 +114,10 @@ std::vector<UTF16Row> cutRows(const std::u16string &s)
                     partHasSuggorate = true;
                 }
             } else if (unicode == '\r') {
-                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff)));
+                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff), memres));
                 partHasSuggorate = false;
             } else { // unicode == '\n'
-                result.push_back(UTF16Row(RowEnd::CRLF, partHasSuggorate, std::move(buff)));
+                result.push_back(UTF16Row(RowEnd::CRLF, partHasSuggorate, std::move(buff), memres));
                 partHasSuggorate = false;
                 st = State::Normal;
             }
@@ -127,16 +127,16 @@ std::vector<UTF16Row> cutRows(const std::u16string &s)
         }
     }
 
-    if (!s.empty()) {
-        assert(s.back() != '\n');
+    if (!buff.empty()) {
+        assert(buff.back() != '\n');
         // 如果buff中还有数据最后一个不可能是 '\n'
         // 因为前面的逻辑中只要遇到 '\n' 就会清空 buff
         switch (st) {
         case State::Normal:
-            result.push_back(UTF16Row(RowEnd::NoEnd, partHasSuggorate, std::move(buff)));
+            result.push_back(UTF16Row(RowEnd::NoEnd, partHasSuggorate, std::move(buff), memres));
             break;
         case State::MeetCR:
-            result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff)));
+            result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff), memres));
             break;
         default:
             break;

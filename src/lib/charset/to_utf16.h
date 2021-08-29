@@ -9,6 +9,6 @@
 namespace charset
 {
 
-std::u16string toUTF16(Charset srcCharset, const void *data, i64 nbytes);
+std::pmr::u16string toUTF16(Charset srcCharset, const void *data, i64 nbytes, std::pmr::memory_resource *memres);
 
 }

@@ -10,9 +10,15 @@
 namespace doc
 {
 
+static const std::size_t MemLimit = 50 * 1024 * 1024;
+
+
 PartCache::PartCache(LineManager &lineManager, const fs::path &file)
     : lineManager_(lineManager)
+    , memres_(*std::pmr::new_delete_resource())
     , ifs_(file, std::ios::binary)
+    , parts_(&memres_)
+    , partToLastUse_(&memres_)
 {
 }
 
@@ -20,26 +26,44 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
 {
     Lock lock(mtx_);
 
-    sptr<Part> &partPtr = parts_[partId];
-    if (partPtr) {
-        return partPtr;
+    auto it = parts_.find(partId);
+    if (it != parts_.end()) {
+        partToLastUse_[partId] = std::chrono::steady_clock::now();
+        return it->second;
     }
 
-    partPtr = std::make_shared<Part>();
+    sptr<Part> partPtr = std::make_shared<Part>(&memres_);
+
+    parts_.insert({partId, partPtr});
 
     const Range<i64> byteRange = lineManager_.findByteRange(partId);
 
-    MemBuff buff;
-    buff.resize(byteRange.count());
+    {
+        std::pmr::string buff(&memres_);
+        buff.resize(byteRange.count());
 
-    ifs_.seekg(byteRange.off());
-    ifs_.read(reinterpret_cast<char *>(buff.data()), buff.size());
+        ifs_.seekg(byteRange.off());
+        ifs_.read(reinterpret_cast<char *>(buff.data()), buff.size());
 
-    const std::u16string partContent = charset::toUTF16(charset_, buff.data(), buff.size());
+        const std::pmr::u16string partContent = charset::toUTF16(charset_, buff.data(), buff.size(), &memres_);
 
-    *partPtr = text::cutRows(partContent);
+        *partPtr = text::cutRows(partContent, &memres_);
+    }
 
-    // TODO 清除过多的缓存
+    partToLastUse_[partId] = std::chrono::steady_clock::now();
+
+    while (!parts_.empty() && memres_.memUsage() > MemLimit) {
+        PartId oldestPart = partToLastUse_.begin()->first;
+        std::chrono::steady_clock::time_point oldestTime = partToLastUse_[oldestPart];
+        for (const auto &pair : partToLastUse_) {
+            if (pair.second < oldestTime) {
+                oldestPart = pair.first;
+                oldestTime = pair.second;
+            }
+        }
+        parts_.erase(oldestPart);
+        partToLastUse_.erase(oldestPart);
+    }
 
     return partPtr;
 }
