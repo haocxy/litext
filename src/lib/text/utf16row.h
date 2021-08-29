@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory_resource>
 
 #include "core/uchar.h"
 #include "core/row_end.h"

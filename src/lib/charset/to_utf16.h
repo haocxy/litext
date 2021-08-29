@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory_resource>
 
 #include "core/basetype.h"
 #include "core/charset.h"
