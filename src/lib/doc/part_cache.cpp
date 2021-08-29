@@ -41,15 +41,15 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
     const Range<i64> byteRange = lineManager_.findByteRange(partId);
 
     {
-        std::pmr::string buff(&memres_);
+        scc::string buff(&memres_);
         buff.resize(byteRange.count());
 
         ifs_.seekg(byteRange.off());
         ifs_.read(reinterpret_cast<char *>(buff.data()), buff.size());
 
-        const std::pmr::u16string partContent = charset::toUTF16(charset_, buff.data(), buff.size(), &memres_);
+        const scc::u16string partContent = charset::toUTF16(charset_, buff.data(), buff.size(), &memres_);
 
-        *partPtr = text::cutRows(partContent, &memres_);
+        *partPtr = text::cutRows(partContent);
     }
 
     partToLastUse_[partId] = std::chrono::steady_clock::now();

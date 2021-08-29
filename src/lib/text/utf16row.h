@@ -12,25 +12,25 @@ namespace text
 
 class UTF16Row {
 public:
-    UTF16Row(RowEnd rowEnd, bool hasSuggorate, std::pmr::u16string &&content, std::pmr::memory_resource *memres)
-        : memres_(memres), rowEnd_(rowEnd), hasSuggorate_(hasSuggorate), content_(memres) {
-
-        content_ = std::pmr::u16string(std::move(content), memres);
-    }
+    UTF16Row(RowEnd rowEnd, bool hasSuggorate, std::pmr::u16string &&content)
+        : rowEnd_(rowEnd), hasSuggorate_(hasSuggorate), content_(std::move(content)) {}
 
     UTF16Row(const UTF16Row &) = delete;
 
     UTF16Row(UTF16Row &&b) noexcept
-        : memres_(b.memres_)
-        , content_(memres_)
+        : rowEnd_(b.rowEnd_)
+        , hasSuggorate_(b.hasSuggorate_)
+        , content_(std::move(b.content_))
     {
-        move(*this, b);
+
     }
 
     UTF16Row &operator=(const UTF16Row &) = delete;
 
     UTF16Row &operator=(UTF16Row &&b) noexcept {
-        move(*this, b);
+        rowEnd_ = b.rowEnd_;
+        hasSuggorate_ = b.hasSuggorate_;
+        content_ = std::pmr::u16string(std::move(b.content_));
         return *this;
     }
 
@@ -82,14 +82,6 @@ public:
     }
 
 private:
-    static void move(UTF16Row &to, UTF16Row &from) {
-        to.rowEnd_ = from.rowEnd_;
-        to.hasSuggorate_ = from.hasSuggorate_;
-        to.content_ = std::pmr::u16string(std::move(from.content_), from.content_.get_allocator());
-    }
-
-private:
-    std::pmr::memory_resource *memres_ = nullptr;
     RowEnd rowEnd_ = RowEnd::NoEnd;
     bool hasSuggorate_ = false;
     std::pmr::u16string content_;

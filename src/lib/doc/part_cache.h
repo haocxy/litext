@@ -32,7 +32,7 @@ namespace doc
 //  综上，使用UTF-16编码可以在大多数时候有很好地性能，同时有不那么糟糕的空间占用情况。
 class PartCache {
 public:
-    using Part = std::pmr::vector<text::UTF16Row>;
+    using Part = scc::vector<text::UTF16Row>;
 
     PartCache(LineManager &lineManager, const fs::path &file);
 
@@ -85,10 +85,10 @@ private:
     Charset charset_ = Charset::Unknown;
 
     // 为了避免外部逻辑使用时片段缓存被释放，使用共享指针指向字符串对象
-    std::pmr::map<PartId, sptr<Part>> parts_;
+    scc::map<PartId, sptr<Part>> parts_;
 
     // 记录各个片段最后一次使用时间
-    std::pmr::map<PartId, std::chrono::time_point<std::chrono::steady_clock>> partToLastUse_;
+    scc::map<PartId, std::chrono::time_point<std::chrono::steady_clock>> partToLastUse_;
 };
 
 }

@@ -4,17 +4,13 @@
 #include <string>
 #include <string_view>
 
+#include "core/scoped_container.h"
 #include "utf16row.h"
 
 
 namespace text
 {
 
-
-
-std::vector<std::u32string> cutRows(const std::u32string &s);
-
-
-std::pmr::vector<UTF16Row> cutRows(const std::u16string_view &s, std::pmr::memory_resource *memres);
+scc::vector<UTF16Row> cutRows(const scc::u16string &s);
 
 }

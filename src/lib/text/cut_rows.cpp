@@ -9,65 +9,16 @@
 namespace text
 {
 
-
-
-std::vector<std::u32string> cutRows(const std::u32string &s)
+scc::vector<UTF16Row> cutRows(const scc::u16string &s)
 {
     enum class State {
         Normal,
         MeetCR, // '\r'
     };
 
-    std::vector<std::u32string> result;
+    scc::vector<UTF16Row> result(s.get_allocator());
     State st = State::Normal;
-    std::u32string buff;
-
-    for (char32_t u : s) {
-        switch (st) {
-        case State::Normal:
-            if (u != '\r' && u != '\n') {
-                buff.push_back(u);
-            } else {
-                if (u == '\r') {
-                    st = State::MeetCR;
-                } else {
-                    result.push_back(std::move(buff));
-                }
-            }
-            break;
-        case State::MeetCR:
-            if (u == '\r') {
-                result.push_back(std::move(buff));
-            } else if (u == '\n') {
-                result.push_back(std::move(buff));
-                st = State::Normal;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-
-    if (!s.empty()) {
-        const char32_t lastCode = s.back();
-        if (lastCode != '\r' && lastCode != '\n') {
-            result.push_back(std::move(buff));
-        }
-    }
-
-    return result;
-}
-
-std::pmr::vector<UTF16Row> cutRows(const std::u16string_view &s, std::pmr::memory_resource *memres)
-{
-    enum class State {
-        Normal,
-        MeetCR, // '\r'
-    };
-
-    std::pmr::vector<UTF16Row> result(memres);
-    State st = State::Normal;
-    std::pmr::u16string buff(memres);
+    scc::u16string buff(s.get_allocator());
     bool partHasSuggorate = false;
 
     const i64 u16Len = s.size();
@@ -98,13 +49,13 @@ std::pmr::vector<UTF16Row> cutRows(const std::u16string_view &s, std::pmr::memor
             } else if (unicode == '\r') {
                 st = State::MeetCR;
             } else { // unicode == '\n'
-                result.push_back(UTF16Row(RowEnd::LF, partHasSuggorate, std::move(buff), memres));
+                result.push_back(UTF16Row(RowEnd::LF, partHasSuggorate, std::move(buff)));
                 partHasSuggorate = false;
             }
             break;
         case State::MeetCR:
             if (unicode != '\r' && unicode != '\n') {
-                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff), memres));
+                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff)));
                 if (!curIsSuggorate) {
                     buff.push_back(cur16ch);
                     partHasSuggorate = false;
@@ -114,10 +65,10 @@ std::pmr::vector<UTF16Row> cutRows(const std::u16string_view &s, std::pmr::memor
                     partHasSuggorate = true;
                 }
             } else if (unicode == '\r') {
-                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff), memres));
+                result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff)));
                 partHasSuggorate = false;
             } else { // unicode == '\n'
-                result.push_back(UTF16Row(RowEnd::CRLF, partHasSuggorate, std::move(buff), memres));
+                result.push_back(UTF16Row(RowEnd::CRLF, partHasSuggorate, std::move(buff)));
                 partHasSuggorate = false;
                 st = State::Normal;
             }
@@ -133,10 +84,10 @@ std::pmr::vector<UTF16Row> cutRows(const std::u16string_view &s, std::pmr::memor
         // 因为前面的逻辑中只要遇到 '\n' 就会清空 buff
         switch (st) {
         case State::Normal:
-            result.push_back(UTF16Row(RowEnd::NoEnd, partHasSuggorate, std::move(buff), memres));
+            result.push_back(UTF16Row(RowEnd::NoEnd, partHasSuggorate, std::move(buff)));
             break;
         case State::MeetCR:
-            result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff), memres));
+            result.push_back(UTF16Row(RowEnd::CR, partHasSuggorate, std::move(buff)));
             break;
         default:
             break;
