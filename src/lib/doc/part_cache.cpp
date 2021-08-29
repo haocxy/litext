@@ -65,6 +65,7 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
         }
         parts_.erase(oldestPart);
         partToLastUse_.erase(oldestPart);
+        LOGD << "remove from cache part[" << oldestPart << "]";
     }
 
     return partPtr;
