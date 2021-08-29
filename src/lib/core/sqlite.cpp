@@ -239,7 +239,27 @@ void Statement::bind(int pos, const void *data, size_t len)
     }
 }
 
-void Statement::bind(int pos, int64_t value)
+void Statement::bind(int pos, int value)
+{
+    if (pos > 0) {
+        const int n = sqlite3_bind_int(stmt_, pos, value);
+        if (n != SQLITE_OK) {
+            throwError("bind", n);
+        }
+    }
+}
+
+void Statement::bind(int pos, long value)
+{
+    if (pos > 0) {
+        const int n = sqlite3_bind_int64(stmt_, pos, value);
+        if (n != SQLITE_OK) {
+            throwError("bind", n);
+        }
+    }
+}
+
+void Statement::bind(int pos, long long value)
 {
     if (pos > 0) {
         const int n = sqlite3_bind_int64(stmt_, pos, value);
@@ -271,12 +291,17 @@ bool Statement::nextRow()
     }
 }
 
-void Statement::getValue(int col, int32_t &to)
+void Statement::getValue(int col, int &to)
 {
     to = sqlite3_column_int(stmt_, col);
 }
 
-void Statement::getValue(int col, int64_t &to)
+void Statement::getValue(int col, long &to)
+{
+    to = sqlite3_column_int64(stmt_, col);
+}
+
+void Statement::getValue(int col, long long &to)
 {
     to = sqlite3_column_int64(stmt_, col);
 }

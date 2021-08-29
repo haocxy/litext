@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "core/sqlite.h"
 
@@ -26,13 +27,17 @@ public:
 
     void set(const std::string_view &key, const std::u32string &val);
 
-    void set(const std::string_view &key, i32 val);
+    void set(const std::string_view &key, int val);
 
-    void set(const std::string_view &key, i64 val);
+    void set(const std::string_view &key, long val);
 
-    bool get(const std::string_view &key, i32 &to);
+    void set(const std::string_view &key, long long val);
 
-    bool get(const std::string_view &key, i64 &to);
+    bool get(const std::string_view &key, int &to);
+
+    bool get(const std::string_view &key, long &to);
+
+    bool get(const std::string_view &key, long long &to);
 
     bool get(const std::string_view &key, std::u32string &to);
 

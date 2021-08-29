@@ -80,45 +80,25 @@ public:
 
     void bind(int pos, const char *cstr);
 
-    Statement &arg(int pos, const char *cstr) {
-        bind(argBindIndex_++, cstr);
-        return *this;
-    }
-
     void bind(int pos, const std::string_view &utf8str);
-
-    Statement &arg(const std::string_view &utf8str) {
-        bind(argBindIndex_++, utf8str);
-        return *this;
-    }
 
     void bind(int pos, const std::u32string_view &utf32str);
 
-    Statement &arg(const std::u32string_view &utf32str) {
-        bind(argBindIndex_++, utf32str);
-        return *this;
-    }
-
     void bind(int pos, const void *data, size_t len);
-
-    Statement &arg(const void *data, size_t len) {
-        bind(argBindIndex_++, data, len);
-        return *this;
-    }
 
     void bind(int pos, const MemBuff &data) {
         bind(pos, data.data(), data.size());
     }
 
-    Statement &arg(const MemBuff &data) {
-        bind(argBindIndex_++, data);
-        return *this;
-    }
+    void bind(int pos, int value);
 
-    void bind(int pos, int64_t value);
+    void bind(int pos, long value);
 
-    Statement &arg(int64_t value) {
-        bind(argBindIndex_++, value);
+    void bind(int pos, long long value);
+
+    template <typename T>
+    Statement &arg(T &&obj) {
+        bind(argBindIndex_++, std::forward<T>(obj));
         return *this;
     }
 
@@ -126,9 +106,11 @@ public:
 
     bool nextRow();
 
-    void getValue(int col, int32_t &to);
+    void getValue(int col, int &to);
 
-    void getValue(int col, int64_t &to);
+    void getValue(int col, long &to);
+
+    void getValue(int col, long long &to);
 
     void getValue(int col, MemBuff &to);
 

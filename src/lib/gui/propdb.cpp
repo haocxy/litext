@@ -93,12 +93,17 @@ void PropRepo::set(const std::string_view &key, const std::u32string &val)
     setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
 }
 
-void PropRepo::set(const std::string_view &key, i32 val)
+void PropRepo::set(const std::string_view &key, int val)
 {
     setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
 }
 
-void PropRepo::set(const std::string_view &key, i64 val)
+void PropRepo::set(const std::string_view &key, long val)
+{
+    setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
+}
+
+void PropRepo::set(const std::string_view &key, long long val)
 {
     setValue(stmtSelect_, stmtUpdate_, stmtInsert_, key, val);
 }
@@ -116,12 +121,17 @@ static bool getValue(sqlite::Statement &stmt, const std::string_view &key, T &to
     }
 }
 
-bool PropRepo::get(const std::string_view &key, i32 &to)
+bool PropRepo::get(const std::string_view &key, int &to)
 {
     return getValue(stmtSelect_, key, to);
 }
 
-bool PropRepo::get(const std::string_view &key, i64 &to)
+bool PropRepo::get(const std::string_view &key, long &to)
+{
+    return getValue(stmtSelect_, key, to);
+}
+
+bool PropRepo::get(const std::string_view &key, long long &to)
 {
     return getValue(stmtSelect_, key, to);
 }
