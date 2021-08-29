@@ -15,7 +15,9 @@ static const std::size_t MemLimit = 50 * 1024 * 1024;
 
 PartCache::PartCache(LineManager &lineManager, const fs::path &file)
     : lineManager_(lineManager)
-    , memres_(*std::pmr::new_delete_resource())
+    , monoMemBuffer_(1024 * 1024)
+    , mempool_(&monoMemBuffer_)
+    , memres_(mempool_)
     , ifs_(file, std::ios::binary)
     , parts_(&memres_)
     , partToLastUse_(&memres_)
