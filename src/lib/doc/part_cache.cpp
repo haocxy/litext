@@ -50,6 +50,8 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
         const scc::u16string partContent = charset::toUTF16(charset_, buff.data(), buff.size(), &memres_);
 
         *partPtr = text::cutRows(partContent);
+
+        LOGD << "part cache size: [" << memres_.memUsage() / 1024 / 1024 << "MB] on part [" << partId << "] loaded";
     }
 
     partToLastUse_[partId] = std::chrono::steady_clock::now();
@@ -65,7 +67,7 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
         }
         parts_.erase(oldestPart);
         partToLastUse_.erase(oldestPart);
-        LOGD << "remove from cache part[" << oldestPart << "]";
+        LOGD << "part cache size: [" << memres_.memUsage() / 1024 / 1024 << "MB] on part [" << oldestPart << "] loaded";
     }
 
     return partPtr;
