@@ -74,8 +74,6 @@ private:
 
     mutable Mtx mtx_;
 
-    std::pmr::monotonic_buffer_resource monoMemBuffer_;
-
     std::pmr::synchronized_pool_resource mempool_;
 
     CountedMemResource memres_;
