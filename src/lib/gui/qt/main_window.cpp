@@ -29,11 +29,16 @@ static const char *kFontFamilyTimes = "Times";
 static const char *kFontFamilyYaHei = "Microsoft YaHei";
 
 static void selectFont(font::FontContext &context, font::FontFile &fileTo, font::FontFace &faceTo) {
-    static std::set<std::string> GoodFontFamilies{ "Microsoft YaHei", "Noto Sans Mono CJK SC" };
+    static std::vector<std::string> GoodFontFamilies{ "Noto Sans SC", "Microsoft YaHei", "Noto Sans Mono CJK SC" };
     ElapsedTime elapsed;
     elapsed.start();
 
     const std::vector<fs::path> fontFiles = SystemUtil::fonts();
+
+    auto bestIt = GoodFontFamilies.end();
+
+    fs::path bestPath;
+    long bestFace = -1;
 
     for (const fs::path &file : fontFiles) {
         font::FontFile fontFile(context, file);
@@ -47,13 +52,22 @@ static void selectFont(font::FontContext &context, font::FontFile &fileTo, font:
                 continue;
             }
 
-            if (GoodFontFamilies.find(face.familyName()) != GoodFontFamilies.end()) {
-                fileTo = std::move(fontFile);
-                faceTo = std::move(face);
-                LOGI << "selectFont time usage: [" << elapsed.ms() << " ms]";
-                return;
+            auto it = std::find(GoodFontFamilies.begin(), GoodFontFamilies.end(), face.familyName());
+            if ((it != GoodFontFamilies.end())) {
+                if (bestIt == GoodFontFamilies.end() || it < bestIt) {
+                    bestIt = it;
+                    bestPath = file;
+                    bestFace = i;
+                }
             }
         }
+    }
+
+    if (bestIt != GoodFontFamilies.end()) {
+        fileTo = font::FontFile(context, bestPath);
+        faceTo = font::FontFace(fileTo, bestFace);
+        LOGI << "selectFont time usage: [" << elapsed.ms() << " ms]";
+        return;
     }
 
     for (const fs::path &file : fontFiles) {
@@ -145,7 +159,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
     std::u32string fontFile;
     i64 fontFace = 0;
-    if (propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
+    if (false && propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
         config_.textAreaConfig().setFontIndex(font::FontIndex(fontFile, fontFace));
         LOGI << "got font from prop db";
     } else {
