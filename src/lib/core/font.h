@@ -232,15 +232,15 @@ public:
     }
 
     i32 ascender() const {
-        return ftFace_->ascender >> 6;
+        return ftFace_->size->metrics.ascender >> 6;
     }
 
     i32 descender() const {
-        return (-ftFace_->descender) >> 6;
+        return (-ftFace_->size->metrics.descender) >> 6;
     }
 
     i32 height() const {
-        return ascender() + descender();
+        return ftFace_->size->metrics.height >> 6;
     }
 
 private:

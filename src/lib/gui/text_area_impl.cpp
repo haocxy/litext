@@ -457,9 +457,6 @@ void TextAreaImpl::drawChar(QPainter & p, i32 x, i32 y, char32_t unicode)
 
     glyphImg.setColorTable(colorTable_);
 
-    //p.drawLine(x, y, x + 10, y);
-    //p.drawLine(x, y, x, y - 10);
-
     p.drawImage(x + g.leftBear(), y - g.topBear(), glyphImg);
 }
 

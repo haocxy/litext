@@ -82,6 +82,13 @@ FontFace::FontFace(const FontFile &file, long faceIndex)
             ftFace_ = nullptr;
         }
     }
+
+    if (ftFace_) {
+        const FT_Error error = FT_Select_Charmap(ftFace_, FT_ENCODING_UNICODE);
+        if (error != 0) {
+            close();
+        }
+    }
 }
 
 void FontFace::setPointSize(int pt, i32 hDpi, i32 vDpi)
