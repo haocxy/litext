@@ -665,7 +665,7 @@ void TextAreaImpl::drawEachChar(QPainter &p)
 
     i32 lineOffset = 0;
 
-    for (int i = vloc_.line(); i < curRowSize; ++i)
+    for (int i = vloc_.line(); i < curRowSize && lineOffset < lineCountLimit_; ++i)
     {
         const VLine & line = curRow[i];
 
@@ -679,7 +679,7 @@ void TextAreaImpl::drawEachChar(QPainter &p)
         ++lineOffset;
     }
 
-    for (int r = 1; r < rowCnt; ++r)
+    for (int r = 1; r < rowCnt && lineOffset < lineCountLimit_; ++r)
     {
         const VRow & row = page_[r];
 

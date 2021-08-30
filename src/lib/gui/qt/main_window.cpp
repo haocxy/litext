@@ -102,7 +102,7 @@ static void setupConfig(TextAreaConfig &c)
     FontOld f;
     FontInfoOld fi;
     fi.family = kFontFamilyYaHei;
-    fi.size = 16;
+    fi.size = 36;
     fi.bold = false;
     f.setFont(fi);
     c.setFont(f);
