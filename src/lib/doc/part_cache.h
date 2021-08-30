@@ -81,9 +81,7 @@ private:
 
     mutable Mtx mtx_;
 
-    std::pmr::synchronized_pool_resource mempool_;
-
-    CountedMemResource memres_;
+    CountedMemPool memres_;
 
     std::ifstream ifs_;
 
