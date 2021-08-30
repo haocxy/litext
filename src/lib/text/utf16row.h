@@ -73,7 +73,7 @@ public:
                 if (!utf16::isSuggorate(c)) {
                     result.push_back(c);
                 } else {
-                    const char16_t next = content_[i++];
+                    const char16_t next = content_[++i];
                     result.push_back(utf16::toUnicode(c, next));
                 }
             }

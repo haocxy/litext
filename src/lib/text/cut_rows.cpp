@@ -32,7 +32,7 @@ scc::vector<UTF16Row> cutRows(const scc::u16string &s)
         if (!curIsSuggorate) {
             unicode = cur16ch;
         } else {
-            next16ch = s[i++];
+            next16ch = s[++i];
             unicode = utf16::toUnicode(cur16ch, next16ch);
         }
 
