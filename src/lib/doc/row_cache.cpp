@@ -79,11 +79,11 @@ sptr<Row> RowCache::ensureRowCached(RowN row, PartId partId, RowN rowOff)
     }
 
     const PartCache::Part &part = *partPtr;
-    if (rowOff >= static_cast<i64>(part.size())) {
+    if (rowOff >= static_cast<i64>(part.rows.size())) {
         return nullptr;
     }
 
-    const text::UTF16Row &u16row = part[rowOff];
+    const text::UTF16Row &u16row = part.rows[rowOff];
     sptr<Row> &rowPtr = rows_[row];
     rowPtr = std::make_shared<Row>(u16row.toUTF32(), u16row.rowEnd());
     return rowPtr;

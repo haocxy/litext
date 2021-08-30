@@ -18,7 +18,6 @@ PartCache::PartCache(LineManager &lineManager, const fs::path &file)
     , memres_(mempool_)
     , ifs_(file, std::ios::binary)
     , parts_(&memres_)
-    , partToLastUse_(&memres_)
 {
 }
 
@@ -28,17 +27,16 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
 
     auto it = parts_.find(partId);
     if (it != parts_.end()) {
-        partToLastUse_[partId] = std::chrono::steady_clock::now();
+        it->second->lastUse = std::chrono::steady_clock::now();
         return it->second;
     }
 
     sptr<Part> partPtr = std::make_shared<Part>(&memres_);
 
-    parts_.insert({partId, partPtr});
-
     const Range<i64> byteRange = lineManager_.findByteRange(partId);
 
     {
+        // 把 buff 置于块作用域中，确保在后面的检查内存使用情况的逻辑前被释放
         scc::string buff(&memres_);
         buff.resize(byteRange.count());
 
@@ -47,26 +45,29 @@ sptr<PartCache::Part> PartCache::partAt(PartId partId)
 
         const scc::u16string partContent = charset::toUTF16(charset_, buff.data(), buff.size(), &memres_);
 
-        *partPtr = text::cutRows(partContent);
-
-        LOGD << "part cache size: [" << memres_.memUsage() / 1024 / 1024 << "MB] on part [" << partId << "] loaded";
+        partPtr->lastUse = std::chrono::steady_clock::now();
+        partPtr->rows = text::cutRows(partContent);
     }
-
-    partToLastUse_[partId] = std::chrono::steady_clock::now();
 
     while (!parts_.empty() && memres_.memUsage() > MemLimit) {
-        PartId oldestPart = partToLastUse_.begin()->first;
-        std::chrono::steady_clock::time_point oldestTime = partToLastUse_[oldestPart];
-        for (const auto &pair : partToLastUse_) {
-            if (pair.second < oldestTime) {
-                oldestPart = pair.first;
-                oldestTime = pair.second;
+        auto oldestIt = parts_.begin();
+        auto oldestTime = oldestIt->second->lastUse;
+        auto it = oldestIt;
+        ++it;
+        const auto end = parts_.end();
+        for (; it != end; ++it) {
+            const auto &lastUse = it->second->lastUse;
+            if (lastUse < oldestTime) {
+                oldestIt = it;
+                oldestTime = lastUse;
             }
         }
-        parts_.erase(oldestPart);
-        partToLastUse_.erase(oldestPart);
-        LOGD << "part cache size: [" << memres_.memUsage() / 1024 / 1024 << "MB] on part [" << oldestPart << "] loaded";
+        parts_.erase(oldestIt);
     }
+
+    // 为了简化清理内存的逻辑，在清理内存之后再加入映射
+    // 否则就需要在清理内存时检查是否是新加入的
+    parts_.insert({ partId, partPtr });
 
     return partPtr;
 }
