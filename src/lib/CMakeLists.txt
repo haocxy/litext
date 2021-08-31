@@ -6,7 +6,6 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_STATIC_RUNTIME ON)
 find_package(Boost 1.76 REQUIRED
     COMPONENTS filesystem program_options)
-include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories($ENV{SKIA_ROOT})
 
