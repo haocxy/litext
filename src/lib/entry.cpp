@@ -12,6 +12,9 @@
 
 #include "cmdopt.h"
 
+#include "include/core/SkCanvas.h"
+#include "include/core/SkSurface.h"
+
 
 static void useDrawText()
 {
@@ -23,6 +26,14 @@ static void useDrawText()
 
 int entry(int argc, char *argv[])
 {
+    sk_sp<SkSurface> surface = SkSurface::MakeRaster(SkImageInfo::Make(800, 600, SkColorType::kRGBA_8888_SkColorType, SkAlphaType::kPremul_SkAlphaType));
+
+    if (surface) {
+        std::cout << "skia surface created" << std::endl;
+    } else {
+        std::cout << "cannot create skia surface" << std::endl;
+    }
+
     try {
 
         // 解析程序命令行参数

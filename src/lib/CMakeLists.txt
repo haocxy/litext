@@ -1,14 +1,13 @@
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 set(CMAKE_AUTOMOC ON)
 
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_STATIC_RUNTIME ON)
 find_package(Boost 1.76 REQUIRED
     COMPONENTS filesystem program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 
-if(MSVC)
-    # Debug配置启用AddressSanitizer技术
-    #add_compile_options($<$<CONFIG:Debug>:/fsanitize=address>)
-endif()
+include_directories($ENV{SKIA_ROOT})
 
 if(NOT MSVC)
     find_package(Fontconfig REQUIRED)
@@ -33,6 +32,12 @@ set(deps
     libsqlite3_static
     freetype
     ${Boost_LIBRARIES}
+    "$ENV{SKIA_ROOT}/lib/skresources.lib"
+    "$ENV{SKIA_ROOT}/lib/skshaper.lib"
+    "$ENV{SKIA_ROOT}/lib/particles.lib"
+    "$ENV{SKIA_ROOT}/lib/pathkit.lib"
+    "$ENV{SKIA_ROOT}/lib/skia.lib"
+    opengl32
 )
 
 if(NOT MSVC)
