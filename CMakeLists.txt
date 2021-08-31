@@ -38,6 +38,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
+#add_subdirectory(third)
 
 include(release_version.cmake)
 get_release_version(release_version)
