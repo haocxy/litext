@@ -263,6 +263,7 @@ __pycache__/
 
 /*build*/
 /third/freetype_wrapper/freetype/
+/third/qt6/
 
 asset.*.h
 asset.*.cpp
