@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QWidget>
-#include <QScrollBar>
 
 #include "core/fs.h"
 #include "core/sigconns.h"
@@ -11,6 +10,7 @@
 #include "declare_ruler_widget.h"
 #include "declare_text_area_widget.h"
 #include "declare_status_bar_widget.h"
+#include "text_area_scrollbar.h"
 
 
 namespace gui::qt
@@ -40,7 +40,7 @@ private:
     TextArea textArea_;
     RulerWidget *ruler_ = nullptr;
     TextAreaWidget *textAreaWidget_ = nullptr;
-    QScrollBar *vScrollBar_ = nullptr;
+    TextAreaScrollBar *vScrollBar_ = nullptr;
     StatusBarWidget *statusBar_ = nullptr;
     SigConns sigConns_;
 };

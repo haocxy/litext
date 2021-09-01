@@ -24,8 +24,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
 
     textAreaWidget_ = new TextAreaWidget(textArea_);
 
-    vScrollBar_ = new QScrollBar;
-    vScrollBar_->setRange(0, 0);
+    vScrollBar_ = new TextAreaScrollBar;
 
     statusBar_ = new StatusBarWidget(textArea_);
 
@@ -58,7 +57,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path 
         }
     });
 
-    connect(vScrollBar_, &QScrollBar::valueChanged, this, [this] (int value) {
+    connect(vScrollBar_, &TextAreaScrollBar::jumpValueChanged, this, [this] (int value) {
         textArea_.jumpTo(static_cast<RowN>(vScrollBar_->value()));
     });
 
