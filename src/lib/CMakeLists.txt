@@ -31,8 +31,10 @@ set_target_properties(Qt5::Widgets PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE
 target_link_libraries(libnotesharp Qt5::Widgets)
 
 # dep Boost
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_STATIC_RUNTIME ON)
+if(MSVC)
+    set(Boost_USE_STATIC_LIBS ON)
+    set(Boost_USE_STATIC_RUNTIME ON)
+endif()
 find_package(Boost 1.76 REQUIRED COMPONENTS filesystem program_options)
 target_link_libraries(libnotesharp ${Boost_LIBRARIES})
 
