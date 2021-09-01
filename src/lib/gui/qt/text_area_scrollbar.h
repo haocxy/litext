@@ -18,6 +18,15 @@ signals:
 
 protected:
     virtual void mousePressEvent(QMouseEvent *e) override;
+
+    virtual void mouseReleaseEvent(QMouseEvent *e) override;
+
+    virtual void mouseMoveEvent(QMouseEvent *e) override;
+
+private:
+    void jumpToY(int y);
+
+    bool jumping_ = false;
 };
 
 }
