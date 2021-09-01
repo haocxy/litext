@@ -12,9 +12,6 @@
 
 #include "cmdopt.h"
 
-#include "include/core/SkCanvas.h"
-#include "include/core/SkSurface.h"
-
 
 static void useDrawText()
 {
