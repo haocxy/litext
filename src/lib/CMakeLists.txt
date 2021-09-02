@@ -42,11 +42,11 @@ target_link_libraries(libnotesharp ${Boost_LIBRARIES})
 
 if(MSVC)
     # dep skia
-    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/skresources.lib)
-    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/skshaper.lib)
-    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/particles.lib)
-    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/pathkit.lib)
-    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/skia.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/third/libskia/lib/skresources.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/third/libskia/lib/skshaper.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/third/libskia/lib/particles.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/third/libskia/lib/pathkit.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/third/libskia/lib/skia.lib)
 
     # dep opengl
     target_link_libraries(libnotesharp opengl32.lib)
