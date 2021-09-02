@@ -124,12 +124,12 @@ static void setupConfig(TextAreaConfig &c)
 
 namespace prop
 {
-static const std::string_view width = "width";
-static const std::string_view height = "height";
-static const std::string_view x = "x";
-static const std::string_view y = "y";
-static const std::string_view fontFile = "fontFile";
-static const std::string_view fontFace = "fontFace";
+static const std::string width = "width";
+static const std::string height = "height";
+static const std::string x = "x";
+static const std::string y = "y";
+static const std::string fontFile = "fontFile";
+static const std::string fontFace = "fontFace";
 }
 
 MainWindow::MainWindow(Engine &engine, Config &config)

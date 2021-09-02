@@ -57,6 +57,10 @@ class Statement {
 public:
     Statement();
 
+    Statement(Database &db, const std::string &sql) {
+        open(db, sql);
+    }
+
     Statement(const Statement &) = delete;
 
     Statement(Statement &&) = delete;
@@ -113,6 +117,8 @@ public:
     void getValue(int col, long long &to);
 
     void getValue(int col, MemBuff &to);
+
+    void getValue(int col, std::string &utf8);
 
     void getValue(int col, std::u32string &to);
 

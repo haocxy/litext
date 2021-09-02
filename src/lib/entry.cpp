@@ -8,6 +8,7 @@
 #include "gui/config.h"
 #include "gui/engine.h"
 #include "gui/qt/main_window.h"
+#include "gui/qt/application.h"
 #include "doc/dbfiles.h"
 
 #include "cmdopt.h"
@@ -20,17 +21,8 @@ static void useDrawText()
     painter.drawText(0, 0, "0");
 }
 
-
 int entry(int argc, char *argv[])
 {
-    //sk_sp<SkSurface> surface = SkSurface::MakeRaster(SkImageInfo::Make(800, 600, SkColorType::kRGBA_8888_SkColorType, SkAlphaType::kPremul_SkAlphaType));
-
-    //if (surface) {
-    //    std::cout << "skia surface created" << std::endl;
-    //} else {
-    //    std::cout << "cannot create skia surface" << std::endl;
-    //}
-
     try {
 
         // 解析程序命令行参数
@@ -58,7 +50,7 @@ int entry(int argc, char *argv[])
             LOGI << "open info: file [" << e.file() << "], row [" << e.row() << "]";
         }
 
-        QApplication app(argc, argv);
+        gui::qt::Application app(argc, argv);
 
         // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
         // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
@@ -75,10 +67,16 @@ int entry(int argc, char *argv[])
         }
         mainWindow.show();
 
-        return app.exec();
+        using SingletonMode = gui::qt::Application::SingletonMode;
+
+        return app.exec(SingletonMode::TrySingleton);
     }
     catch (const std::exception &e) {
-        std::cerr << "exception: " << e.what() << std::endl;
+        LOGE << "uncatched std::exception in gui thread, what: " << e.what();
         return 1;
+    }
+    catch (...) {
+        LOGE << "uncatched unkown exception in gui thread";
+        return 2;
     }
 }

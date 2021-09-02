@@ -20,7 +20,7 @@ static const logger::Level DefaultLogLevel = logger::Level::All;
 static const logger::Level DefaultLogLevel = logger::Level::Error;
 #endif
 
-static logger::Level g_Level = DefaultLogLevel;
+static logger::Level g_Level = logger::Level::Info;
 
 static logger::Writer *g_writer = nullptr;
 
