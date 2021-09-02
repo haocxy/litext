@@ -3,7 +3,6 @@ project(notesharp)
 
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_BUILD_TYPE "Release")
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
 
 
