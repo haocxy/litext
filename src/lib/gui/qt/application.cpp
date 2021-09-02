@@ -80,11 +80,11 @@ int Application::execAsClient(bool mustSingleton)
 
 static boost::interprocess::file_lock mkFileLock(const fs::path &p)
 {
-    if constexpr (SystemType::IsWindows) {
-        return boost::interprocess::file_lock(p.generic_wstring().c_str());
-    } else {
-        return boost::interprocess::file_lock(p.generic_u8string().c_str());
-    }
+#ifdef WIN32
+    return boost::interprocess::file_lock(p.generic_wstring().c_str());
+#else
+    return boost::interprocess::file_lock(p.generic_u8string().c_str());
+#endif
 }
 
 static boost::interprocess::file_lock mkSingleLogicLock()
