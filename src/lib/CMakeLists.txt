@@ -23,12 +23,13 @@ target_link_libraries(libnotesharp libsqlite3_static)
 target_link_libraries(libnotesharp freetype)
 
 # dep Qt5
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
 
 set_target_properties(Qt5::Core PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
 set_target_properties(Qt5::Gui PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
 set_target_properties(Qt5::Widgets PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
-target_link_libraries(libnotesharp Qt5::Widgets)
+set_target_properties(Qt5::Network PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
+target_link_libraries(libnotesharp Qt5::Widgets Qt5::Network)
 
 # dep Boost
 if(MSVC)
@@ -41,12 +42,11 @@ target_link_libraries(libnotesharp ${Boost_LIBRARIES})
 
 if(MSVC)
     # dep skia
-    include_directories($ENV{SKIA_ROOT})
-    target_link_libraries(libnotesharp $ENV{SKIA_ROOT}/lib/skresources.lib)
-    target_link_libraries(libnotesharp $ENV{SKIA_ROOT}/lib/skshaper.lib)
-    target_link_libraries(libnotesharp $ENV{SKIA_ROOT}/lib/particles.lib)
-    target_link_libraries(libnotesharp $ENV{SKIA_ROOT}/lib/pathkit.lib)
-    target_link_libraries(libnotesharp $ENV{SKIA_ROOT}/lib/skia.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/skresources.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/skshaper.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/particles.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/pathkit.lib)
+    target_link_libraries(libnotesharp ${CMAKE_SOURCE_DIR}/lib/skia.lib)
 
     # dep opengl
     target_link_libraries(libnotesharp opengl32.lib)
