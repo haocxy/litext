@@ -16,7 +16,7 @@ static fs::path pathOfSingleProcLockFile()
     return SystemUtil::userHome() / ".notesharp" / "single.lock";
 }
 
-Application::Application(int argc, char *argv[])
+Application::Application(int &argc, char *argv[])
     : QApplication(argc, argv)
 {
 
