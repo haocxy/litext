@@ -6,7 +6,7 @@
 #ifdef WIN32
 #define NOTESHARP_DLIB_NAME "libnotesharp.dll"
 #else
-#define NOTESHARP_DLIB_NAME "libnotesharp.so"
+#define NOTESHARP_DLIB_NAME "liblibnotesharp.so"
 #endif
 
 int loader_entry(int argc, char *argv[])

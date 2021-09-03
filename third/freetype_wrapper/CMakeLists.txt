@@ -11,4 +11,8 @@ if(NOT EXISTS freetype)
     )
 endif()
 
+if(NOT MSVC)
+    add_compile_options(-fPIC)
+endif()
+
 add_subdirectory(freetype)

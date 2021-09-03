@@ -14,7 +14,7 @@ add_library(libnotesharp SHARED ${src_files})
 
 
 # dep uchardet
-target_link_libraries(libnotesharp libuchardet_static)
+target_link_libraries(libnotesharp libuchardet)
 
 # dep sqlite3
 target_link_libraries(libnotesharp libsqlite3_static)
