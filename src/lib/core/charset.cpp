@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include <third/uchardet-0.0.7/src/uchardet.h>
+#include <third/uchardet_wrapper/uchardet-0.0.7/src/uchardet.h>
 
 
 namespace CharsetUtil
