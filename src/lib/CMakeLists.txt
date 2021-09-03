@@ -14,7 +14,13 @@ add_library(libnotesharp SHARED ${src_files})
 
 
 # dep uchardet
-target_link_libraries(libnotesharp libuchardet)
+if(MSVC)
+    # 在windows平台上, 不加 _static 后缀就是动态库
+    target_link_libraries(libnotesharp libuchardet_static)
+else()
+    # 在linux平台上, 不加 _static 后缀就是静态库
+    target_link_libraries(libnotesharp libuchardet)
+endif()
 
 # dep sqlite3
 target_link_libraries(libnotesharp libsqlite3_static)
