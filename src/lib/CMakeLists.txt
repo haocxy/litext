@@ -12,6 +12,8 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
 add_library(libnotesharp SHARED ${src_files})
 
+add_definitions(-DNOTESHARP_API_PROVIDER)
+
 
 # dep uchardet
 if(MSVC)
