@@ -6,15 +6,15 @@
 #include <Windows.h>
 #endif
 
-int entry(int argc, char *argv[]);
+int loader_entry(int argc, char *argv[]);
 
 #if defined(NOTESHARP_ENTRY_WINDOWS_GUI)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-    return entry(__argc, __argv);
+    return loader_entry(__argc, __argv);
 }
 #else
 int main(int argc, char *argv[])
 {
-    return entry(argc, argv);
+    return loader_entry(argc, argv);
 }
 #endif

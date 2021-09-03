@@ -10,7 +10,7 @@ add_executable(notesharp
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
-target_link_libraries(notesharp libnotesharp)
+target_link_libraries(notesharp libnotesharp_loader)
 
 if(MSVC)
     target_link_options(notesharp
@@ -23,5 +23,5 @@ endif()
 if(MSVC)
     add_executable(notesharpcmd ${src_files})
     target_compile_definitions(notesharpcmd PRIVATE NOTESHARP_WINDOWS_CONSOLE)
-    target_link_libraries(notesharpcmd libnotesharp)
+    target_link_libraries(notesharpcmd libnotesharp_loader)
 endif()

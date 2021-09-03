@@ -10,7 +10,7 @@ file(GLOB_RECURSE src_files
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
-add_library(libnotesharp STATIC ${src_files})
+add_library(libnotesharp SHARED ${src_files})
 
 
 # dep uchardet
@@ -32,10 +32,6 @@ set_target_properties(Qt5::Network PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE
 target_link_libraries(libnotesharp Qt5::Widgets Qt5::Network)
 
 # dep Boost
-if(MSVC)
-    set(Boost_USE_STATIC_LIBS ON)
-    set(Boost_USE_STATIC_RUNTIME ON)
-endif()
 find_package(Boost 1.76 REQUIRED COMPONENTS filesystem program_options)
 target_link_libraries(libnotesharp ${Boost_LIBRARIES})
 

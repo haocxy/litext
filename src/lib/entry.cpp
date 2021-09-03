@@ -4,6 +4,8 @@
 #include <QApplication>
 #include <QPainter>
 
+#include <boost/dll.hpp>
+
 #include "core/logger.h"
 #include "gui/config.h"
 #include "gui/engine.h"
@@ -21,7 +23,7 @@ static void useDrawText()
     painter.drawText(0, 0, "0");
 }
 
-int entry(int argc, char *argv[])
+extern "C" BOOST_SYMBOL_EXPORT int entry(int argc, char **argv)
 {
     try {
 

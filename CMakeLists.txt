@@ -4,7 +4,7 @@ project(notesharp)
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
-
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
 
 # VS专用全局设置
 if(MSVC)
