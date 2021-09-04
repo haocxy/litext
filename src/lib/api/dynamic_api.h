@@ -18,7 +18,7 @@
 #define NOTESHARP_API_FR_destroy() void
 
 #define NOTESHARP_API_FN_initSetShouldStartAsServer() initSetShouldStartAsServer
-#define NOTESHARP_API_FP_initSetShouldStartAsServer() (void *p, bool b)
+#define NOTESHARP_API_FP_initSetShouldStartAsServer() (void *p, int b)
 #define NOTESHARP_API_FR_initSetShouldStartAsServer() void
 
 #define NOTESHARP_API_FN_initSetLogLevel() initSetLogLevel
@@ -26,7 +26,7 @@
 #define NOTESHARP_API_FR_initSetLogLevel() void
 
 #define NOTESHARP_API_FN_initSetShouldLogToStd() initSetShouldLogToStd
-#define NOTESHARP_API_FP_initSetShouldLogToStd() (void *p, bool b)
+#define NOTESHARP_API_FP_initSetShouldLogToStd() (void *p, int b)
 #define NOTESHARP_API_FR_initSetShouldLogToStd() void
 
 #define NOTESHARP_API_FN_initAddOpenFileWithUtf8FilePathAndRowNum() initAddOpenFileWithUtf8FilePathAndRowNum
@@ -36,3 +36,10 @@
 #define NOTESHARP_API_FN_exec() exec
 #define NOTESHARP_API_FP_exec() (void *p)
 #define NOTESHARP_API_FR_exec() int
+
+
+// 获得C字符串形式的实际函数名
+#define NOTESHARP_API_FN_NAME(f) BOOST_PP_STRINGIZE(BOOST_PP_CAT(NOTESHARP_API_FN_,f)())
+
+// 获得函数类型
+#define NOTESHARP_API_FN_TYPE(f) BOOST_PP_CAT(NOTESHARP_API_FR_, f)() BOOST_PP_CAT(NOTESHARP_API_FP_, f)()
