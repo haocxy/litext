@@ -13,7 +13,7 @@ namespace gui::qt
 
 static fs::path pathOfSingleProcLockFile()
 {
-    return SystemUtil::userHome() / ".litext" / "single.lock";
+    return SystemUtil::userHome() / LITEXT_WORKDIR_NAME / "single.lock";
 }
 
 Application::Application(int &argc, char *argv[])

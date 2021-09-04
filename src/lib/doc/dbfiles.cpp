@@ -186,7 +186,7 @@ static bool isDbFile(const fs::path &p) {
 }
 
 static fs::path dbDir() {
-    return SystemUtil::userHome() / ".litext";
+    return SystemUtil::userHome() / LITEXT_WORKDIR_NAME;
 }
 
 fs::path docPathToDbPath(const fs::path &doc)
