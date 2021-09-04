@@ -1,7 +1,7 @@
 #include <boost/dll/shared_library.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
 
-#include "notesharp_delegate.h"
+#include "litext_delegate.h"
 
 #ifdef WIN32
 #define NOTESHARP_DLIB_NAME "liblitext.dll"
