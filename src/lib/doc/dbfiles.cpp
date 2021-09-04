@@ -222,6 +222,10 @@ void removeUselessDbFiles()
 {
     const fs::path dir = dbDir();
 
+    if (!fs::exists(dir) || !fs::is_directory(dir)) {
+        return;
+    }
+
     for (const fs::directory_entry e : fs::directory_iterator(dir)) {
         if (e.path().extension().generic_u32string() != DbFileExt) {
             continue;
