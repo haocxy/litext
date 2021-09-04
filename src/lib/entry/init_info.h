@@ -10,6 +10,14 @@ class InitInfo {
 public:
     InitInfo() {}
 
+    const std::string &arg0() const {
+        return arg0_;
+    }
+
+    void setArg0(const char *arg0) {
+        arg0_ = arg0;
+    }
+
     const std::string &logLevel() const {
         return logLevel_;
     }
@@ -43,6 +51,7 @@ public:
     }
 
 private:
+    std::string arg0_;
     std::string logLevel_;
     bool shouldLogToStd_ = false;
     bool shouldStartAsServer_ = false;

@@ -1,16 +1,12 @@
 #include "notesharp_api.h"
 
 #include <cstring>
-
 #include <string>
-
-
-
-#include "charset/to_utf32.h"
-#include "init_info.h"
-
 #include <boost/dll.hpp>
 #include <boost/preprocessor/cat.hpp>
+
+#include "charset/to_utf32.h"
+#include "entry/init_info.h"
 
 #if defined(NOTESHARP_API_PROVIDER)
 #define NOTESHARP_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT

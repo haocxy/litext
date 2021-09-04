@@ -13,7 +13,7 @@
 #include "gui/qt/application.h"
 #include "doc/dbfiles.h"
 
-#include "api/init_info.h"
+#include "init_info.h"
 
 
 static void useDrawText()
@@ -23,23 +23,23 @@ static void useDrawText()
     painter.drawText(0, 0, "0");
 }
 
-extern "C" BOOST_SYMBOL_EXPORT int entry(int argc, char **argv)
+int entry(const InitInfo &initInfo)
 {
     try {
 
-        // 解析程序命令行参数
-        CmdOpt cmdOpt(argc, argv);
-        if (cmdOpt.needHelp()) {
-            cmdOpt.help(std::cout);
-            return 0;
-        }
+        //// 解析程序命令行参数
+        //CmdOpt cmdOpt(argc, argv);
+        //if (cmdOpt.needHelp()) {
+        //    cmdOpt.help(std::cout);
+        //    return 0;
+        //}
 
         // 初始化日志模块
         logger::control::Option logOpt;
-        logOpt.setLevel(cmdOpt.logLevel());
+        logOpt.setLevel(initInfo.logLevel());
         logOpt.setDir("./tmp/log");
         logOpt.setBasename("notesharplog");
-        logOpt.setWriteToStdout(cmdOpt.shouldLogToStdout());
+        logOpt.setWriteToStdout(initInfo.shouldLogToStd());
         logger::control::init(logOpt);
 
         gui::Engine engine;
@@ -47,12 +47,19 @@ extern "C" BOOST_SYMBOL_EXPORT int entry(int argc, char **argv)
         // 删除无用的由程序创建的辅助文件
         doc::dbfiles::removeUselessDbFiles();
 
-        const std::vector<doc::OpenInfo> &files = cmdOpt.files();
-        for (const doc::OpenInfo &e : files) {
+        for (const doc::OpenInfo &e : initInfo.openInfos()) {
             LOGI << "open info: file [" << e.file() << "], row [" << e.row() << "]";
         }
 
-        gui::qt::Application app(argc, argv);
+        int fakeArgc = 1;
+        char prognameCharArr[256];
+        std::memset(prognameCharArr, 0, sizeof(prognameCharArr));
+        const char *progname = "notesharp";
+        std::strcpy(prognameCharArr, progname);
+        char *fakeArgv[1] = {};
+        fakeArgv[0] = prognameCharArr;
+
+        gui::qt::Application app(fakeArgc, fakeArgv);
 
         // 在 Windows 平台发现窗口首次打开时会有一段时间全部为白色，
         // 调查后发现是卡在了 QPainter::drawText(...) 的首次有效调用，
@@ -63,8 +70,8 @@ extern "C" BOOST_SYMBOL_EXPORT int entry(int argc, char **argv)
         gui::Config config;
 
         gui::qt::MainWindow mainWindow(engine, config);
-        if (!cmdOpt.files().empty()) {
-            const doc::OpenInfo &info = cmdOpt.files()[0];
+        if (!initInfo.openInfos().empty()) {
+            const doc::OpenInfo &info = initInfo.openInfos()[0];
             mainWindow.openDocument(info.file(), info.row());
         }
         mainWindow.show();
