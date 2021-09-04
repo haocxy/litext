@@ -154,7 +154,9 @@ MainWindow::MainWindow(Engine &engine, Config &config)
     // 如果失败则不做任何事情（默认的位置应该由GUI库决定）
     int x = 0, y = 0;
     if (propRepo_.get(prop::x, x) && propRepo_.get(prop::y, y)) {
-        move(x, y);
+        QRect geo = geometry();
+        geo.moveTo(x, y);
+        setGeometry(geo);
     }
 
     std::u32string fontFile;
@@ -172,13 +174,11 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
 MainWindow::~MainWindow()
 {
-    const QSize sz = size();
-    propRepo_.set(prop::width, sz.width());
-    propRepo_.set(prop::height, sz.height());
-
-    const QPoint ps = pos();
-    propRepo_.set(prop::x, ps.x());
-    propRepo_.set(prop::y, ps.y());
+    const QRect &geo = geometry();
+    propRepo_.set(prop::width, geo.width());
+    propRepo_.set(prop::height, geo.height());
+    propRepo_.set(prop::x, geo.x());
+    propRepo_.set(prop::y, geo.y());
 
     editorWidget_ = nullptr;
 }
