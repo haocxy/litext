@@ -4,9 +4,9 @@
 #include "notesharp_delegate.h"
 
 #ifdef WIN32
-#define NOTESHARP_DLIB_NAME "libnotesharp.dll"
+#define NOTESHARP_DLIB_NAME "liblitext.dll"
 #else
-#define NOTESHARP_DLIB_NAME "liblibnotesharp.so"
+#define NOTESHARP_DLIB_NAME "libliblitext.so"
 #endif
 
 int loader_entry(int argc, char *argv[])

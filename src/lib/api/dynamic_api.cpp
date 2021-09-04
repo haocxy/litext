@@ -9,11 +9,8 @@
 #include "entry/init_info.h"
 #include "entry/entry.h"
 
-#if defined(NOTESHARP_API_PROVIDER)
+
 #define NOTESHARP_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
-#else
-#define NOTESHARP_API_EXPORT extern "C"
-#endif
 
 #define NOTESHARP_API_FUNC(f) \
 NOTESHARP_API_EXPORT BOOST_PP_CAT(NOTESHARP_API_FR_, f)() \

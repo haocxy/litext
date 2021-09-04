@@ -1,7 +1,7 @@
 file(GLOB_RECURSE asset_files "assets/*")
 install(FILES ${asset_files} DESTINATION assets)
 
-install(TARGETS notesharp notesharpcmd libnotesharp
+install(TARGETS litext litextcmd liblitext
     CONFIGURATIONS Release
     RUNTIME DESTINATION bin)
 
@@ -42,6 +42,6 @@ find_file(dlib_qtplugin_styles_vistastyle "qwindowsvistastyle.dll" PATH_SUFFIXES
 install(FILES ${dlib_qtplugin_styles_vistastyle} DESTINATION bin/styles)
 
 set(CPACK_GENERATOR ZIP)
-set(CPACK_PACKAGE_NAME "NoteSharp")
-set(CPACK_PACKAGE_VERSION ${NOTESHARP_RELEASE_VERSION})
+set(CPACK_PACKAGE_NAME "litext")
+set(CPACK_PACKAGE_VERSION ${LITEXT_RELEASE_VERSION})
 include(CPack)

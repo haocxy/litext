@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14.0 FATAL_ERROR)
-project(notesharp)
+project(litext)
 
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
@@ -43,7 +43,7 @@ add_subdirectory(third EXCLUDE_FROM_ALL)
 include(release_version.cmake)
 get_release_version(release_version)
 
-set(NOTESHARP_RELEASE_VERSION ${release_version})
+set(LITEXT_RELEASE_VERSION ${release_version})
 message(STATUS "Release Version: [${release_version}]")
 
 if(MSVC)
