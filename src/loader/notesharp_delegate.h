@@ -8,16 +8,25 @@
 #include "api/dynamic_api.h"
 
 
+// 获得C字符串形式的实际函数名
+#define LITEXT_API_FN_NAME(f) BOOST_PP_STRINGIZE(BOOST_PP_CAT(LITEXT_API_FN_,f)())
+
+
+// 获得函数类型
+#define LITEXT_API_FN_TYPE(f) BOOST_PP_CAT(LITEXT_API_FR_, f)() BOOST_PP_CAT(LITEXT_API_FP_, f)()
+
+
+
 class NoteSharpDelegate {
 public:
 
     struct FnTable {
-        using Create = NOTESHARP_API_FN_TYPE(create);
-        using Destroy = NOTESHARP_API_FN_TYPE(destroy);
-        using InitSetShouldStartAsServer = NOTESHARP_API_FN_TYPE(initSetShouldStartAsServer);
-        using InitSetLogLevel = NOTESHARP_API_FN_TYPE(initSetLogLevel);
-        using InitAddOpenFileWithUtf8FilePathAndRowNum = NOTESHARP_API_FN_TYPE(initAddOpenFileWithUtf8FilePathAndRowNum);
-        using Exec = NOTESHARP_API_FN_TYPE(exec);
+        using Create = LITEXT_API_FN_TYPE(create);
+        using Destroy = LITEXT_API_FN_TYPE(destroy);
+        using InitSetShouldStartAsServer = LITEXT_API_FN_TYPE(initSetShouldStartAsServer);
+        using InitSetLogLevel = LITEXT_API_FN_TYPE(initSetLogLevel);
+        using InitAddOpenFileWithUtf8FilePathAndRowNum = LITEXT_API_FN_TYPE(initAddOpenFileWithUtf8FilePathAndRowNum);
+        using Exec = LITEXT_API_FN_TYPE(exec);
 
         Create *create = nullptr;
         Destroy *destroy = nullptr;
@@ -27,12 +36,12 @@ public:
         Exec *exec = nullptr;
 
         void load(boost::dll::shared_library &dll) {
-            create = dll.get<Create>(NOTESHARP_API_FN_NAME(create));
-            destroy = dll.get<Destroy>(NOTESHARP_API_FN_NAME(destroy));
-            initSetShouldStartAsServer = dll.get<InitSetShouldStartAsServer>(NOTESHARP_API_FN_NAME(initSetShouldStartAsServer));
-            initSetLogLevel = dll.get<InitSetLogLevel>(NOTESHARP_API_FN_NAME(initSetLogLevel));
-            initAddOpenFileWithUtf8FilePathAndRowNum = dll.get<InitAddOpenFileWithUtf8FilePathAndRowNum>(NOTESHARP_API_FN_NAME(initAddOpenFileWithUtf8FilePathAndRowNum));
-            exec = dll.get<Exec>(NOTESHARP_API_FN_NAME(exec));
+            create = dll.get<Create>(LITEXT_API_FN_NAME(create));
+            destroy = dll.get<Destroy>(LITEXT_API_FN_NAME(destroy));
+            initSetShouldStartAsServer = dll.get<InitSetShouldStartAsServer>(LITEXT_API_FN_NAME(initSetShouldStartAsServer));
+            initSetLogLevel = dll.get<InitSetLogLevel>(LITEXT_API_FN_NAME(initSetLogLevel));
+            initAddOpenFileWithUtf8FilePathAndRowNum = dll.get<InitAddOpenFileWithUtf8FilePathAndRowNum>(LITEXT_API_FN_NAME(initAddOpenFileWithUtf8FilePathAndRowNum));
+            exec = dll.get<Exec>(LITEXT_API_FN_NAME(exec));
         }
     };
 

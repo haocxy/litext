@@ -10,63 +10,63 @@
 #include "entry/entry.h"
 
 
-#define NOTESHARP_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
+#define LITEXT_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
 
-#define NOTESHARP_API_FUNC(f) \
-NOTESHARP_API_EXPORT BOOST_PP_CAT(NOTESHARP_API_FR_, f)() \
-BOOST_PP_CAT(NOTESHARP_API_FN_, f)() \
-BOOST_PP_CAT(NOTESHARP_API_FP_, f)() \
+#define LITEXT_API_FUNC_IMPL(f) \
+LITEXT_API_EXPORT BOOST_PP_CAT(LITEXT_API_FR_, f)() \
+BOOST_PP_CAT(LITEXT_API_FN_, f)() \
+BOOST_PP_CAT(LITEXT_API_FP_, f)() \
 
 
 namespace
 {
 
-struct NoteSharpApi {
+struct LitextApi {
     InitInfo initInfo;
 };
 
-inline NoteSharpApi *asNoteSharp(void *p) {
-    return reinterpret_cast<NoteSharpApi *>(p);
+inline LitextApi *asLitext(void *p) {
+    return reinterpret_cast<LitextApi *>(p);
 }
 
 }
 
 
-NOTESHARP_API_FUNC(create)
+LITEXT_API_FUNC_IMPL(create)
 {
-    return new NoteSharpApi;
+    return new LitextApi;
 }
 
-NOTESHARP_API_FUNC(destroy)
+LITEXT_API_FUNC_IMPL(destroy)
 {
-    delete asNoteSharp(p);
+    delete asLitext(p);
 }
 
-NOTESHARP_API_FUNC(initSetShouldStartAsServer)
+LITEXT_API_FUNC_IMPL(initSetShouldStartAsServer)
 {
-    asNoteSharp(p)->initInfo.setShouldStartAsServer(b);
+    asLitext(p)->initInfo.setShouldStartAsServer(b);
 }
 
-NOTESHARP_API_FUNC(initSetLogLevel)
+LITEXT_API_FUNC_IMPL(initSetLogLevel)
 {
-    asNoteSharp(p)->initInfo.setLogLevel(level);
+    asLitext(p)->initInfo.setLogLevel(level);
 }
 
-NOTESHARP_API_FUNC(initSetShouldLogToStd)
+LITEXT_API_FUNC_IMPL(initSetShouldLogToStd)
 {
-    asNoteSharp(p)->initInfo.setShouldLogToStd(b);
+    asLitext(p)->initInfo.setShouldLogToStd(b);
 }
 
-NOTESHARP_API_FUNC(initAddOpenFileWithUtf8FilePathAndRowNum)
+LITEXT_API_FUNC_IMPL(initAddOpenFileWithUtf8FilePathAndRowNum)
 {
     const std::u32string u32s = charset::toUTF32(Charset::UTF_8, file, std::strlen(file));
     const fs::path path = u32s;
-    asNoteSharp(p)->initInfo.addOpenInfo(path, row);
+    asLitext(p)->initInfo.addOpenInfo(path, row);
 }
 
-NOTESHARP_API_FUNC(exec)
+LITEXT_API_FUNC_IMPL(exec)
 {
-    return entry(asNoteSharp(p)->initInfo);
+    return entry(asLitext(p)->initInfo);
 }
 
 
