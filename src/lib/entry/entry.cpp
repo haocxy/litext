@@ -13,7 +13,7 @@
 #include "gui/qt/application.h"
 #include "doc/dbfiles.h"
 
-#include "cmdopt.h"
+#include "api/init_info.h"
 
 
 static void useDrawText()

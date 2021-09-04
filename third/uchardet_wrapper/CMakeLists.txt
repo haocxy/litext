@@ -1,4 +1,4 @@
-set(BUILD_SHARED_LIBS OFF)
+set(BUILD_STATIC TRUE)
 
 if(NOT MSVC)
     add_compile_options(-fPIC)
