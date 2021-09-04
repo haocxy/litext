@@ -246,12 +246,12 @@ void MainWindow::openDocument(const fs::path &file, RowN row)
     connect(editorWidget_, &EditorWidget::qtSigDocFatalError, this, [this](const QString &errmsg) {
         QErrorMessage::qtHandler()->showMessage(errmsg);
         setCentralWidget(nullptr);
-        setWindowTitle(QString("notesharp"));
+        setWindowTitle(QString("litext"));
     });
 
     setCentralWidget(editorWidget_);
 
-    setWindowTitle(QString("notesharp - ") + QString::fromStdU16String(file.generic_u16string()));
+    setWindowTitle(QString("litext - ") + QString::fromStdU16String(file.generic_u16string()));
 }
 
 void MainWindow::fileMenuOpenActionTriggered()

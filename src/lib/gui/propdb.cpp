@@ -16,7 +16,7 @@ namespace gui
 {
 
 PropDb::PropDb()
-    : dbFile_(SystemUtil::userHome() / ".notesharp" / "props.propdb")
+    : dbFile_(SystemUtil::userHome() / ".litext" / "props.propdb")
 {
 }
 

@@ -1,10 +1,10 @@
 #pragma once
 
-// 定义 notesharp 库的导出函数的函数名,参数列表,返回类型
+// 定义 litext 库的导出函数的函数名,参数列表,返回类型
 // 其中:
 // 由 LITEXT_API_FN_ 开头的宏用于定义函数名(FN = Function Name);
-// 由 NOTESHARP_API_FP_ 开头的宏用于定义参数列表(FP = Function Param),必须包含参数名以用于定义函数;
-// 由 NOTESHARP_API_FR_ 开头的宏用于定义返回类型(FR = Function Return);
+// 由 LITEXT_API_FP_ 开头的宏用于定义参数列表(FP = Function Param),必须包含参数名以用于定义函数;
+// 由 LITEXT_API_FR_ 开头的宏用于定义返回类型(FR = Function Return);
 //
 // 通过这样的方式, 可以保证函数提供者和使用者的一致性,
 // 函数定义时会通过这些宏来组成函数头部, 而函数使用者则可以通过这些宏来查找函数和转换其函数指针为正确类型

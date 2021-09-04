@@ -17,7 +17,7 @@
 
 
 
-class NoteSharpDelegate {
+class LitextDelegate {
 public:
 
     struct FnTable {
@@ -57,28 +57,28 @@ public:
         boost::dll::shared_library dll_;
         FnTable fnTable_;
 
-        friend class NoteSharpDelegate;
+        friend class LitextDelegate;
     };
 
 public:
 
-    NoteSharpDelegate(Factory &factory)
+    LitextDelegate(Factory &factory)
         : fnTable_(factory.fnTable_) {
 
         handle_ = fnTable_.create();
     }
 
-    NoteSharpDelegate() = delete;
+    LitextDelegate() = delete;
 
-    NoteSharpDelegate(const NoteSharpDelegate &) = delete;
+    LitextDelegate(const LitextDelegate &) = delete;
 
-    NoteSharpDelegate(NoteSharpDelegate &&) = delete;
+    LitextDelegate(LitextDelegate &&) = delete;
 
-    NoteSharpDelegate &operator=(const NoteSharpDelegate &) = delete;
+    LitextDelegate &operator=(const LitextDelegate &) = delete;
 
-    NoteSharpDelegate &operator=(NoteSharpDelegate &&) = delete;
+    LitextDelegate &operator=(LitextDelegate &&) = delete;
 
-    ~NoteSharpDelegate() {
+    ~LitextDelegate() {
         fnTable_.destroy(handle_);
         handle_ = nullptr;
     }

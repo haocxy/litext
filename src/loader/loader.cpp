@@ -4,16 +4,16 @@
 #include "litext_delegate.h"
 
 #ifdef WIN32
-#define NOTESHARP_DLIB_NAME "liblitext.dll"
+#define LITEXT_DLIB_NAME "liblitext.dll"
 #else
-#define NOTESHARP_DLIB_NAME "libliblitext.so"
+#define LITEXT_DLIB_NAME "libliblitext.so"
 #endif
 
 int loader_entry(int argc, char *argv[])
 {
     const auto exePath = boost::dll::program_location();
-    const auto dlibPath = exePath.parent_path() / NOTESHARP_DLIB_NAME;
-    NoteSharpDelegate::Factory factory(dlibPath);
-    NoteSharpDelegate notesharp(factory);
-    return notesharp.exec();
+    const auto dlibPath = exePath.parent_path() / LITEXT_DLIB_NAME;
+    LitextDelegate::Factory factory(dlibPath);
+    LitextDelegate litext(factory);
+    return litext.exec();
 }

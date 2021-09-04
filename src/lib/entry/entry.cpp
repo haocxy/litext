@@ -38,7 +38,7 @@ int entry(const InitInfo &initInfo)
         logger::control::Option logOpt;
         logOpt.setLevel(initInfo.logLevel());
         logOpt.setDir("./tmp/log");
-        logOpt.setBasename("notesharplog");
+        logOpt.setBasename("litextlog");
         logOpt.setWriteToStdout(initInfo.shouldLogToStd());
         logger::control::init(logOpt);
 
@@ -54,7 +54,7 @@ int entry(const InitInfo &initInfo)
         int fakeArgc = 1;
         char prognameCharArr[256];
         std::memset(prognameCharArr, 0, sizeof(prognameCharArr));
-        const char *progname = "notesharp";
+        const char *progname = "litext";
         std::strcpy(prognameCharArr, progname);
         char *fakeArgv[1] = {};
         fakeArgv[0] = prognameCharArr;

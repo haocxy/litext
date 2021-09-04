@@ -13,7 +13,7 @@ namespace gui::qt
 
 static fs::path pathOfSingleProcLockFile()
 {
-    return SystemUtil::userHome() / ".notesharp" / "single.lock";
+    return SystemUtil::userHome() / ".litext" / "single.lock";
 }
 
 Application::Application(int &argc, char *argv[])
@@ -57,7 +57,7 @@ int Application::execAsNonSingleton()
 int Application::execAsServer(bool mustSingleton)
 {
     serverSock_ = new QLocalServer(this);
-    serverSock_->listen("notesharp_singleton");
+    serverSock_->listen("litext_singleton");
     if (serverSock_->isListening()) {
         connect(serverSock_, &QLocalServer::newConnection, this, &Application::onNewConnection);
         LOGI << "local server started: [" << serverSock_->fullServerName().toStdU32String() << "]";

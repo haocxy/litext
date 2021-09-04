@@ -186,7 +186,7 @@ static bool isDbFile(const fs::path &p) {
 }
 
 static fs::path dbDir() {
-    return SystemUtil::userHome() / ".notesharp";
+    return SystemUtil::userHome() / ".litext";
 }
 
 fs::path docPathToDbPath(const fs::path &doc)

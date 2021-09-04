@@ -219,7 +219,7 @@ void LogLine::printPath(const fs::path &p) {
 namespace logger::control
 {
 
-static const char *const kDefaultBaseName = "notesharp-log";
+static const char *const kDefaultBaseName = "litext-log";
 
 static std::string normalizeBaseName(const std::string &basename) {
     if (basename.empty()) {
