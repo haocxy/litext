@@ -38,7 +38,7 @@ set_target_properties(Qt5::Network PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE
 target_link_libraries(liblitext Qt5::Widgets Qt5::Network)
 
 # dep Boost
-find_package(Boost 1.76 REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost 1.76 REQUIRED COMPONENTS filesystem)
 target_link_libraries(liblitext ${Boost_LIBRARIES})
 
 

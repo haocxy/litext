@@ -8,7 +8,7 @@ add_library(liblitext_loader STATIC ${src_files})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
-find_package(Boost 1.76 REQUIRED COMPONENTS filesystem)
+find_package(Boost 1.76 REQUIRED COMPONENTS filesystem program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(liblitext_loader ${Boost_LIBRARIES})
 
