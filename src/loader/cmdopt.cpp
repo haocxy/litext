@@ -7,8 +7,6 @@
 
 #include <boost/program_options.hpp>
 
-#include "core/logger.h"
-
 
 namespace
 {
@@ -68,25 +66,24 @@ public:
         out << std::endl;
     }
 
-    const std::vector<doc::OpenInfo> &files() const {
+    const std::vector<std::pair<std::filesystem::path, int64_t>> &files() const {
         return files_;
     }
 
-    logger::Level logLevel() const {
-        using Level = logger::Level;
+    const char *logLevel() const {
         if (varmap_.count("logverbose") != 0) {
-            return Level::All;
+            return "a";
         }
         if (varmap_.count("logdebug") != 0) {
-            return Level::Debug;
+            return "d";
         }
         if (varmap_.count("logerror") != 0) {
-            return Level::Error;
+            return "e";
         }
         if (varmap_.count("loginfo") != 0) {
-            return Level::Info;
+            return "i";
         }
-        return Level::Error;
+        return "";
     }
 
     bool shouldLogToStdout() const {
@@ -124,10 +121,10 @@ private:
             if (fs::exists(path)) {
                 if (lastPath) {
                     if (rows.empty()) {
-                        files_.push_back(doc::OpenInfo(*lastPath));
+                        files_.push_back({ *lastPath, 0 });
                     } else {
                         for (RowN row : rows) {
-                            files_.push_back(doc::OpenInfo(*lastPath, row));
+                            files_.push_back({ *lastPath, row });
                         }
                     }
                 }
@@ -143,10 +140,10 @@ private:
 
         if (lastPath) {
             if (rows.empty()) {
-                files_.push_back(doc::OpenInfo(*lastPath));
+                files_.push_back({ *lastPath, 0 });
             } else {
                 for (RowN row : rows) {
-                    files_.push_back(doc::OpenInfo(*lastPath, row));
+                    files_.push_back({ *lastPath, row });
                 }
             }
         }
@@ -158,7 +155,7 @@ private:
     fs::path exe_;
     boost::program_options::variables_map varmap_;
     bool hasError_ = false;
-    std::vector<doc::OpenInfo> files_;
+    std::vector<std::pair<std::filesystem::path, int64_t>> files_;
 };
 
 CmdOpt::CmdOpt(int argc, char *argv[])
@@ -182,12 +179,12 @@ void CmdOpt::help(std::ostream &out) const
     impl_->help(out);
 }
 
-const std::vector<doc::OpenInfo> &CmdOpt::files() const
+const std::vector<std::pair<std::filesystem::path, int64_t>> &CmdOpt::files() const
 {
     return impl_->files();
 }
 
-logger::Level CmdOpt::logLevel() const
+const char *CmdOpt::logLevel() const
 {
     return impl_->logLevel();
 }

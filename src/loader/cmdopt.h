@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <tuple>
-#include <ostream>
+#include <string>
+#include <filesystem>
 
-#include "core/logger.h"
 #include "doc/open_info.h"
 
 
@@ -20,9 +20,9 @@ public:
 
     void help(std::ostream &out) const;
 
-    const std::vector<doc::OpenInfo> &files() const;
+    const std::vector<std::pair<std::filesystem::path, int64_t>> &files() const;
 
-    logger::Level logLevel() const;
+    const char *logLevel() const;
 
     bool shouldLogToStdout() const;
 
