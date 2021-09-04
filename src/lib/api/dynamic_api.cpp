@@ -7,6 +7,7 @@
 
 #include "charset/to_utf32.h"
 #include "entry/init_info.h"
+#include "entry/entry.h"
 
 #if defined(NOTESHARP_API_PROVIDER)
 #define NOTESHARP_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
@@ -68,7 +69,7 @@ NOTESHARP_API_FUNC(initAddOpenFileWithUtf8FilePathAndRowNum)
 
 NOTESHARP_API_FUNC(exec)
 {
-    return 0;
+    return entry(asNoteSharp(p)->initInfo);
 }
 
 

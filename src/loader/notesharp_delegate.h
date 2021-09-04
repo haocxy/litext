@@ -87,7 +87,7 @@ public:
     }
 
     int exec() {
-        fnTable_.exec(handle_);
+        return fnTable_.exec(handle_);
     }
 
 private:
