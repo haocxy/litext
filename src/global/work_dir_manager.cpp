@@ -26,9 +26,9 @@ DirManager::DirManager()
 {
 }
 
-fs::path DirManager::singletonLockFile() const
+fs::path DirManager::singletonServerRunningLockFile() const
 {
-    const fs::path f = workDir_ / "single.lock";
+    const fs::path f = workDir_ / "server_running.lock";
     ensureFileExsit(f);
     return f;
 }

@@ -62,12 +62,12 @@ public:
             return;
         }
 
-        singletonLogicLockFile_ = info.singletonLogicLockFile;
+        serverRunningLockFile_ = info.serverRunningLock;
         infoFile_ = info.infoFile;
         infoFileLock_ = info.infoFileLock;
 
-        singletonLogicLock_ = FileLock(singletonLogicLockFile_);
-        singletonLogicLockGuard_ = FileLockGuard(singletonLogicLock_);
+        serverRunningLock_ = FileLock(serverRunningLockFile_);
+        serverRunningLockGuard_ = FileLockGuard(serverRunningLock_);
 
         started_ = true;
 
@@ -157,9 +157,9 @@ private:
 private:
     asio::io_context context_;
     asio::ip::tcp::acceptor acceptor_;
-    fs::path singletonLogicLockFile_;
-    FileLock singletonLogicLock_;
-    FileLockGuard singletonLogicLockGuard_;
+    fs::path serverRunningLockFile_;
+    FileLock serverRunningLock_;
+    FileLockGuard serverRunningLockGuard_;
     fs::path infoFile_;
     fs::path infoFileLock_;
     std::string writtenServerInfo_;

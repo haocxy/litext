@@ -23,7 +23,7 @@ public:
     // 不记录任何数据
     // 服务端在程序运行的全程都持有锁,
     // 通过判断该文件是否加锁来判断服务器是否运行
-    fs::path singletonLockFile() const;
+    fs::path singletonServerRunningLockFile() const;
 
     // 不记录任何数据
     // 更新或读取服务端信息文件时使用的锁

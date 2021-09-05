@@ -20,7 +20,7 @@ public:
     using OpenInfos = std::vector<doc::OpenInfo>;
 
     struct StartInfo {
-        fs::path singletonLogicLockFile;
+        fs::path serverRunningLock;
         fs::path infoFile;
         fs::path infoFileLock;
     };
