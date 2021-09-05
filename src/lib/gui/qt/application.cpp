@@ -11,6 +11,27 @@
 #include "main_window.h"
 
 
+namespace
+{
+
+static int gFakeArgc = 1;
+static char gFakeAppName[256]{};
+static char *gFakeArgv[1]{};
+
+class FakeArgvInit {
+public:
+    FakeArgvInit() {
+        const char *fakeName = "litext";
+        std::memcpy(gFakeAppName, fakeName, std::strlen(fakeName));
+        gFakeArgv[0] = gFakeAppName;
+    }
+};
+
+static const FakeArgvInit gFakeArgvInit;
+
+}
+
+
 namespace gui::qt
 {
 
@@ -57,10 +78,10 @@ int Application::exec()
     }
 }
 
+
+
 void Application::initQtApp()
 {
-    static int gFakeArgc = 1;
-    static char *gFakeArgv[] = { "litext" };
     qtApp_ = std::make_unique<QApplication>(gFakeArgc, gFakeArgv);
 
     // 解决windows平台Qt框架首次绘制文本时长时间卡顿的问题
