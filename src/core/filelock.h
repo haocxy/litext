@@ -15,7 +15,7 @@ public:
         : fileLock_(path.generic_wstring().c_str()) {}
 #else
     explicit FileLock(const fs::path &path)
-        : fileLock(path.generic_u8string().c_str()) {}
+        : fileLock_(path.generic_u8string().c_str()) {}
 #endif
 
     FileLock(const FileLock &) = delete;
