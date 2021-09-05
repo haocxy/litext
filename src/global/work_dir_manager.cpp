@@ -26,6 +26,13 @@ DirManager::DirManager()
 {
 }
 
+fs::path DirManager::loadLogicLockFile() const
+{
+    const fs::path f = workDir_ / "loader.lock";
+    ensureFileExsit(f);
+    return f;
+}
+
 fs::path DirManager::singletonServerRunningLockFile() const
 {
     const fs::path f = workDir_ / "server_running.lock";
