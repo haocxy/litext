@@ -1,3 +1,4 @@
+#include <iostream>
 #include <boost/dll/shared_library.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
 
@@ -18,6 +19,10 @@ int loader_entry(int argc, char *argv[])
     LitextDelegate::Factory factory(dlibPath);
     LitextDelegate litext(factory);
     CmdOpt opt(argc, argv);
+    if (opt.needHelp()) {
+        opt.help(std::cout);
+        return 0;
+    }
 
     litext.initSetLogLevel(opt.logLevel());
     litext.initSetShouldStartAsServer(true);

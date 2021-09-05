@@ -6,8 +6,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "charset/to_utf32.h"
-#include "entry/init_info.h"
-#include "entry/entry.h"
+#include "gui/qt/application.h"
 
 
 #define LITEXT_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
@@ -66,8 +65,6 @@ LITEXT_API_FUNC_IMPL(initAddOpenFileWithUtf8FilePathAndRowNum)
 
 LITEXT_API_FUNC_IMPL(exec)
 {
-    return entry(asLitext(p)->initInfo);
+    gui::qt::Application app(asLitext(p)->initInfo);
+    return app.exec();
 }
-
-
-

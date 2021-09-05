@@ -1,7 +1,8 @@
 #pragma once
 
-#include "singleton_server.h"
+#include "config.h"
 #include "propdb.h"
+#include "singleton_server.h"
 
 
 namespace gui
@@ -12,6 +13,14 @@ namespace gui
 class Engine {
 public:
     Engine() {}
+
+    const Config &config() const {
+        return config_;
+    }
+
+    Config &config() {
+        return config_;
+    }
 
     const SingletonServer &singletonServer() const {
         return singletonServer_;
@@ -30,6 +39,7 @@ public:
     }
 
 private:
+    Config config_;
     SingletonServer singletonServer_;
     PropDb propDb_;
 };
