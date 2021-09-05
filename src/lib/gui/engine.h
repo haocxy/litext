@@ -1,5 +1,6 @@
 #pragma once
 
+#include "singleton_server.h"
 #include "propdb.h"
 
 
@@ -12,6 +13,14 @@ class Engine {
 public:
     Engine() {}
 
+    const SingletonServer &singletonServer() const {
+        return singletonServer_;
+    }
+
+    SingletonServer &singletonServer() {
+        return singletonServer_;
+    }
+
     const PropDb &propDb() const {
         return propDb_;
     }
@@ -21,6 +30,7 @@ public:
     }
 
 private:
+    SingletonServer singletonServer_;
     PropDb propDb_;
 };
 

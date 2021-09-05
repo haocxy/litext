@@ -13,6 +13,7 @@ endif()
 
 add_definitions(-DLITEXT_WORKDIR_NAME=".litext")
 
+add_subdirectory(global)
 add_subdirectory(lib)
 add_subdirectory(loader)
 add_subdirectory(exe)

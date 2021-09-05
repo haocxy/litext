@@ -6,9 +6,9 @@
 
 
 #ifdef WIN32
-#define LITEXT_DLIB_NAME "liblitext.dll"
+#define LITEXT_DLIB_NAME "litext_body.dll"
 #else
-#define LITEXT_DLIB_NAME "libliblitext.so"
+#define LITEXT_DLIB_NAME "liblitext_body.so"
 #endif
 
 int loader_entry(int argc, char *argv[])

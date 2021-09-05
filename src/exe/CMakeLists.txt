@@ -10,7 +10,7 @@ add_executable(litext
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
-target_link_libraries(litext liblitext_loader)
+target_link_libraries(litext litext_loader)
 
 if(MSVC)
     target_link_options(litext
@@ -23,5 +23,5 @@ endif()
 if(MSVC)
     add_executable(litextcmd ${src_files})
     target_compile_definitions(litextcmd PRIVATE NOTESHARP_WINDOWS_CONSOLE)
-    target_link_libraries(litextcmd liblitext_loader)
+    target_link_libraries(litextcmd litext_loader)
 endif()

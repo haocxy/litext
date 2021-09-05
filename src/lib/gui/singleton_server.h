@@ -30,13 +30,29 @@ public:
         return sigRecvOpenInfos_;
     }
 
-    void start();
+    void start(const fs::path &lockFile);
+
+    u16 port() const {
+        return acceptor_.local_endpoint().port();
+    }
 
 private:
     void loop();
 
+    void initWrittenServerInfo();
+
+    void startTimer();
+
+    void asyncWaitTimerForWriteInfo();
+
+    void writeServerInfo();
+
 private:
     asio::io_context context_;
+    asio::ip::tcp::acceptor acceptor_;
+    fs::path lockFile_;
+    std::string writtenServerInfo_;
+    asio::steady_timer timerForWriteInfo_;
     Signal<void(const OpenInfos &)> sigRecvOpenInfos_;
     std::atomic_bool started_{ false };
     std::atomic_bool stopping_{ false };
