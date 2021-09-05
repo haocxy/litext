@@ -24,9 +24,7 @@ public:
     int exec();
 
 private:
-    void initLogger(const InitInfo &initInfo);
 
-    void cleanUseless();
 
     void initQtApp();
 

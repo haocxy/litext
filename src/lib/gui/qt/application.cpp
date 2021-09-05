@@ -26,11 +26,7 @@ static void useDrawTextForWindows()
 
 Application::Application(const InitInfo &initInfo)
 {
-    // 初始化日志模块
-    initLogger(initInfo);
-
-    // 清理程序运行过程中生成的内部无用文件
-    cleanUseless();
+    engine_.init(initInfo);
 
     // 初始化Qt框架并构造QApplication
     initQtApp();
@@ -59,21 +55,6 @@ int Application::exec()
         LOGE << "Application::exec() uncatched unkown exception in gui thread";
         return 1;
     }
-}
-
-void Application::initLogger(const InitInfo &initInfo)
-{
-    logger::control::Option logOpt;
-    logOpt.setLevel(initInfo.logLevel());
-    logOpt.setDir("./tmp/log");
-    logOpt.setBasename("litextlog");
-    logOpt.setWriteToStdout(initInfo.shouldLogToStd());
-    logger::control::init(logOpt);
-}
-
-void Application::cleanUseless()
-{
-    doc::dbfiles::removeUselessDbFiles();
 }
 
 void Application::initQtApp()

@@ -5,6 +5,7 @@
 #include <vector>
 #include <boost/asio.hpp>
 
+#include "core/filelock.h"
 #include "core/signal.h"
 #include "doc/open_info.h"
 
@@ -20,6 +21,7 @@ namespace asio = boost::asio;
 // 还会定期向锁文件中写入服务端监听的端口
 class SingletonServer {
 public:
+
     using OpenInfos = std::vector<doc::OpenInfo>;
 
     SingletonServer();
@@ -30,7 +32,13 @@ public:
         return sigRecvOpenInfos_;
     }
 
-    void start(const fs::path &lockFile);
+    struct StartInfo {
+        fs::path singletonLogicLockFile;
+        fs::path infoFile;
+        fs::path infoFileLock;
+    };
+
+    void start(const StartInfo &info);
 
     u16 port() const {
         return acceptor_.local_endpoint().port();
@@ -50,7 +58,11 @@ private:
 private:
     asio::io_context context_;
     asio::ip::tcp::acceptor acceptor_;
-    fs::path lockFile_;
+    fs::path singletonLogicLockFile_;
+    FileLock singletonLogicLock_;
+    FileLockGuard singletonLogicLockGuard_;
+    fs::path infoFile_;
+    fs::path infoFileLock_;
     std::string writtenServerInfo_;
     asio::steady_timer timerForWriteInfo_;
     Signal<void(const OpenInfos &)> sigRecvOpenInfos_;

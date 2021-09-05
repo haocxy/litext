@@ -2,9 +2,12 @@
 
 #include <sstream>
 #include <boost/dll.hpp>
+#include <boost/interprocess/sync/scoped_lock.hpp>
+#include <boost/interprocess/sync/file_lock.hpp>
 
 #include "core/logger.h"
 #include "core/system.h"
+#include "core/filelock.h"
 
 
 namespace gui
@@ -15,7 +18,7 @@ using tcp = ip::tcp;
 using endpoint = tcp::endpoint;
 namespace chrono = std::chrono;
 
-static const chrono::seconds WriteInfoInterval(1);
+static const chrono::seconds WriteInfoInterval(100);
 
 
 SingletonServer::SingletonServer()
@@ -23,10 +26,6 @@ SingletonServer::SingletonServer()
     , timerForWriteInfo_(context_)
 {
     LOGD << "SingletonServer::SingletonServer() listening on port [" << port() << "]";
-
-    
-    // TODO 调试时临时直接在构造函数里启动,正式逻辑不要在这里启动
-    start(SystemUtil::userHome() / LITEXT_WORKDIR_NAME / ".singleton.lock");
 }
 
 SingletonServer::~SingletonServer()
@@ -38,7 +37,7 @@ SingletonServer::~SingletonServer()
     }
 }
 
-void SingletonServer::start(const fs::path &lockFile)
+void SingletonServer::start(const StartInfo &info)
 {
     if (started_) {
         return;
@@ -48,13 +47,18 @@ void SingletonServer::start(const fs::path &lockFile)
         return;
     }
 
-    lockFile_ = lockFile;
+    singletonLogicLockFile_ = info.singletonLogicLockFile;
+    infoFile_ = info.infoFile;
+    infoFileLock_ = info.infoFileLock;
+
+    singletonLogicLock_ = FileLock(singletonLogicLockFile_);
+    singletonLogicLockGuard_ = FileLockGuard(singletonLogicLock_);
 
     started_ = true;
 
     initWrittenServerInfo();
 
-    startTimer();
+    //startTimer();
 
     thread_ = std::thread([this] {
         loop();
@@ -76,6 +80,8 @@ void SingletonServer::initWrittenServerInfo()
     ss << port() << " " << utf8loc;
 
     writtenServerInfo_ = ss.str();
+
+    writeServerInfo();
 }
 
 void SingletonServer::startTimer()
@@ -104,12 +110,17 @@ void SingletonServer::asyncWaitTimerForWriteInfo()
 
 void SingletonServer::writeServerInfo()
 {
-    LOGD << "SingletonServer::writeServerInfo() [" << writtenServerInfo_ << "]";
+    LOGI << "SingletonServer::writeServerInfo() [" << writtenServerInfo_ << "]";
 
-    std::ofstream ofs(lockFile_, std::ios::binary);
+    FileLock lock(infoFileLock_);
+    FileLockGuard guard(lock);
 
-    for (int i = 0; i < 3; ++i) {
-        ofs << writtenServerInfo_ << '\n';
+    {
+        std::ofstream ofs(infoFile_, std::ios::binary);
+
+        for (int i = 0; i < 3; ++i) {
+            ofs << writtenServerInfo_ << '\n';
+        }
     }
 }
 
