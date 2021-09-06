@@ -19,6 +19,8 @@ if(MSVC)
     #add_compile_options($<$<CONFIG:Debug>:/fsanitize=address>)
     # 使用静态运行库
     add_compile_options(/MT)
+    # 定义支持的最低windows版本(本项暂时定位面向win10及以上的windows版本)
+    add_definitions(/D_WIN32_WINNT=0x0A00)
 else()
     # 关闭丢弃掉标有 [nodiscard] 的函数的返回值的编译警告
     add_compile_options(-Wno-unused-result)

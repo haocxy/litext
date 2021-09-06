@@ -10,6 +10,8 @@
 #include "core/system.h"
 #include "core/filelock.h"
 
+#include "global/constants.h"
+
 
 namespace
 {
@@ -141,7 +143,7 @@ private:
         {
             std::ofstream ofs(infoFile_, std::ios::binary);
 
-            for (int i = 0; i < 3; ++i) {
+            for (int i = 0; i < constants::ServerInfoRepeatCount; ++i) {
                 ofs << writtenServerInfo_ << '\n';
             }
         }
