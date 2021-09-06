@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include <boost/process/environment.hpp>
+#include <boost/dll/runtime_symbol_info.hpp>
 
 #if defined(WIN32)
 #include <Windows.h>
@@ -226,6 +227,11 @@ i32 screenVerticalDpi()
     const Widget widget;
 
     return widget.screenVerticalDpi();
+}
+
+fs::path exePath()
+{
+    return fs::absolute(boost::dll::program_location().generic_wstring());
 }
 
 }

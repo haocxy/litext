@@ -7,9 +7,7 @@ file(GLOB_RECURSE src_files
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
-# 这个模块为程序全局服务,例如工作目录等服务端和客户端都用到的逻辑
-add_library(litext_global STATIC ${src_files})
+add_library(litext_charset STATIC ${src_files})
 
-target_link_libraries(litext_global litext_core)
-target_link_libraries(litext_global litext_charset)
+target_link_libraries(litext_charset litext_core)
 

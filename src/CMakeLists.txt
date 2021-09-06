@@ -15,6 +15,7 @@ endif()
 add_definitions(-DLITEXT_WORKDIR_NAME=".litext")
 
 add_subdirectory(core)
+add_subdirectory(charset)
 add_subdirectory(global)
 add_subdirectory(lib)
 add_subdirectory(loader)

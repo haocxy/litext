@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <sstream>
-#include <boost/dll.hpp>
 #include <boost/asio.hpp>
 #include <boost/interprocess/sync/file_lock.hpp>
 
@@ -11,6 +10,7 @@
 #include "core/filelock.h"
 
 #include "global/constants.h"
+#include "global/server_info.h"
 
 
 namespace
@@ -99,12 +99,8 @@ private:
 
     void initWrittenServerInfo()
     {
-        std::ostringstream ss;
-        const boost::filesystem::path loc = boost::dll::program_location();
-        const std::string utf8loc = fs::path(loc.generic_wstring()).generic_u8string();
-        ss << port() << " " << utf8loc;
-
-        writtenServerInfo_ = ss.str();
+        const fs::path exe = SystemUtil::exePath();
+        writtenServerInfo_ = ServerInfo(port(), exe).toLine();
 
         writeServerInfo();
     }

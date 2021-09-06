@@ -40,4 +40,6 @@ i32 screenHorizontalDpi();
 // 注意：内部实现用到了 QWidget ，所以需要先构造 QApplication
 i32 screenVerticalDpi();
 
+fs::path exePath();
+
 }
