@@ -45,7 +45,10 @@ static void useDrawTextForWindows()
     painter.drawText(0, 0, "0");
 }
 
-Application::Application(const InitInfo &initInfo)
+Application::Application()
+{}
+
+void Application::init(const InitInfo &initInfo)
 {
     engine_.init(initInfo);
 

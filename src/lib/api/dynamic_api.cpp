@@ -22,6 +22,7 @@ namespace
 
 struct LitextApi {
     InitInfo initInfo;
+    gui::qt::Application application;
 };
 
 inline LitextApi *asLitext(void *p) {
@@ -63,8 +64,13 @@ LITEXT_API_FUNC_IMPL(initAddOpenFileWithUtf8FilePathAndRowNum)
     asLitext(p)->initInfo.addOpenInfo(path, row);
 }
 
+LITEXT_API_FUNC_IMPL(init)
+{
+    LitextApi *api = asLitext(p);
+    api->application.init(api->initInfo);
+}
+
 LITEXT_API_FUNC_IMPL(exec)
 {
-    gui::qt::Application app(asLitext(p)->initInfo);
-    return app.exec();
+    return asLitext(p)->application.exec();
 }

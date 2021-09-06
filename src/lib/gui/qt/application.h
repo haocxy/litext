@@ -17,9 +17,11 @@ namespace gui::qt
 class Application : public QObject {
     Q_OBJECT
 public:
-    Application(const InitInfo &initInfo);
+    Application();
 
     ~Application();
+
+    void init(const InitInfo &initInfo);
 
     int exec();
 

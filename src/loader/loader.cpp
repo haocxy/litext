@@ -30,5 +30,7 @@ int loader_entry(int argc, char *argv[])
         litext.initAddOpenInfo(pair.first, pair.second);
     }
 
+    litext.init();
+
     return litext.exec();
 }
