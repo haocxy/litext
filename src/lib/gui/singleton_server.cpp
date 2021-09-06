@@ -137,15 +137,20 @@ private:
     {
         LOGI << "SingletonServer::writeServerInfo() [" << writtenServerInfo_ << "]";
 
-        FileLock lock(infoFileLock_);
-        FileLockGuard guard(lock);
+        try {
 
-        {
+            ScopedFileLock lock(infoFileLock_);
+
             std::ofstream ofs(infoFile_, std::ios::binary);
 
             for (int i = 0; i < constants::ServerInfoRepeatCount; ++i) {
                 ofs << writtenServerInfo_ << '\n';
             }
+
+        } catch (const std::exception &e) {
+            std::string msg = e.what();
+            LOGE << "writeServerInfo meet exception, what(): " << e.what();
+            throw;
         }
     }
 

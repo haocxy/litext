@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <chrono>
 #include <boost/interprocess/sync/file_lock.hpp>
 
@@ -21,25 +22,100 @@ public:
     FileLock(const FileLock &) = delete;
 
     FileLock(FileLock &&b) noexcept
-        : fileLock_(std::move(b.fileLock_)) {}
+        : locked_(b.locked_)
+        , fileLock_(std::move(b.fileLock_)) {
+
+        b.locked_ = false;
+    }
+
+    ~FileLock() {
+        unlock();
+    }
 
     FileLock &operator=(const FileLock &) = delete;
 
     FileLock &operator=(FileLock &&b) noexcept {
+        ThreadLock threadLock(threadMtx_);
+        if (locked_) {
+            fileLock_.unlock();
+        }
+        locked_ = b.locked_;
+        b.locked_ = false;
         fileLock_ = std::move(b.fileLock_);
         return *this;
     }
 
     void lock() {
-        fileLock_.lock();
+        ThreadLock threadLock(threadMtx_);
+        if (!locked_) {
+            fileLock_.lock();
+            locked_ = true;
+        }
+    }
+
+    bool tryLock() {
+        ThreadLock threadLock(threadMtx_);
+        if (!locked_) {
+            locked_ = fileLock_.try_lock();
+        }
+        return locked_;
     }
 
     void unlock() {
-        fileLock_.unlock();
+        ThreadLock threadLock(threadMtx_);
+        if (locked_) {
+            fileLock_.unlock();
+            locked_ = false;
+        }
     }
 
 private:
+    using ThreadMtx = std::mutex;
+    using ThreadLock = std::lock_guard<ThreadMtx>;
+    mutable ThreadMtx threadMtx_;
     boost::interprocess::file_lock fileLock_;
+    bool locked_ = false;
+};
+
+class ScopedFileLock {
+public:
+    ScopedFileLock(const fs::path &file)
+        : lock_(file) {
+
+        lock_.lock();
+    }
+
+    ScopedFileLock(const ScopedFileLock &) = delete;
+
+    ScopedFileLock(ScopedFileLock &&b) noexcept
+        : lock_(std::move(b.lock_)) {}
+
+    ~ScopedFileLock() {
+        lock_.unlock();
+    }
+
+    ScopedFileLock &operator=(const ScopedFileLock &) = delete;
+
+    ScopedFileLock &operator=(ScopedFileLock &&b) noexcept {
+        unlock();
+        lock_ = std::move(b.lock_);
+        return *this;
+    }
+
+    void lock() {
+        lock_.lock();
+    }
+
+    bool tryLock() {
+        return lock_.tryLock();
+    }
+
+    void unlock() {
+        lock_.unlock();
+    }
+
+private:
+    FileLock lock_;
 };
 
 
