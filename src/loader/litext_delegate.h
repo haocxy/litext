@@ -51,10 +51,7 @@ public:
 public:
     class Factory {
     public:
-        Factory(const boost::filesystem::path &dllFile) {
-            dll_ = boost::dll::shared_library(dllFile);
-            fnTable_.load(dll_);
-        }
+        Factory();
 
     private:
         boost::dll::shared_library dll_;
