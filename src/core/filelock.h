@@ -22,8 +22,8 @@ public:
     FileLock(const FileLock &) = delete;
 
     FileLock(FileLock &&b) noexcept
-        : locked_(b.locked_)
-        , fileLock_(std::move(b.fileLock_)) {
+        : fileLock_(std::move(b.fileLock_))
+        , locked_(b.locked_) {
 
         b.locked_ = false;
     }

@@ -81,9 +81,9 @@ public:
 
         template <typename Msg>
         operator Msg() {
-            boost::archive::text_iarchive ir(ss_);
+            boost::archive::text_iarchive ar(ss_);
             Msg msg;
-            ir >> msg;
+            ar >> msg;
             return msg;
         }
 
@@ -97,16 +97,16 @@ public:
 
     std::string serialize() const {
         std::ostringstream ss;
-        boost::archive::text_oarchive or(ss);
-        or << *this;
+        boost::archive::text_oarchive ar(ss);
+        ar << *this;
         return ss.str();
     }
 
     static Pack deserialize(const std::string &data) {
         std::istringstream ss(data);
-        boost::archive::text_iarchive ir(ss);
+        boost::archive::text_iarchive ar(ss);
         Pack pack;
-        ir >> pack;
+        ar >> pack;
         return pack;
     }
 
