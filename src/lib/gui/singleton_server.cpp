@@ -10,6 +10,8 @@
 #include "core/system.h"
 #include "core/filelock.h"
 
+#include "charset/to_utf32.h"
+
 #include "global/msg.h"
 #include "global/constants.h"
 #include "global/server_info.h"
@@ -163,8 +165,20 @@ public:
     {
         if (pack.is<msg::ShowWindow>()) {
             sigShowWindow_();
+        } else if (pack.is<msg::OpenFiles>()) {
+            sigRecvOpenInfos_(toOpenInfos(pack));
         }
         return msg::Ok();
+    }
+
+    static OpenInfos toOpenInfos(const msg::Pack &pack) {
+        OpenInfos openInfos;
+        msg::OpenFiles openFilesMsg = pack.unpack();
+        for (const msg::OpenFiles::OpenInfo &info : openFilesMsg.files) {
+            std::u32string u32s = charset::toUTF32(Charset::UTF_8, info.u8file.data(), info.u8file.size());
+            openInfos.push_back({ fs::path(u32s), info.row });
+        }
+        return openInfos;
     }
 
 private:

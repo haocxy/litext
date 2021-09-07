@@ -58,6 +58,12 @@ void Application::init(const InitInfo &initInfo)
     // 初始化主窗口
     initMainWindow();
 
+    // 绑定事件处理
+    bindSignals();
+
+    // 显示主窗口
+    showMainWindow();
+
     // 打开由程序启动参数指定的文件
     openFiles(initInfo.openInfos());
 }
@@ -97,12 +103,11 @@ void Application::initQtApp()
 void Application::initMainWindow()
 {
     mainWindow_ = new MainWindow(engine_, engine_.config());
-    mainWindow_->show();
+}
 
-    connect(this, &Application::qtSigShowWindow, mainWindow_, &MainWindow::showFullScreen);
-    sigConns_ += engine_.singletonServer().sigShowWindow().connect([this] {
-        emit qtSigShowWindow();
-    });
+void Application::openFile(const doc::OpenInfo &openInfo)
+{
+    mainWindow_->openDocument(openInfo.file(), openInfo.row());
 }
 
 void Application::openFiles(const std::vector<doc::OpenInfo> &openInfos)
@@ -110,6 +115,34 @@ void Application::openFiles(const std::vector<doc::OpenInfo> &openInfos)
     for (const auto &info : openInfos) {
         mainWindow_->openDocument(info.file(), info.row());
     }
+}
+
+void Application::bindSignals()
+{
+    SingletonServer &server = engine_.singletonServer();
+
+    connect(this, &Application::qtSigShowWindow, mainWindow_, &MainWindow::showFullScreen);
+    sigConns_ += server.sigShowWindow().connect([this] {
+        emit qtSigShowWindow();
+    });
+
+    connect(this, &Application::qtSigOpenFile, this, &Application::qtSlotOpenFile);
+    using OpenInfos = std::vector<doc::OpenInfo>;
+    sigConns_ += server.sigRecvOpenInfos().connect([this](const OpenInfos &openInfos) {
+        for (const doc::OpenInfo &openInfo : openInfos) {
+            emit qtSigOpenFile(QString::fromStdU32String(openInfo.file().generic_u32string()), openInfo.row());
+        }
+    });
+}
+
+void Application::showMainWindow()
+{
+    mainWindow_->show();
+}
+
+void Application::qtSlotOpenFile(const QString &path, long long row)
+{
+    openFile({ fs::path(path.toStdU32String()), row });
 }
 
 }
