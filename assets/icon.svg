@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200"
+   height="200"
+   viewBox="0 0 400 400"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="2.9611953"
+     inkscape:cx="40.861878"
+     inkscape:cy="99.959635"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     units="px"
+     scale-x="2" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="图层 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g526"
+       transform="matrix(1.2449664,0,0,1.3274559,-40.48424,-64.039174)">
+      <rect
+         style="fill:#5599ff;fill-rule:evenodd;stroke-width:2"
+         id="rect32"
+         width="201.27008"
+         height="268.13498"
+         x="92.530205"
+         y="64.838684" />
+      <rect
+         style="fill:#d5e5ff;stroke-width:2"
+         id="rect300"
+         width="146.56244"
+         height="30.393139"
+         x="119.88403"
+         y="95.907219" />
+      <rect
+         style="fill:#d5e5ff;stroke-width:2"
+         id="rect300-5"
+         width="146.56244"
+         height="30.393139"
+         x="119.88403"
+         y="152.30334" />
+      <rect
+         style="fill:#d5e5ff;stroke-width:2"
+         id="rect300-3"
+         width="146.56244"
+         height="30.393139"
+         x="119.88403"
+         y="211.73882" />
+      <circle
+         style="fill:#d5e5ff;stroke-width:2"
+         id="path439"
+         cx="254.446"
+         cy="294.85593"
+         r="12" />
+    </g>
+  </g>
+</svg>
