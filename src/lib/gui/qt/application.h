@@ -12,7 +12,9 @@
 #include "gui/init_info.h"
 #include "gui/engine.h"
 
+#include "tray_menu.h"
 #include "main_window.h"
+
 
 
 namespace gui::qt
@@ -57,6 +59,7 @@ private slots:
 
 private:
     Engine engine_;
+    uptr<TrayMenu> trayMenu_;
     uptr<QApplication> qtApp_;
     MainWindow *mainWindow_ = nullptr;
     QSystemTrayIcon *trayIcon_ = nullptr;
