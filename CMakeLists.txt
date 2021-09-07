@@ -44,10 +44,18 @@ add_subdirectory(third EXCLUDE_FROM_ALL)
 #add_subdirectory(third)
 
 set_target_properties(
-    litext_body litext litextcmd
+    litext_body litext
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
 )
+
+if(MSVC)
+    set_target_properties(
+        litextcmd
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
+    )
+endif()
 
 include(release_version.cmake)
 get_release_version(release_version)
