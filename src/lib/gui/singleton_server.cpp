@@ -5,6 +5,7 @@
 #include <boost/asio.hpp>
 #include <boost/interprocess/sync/file_lock.hpp>
 
+#include "core/endian.h"
 #include "core/logger.h"
 #include "core/system.h"
 #include "core/filelock.h"
@@ -24,12 +25,80 @@ namespace chrono = std::chrono;
 
 static const chrono::seconds WriteInfoInterval(100);
 
-namespace asio = boost::asio;
 
 // 不要直接使用这个类
 // 请使用SingletonServer类
 class SingletonServerShareThis : public std::enable_shared_from_this<SingletonServerShareThis> {
 public:
+
+    class Session : public std::enable_shared_from_this<Session> {
+    public:
+        Session(std::shared_ptr<SingletonServerShareThis> server, tcp::socket &&sock)
+            : server_(server), sock_(std::move(sock)) {}
+
+    public:
+        void start() {
+            asyncReadDataLen();
+        }
+
+    private:
+        void asyncReadDataLen() {
+            auto self(shared_from_this());
+            asio::mutable_buffer buff(&recvLenNetEndian_, sizeof(recvLenNetEndian_));
+            asio::async_read(sock_, buff, [self, this](boost::system::error_code ec, std::size_t nbytes) {
+                if (ec) {
+                    throw std::logic_error(ec.message());
+                }
+                const i64 recvLen = endian::netToNative(recvLenNetEndian_);
+                asyncReadData(recvLen);
+            });
+        }
+
+        void asyncReadData(i64 len) {
+            recvData_.resize(len);
+            asio::mutable_buffer buff(recvData_.data(), recvData_.size());
+            auto self(shared_from_this());
+            asio::async_read(sock_, buff, [self, this](boost::system::error_code ec, std::size_t nbytes) {
+                if (ec) {
+                    throw std::logic_error(ec.message());
+                }
+                sendData_ = server_->handleMsg(recvData_);
+                asyncWriteLen();
+            });
+        }
+
+        void asyncWriteLen() {
+            sendLenNetEndian_ = endian::nativeToNet<i64>(sendData_.size());
+            asio::const_buffer buff(&sendLenNetEndian_, sizeof(sendLenNetEndian_));
+            auto self(shared_from_this());
+            asio::async_write(sock_, buff, [self, this](boost::system::error_code ec, std::size_t) {
+                if (ec) {
+                    throw std::logic_error(ec.message());
+                }
+                asyncWriteData();
+            });
+        }
+
+        void asyncWriteData() {
+            asio::const_buffer buff(sendData_.data(), sendData_.size());
+            auto self(shared_from_this());
+            asio::async_write(sock_, buff, [self, this](boost::system::error_code ec, std::size_t) {
+                if (ec) {
+                    throw std::logic_error(ec.message());
+                }
+                sock_.close();
+            });
+        }
+
+    private:
+        std::shared_ptr<SingletonServerShareThis> server_;
+        tcp::socket sock_;
+        i64 recvLenNetEndian_ = 0;
+        std::string recvData_;
+        i64 sendLenNetEndian_ = 0;
+        std::string sendData_;
+    };
+
     using OpenInfos = gui::SingletonServer::OpenInfos;
 
     using StartInfo = gui::SingletonServer::StartInfo;
@@ -52,6 +121,10 @@ public:
 
     Signal<void(const OpenInfos &)> &sigRecvOpenInfos() {
         return sigRecvOpenInfos_;
+    }
+
+    Signal<void()> &sigShowWindow() {
+        return sigShowWindow_;
     }
 
     void start(const StartInfo &info)
@@ -84,6 +157,14 @@ public:
         });
     }
 
+    std::string handleMsg(const std::string &msgData)
+    {
+        if (msgData == "show") {
+            sigShowWindow_();
+        }
+        return "ok";
+    }
+
 private:
 
     u16 port() const {
@@ -93,7 +174,8 @@ private:
     void loop()
     {
         while (!stopping_) {
-            context_.run_one();
+            context_.run();
+            LOGI << "after context_.run()";
         }
     }
 
@@ -137,10 +219,10 @@ private:
 
             ScopedFileLock lock(infoFileLock_);
 
-            std::ofstream ofs(infoFile_, std::ios::binary);
+            std::ofstream ofs(infoFile_);
 
             for (int i = 0; i < constants::ServerInfoRepeatCount; ++i) {
-                ofs << writtenServerInfo_ << '\n';
+                ofs << writtenServerInfo_ << std::endl;
             }
 
         } catch (const std::exception &e) {
@@ -153,9 +235,12 @@ private:
     void asyncAccept()
     {
         acceptor_.async_accept([this](const boost::system::error_code &ec, tcp::socket sock) {
-
+            std::make_shared<Session>(shared_from_this(), std::move(sock))->start();
+            asyncAccept();
         });
     }
+
+
 
 private:
     asio::io_context context_;
@@ -168,6 +253,7 @@ private:
     std::string writtenServerInfo_;
     asio::steady_timer timerForWriteInfo_;
     Signal<void(const OpenInfos &)> sigRecvOpenInfos_;
+    Signal<void()> sigShowWindow_;
     std::atomic_bool started_{ false };
     std::atomic_bool stopping_{ false };
     std::thread thread_;
@@ -187,6 +273,10 @@ public:
         return impl_->sigRecvOpenInfos();
     }
 
+    Signal<void()> &sigShowWindow() {
+        return impl_->sigShowWindow();
+    }
+
     void start(const SingletonServer::StartInfo &info) {
         impl_->start(info);
     }
@@ -204,6 +294,11 @@ SingletonServer::~SingletonServer()
 {
     delete impl_;
     impl_ = nullptr;
+}
+
+Signal<void()> &SingletonServer::sigShowWindow()
+{
+    return impl_->sigShowWindow();
 }
 
 Signal<void(const SingletonServer::OpenInfos &)> &SingletonServer::sigRecvOpenInfos()

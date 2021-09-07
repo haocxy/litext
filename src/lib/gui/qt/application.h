@@ -4,6 +4,7 @@
 
 #include <QApplication>
 
+#include "core/sigconns.h"
 #include "core/basetype.h"
 #include "gui/init_info.h"
 #include "gui/engine.h"
@@ -27,17 +28,20 @@ public:
 
 private:
 
-
     void initQtApp();
 
     void initMainWindow();
 
     void openFiles(const std::vector<doc::OpenInfo> &openInfos);
 
+signals:
+    void qtSigShowWindow();
+
 private:
     Engine engine_;
     uptr<QApplication> qtApp_;
     MainWindow *mainWindow_ = nullptr;
+    SigConns sigConns_;
 };
 
 }

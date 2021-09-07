@@ -98,6 +98,11 @@ void Application::initMainWindow()
 {
     mainWindow_ = new MainWindow(engine_, engine_.config());
     mainWindow_->show();
+
+    connect(this, &Application::qtSigShowWindow, mainWindow_, &MainWindow::showFullScreen);
+    sigConns_ += engine_.singletonServer().sigShowWindow().connect([this] {
+        emit qtSigShowWindow();
+    });
 }
 
 void Application::openFiles(const std::vector<doc::OpenInfo> &openInfos)

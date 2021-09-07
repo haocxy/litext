@@ -4,9 +4,12 @@
 #include <string>
 #include <optional>
 
+#include <boost/asio.hpp>
+
 #include "core/logger.h"
 #include "core/filelock.h"
 #include "core/system.h"
+#include "core/endian.h"
 #include "global/constants.h"
 #include "global/server_info.h"
 #include "global/work_dir_manager.h"
@@ -32,7 +35,7 @@ static u16 readServerPort()
 {
     const char *title = "readServerPort() ";
 
-    ScopedFileLock serverInfoLock(dirMgr.singletonServerInfoFile());
+    ScopedFileLock serverInfoLock(dirMgr.singletonServerInfoFileLock());
 
     const fs::path serverInfoFilePath = dirMgr.singletonServerInfoFile();
     if (!fs::exists(serverInfoFilePath)) {
@@ -40,7 +43,7 @@ static u16 readServerPort()
         return 0;
     }
 
-    std::ifstream ifs(dirMgr.singletonServerInfoFile(), std::ios::binary);
+    std::ifstream ifs(serverInfoFilePath);
     if (!ifs) {
         LOGE << title << "cannot open server info file";
         return 0;
@@ -76,11 +79,6 @@ static u16 readServerPort()
         return 0;
     }
 
-    if (SystemUtil::exePath() != serverInfo.exePath()) {
-        LOGE << title << "bad executable file path";
-        return 0;
-    }
-
     LOGD << title << "server port [" << serverInfo.port() << "]";
     return serverInfo.port();
 }
@@ -92,8 +90,42 @@ static bool notifyServer(const CmdOpt &opt)
         return false;
     }
 
-    // TODO
-    return true;
+    namespace asio = boost::asio;
+    namespace ip = asio::ip;
+    using tcp = ip::tcp;
+
+    asio::io_context context;
+    tcp::resolver resolver(context);
+    tcp::socket sock(context);
+    sock.connect(tcp::endpoint(ip::address_v4::from_string("127.0.0.1"), port));
+
+    LOGD << "client conneted to server, server port [" << sock.remote_endpoint().port() << "] client port [" << sock.local_endpoint().port() << "]";
+
+    std::string sendData;
+    if (opt.files().empty()) {
+        // 如果没有要打开的文件,则通知服务端显式界面
+        sendData = "show";
+    } else {
+        // TODO 临时只打开一个文件
+        sendData = opt.files()[0].first.generic_u8string();
+    }
+
+    const i64 sendDataLen = sendData.size();
+    const i64 sendDataLenNetEndian = endian::nativeToNet(sendDataLen);
+    sock.send(boost::asio::const_buffer(&sendDataLenNetEndian, sizeof(sendDataLenNetEndian)));
+    sock.send(boost::asio::const_buffer(sendData.data(), sendDataLen));
+
+    i64 recvDataLenNetEndian = 0;
+    sock.receive(boost::asio::mutable_buffer(&recvDataLenNetEndian, sizeof(recvDataLenNetEndian)));
+    std::string recvData;
+    recvData.resize(endian::netToNative(recvDataLenNetEndian));
+    sock.receive(boost::asio::mutable_buffer(recvData.data(), recvData.size()));
+
+    if (recvData == "ok") {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 enum class StartInSingletonModeResult {

@@ -29,6 +29,8 @@ public:
 
     ~SingletonServer();
 
+    Signal<void()> &sigShowWindow();
+
     Signal<void(const OpenInfos &)> &sigRecvOpenInfos();
 
     void start(const StartInfo &info);
