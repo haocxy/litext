@@ -4,8 +4,9 @@ project(litext)
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
+#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
+
 
 # VS专用全局设置
 if(MSVC)
@@ -41,6 +42,12 @@ endif()
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
 #add_subdirectory(third)
+
+set_target_properties(
+    litext_body litext litextcmd
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
+)
 
 include(release_version.cmake)
 get_release_version(release_version)
