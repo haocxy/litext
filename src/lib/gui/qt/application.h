@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QPair>
 #include <QApplication>
+#include <QSystemTrayIcon>
 
 #include "core/sigconns.h"
 #include "core/basetype.h"
@@ -22,7 +23,7 @@ class Application : public QObject {
 public:
     Application();
 
-    ~Application();
+    virtual ~Application();
 
     void init(const InitInfo &initInfo);
 
@@ -30,7 +31,9 @@ public:
 
 private:
 
-    void initQtApp();
+    void initQtApp(const InitInfo &initInfo);
+
+    void initSystemTray(const InitInfo &initInfo);
 
     void initMainWindow();
     
@@ -38,7 +41,9 @@ private:
 
     void openFiles(const std::vector<doc::OpenInfo> &openInfos);
 
-    void bindSignals();
+    void bindSignals(const InitInfo &initInfo);
+
+    void bindSignalsForSingletonServer();
 
     void showMainWindow();
 
@@ -54,6 +59,7 @@ private:
     Engine engine_;
     uptr<QApplication> qtApp_;
     MainWindow *mainWindow_ = nullptr;
+    QSystemTrayIcon *trayIcon_ = nullptr;
     SigConns sigConns_;
 };
 

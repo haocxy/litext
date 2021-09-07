@@ -53,13 +53,16 @@ void Application::init(const InitInfo &initInfo)
     engine_.init(initInfo);
 
     // 初始化Qt框架并构造QApplication
-    initQtApp();
+    initQtApp(initInfo);
+
+    // 初始化系统托盘区
+    initSystemTray(initInfo);
 
     // 初始化主窗口
     initMainWindow();
 
     // 绑定事件处理
-    bindSignals();
+    bindSignals(initInfo);
 
     // 显示主窗口
     showMainWindow();
@@ -70,6 +73,9 @@ void Application::init(const InitInfo &initInfo)
 
 Application::~Application()
 {
+    delete trayIcon_;
+    trayIcon_ = nullptr;
+
     delete mainWindow_;
     mainWindow_ = nullptr;
 }
@@ -89,15 +95,27 @@ int Application::exec()
 
 
 
-void Application::initQtApp()
+void Application::initQtApp(const InitInfo &initInfo)
 {
     qtApp_ = std::make_unique<QApplication>(gFakeArgc, gFakeArgv);
+
+    if (initInfo.shouldStartAsServer()) {
+        QGuiApplication::setQuitOnLastWindowClosed(false);
+    }
 
     // 解决windows平台Qt框架首次绘制文本时长时间卡顿的问题
     // 在首个窗口创建前调用,虽然依然会卡顿,但不会导致窗口卡顿
     // 在窗口启动前卡顿,用户只会觉得启动事件稍长,是可以接收的效果
     // 但如果在窗口启动过程中卡顿,则窗口会有明显的一段时间没有内容,体验很差
     useDrawTextForWindows();
+}
+
+void Application::initSystemTray(const InitInfo &initInfo)
+{
+    if (initInfo.shouldStartAsServer()) {
+        trayIcon_ = new QSystemTrayIcon(QIcon(QString("D:/icon.svg")));
+        trayIcon_->show();
+    }
 }
 
 void Application::initMainWindow()
@@ -117,7 +135,14 @@ void Application::openFiles(const std::vector<doc::OpenInfo> &openInfos)
     }
 }
 
-void Application::bindSignals()
+void Application::bindSignals(const InitInfo &initInfo)
+{
+    if (initInfo.shouldStartAsServer()) {
+        bindSignalsForSingletonServer();
+    }
+}
+
+void Application::bindSignalsForSingletonServer()
 {
     SingletonServer &server = engine_.singletonServer();
 

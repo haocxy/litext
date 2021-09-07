@@ -24,7 +24,7 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="2.9611953"
-     inkscape:cx="40.861878"
+     inkscape:cx="7.4294323"
      inkscape:cy="99.959635"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
@@ -40,43 +40,26 @@
      inkscape:label="图层 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-opacity:1"
+       id="rect1555"
+       width="376.19943"
+       height="381.60266"
+       x="11.900284"
+       y="9.1986694" />
+    <path
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 6.7540294,99.959635 V 5.2343728 H 100.12849 193.50294 V 99.959635 194.6849 H 100.12849 6.7540294 Z"
+       id="path2517"
+       transform="scale(2)" />
     <g
-       id="g526"
-       transform="matrix(1.2449664,0,0,1.3274559,-40.48424,-64.039174)">
-      <rect
-         style="fill:#5599ff;fill-rule:evenodd;stroke-width:2"
-         id="rect32"
-         width="201.27008"
-         height="268.13498"
-         x="92.530205"
-         y="64.838684" />
-      <rect
-         style="fill:#d5e5ff;stroke-width:2"
-         id="rect300"
-         width="146.56244"
-         height="30.393139"
-         x="119.88403"
-         y="95.907219" />
-      <rect
-         style="fill:#d5e5ff;stroke-width:2"
-         id="rect300-5"
-         width="146.56244"
-         height="30.393139"
-         x="119.88403"
-         y="152.30334" />
-      <rect
-         style="fill:#d5e5ff;stroke-width:2"
-         id="rect300-3"
-         width="146.56244"
-         height="30.393139"
-         x="119.88403"
-         y="211.73882" />
-      <circle
-         style="fill:#d5e5ff;stroke-width:2"
-         id="path439"
-         cx="254.446"
-         cy="294.85593"
-         r="12" />
+       aria-label="T"
+       transform="scale(1.1022118,0.90726664)"
+       id="text4227"
+       style="font-size:362.14px;line-height:1.25;-inkscape-font-specification:'sans-serif, Normal';stroke-width:3.77229">
+      <path
+         d="M 293.03065,119.91667 H 198.95912 V 352.08945 H 163.94753 V 119.91667 H 69.876007 V 88.795266 H 293.03065 Z"
+         id="path6673" />
     </g>
   </g>
 </svg>
