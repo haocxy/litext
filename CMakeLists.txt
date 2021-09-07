@@ -46,6 +46,7 @@ add_subdirectory(third EXCLUDE_FROM_ALL)
 set_target_properties(
     litext_body litext
     PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
 )
 
@@ -53,6 +54,7 @@ if(MSVC)
     set_target_properties(
         litextcmd
         PROPERTIES
+            LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out_$<CONFIG>"
     )
 endif()
