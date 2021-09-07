@@ -10,6 +10,7 @@
 #include "core/system.h"
 #include "core/filelock.h"
 
+#include "global/msg.h"
 #include "global/constants.h"
 #include "global/server_info.h"
 
@@ -62,7 +63,8 @@ public:
                 if (ec) {
                     throw std::logic_error(ec.message());
                 }
-                sendData_ = server_->handleMsg(recvData_);
+                const msg::Pack pack = msg::Pack::deserialize(recvData_);
+                sendData_ = server_->handleMsg(pack).serialize();
                 asyncWriteLen();
             });
         }
@@ -157,12 +159,12 @@ public:
         });
     }
 
-    std::string handleMsg(const std::string &msgData)
+    msg::Pack handleMsg(const msg::Pack &pack)
     {
-        if (msgData == "show") {
+        if (pack.is<msg::ShowWindow>()) {
             sigShowWindow_();
         }
-        return "ok";
+        return msg::Ok();
     }
 
 private:

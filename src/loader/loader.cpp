@@ -10,6 +10,7 @@
 #include "core/filelock.h"
 #include "core/system.h"
 #include "core/endian.h"
+#include "global/msg.h"
 #include "global/constants.h"
 #include "global/server_info.h"
 #include "global/work_dir_manager.h"
@@ -83,6 +84,29 @@ static u16 readServerPort()
     return serverInfo.port();
 }
 
+static void send(boost::asio::ip::tcp::socket &sock, const std::string &data)
+{
+    const i64 sendDataLen = data.size();
+    const i64 sendDataLenNetEndian = endian::nativeToNet(sendDataLen);
+    sock.send(boost::asio::const_buffer(&sendDataLenNetEndian, sizeof(sendDataLenNetEndian)));
+    sock.send(boost::asio::const_buffer(data.data(), sendDataLen));
+}
+
+static void send(boost::asio::ip::tcp::socket &sock, const msg::Pack &pack)
+{
+    send(sock, pack.serialize());
+}
+
+static msg::Pack recv(boost::asio::ip::tcp::socket &sock)
+{
+    i64 recvDataLenNetEndian = 0;
+    sock.receive(boost::asio::mutable_buffer(&recvDataLenNetEndian, sizeof(recvDataLenNetEndian)));
+    std::string recvData;
+    recvData.resize(endian::netToNative(recvDataLenNetEndian));
+    sock.receive(boost::asio::mutable_buffer(recvData.data(), recvData.size()));
+    return msg::Pack::deserialize(recvData);
+}
+
 static bool notifyServer(const CmdOpt &opt)
 {
     const u16 port = readServerPort();
@@ -101,27 +125,19 @@ static bool notifyServer(const CmdOpt &opt)
 
     LOGD << "client conneted to server, server port [" << sock.remote_endpoint().port() << "] client port [" << sock.local_endpoint().port() << "]";
 
-    std::string sendData;
     if (opt.files().empty()) {
-        // 如果没有要打开的文件,则通知服务端显式界面
-        sendData = "show";
+        // 如果没有要打开的文件,则通知服务端显示界面
+        send(sock, msg::ShowWindow());
     } else {
-        // TODO 临时只打开一个文件
-        sendData = opt.files()[0].first.generic_u8string();
+        msg::OpenFiles openFilesMsg;
+        for (const auto [file, row] : opt.files()) {
+            openFilesMsg.files.push_back({file.generic_u8string(), row});
+        }
+        send(sock, openFilesMsg);
     }
 
-    const i64 sendDataLen = sendData.size();
-    const i64 sendDataLenNetEndian = endian::nativeToNet(sendDataLen);
-    sock.send(boost::asio::const_buffer(&sendDataLenNetEndian, sizeof(sendDataLenNetEndian)));
-    sock.send(boost::asio::const_buffer(sendData.data(), sendDataLen));
-
-    i64 recvDataLenNetEndian = 0;
-    sock.receive(boost::asio::mutable_buffer(&recvDataLenNetEndian, sizeof(recvDataLenNetEndian)));
-    std::string recvData;
-    recvData.resize(endian::netToNative(recvDataLenNetEndian));
-    sock.receive(boost::asio::mutable_buffer(recvData.data(), recvData.size()));
-
-    if (recvData == "ok") {
+    msg::Pack result = recv(sock);
+    if (result.is<msg::Ok>()) {
         return true;
     } else {
         return false;
