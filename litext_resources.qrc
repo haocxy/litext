@@ -1,5 +1,5 @@
 <RCC>
     <qresource>
-        <file alias="tray_icon.svg">assets/icon.svg</file>
+        <file alias="tray_icon.ico">assets/icon.ico</file>
     </qresource>
 </RCC>

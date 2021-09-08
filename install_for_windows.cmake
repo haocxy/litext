@@ -1,5 +1,5 @@
-file(GLOB_RECURSE asset_files "assets/*")
-install(FILES ${asset_files} DESTINATION "assets")
+#file(GLOB_RECURSE asset_files "assets/*")
+#install(FILES ${asset_files} DESTINATION "assets")
 
 install(TARGETS litext litextcmd litext_body
     CONFIGURATIONS Release

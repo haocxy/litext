@@ -4,11 +4,15 @@ file(GLOB_RECURSE src_files
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
 )
 
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
+
+if(MSVC)
+    list(APPEND src_files ${CMAKE_SOURCE_DIR}/windows.rc)
+endif()
+
 add_executable(litext
     ${src_files}
 )
-
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
 target_link_libraries(litext litext_loader)
 

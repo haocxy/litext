@@ -114,7 +114,7 @@ void Application::initSystemTray(const InitInfo &initInfo)
 {
     if (initInfo.shouldStartAsServer()) {
         trayMenu_ = std::make_unique<TrayMenu>();
-        trayIcon_ = new QSystemTrayIcon(QIcon(":/tray_icon.svg"));
+        trayIcon_ = new QSystemTrayIcon(QIcon(":/tray_icon.ico"));
         trayIcon_->setContextMenu(trayMenu_.get());
         trayIcon_->show();
     }
