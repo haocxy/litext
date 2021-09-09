@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "scoped_container.h"
+#include "ustr.h"
 
 
 using i8 = int8_t;
