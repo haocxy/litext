@@ -26,6 +26,8 @@ public:
 
     bool shouldLogToStdout() const;
 
+    bool hasNonSingle() const;
+
 private:
     CmdOptImpl *impl_ = nullptr;
 };

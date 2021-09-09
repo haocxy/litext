@@ -90,6 +90,10 @@ public:
         return varmap_.count("stdout") != 0;
     }
 
+    bool hasNonSingle() const {
+        return varmap_.count("nonsingleton") != 0;
+    }
+
 private:
     void addOptions(boost::program_options::options_description_easy_init &add) {
         add("help,h", "Show this message");
@@ -98,6 +102,7 @@ private:
         add("logerror,e", "Record logs for error message");
         add("logdebug,d", "Record logs for debug information");
         add("logverbose,v", "Record all logs");
+        add("nonsingleton", "Do not start program in singleton mode");
     }
 
     static bool isNum(const std::string &s) {
@@ -192,4 +197,9 @@ const char *CmdOpt::logLevel() const
 bool CmdOpt::shouldLogToStdout() const
 {
     return impl_->shouldLogToStdout();
+}
+
+bool CmdOpt::hasNonSingle() const
+{
+    return impl_->hasNonSingle();
 }

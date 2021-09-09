@@ -145,13 +145,18 @@ static bool notifyServer(const CmdOpt &opt)
 }
 
 enum class StartInSingletonModeResult {
-    NoServerRunning,
+    StartAsServer,
     ServerRunningAndNotified,
     ServerRunningButCannotNotify,
+    NonSingletonByCmdOpt,
 };
 
 static StartInSingletonModeResult tryStartInSingletonMode(const CmdOpt &opt)
 {
+    if (opt.hasNonSingle()) {
+        return StartInSingletonModeResult::NonSingletonByCmdOpt;
+    }
+
     if (isServerRunning()) {
         if (notifyServer(opt)) {
             return StartInSingletonModeResult::ServerRunningAndNotified;
@@ -159,7 +164,7 @@ static StartInSingletonModeResult tryStartInSingletonMode(const CmdOpt &opt)
             return StartInSingletonModeResult::ServerRunningButCannotNotify;
         }
     } else {
-        return StartInSingletonModeResult::NoServerRunning;
+        return StartInSingletonModeResult::StartAsServer;
     }
 }
 
@@ -181,7 +186,7 @@ static int load(int argc, char *argv[])
     LitextDelegate::Factory factory;
     LitextDelegate litext(factory);
 
-    if (tryResult == StartInSingletonModeResult::NoServerRunning) {
+    if (tryResult == StartInSingletonModeResult::StartAsServer) {
         litext.initSetShouldStartAsServer(true);
     } else {
         litext.initSetShouldStartAsServer(false);
