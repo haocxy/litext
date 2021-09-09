@@ -1,5 +1,7 @@
 #include "tray_menu.h"
 
+#include <QApplication>
+
 
 namespace gui::qt
 {
@@ -17,7 +19,7 @@ void TrayMenu::qtSlotActionQuit()
 {
     hide();
 
-    std::exit(0);
+    QApplication::quit();
 }
 
 }

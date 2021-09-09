@@ -77,14 +77,14 @@ PropRepo::~PropRepo()
     saveToDb();
 }
 
-static bool hasKey(Stmt &stmtSelect, const std::string_view &key)
+static bool hasKey(Stmt &stmtSelect, const u8view &key)
 {
     stmtSelect.reset();
     stmtSelect.arg(key);
     return stmtSelect.nextRow();
 }
 
-static void saveValue(Stmt &stmtSelect, Stmt &stmtUpdate, Stmt &stmtInsert, const std::string_view &key, const std::string &val)
+static void saveValue(Stmt &stmtSelect, Stmt &stmtUpdate, Stmt &stmtInsert, const u8view &key, const u8str &val)
 {
     if (hasKey(stmtSelect, key)) {
         stmtUpdate.reset();
@@ -97,67 +97,61 @@ static void saveValue(Stmt &stmtSelect, Stmt &stmtUpdate, Stmt &stmtInsert, cons
     }
 }
 
-void PropRepo::set(const std::string &key, const std::string &val)
+void PropRepo::set(const u8str &key, const u8str &val)
 {
     setValue(key, val);
 }
 
-void PropRepo::set(const std::string &key, const std::u32string &val)
-{
-    setValue(key, charset::toUTF8(val));
-}
-
-void PropRepo::set(const std::string &key, int val)
+void PropRepo::set(const u8str &key, int val)
 {
     setValue(key, val);
 }
 
-void PropRepo::set(const std::string &key, long val)
+void PropRepo::set(const u8str &key, long val)
 {
     setValue(key, val);
 }
 
-void PropRepo::set(const std::string &key, long long val)
+void PropRepo::set(const u8str &key, long long val)
 {
     setValue(key, val);
 }
 
 template <typename T>
-static bool getValue(const std::map<std::string, std::string> &map, const std::string &key, T &to)
+static bool getValue(const std::map<u8str, u8str> &map, const u8str &key, T &to)
 {
     auto it = map.find(key);
     if (it != map.end()) {
-        std::istringstream ss(it->second);
-        ss >> to;
+        to = it->second;
         return true;
     } else {
         return false;
     }
 }
 
-bool PropRepo::get(const std::string &key, int &to) const
+bool PropRepo::get(const u8str &key, int &to) const
 {
     return getValue(props_, key, to);
 }
 
-bool PropRepo::get(const std::string &key, long &to) const
+bool PropRepo::get(const u8str &key, long &to) const
 {
     return getValue(props_, key, to);
 }
 
-bool PropRepo::get(const std::string &key, long long &to) const
+bool PropRepo::get(const u8str &key, long long &to) const
 {
     return getValue(props_, key, to);
 }
 
-bool PropRepo::get(const std::string &key, std::u32string &to) const
+bool PropRepo::get(const u8str &key, u8str &to) const
 {
-    std::string utf8;
-    const bool ok = getValue(props_, key, utf8);
-    if (ok) {
-        to = charset::toUTF32(Charset::UTF_8, utf8.data(), utf8.size());
-    }
-    return ok;
+    return getValue(props_, key, to);
+}
+
+bool PropRepo::get(const u8str &key, u32str &to) const
+{
+    return getValue(props_, key, to);
 }
 
 void PropRepo::loadFromDb()
@@ -176,8 +170,8 @@ void PropRepo::loadFromDb()
     sqlite::Statement stmtSelectAllPair(db, makeSelectAllPairSql(repoName_));
 
     while (stmtSelectAllPair.nextRow()) {
-        std::string key;
-        std::string val;
+        u8str key;
+        u8str val;
         stmtSelectAllPair.getValue(0, key);
         stmtSelectAllPair.getValue(1, val);
         props_[key] = std::move(val);

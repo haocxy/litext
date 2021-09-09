@@ -124,12 +124,12 @@ static void setupConfig(TextAreaConfig &c)
 
 namespace prop
 {
-static const std::string width = "width";
-static const std::string height = "height";
-static const std::string x = "x";
-static const std::string y = "y";
-static const std::string fontFile = "fontFile";
-static const std::string fontFace = "fontFace";
+static const u8str width = "width";
+static const u8str height = "height";
+static const u8str x = "x";
+static const u8str y = "y";
+static const u8str fontFile = "fontFile";
+static const u8str fontFace = "fontFace";
 }
 
 MainWindow::MainWindow(Engine &engine, Config &config)
@@ -159,7 +159,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
         setGeometry(geo);
     }
 
-    std::u32string fontFile;
+    u32str fontFile;
     i64 fontFace = 0;
     if (false && propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
         config_.textAreaConfig().setFontIndex(font::FontIndex(fontFile, fontFace));

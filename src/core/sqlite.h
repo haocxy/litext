@@ -86,6 +86,10 @@ public:
 
     void bind(int pos, const std::string_view &utf8str);
 
+    void bind(int pos, const u8view &s);
+
+    void bind(int pos, const u8str &s);
+
     void bind(int pos, const std::u32string_view &utf32str);
 
     void bind(int pos, const void *data, size_t len);
@@ -119,6 +123,8 @@ public:
     void getValue(int col, MemBuff &to);
 
     void getValue(int col, std::string &utf8);
+
+    void getValue(int col, u8str &to);
 
     void getValue(int col, std::u32string &to);
 

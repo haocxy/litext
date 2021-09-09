@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fs.h"
+#include "basetype.h"
 
 
 namespace font
@@ -10,9 +11,11 @@ class FontIndex {
 public:
     FontIndex() {}
 
+    FontIndex(const u32str &file, long faceIndex)
+        : file_(static_cast<const std::u32string &>(file)), faceIndex_(faceIndex) {}
+
     FontIndex(const fs::path &file, long faceIndex)
-        : file_(file), faceIndex_(faceIndex) {
-    }
+        : file_(file), faceIndex_(faceIndex) {}
 
     FontIndex(const FontIndex &b) {
         copy(*this, b);

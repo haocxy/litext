@@ -224,6 +224,21 @@ void Statement::bind(int pos, const std::string_view &utf8str)
     }
 }
 
+void Statement::bind(int pos, const u8view &s)
+{
+    if (pos > 0) {
+        const int n = sqlite3_bind_text(stmt_, pos, reinterpret_cast<const char *>(s.data()), static_cast<int>(s.size()), SQLITE_TRANSIENT);
+        if (n != SQLITE_OK) {
+            throwError("bind", n);
+        }
+    }
+}
+
+void Statement::bind(int pos, const u8str &s)
+{
+    bind(pos, u8view(s));
+}
+
 void Statement::bind(int pos, const std::u32string_view &utf32str)
 {
     bind(pos, utf32str.data(), utf32str.size() * sizeof(std::u32string_view::value_type));
@@ -317,6 +332,13 @@ void Statement::getValue(int col, std::string &utf8)
     size_t nbytes = sqlite3_column_bytes(stmt_, col);
     utf8.resize(nbytes);
     std::memcpy(utf8.data(), sqlite3_column_text(stmt_, col), nbytes);
+}
+
+void Statement::getValue(int col, u8str &to)
+{
+    size_t nbytes = sqlite3_column_bytes(stmt_, col);
+    to.resize(nbytes);
+    std::memcpy(to.data(), sqlite3_column_text(stmt_, col), nbytes);
 }
 
 void Statement::getValue(int col, std::u32string &to)

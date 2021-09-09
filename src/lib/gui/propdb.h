@@ -6,6 +6,7 @@
 #include <sstream>
 #include <string>
 
+#include "core/basetype.h"
 #include "core/fs.h"
 
 
@@ -32,34 +33,31 @@ public:
 
     ~PropRepo();
 
-    void set(const std::string &key, const std::string &val);
+    void set(const u8str &key, const u8str &val);
 
-    void set(const std::string &key, const std::u32string &val);
+    void set(const u8str &key, int val);
 
-    void set(const std::string &key, int val);
+    void set(const u8str &key, long val);
 
-    void set(const std::string &key, long val);
+    void set(const u8str &key, long long val);
 
-    void set(const std::string &key, long long val);
+    bool get(const u8str &key, int &to) const;
 
-    bool get(const std::string &key, int &to) const;
+    bool get(const u8str &key, long &to) const;
 
-    bool get(const std::string &key, long &to) const;
+    bool get(const u8str &key, long long &to) const;
 
-    bool get(const std::string &key, long long &to) const;
+    bool get(const u8str &key, u8str &to) const;
 
-    bool get(const std::string &key, std::u32string &to) const;
+    bool get(const u8str &key, u32str &to) const;
 
     void loadFromDb();
     
     void saveToDb();
 
 private:
-    template <typename T>
-    void setValue(const std::string &key, const T &val) {
-        std::ostringstream ss;
-        ss << val;
-        props_[key] = ss.str();
+    void setValue(const u8str &key, const u8str &val) {
+        props_[key] = val;
         dirtyKeys_.insert(key);
     }
 
@@ -75,9 +73,9 @@ private:
 
     const std::string repoName_;
 
-    std::map<std::string, std::string> props_;
+    std::map<u8str, u8str> props_;
 
-    std::set<std::string> dirtyKeys_;
+    std::set<u8str> dirtyKeys_;
 };
 
 }
