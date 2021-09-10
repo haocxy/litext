@@ -79,7 +79,7 @@ inline std::u32string convertToU32(const std::string &u8s)
     using namespace utf8detail;
 
     std::u32string result;
-    result.resize(u8s.size());
+    result.reserve(u8s.size());
 
     const auto nbytes = u8s.size();
 
