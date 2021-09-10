@@ -24,6 +24,8 @@ public:
 
     virtual ~MainWindow();
 
+    virtual void closeEvent(QCloseEvent *e) override;
+
     void openDocument(const fs::path &file, RowN row);
 
 protected:

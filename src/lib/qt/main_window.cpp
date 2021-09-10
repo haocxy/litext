@@ -137,6 +137,9 @@ MainWindow::MainWindow(Engine &engine, Config &config)
     , config_(config)
     , propRepo_(engine_.propDb(), "MainWindow")
 {
+    // 关闭后不删除
+    setAttribute(Qt::WA_DeleteOnClose, false);
+
     setupConfig(config_.textAreaConfig());
 
     initMenuBar();
@@ -182,6 +185,12 @@ MainWindow::~MainWindow()
     propRepo_.set(prop::height, geo.height());
     propRepo_.set(prop::x, geo.x());
     propRepo_.set(prop::y, geo.y());
+}
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    editorStack_->closeAllDoc();
+    e->accept();
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *e)

@@ -41,6 +41,12 @@ void EditorStackWidget::openDoc(const fs::path &file, RowN row)
     editorWidget = nullptr;
 }
 
+void EditorStackWidget::closeAllDoc()
+{
+    clear();
+    editors_.clear();
+}
+
 EditorWidget *EditorStackWidget::currentEditor()
 {
     return static_cast<EditorWidget *>(currentWidget());

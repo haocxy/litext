@@ -24,6 +24,8 @@ public:
 
     void openDoc(const fs::path &file, RowN row);
 
+    void closeAllDoc();
+
     EditorWidget *currentEditor();
 
 private:
