@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <cstdint>
+#include <iterator>
 #include <string>
 #include <string_view>
 #include <ostream>
@@ -147,6 +148,12 @@ class u8str : public std::string {
 public:
     u8str() {}
 
+    explicit u8str(const std::string &s)
+        : std::string(s) {}
+
+    explicit u8str(std::string &&s)
+        : std::string(std::move(s)) {}
+
     u8str(const u8str &b)
         : std::string(b) {}
 
@@ -197,11 +204,6 @@ public:
     operator long long() const {
         return std::stoll(*this);
     }
-
-private:
-
-    explicit u8str(std::string &&b)
-        : std::string(std::move(b)) {}
 };
 
 class u8view : public std::string_view {
@@ -230,6 +232,12 @@ public:
     u32str(std::u32string &&b)
         : std::u32string(std::move(b)) {}
 
+    u32str(const u32str &b)
+        : std::u32string(b) {}
+
+    u32str(u32str &&b) noexcept
+        : std::u32string(std::move(b)) {}
+
     u32str(allocator_type allocator)
         : std::u32string(allocator) {}
 
@@ -244,6 +252,16 @@ public:
     }
 
     u32str &operator=(std::u32string &&b) {
+        std::u32string::operator=(std::move(b));
+        return *this;
+    }
+
+    u32str &operator=(const u32str &b) {
+        std::u32string::operator=(b);
+        return *this;
+    }
+
+    u32str &operator=(u32str &&b) noexcept {
         std::u32string::operator=(std::move(b));
         return *this;
     }

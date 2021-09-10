@@ -5,7 +5,6 @@
 
 #include "core/basetype.h"
 #include "core/fs.h"
-#include "charset/to_utf32.h"
 
 
 class ServerInfo {
@@ -29,9 +28,8 @@ public:
         std::istringstream ss(line.substr(0, sepLoc));
         u16 port = 0;
         ss >> port;
-        std::string u8s = line.substr(sepLoc + 1);
-        std::u32string u32s = charset::toUTF32(Charset::UTF_8, u8s.data(), u8s.size());
-        return ServerInfo(port, fs::path(u32s));
+        u8str u8s(line.substr(sepLoc + 1));
+        return ServerInfo(port, static_cast<std::u32string &&>(u32str(u8s)));
     }
 
     u16 port() const {
