@@ -59,8 +59,7 @@ LITEXT_API_FUNC_IMPL(initSetShouldLogToStd)
 
 LITEXT_API_FUNC_IMPL(initAddOpenFileWithUtf8FilePathAndRowNum)
 {
-    const std::u32string u32s = charset::toUTF32(Charset::UTF_8, file, std::strlen(file));
-    const fs::path path = u32s;
+    const fs::path path = static_cast<std::u32string &&>(u32str(u8str(file)));
     asLitext(p)->initInfo.addOpenInfo(path, row);
 }
 
