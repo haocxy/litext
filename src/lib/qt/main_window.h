@@ -2,6 +2,7 @@
 
 #include <QMenu>
 #include <QAction>
+#include <QPointer>
 #include <QMainWindow>
 
 #include "core/fs.h"
@@ -9,6 +10,7 @@
 #include "gui/engine.h"
 #include "gui/declare_config.h"
 #include "declare_editor_widget.h"
+#include "editor_stack_widget.h"
 
 
 namespace gui::qt
@@ -48,7 +50,7 @@ private:
     Engine &engine_;
     Config &config_;
     PropRepo propRepo_;
-    EditorWidget *editorWidget_ = nullptr;
+    QPointer<EditorStackWidget> editorStack_;
 };
 
 }

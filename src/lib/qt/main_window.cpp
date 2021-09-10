@@ -170,6 +170,9 @@ MainWindow::MainWindow(Engine &engine, Config &config)
         propRepo_.set(prop::fontFile, fontIndex.file().generic_u32string());
         propRepo_.set(prop::fontFace, fontIndex.faceIndex());
     }
+
+    editorStack_ = new EditorStackWidget(engine_, this);
+    setCentralWidget(editorStack_);
 }
 
 MainWindow::~MainWindow()
@@ -179,8 +182,6 @@ MainWindow::~MainWindow()
     propRepo_.set(prop::height, geo.height());
     propRepo_.set(prop::x, geo.x());
     propRepo_.set(prop::y, geo.y());
-
-    editorWidget_ = nullptr;
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *e)
@@ -221,7 +222,7 @@ static RowN goToLineToRowOff(int goToLine)
 
 void MainWindow::viewMenuGoLineActionTriggered()
 {
-    EditorWidget *curEditor = editorWidget_;
+    EditorWidget *curEditor = editorStack_->currentEditor();
 
     if (curEditor) {
 
@@ -241,17 +242,7 @@ void MainWindow::viewMenuGoLineActionTriggered()
 
 void MainWindow::openDocument(const fs::path &file, RowN row)
 {
-    editorWidget_ = new EditorWidget(config_.textAreaConfig(), file, row);
-
-    connect(editorWidget_, &EditorWidget::qtSigDocFatalError, this, [this](const QString &errmsg) {
-        QErrorMessage::qtHandler()->showMessage(errmsg);
-        setCentralWidget(nullptr);
-        setWindowTitle(QString("litext"));
-    });
-
-    setCentralWidget(editorWidget_);
-
-    setWindowTitle(QString("litext - ") + QString::fromStdU16String(file.generic_u16string()));
+    editorStack_->openDoc(file, row);
 }
 
 void MainWindow::fileMenuOpenActionTriggered()
