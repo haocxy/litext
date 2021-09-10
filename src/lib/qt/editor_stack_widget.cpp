@@ -24,7 +24,12 @@ void EditorStackWidget::openDoc(const fs::path &file, RowN row)
         return;
     }
 
-    EditorWidget *editorWidget = new EditorWidget(engine_.config().textAreaConfig(), engine_.editorManager()[file], row);
+    Editor *editor = engine_.editorManager().get(file);
+    if (!editor) {
+        return;
+    }
+
+    EditorWidget *editorWidget = new EditorWidget(engine_.config().textAreaConfig(), *editor, row);
 
     addTab(editorWidget, QString::fromStdU32String(file.filename().generic_u32string()));
 

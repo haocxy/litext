@@ -16,15 +16,15 @@ class EditorManager {
 public:
     EditorManager() {}
 
-    Editor &operator[](const fs::path &file) {
+    Editor *get(const fs::path &file) {
         auto it = editors_.find(file);
         if (it != editors_.end()) {
-            return *(it->second);
+            return it->second.get();
         }
 
         Editor *editor = new Editor(file);
         editors_.insert({ file, uptr<Editor>(editor) });
-        return *editor;
+        return editor;
     }
 
 private:
