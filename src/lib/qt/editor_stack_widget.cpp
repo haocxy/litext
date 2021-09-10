@@ -10,6 +10,7 @@ EditorStackWidget::EditorStackWidget(Engine &engine, QWidget *parent)
     : QTabWidget(parent)
     , engine_(engine) {
 
+    setTabsClosable(true);
 }
 
 EditorStackWidget::~EditorStackWidget()
