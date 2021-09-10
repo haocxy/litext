@@ -116,6 +116,12 @@ void Application::initSystemTray(const InitInfo &initInfo)
         trayMenu_ = std::make_unique<TrayMenu>();
         trayIcon_ = new QSystemTrayIcon(QIcon(":/tray_icon.ico"));
         trayIcon_->setContextMenu(trayMenu_.get());
+
+        connect(trayMenu_.get(), &TrayMenu::qtSigQuit, this, [this] {
+            trayIcon_->hide();
+            QApplication::quit();
+        });
+
         trayIcon_->show();
     }
 }

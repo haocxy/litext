@@ -14,8 +14,11 @@ public:
 
     virtual ~TrayMenu();
 
+signals:
+    void qtSigQuit();
+
 private slots:
-    void qtSlotActionQuit();
+    
 
 private:
     QPointer<QAction> actionQuit_;
