@@ -15,12 +15,15 @@ public:
     virtual ~TrayMenu();
 
 signals:
+    void qtSigActivateUI();
+
     void qtSigQuit();
 
 private slots:
     
 
 private:
+    QPointer<QAction> actionActivateUI_;
     QPointer<QAction> actionQuit_;
 };
 
