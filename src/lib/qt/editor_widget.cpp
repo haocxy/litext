@@ -13,11 +13,13 @@
 namespace gui::qt
 {
 
-EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, Editor &editor, RowN row)
+EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> editor, RowN row)
     : editor_(editor)
-    , textArea_(editor_, textAreaConfig)
+    , textArea_(*editor_, textAreaConfig)
 {
-    doc::Document &document = editor_.document();
+    assert(editor_);
+
+    doc::Document &document = editor_->document();
 
     ruler_ = new RulerWidget(textArea_);
 

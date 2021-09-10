@@ -16,19 +16,28 @@ class EditorManager {
 public:
     EditorManager() {}
 
-    Editor *get(const fs::path &file) {
-        auto it = editors_.find(file);
+    sptr<Editor> get(const fs::path &file) {
+        const fs::path absPath = fs::absolute(file);
+        auto it = editors_.find(absPath);
         if (it != editors_.end()) {
-            return it->second.get();
+            return it->second.lock();
         }
 
-        Editor *editor = new Editor(file);
-        editors_.insert({ file, uptr<Editor>(editor) });
+        sptr<Editor> editor(new Editor(absPath), [this](Editor *p) {
+            deleteEditor(p);
+        });
+        editors_.insert({ absPath, editor });
         return editor;
     }
 
 private:
-    std::map<fs::path, uptr<Editor>> editors_;
+    void deleteEditor(Editor *p) {
+        editors_.erase(p->document().path());
+        delete p;
+    }
+
+private:
+    std::map<fs::path, std::weak_ptr<Editor>> editors_;
 };
 
 }

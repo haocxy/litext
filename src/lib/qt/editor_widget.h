@@ -20,7 +20,7 @@ namespace gui::qt
 class EditorWidget : public QWidget {
     Q_OBJECT
 public:
-    EditorWidget(const TextAreaConfig &textAreaConfig, Editor &editor, RowN row);
+    EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> editor, RowN row);
 
     virtual ~EditorWidget();
 
@@ -35,7 +35,7 @@ private:
     QString docErrToStr(doc::DocError err) const;
 
 private:
-    Editor &editor_;
+    sptr<Editor> editor_;
     TextArea textArea_;
     RulerWidget *ruler_ = nullptr;
     TextAreaWidget *textAreaWidget_ = nullptr;
