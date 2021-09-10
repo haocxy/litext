@@ -25,14 +25,9 @@ struct Ok {
     void serialize(Ar &ar, unsigned version) {}
 };
 
-struct ShowWindow {
-
-    int n = 1234;
-
+struct ActivateUI {
     template <typename Ar>
-    void serialize(Ar &ar, unsigned version) {
-        ar & n;
-    }
+    void serialize(Ar &ar, unsigned version) {}
 };
 
 struct OpenFiles {

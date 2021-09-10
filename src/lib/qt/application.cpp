@@ -64,8 +64,8 @@ void Application::init(const InitInfo &initInfo)
     // 绑定事件处理
     bindSignals(initInfo);
 
-    // 显示主窗口
-    showMainWindow();
+    // 显示用户界面
+    activateUI();
 
     // 打开由程序启动参数指定的文件
     openFiles(initInfo.openInfos());
@@ -124,7 +124,7 @@ void Application::initSystemTray(const InitInfo &initInfo)
 
         connect(trayIcon_, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
             if (reason == QSystemTrayIcon::DoubleClick) {
-                mainWindow_->showNormal();
+                activateUI();
             }
         });
 
@@ -160,9 +160,9 @@ void Application::bindSignalsForSingletonServer()
 {
     SingletonServer &server = engine_.singletonServer();
 
-    connect(this, &Application::qtSigShowWindow, mainWindow_, &MainWindow::showNormal);
-    sigConns_ += server.sigShowWindow().connect([this] {
-        emit qtSigShowWindow();
+    connect(this, &Application::qtSigActivateUI, this, &Application::activateUI);
+    sigConns_ += server.sigActivateUI().connect([this] {
+        emit qtSigActivateUI();
     });
 
     connect(this, &Application::qtSigOpenFile, this, &Application::qtSlotOpenFile);
@@ -174,15 +174,16 @@ void Application::bindSignalsForSingletonServer()
     });
 }
 
-void Application::showMainWindow()
-{
-    mainWindow_->show();
-}
-
 void Application::qtSlotOpenFile(const QString &path, long long row)
 {
-    mainWindow_->showNormal();
+    activateUI();
     openFile({ fs::path(path.toStdU32String()), row });
+}
+
+void Application::activateUI()
+{
+    mainWindow_->showNormal();
+    mainWindow_->activateWindow();
 }
 
 }

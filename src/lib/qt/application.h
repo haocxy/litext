@@ -47,15 +47,15 @@ private:
 
     void bindSignalsForSingletonServer();
 
-    void showMainWindow();
-
 signals:
-    void qtSigShowWindow();
+    void qtSigActivateUI();
 
     void qtSigOpenFile(const QString &path, long long row);
 
-private slots:
+private:
     void qtSlotOpenFile(const QString &path, long long row);
+
+    void activateUI();
 
 private:
     Engine engine_;

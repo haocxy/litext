@@ -125,8 +125,8 @@ public:
         return sigRecvOpenInfos_;
     }
 
-    Signal<void()> &sigShowWindow() {
-        return sigShowWindow_;
+    Signal<void()> &sigActivateUI() {
+        return sigActivateUI_;
     }
 
     void start(const StartInfo &info)
@@ -161,8 +161,8 @@ public:
 
     msg::Pack handleMsg(const msg::Pack &pack)
     {
-        if (pack.is<msg::ShowWindow>()) {
-            sigShowWindow_();
+        if (pack.is<msg::ActivateUI>()) {
+            sigActivateUI_();
         } else if (pack.is<msg::OpenFiles>()) {
             sigRecvOpenInfos_(toOpenInfos(pack));
         }
@@ -267,7 +267,7 @@ private:
     std::string writtenServerInfo_;
     asio::steady_timer timerForWriteInfo_;
     Signal<void(const OpenInfos &)> sigRecvOpenInfos_;
-    Signal<void()> sigShowWindow_;
+    Signal<void()> sigActivateUI_;
     std::atomic_bool started_{ false };
     std::atomic_bool stopping_{ false };
     std::thread thread_;
@@ -287,8 +287,8 @@ public:
         return impl_->sigRecvOpenInfos();
     }
 
-    Signal<void()> &sigShowWindow() {
-        return impl_->sigShowWindow();
+    Signal<void()> &sigActivateUI() {
+        return impl_->sigActivateUI();
     }
 
     void start(const SingletonServer::StartInfo &info) {
@@ -310,9 +310,9 @@ SingletonServer::~SingletonServer()
     impl_ = nullptr;
 }
 
-Signal<void()> &SingletonServer::sigShowWindow()
+Signal<void()> &SingletonServer::sigActivateUI()
 {
-    return impl_->sigShowWindow();
+    return impl_->sigActivateUI();
 }
 
 Signal<void(const SingletonServer::OpenInfos &)> &SingletonServer::sigRecvOpenInfos()

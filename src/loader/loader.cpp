@@ -127,7 +127,7 @@ static bool notifyServer(const CmdOpt &opt)
 
     if (opt.files().empty()) {
         // 如果没有要打开的文件,则通知服务端显示界面
-        send(sock, msg::ShowWindow());
+        send(sock, msg::ActivateUI());
     } else {
         msg::OpenFiles openFilesMsg;
         for (const auto &[file, row] : opt.files()) {
