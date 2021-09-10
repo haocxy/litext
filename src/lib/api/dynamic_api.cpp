@@ -6,7 +6,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include "charset/to_utf32.h"
-#include "gui/qt/application.h"
+#include "qt/application.h"
 
 
 #define LITEXT_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
