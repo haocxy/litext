@@ -122,6 +122,12 @@ void Application::initSystemTray(const InitInfo &initInfo)
             QApplication::quit();
         });
 
+        connect(trayIcon_, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+            if (reason == QSystemTrayIcon::DoubleClick) {
+                mainWindow_->showNormal();
+            }
+        });
+
         trayIcon_->show();
     }
 }
@@ -154,7 +160,7 @@ void Application::bindSignalsForSingletonServer()
 {
     SingletonServer &server = engine_.singletonServer();
 
-    connect(this, &Application::qtSigShowWindow, mainWindow_, &MainWindow::showFullScreen);
+    connect(this, &Application::qtSigShowWindow, mainWindow_, &MainWindow::showNormal);
     sigConns_ += server.sigShowWindow().connect([this] {
         emit qtSigShowWindow();
     });
@@ -175,6 +181,7 @@ void Application::showMainWindow()
 
 void Application::qtSlotOpenFile(const QString &path, long long row)
 {
+    mainWindow_->showNormal();
     openFile({ fs::path(path.toStdU32String()), row });
 }
 
