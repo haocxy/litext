@@ -45,6 +45,8 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 
 DocumentImpl::~DocumentImpl()
 {
+    sigConns_.clear();
+
     LOGD << "Document::~Document(), path: [" << path_ << "]";
 }
 

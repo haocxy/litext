@@ -31,6 +31,8 @@ public:
 signals:
     void qtSigDocFatalError(const QString &errmsg);
 
+    void qtSigUpdateScrollBarMaximum(int maximum);
+
 private:
     QString docErrToStr(doc::DocError err) const;
 

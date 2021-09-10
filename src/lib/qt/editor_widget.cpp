@@ -49,10 +49,11 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
         emit qtSigDocFatalError(docErrToStr(err));
     });
 
+    connect(this, &EditorWidget::qtSigUpdateScrollBarMaximum, vScrollBar_, &TextAreaScrollBar::setMaximum);
     sigConns_ += document.sigRowCountUpdated().connect([this](RowN rowCount) {
         RowN newValue = textArea_.scrollRatio().total();
         if (newValue <= static_cast<RowN>(std::numeric_limits<decltype(vScrollBar_->maximum())>::max())) {
-            vScrollBar_->setMaximum(static_cast<int>(newValue));
+            emit qtSigUpdateScrollBarMaximum(static_cast<int>(newValue));
         } else {
             throw std::logic_error("document row count overflow max value supported by Qt");
         }
@@ -67,6 +68,8 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
 
 EditorWidget::~EditorWidget()
 {
+    sigConns_.clear();
+
     ruler_ = nullptr;
     textAreaWidget_ = nullptr;
     vScrollBar_ = nullptr;
