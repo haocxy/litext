@@ -26,6 +26,10 @@ public:
 
     ~DocumentImpl();
 
+    const fs::path &path() const {
+        return path_;
+    }
+
     void start();
 
     Signal<void(DocError)> &sigFatalError() {

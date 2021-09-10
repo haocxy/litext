@@ -19,6 +19,11 @@ Document::~Document()
     impl_ = nullptr;
 }
 
+const fs::path &Document::path() const
+{
+    return impl_->path();
+}
+
 void Document::start()
 {
     impl_->start();

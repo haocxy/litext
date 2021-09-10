@@ -5,6 +5,7 @@
 #include "config.h"
 #include "propdb.h"
 #include "init_info.h"
+#include "editor_manager.h"
 #include "singleton_server.h"
 
 
@@ -51,6 +52,14 @@ public:
         return propDb_;
     }
 
+    const EditorManager &editorManager() const {
+        return editorManager_;
+    }
+
+    EditorManager &editorManager() {
+        return editorManager_;
+    }
+
 private:
     void initLogger(const InitInfo &initInfo);
 
@@ -64,6 +73,7 @@ private:
     Config config_;
     SingletonServer singletonServer_;
     PropDb propDb_;
+    EditorManager editorManager_;
 };
 
 }

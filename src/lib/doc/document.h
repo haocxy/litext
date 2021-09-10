@@ -22,6 +22,8 @@ public:
 
     ~Document();
 
+    const fs::path &path() const;
+
     void start();
 
     Signal<void(DocError)> &sigFatalError();

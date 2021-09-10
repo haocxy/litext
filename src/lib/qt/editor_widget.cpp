@@ -13,9 +13,8 @@
 namespace gui::qt
 {
 
-EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, const fs::path &file, RowN row)
-    : file_(file)
-    , editor_(file)
+EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, Editor &editor, RowN row)
+    : editor_(editor)
     , textArea_(editor_, textAreaConfig)
 {
     doc::Document &document = editor_.document();
