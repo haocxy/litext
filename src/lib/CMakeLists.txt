@@ -14,6 +14,7 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 add_library(litext_body SHARED ${src_files} ${CMAKE_SOURCE_DIR}/litext_resources.qrc)
 
 target_link_libraries(litext_body litext_global)
+target_link_libraries(litext_body litext_charset)
 
 # dep Qt5
 find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)

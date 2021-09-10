@@ -24,15 +24,6 @@ target_link_libraries(litext_core libsqlite3_static)
 # dep freetype
 target_link_libraries(litext_core freetype)
 
-# dep Qt5
-find_package(Qt5 COMPONENTS Core Widgets Network REQUIRED)
-
-set_target_properties(Qt5::Core PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
-set_target_properties(Qt5::Gui PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
-set_target_properties(Qt5::Widgets PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
-set_target_properties(Qt5::Network PROPERTIES MAP_IMPORTED_CONFIG_DEBUG "RELEASE")
-target_link_libraries(litext_core Qt5::Widgets Qt5::Network)
-
 # dep Boost
 find_package(Boost 1.76 REQUIRED COMPONENTS filesystem)
 target_link_libraries(litext_core ${Boost_LIBRARIES})

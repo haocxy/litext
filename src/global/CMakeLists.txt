@@ -15,5 +15,3 @@ find_package(Boost 1.76 REQUIRED COMPONENTS serialization)
 target_link_libraries(litext_global ${Boost_LIBRARIES})
 
 target_link_libraries(litext_global litext_core)
-target_link_libraries(litext_global litext_charset)
-
