@@ -131,7 +131,7 @@ static bool notifyServer(const CmdOpt &opt)
     } else {
         msg::OpenFiles openFilesMsg;
         for (const auto &[file, row] : opt.files()) {
-            openFilesMsg.files.push_back({file.generic_u8string(), row});
+            openFilesMsg.files.push_back({u8str(file.generic_u8string()), row});
         }
         send(sock, openFilesMsg);
     }

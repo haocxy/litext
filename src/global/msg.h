@@ -38,11 +38,11 @@ struct ShowWindow {
 struct OpenFiles {
 
     struct OpenInfo {
-        std::string u8file;
+        u8str u8file;
         i64 row;
         template <typename Ar>
         void serialize(Ar &ar, unsigned version) {
-            ar & u8file;
+            ar & static_cast<std::string &>(u8file);
             ar & row;
         }
     };
