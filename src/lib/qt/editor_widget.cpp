@@ -81,6 +81,11 @@ const TextAreaWidget &EditorWidget::textAreaWidget() const
     return *textAreaWidget_;
 }
 
+const doc::Document &EditorWidget::document() const
+{
+    return editor_->document();
+}
+
 void EditorWidget::jumpTo(RowN row)
 {
     textArea_.jumpTo(row);

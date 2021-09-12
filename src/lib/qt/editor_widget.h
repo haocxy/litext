@@ -26,6 +26,8 @@ public:
 
     const TextAreaWidget &textAreaWidget() const;
 
+    const doc::Document &document() const;
+    
     void jumpTo(RowN row);
 
 signals:

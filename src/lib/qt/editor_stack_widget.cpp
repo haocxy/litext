@@ -11,6 +11,8 @@ EditorStackWidget::EditorStackWidget(Engine &engine, QWidget *parent)
     , engine_(engine) {
 
     setTabsClosable(true);
+
+    connect(this, &EditorStackWidget::tabCloseRequested, this, &EditorStackWidget::closeDocByTabIndex);
 }
 
 EditorStackWidget::~EditorStackWidget()
@@ -19,24 +21,27 @@ EditorStackWidget::~EditorStackWidget()
 
 void EditorStackWidget::openDoc(const fs::path &file, RowN row)
 {
-    auto it = editors_.find(file);
+    const fs::path absPath = fs::absolute(file);
+    auto it = editors_.find(absPath);
     if (it != editors_.end()) {
-        setCurrentWidget(it->second.get());
-        return;
+        if (!it->second.empty()) {
+            setCurrentWidget(it->second.back().get());
+            return;
+        }
     }
 
-    sptr<Editor> editor = engine_.editorManager().get(file);
+    sptr<Editor> editor = engine_.editorManager().get(absPath);
     if (!editor) {
         return;
     }
 
     EditorWidget *editorWidget = new EditorWidget(engine_.config().textAreaConfig(), editor, row);
 
-    addTab(editorWidget, QString::fromStdU32String(file.filename().generic_u32string()));
+    addTab(editorWidget, QString::fromStdU32String(absPath.filename().generic_u32string()));
 
     setCurrentWidget(editorWidget);
 
-    editors_[file] = uptr<EditorWidget>(editorWidget);
+    editors_[absPath].push_back(uptr<EditorWidget>(editorWidget));
 
     editorWidget = nullptr;
 }
@@ -50,6 +55,14 @@ void EditorStackWidget::closeAllDoc()
 EditorWidget *EditorStackWidget::currentEditor()
 {
     return static_cast<EditorWidget *>(currentWidget());
+}
+
+void EditorStackWidget::closeDocByTabIndex(int tabIndex)
+{
+    EditorWidget *editorWidget = static_cast<EditorWidget *>(widget(tabIndex));
+    removeTab(tabIndex);
+    const fs::path absPath = fs::absolute(editorWidget->document().path());
+    editors_.erase(absPath);
 }
 
 }

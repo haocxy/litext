@@ -29,8 +29,11 @@ public:
     EditorWidget *currentEditor();
 
 private:
+    void closeDocByTabIndex(int tabIndex);
+
+private:
     Engine &engine_;
-    std::map<fs::path, uptr<EditorWidget>> editors_;
+    std::map<fs::path, std::vector<uptr<EditorWidget>>> editors_;
 };
 
 }
