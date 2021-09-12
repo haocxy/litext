@@ -528,7 +528,7 @@ void TextAreaImpl::repaint()
     }
 }
 
-void TextAreaImpl::moveCursorUp()
+void TextAreaImpl::_moveCursorUp()
 {
 
 	// TODO !!!
@@ -554,7 +554,7 @@ void TextAreaImpl::moveCursorUp()
     }
 }
 
-void TextAreaImpl::moveCursorDown()
+void TextAreaImpl::_moveCursorDown()
 {
 	// 第一步，确保当前位置在视图中有下一行
 	const DocLoc & oldDocLoc = editor_.normalCursor().to();
@@ -576,7 +576,7 @@ void TextAreaImpl::moveCursorDown()
 	}
 }
 
-void TextAreaImpl::moveCursorLeft()
+void TextAreaImpl::_moveCursorLeft()
 {
     const DocLoc oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
@@ -601,7 +601,7 @@ void TextAreaImpl::moveCursorLeft()
     }
 }
 
-void TextAreaImpl::moveCursorRight()
+void TextAreaImpl::_moveCursorRight()
 {
 	const DocLoc oldDocLoc = editor_.normalCursor().to();
 	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
@@ -747,16 +747,16 @@ void TextAreaImpl::moveCursor(TextArea::Dir dir)
 
     switch (dir) {
     case TextArea::Dir::Up:
-        moveCursorUp();
+        _moveCursorUp();
         break;
     case TextArea::Dir::Down:
-        moveCursorDown();
+        _moveCursorDown();
         break;
     case TextArea::Dir::Left:
-        moveCursorLeft();
+        _moveCursorLeft();
         break;
     case TextArea::Dir::Right:
-        moveCursorRight();
+        _moveCursorRight();
         break;
     default:
         break;

@@ -124,13 +124,13 @@ public:
 
 private:
 
-    void moveCursorUp();
+    void _moveCursorUp();
 
-    void moveCursorDown();
+    void _moveCursorDown();
 
-    void moveCursorLeft();
+    void _moveCursorLeft();
 
-    void moveCursorRight();
+    void _moveCursorRight();
 
     void movePageUp();
 
