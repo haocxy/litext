@@ -188,8 +188,9 @@ void MainWindow::keyReleaseEvent(QKeyEvent *e)
 void MainWindow::saveGeometry()
 {
     if (isMaximized()) {
-        propRepo_.set(prop::isMax, isMaximized());
+        propRepo_.set(prop::isMax, true);
     } else {
+        propRepo_.set(prop::isMax, false);
         const QRect &geo = geometry();
         propRepo_.set(prop::width, geo.width());
         propRepo_.set(prop::height, geo.height());
