@@ -124,6 +124,7 @@ static void setupConfig(TextAreaConfig &c)
 
 namespace prop
 {
+static const u8str isMax = "isMax";
 static const u8str width = "width";
 static const u8str height = "height";
 static const u8str x = "x";
@@ -146,21 +147,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
     initToolBar();
 
-    // 尝试获取之前保存到数据库中的宽度和高度，
-    // 如果失败则使用默认值
-    int width = 800, height = 600;
-    propRepo_.get(prop::width, width);
-    propRepo_.get(prop::height, height);
-    resize(width, height);
-
-    // 尝试获取之前保存到数据库中的位置
-    // 如果失败则不做任何事情（默认的位置应该由GUI库决定）
-    int x = 0, y = 0;
-    if (propRepo_.get(prop::x, x) && propRepo_.get(prop::y, y)) {
-        QRect geo = geometry();
-        geo.moveTo(x, y);
-        setGeometry(geo);
-    }
+    restoreGeometry();
 
     u32str fontFile;
     i64 fontFace = 0;
@@ -180,11 +167,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
 MainWindow::~MainWindow()
 {
-    const QRect &geo = geometry();
-    propRepo_.set(prop::width, geo.width());
-    propRepo_.set(prop::height, geo.height());
-    propRepo_.set(prop::x, geo.x());
-    propRepo_.set(prop::y, geo.y());
+    saveGeometry();
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
@@ -199,6 +182,42 @@ void MainWindow::keyReleaseEvent(QKeyEvent *e)
         close();
     } else {
         QMainWindow::keyReleaseEvent(e);
+    }
+}
+
+void MainWindow::saveGeometry()
+{
+    if (isMaximized()) {
+        propRepo_.set(prop::isMax, isMaximized());
+    } else {
+        const QRect &geo = geometry();
+        propRepo_.set(prop::width, geo.width());
+        propRepo_.set(prop::height, geo.height());
+        propRepo_.set(prop::x, geo.x());
+        propRepo_.set(prop::y, geo.y());
+    }
+}
+
+void MainWindow::restoreGeometry()
+{
+    bool isMax = false;
+    if (propRepo_.get(prop::isMax, isMax)) {
+        if (isMax) {
+            return;
+        }
+    }
+
+    int width = 800, height = 600;
+    propRepo_.get(prop::width, width);
+    propRepo_.get(prop::height, height);
+    resize(width, height);
+
+    // 如果获取位置信息失败则不做任何事情（默认的位置应该由GUI库决定）
+    int x = 0, y = 0;
+    if (propRepo_.get(prop::x, x) && propRepo_.get(prop::y, y)) {
+        QRect geo = geometry();
+        geo.moveTo(x, y);
+        setGeometry(geo);
     }
 }
 

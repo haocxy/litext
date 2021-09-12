@@ -35,11 +35,15 @@ public:
 
     void set(const u8str &key, const u8str &val);
 
+    void set(const u8str &key, bool val);
+
     void set(const u8str &key, int val);
 
     void set(const u8str &key, long val);
 
     void set(const u8str &key, long long val);
+
+    bool get(const u8str &key, bool &to) const;
 
     bool get(const u8str &key, int &to) const;
 

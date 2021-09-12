@@ -102,6 +102,11 @@ void PropRepo::set(const u8str &key, const u8str &val)
     setValue(key, val);
 }
 
+void PropRepo::set(const u8str &key, bool val)
+{
+    setValue(key, val ? 1 : 0);
+}
+
 void PropRepo::set(const u8str &key, int val)
 {
     setValue(key, val);
@@ -123,6 +128,17 @@ static bool getValue(const std::map<u8str, u8str> &map, const u8str &key, T &to)
     auto it = map.find(key);
     if (it != map.end()) {
         to = it->second;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool PropRepo::get(const u8str &key, bool &to) const
+{
+    int n = 0;
+    if (getValue(props_, key, n)) {
+        to = (n != 0);
         return true;
     } else {
         return false;

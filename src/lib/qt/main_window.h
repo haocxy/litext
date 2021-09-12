@@ -32,6 +32,10 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *e) override;
 
 private:
+    void saveGeometry();
+
+    void restoreGeometry();
+
     void initMenuBar();
 
     void initToolBar();
