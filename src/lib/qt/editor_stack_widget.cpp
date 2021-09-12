@@ -13,6 +13,12 @@ EditorStackWidget::EditorStackWidget(Engine &engine, QWidget *parent)
     setTabsClosable(true);
 
     connect(this, &EditorStackWidget::tabCloseRequested, this, &EditorStackWidget::closeDocByTabIndex);
+
+    connect(this, &EditorStackWidget::tabBarDoubleClicked, this, [this](int tabIndex) {
+        if (tabIndex >= 0) { // 根据Qt文档,负数是有含义的,必须判断
+            closeDocByTabIndex(tabIndex);
+        }
+    });
 }
 
 EditorStackWidget::~EditorStackWidget()
