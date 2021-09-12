@@ -17,6 +17,9 @@ TextAreaWidget::TextAreaWidget(TextArea &textArea)
     setAttribute(Qt::WA_InputMethodEnabled);
     setFocusPolicy(Qt::ClickFocus);
 
+    setMinimumWidth(500);
+    setMinimumHeight(400);
+
     connect(this, &TextAreaWidget::qtSigShouldRepaint, this, &TextAreaWidget::qtSlotShouldRepaint);
     sigConns_ += textArea_.sigShouldRepaint().connect([this] {
         emit qtSigShouldRepaint();
