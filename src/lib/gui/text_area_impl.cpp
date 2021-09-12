@@ -157,6 +157,22 @@ int TextAreaImpl::calcMaxShownLineCnt() const
     return (size_.height() + lineHeight - 1) / lineHeight;
 }
 
+void TextAreaImpl::_putCursorByLineOffset(i32 lineOffset)
+{
+    const VLineLoc vLineLoc = cvt_.toVLineLoc(lineOffset);
+    const DocRowLoc docRowLoc = cvt_.toDocRowLoc(vLineLoc);
+    const VCharLoc newVCharLoc = cvt_.toCharLoc(vLineLoc, stableX_);
+    const DocLoc newDocCharLoc = cvt_.toDocLoc(newVCharLoc);
+    editor_.setNormalCursor(newDocCharLoc);
+
+    sigShouldRepaint_();
+}
+
+void TextAreaImpl::_putCursorToPageTop()
+{
+    _putCursorByLineOffset(0);
+}
+
 LineBound TextAreaImpl::getLineBoundByLineOffset(i32 lineOffset) const
 {
     const i32 lineHeight = glyphCache_.face().height();
@@ -628,6 +644,8 @@ void TextAreaImpl::movePageDown()
     setViewLoc(newRowOff, newLineOff);
 
     remakePage();
+
+    _putCursorByLineOffset(0);
 
     sigViewportChanged_();
 }

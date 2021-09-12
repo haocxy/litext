@@ -140,10 +140,18 @@ private:
 
     int calcMaxShownLineCnt() const;
 
+    void _putCursorByLineOffset(i32 lineOffset);
+
+    void _putCursorToPageTop();
+
     LineBound getLineBoundByLineOffset(i32 lineOffset) const;
+
     LineBound getLineBound(const VLineLoc &lineLoc) const;
+
     RowBound getRowBound(const VRowLoc &rowLoc) const;
+
     bool hasPrevCharAtSameLine(const VCharLoc &charLoc) const;
+
     bool noPrevCharAtSameLine(const VCharLoc &charLoc) const;
     bool hasNextCharAtSameLine(const VCharLoc &charLoc) const;
     bool noNextCharAtSameLine(const VCharLoc &charLoc) const;
