@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <mutex>
+#include <shared_mutex>
 
 #include <QImage>
 
@@ -78,6 +79,10 @@ public:
     Signal<void()> &sigViewportChanged();
 
 private:
+    using Mtx = std::shared_mutex;
+    using ReadLock = std::shared_lock<Mtx>;
+    using WriteLock = std::lock_guard<Mtx>;
+    mutable Mtx mtx_;
     TextAreaImpl *impl_ = nullptr;
 };
 
