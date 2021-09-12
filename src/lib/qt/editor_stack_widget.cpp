@@ -11,6 +11,8 @@ EditorStackWidget::EditorStackWidget(Engine &engine, QWidget *parent)
     , engine_(engine) {
 
     setTabsClosable(true);
+    setMovable(true);
+    setUsesScrollButtons(true);
 
     connect(this, &EditorStackWidget::tabCloseRequested, this, &EditorStackWidget::closeDocByTabIndex);
 
