@@ -102,7 +102,7 @@ private:
         add("logerror,e", "Record logs for error message");
         add("logdebug,d", "Record logs for debug information");
         add("logverbose,v", "Record all logs");
-        add("nonsingleton", "Do not start program in singleton mode");
+        add("nonsingleton,S", "Do not start program in singleton mode");
     }
 
     static bool isNum(const std::string &s) {
