@@ -84,6 +84,12 @@ void TextArea::putCursor(i32 x, i32 y)
     impl_->putCursor(x, y);
 }
 
+void TextArea::movePage(Dir dir)
+{
+    ReadLock lock(mtx_);
+    impl_->movePage(dir);
+}
+
 bool TextArea::moveDownByOneLine()
 {
     ReadLock lock(mtx_);

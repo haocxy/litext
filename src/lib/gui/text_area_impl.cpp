@@ -430,6 +430,11 @@ bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
     return height() < requiredHeight;
 }
 
+void TextAreaImpl::setViewLoc(RowN docRow, LineN lineOff)
+{
+    setViewLoc(ViewLoc(docRow, lineOff));
+}
+
 void TextAreaImpl::removeSpareRow()
 {
     int remainLineCnt = page_.lineCnt() - vloc_.line();
@@ -612,8 +617,19 @@ void TextAreaImpl::movePageUp()
 
 void TextAreaImpl::movePageDown()
 {
-    gui::VLineLoc newViewLoc = getShownLastLineLoc();
+    // 向下翻页, 把当前页面的最后一行做为新页面的第一行
 
+    VLineLoc newViewLoc = getShownLastLineLoc();
+    DocRowLoc newDocRowLoc = cvt_.toDocRowLoc(newViewLoc);
+
+    const RowN newRowOff = newDocRowLoc.row();
+    const LineN newLineOff = newViewLoc.line();
+
+    setViewLoc(newRowOff, newLineOff);
+
+    remakePage();
+
+    sigViewportChanged_();
 }
 
 void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)

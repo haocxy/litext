@@ -169,6 +169,8 @@ private:
     // 返回true则需要在合适的时刻调用movePageHeadOneLine
     bool ensureHasNextLine(const VLineLoc &curLineLoc);
 
+    void setViewLoc(RowN docRow, LineN lineOff);
+
     void setViewLoc(const ViewLoc &viewLoc);
 
     // 根据当前游标位置更新stableX

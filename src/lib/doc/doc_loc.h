@@ -19,6 +19,10 @@ public:
         return loc;
     }
 
+    RowN row() const { return m_row; }
+
+    void setRow(RowN row) { m_row = row; }
+
 protected:
     enum {
         kIsNull = 0,
@@ -59,8 +63,7 @@ public:
     DocLoc() {}
 
     DocLoc(RowN row, CharN col) : DocRowLoc(row), m_col(col) {}
-    RowN row() const { return m_row; }
-    void setRow(RowN row) { m_row = row; }
+
     CharN col() const { return m_col; }
     void setCol(CharN col) { m_col = col; }
     bool isNull() const { return m_flag.has(kIsNull); }
