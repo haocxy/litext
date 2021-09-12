@@ -606,6 +606,16 @@ void TextAreaImpl::moveCursorRight()
 	}
 }
 
+void TextAreaImpl::movePageUp()
+{
+}
+
+void TextAreaImpl::movePageDown()
+{
+    gui::VLineLoc newViewLoc = getShownLastLineLoc();
+
+}
+
 void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
 {
     if (vloc_ == viewLoc)
@@ -728,6 +738,22 @@ void TextAreaImpl::putCursor(i32 x, i32 y)
     stableX_ = cvt_.toX(charLoc);
 
     sigShouldRepaint_();
+}
+
+void TextAreaImpl::movePage(TextArea::Dir dir)
+{
+    Lock lock(mtx_);
+
+    switch (dir) {
+    case TextArea::Dir::Up:
+        movePageUp();
+        break;
+    case TextArea::Dir::Down:
+        movePageDown();
+        break;
+    default:
+        throw std::logic_error("unsupported dir for TextArea::movePage(...)");
+    }
 }
 
 bool TextAreaImpl::moveDownByOneLine()

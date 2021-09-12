@@ -258,6 +258,19 @@ VCharLoc CoordinateConverter::toCharLoc(const DocLoc &docLoc) const
     return VCharLoc();
 }
 
+DocRowLoc CoordinateConverter::toDocRowLoc(const VRowLoc &vRowLoc) const
+{
+    if (vRowLoc.isNull()) {
+        return DocRowLoc();
+    }
+
+    if (vRowLoc.isAfterLastRow()) {
+        return DocRowLoc::newRowLocAfterLastRow();
+    }
+
+    return DocRowLoc(vloc_.row() + vRowLoc.row());
+}
+
 DocLoc CoordinateConverter::toDocLoc(const VCharLoc &charLoc) const
 {
     if (charLoc.isNull()) {

@@ -4,9 +4,43 @@
 #include "core/flagset.h"
 
 
-class DocLoc
+class DocRowLoc {
+public:
+    DocRowLoc() {
+        m_flag.set(kIsNull);
+    }
+
+    DocRowLoc(RowN row)
+        : m_row(row) {}
+
+    static DocRowLoc newRowLocAfterLastRow() {
+        DocRowLoc loc(0);
+        loc.m_flag.set(kAfterLastRow);
+        return loc;
+    }
+
+protected:
+    enum {
+        kIsNull = 0,
+        kAfterLastRow = 1,
+        kAfterLastChar = 2,
+        kFlagCnt,
+    };
+
+    DocRowLoc(FlagSet<kFlagCnt> flag)
+        : m_flag(flag) {}
+
+protected:
+    FlagSet<kFlagCnt> m_flag;
+    RowN m_row = 0;
+};
+
+
+class DocLoc : public DocRowLoc
 {
 public:
+    virtual ~DocLoc() {}
+
     static DocLoc newDocLocAfterLastRow()
     {
         DocLoc loc(0, 0);
@@ -20,9 +54,11 @@ public:
         loc.m_flag.set(kAfterLastChar);
         return loc;
     }
+
 public:
-    DocLoc() :m_flag(kIsNull), m_row(0), m_col(0) {}
-    DocLoc(RowN row, CharN col) : m_row(row), m_col(col) {}
+    DocLoc() {}
+
+    DocLoc(RowN row, CharN col) : DocRowLoc(row), m_col(col) {}
     RowN row() const { return m_row; }
     void setRow(RowN row) { m_row = row; }
     CharN col() const { return m_col; }
@@ -58,17 +94,8 @@ public:
     DocLoc nextDown() const { return DocLoc(m_row + 1, m_col); }
     DocLoc nextLeft() const { return DocLoc(m_row, m_col - 1); }
     DocLoc nextRight() const { return DocLoc(m_row, m_col + 1); }
+
 private:
-    enum
-    {
-        kIsNull = 0,
-        kAfterLastRow = 1,
-        kAfterLastChar = 2,
-		kFlagCnt,
-    };
-private:
-    FlagSet<kFlagCnt> m_flag;
-    RowN m_row = 0;
     CharN m_col = 0;
 };
 

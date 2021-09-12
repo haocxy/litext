@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "doc/doc_loc.h"
 #include "editor/declare_editor.h"
 #include "page.h"
@@ -60,6 +62,8 @@ public:
     VCharLoc toCharLoc(i32 x, i32 y) const;
 
     VCharLoc toCharLoc(const DocLoc &docLoc) const;
+
+    DocRowLoc toDocRowLoc(const VRowLoc &vRowLoc) const;
 
 	DocLoc toDocLoc(const VCharLoc &vCharLoc) const;
 
