@@ -258,11 +258,13 @@ void MainWindow::fileMenuOpenActionTriggered()
 {
     const std::u32string userHome = SystemUtil::userHome().generic_u32string();
     const QString defaultDir = QString::fromStdU32String(userHome);
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Open Document"), defaultDir);
-    const fs::path path = fileName.toStdU16String();
+    const QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Document"), defaultDir);
 
-    if (!path.empty()) {
-        openDocument(path, 0);
+    for (const QString &fileName : fileNames) {
+        const fs::path path = fileName.toStdU16String();
+        if (!path.empty()) {
+            openDocument(path, 0);
+        }
     }
 }
 
