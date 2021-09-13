@@ -6,6 +6,7 @@
 #include "propdb.h"
 #include "init_info.h"
 #include "editor_manager.h"
+#include "obj_async_creator.h"
 #include "singleton_server.h"
 
 
@@ -52,6 +53,10 @@ public:
         return propDb_;
     }
 
+    ObjAsyncCreator &objAsyncCreator() {
+        return objAsyncCreator_;
+    }
+
     const EditorManager &editorManager() const {
         return editorManager_;
     }
@@ -73,6 +78,7 @@ private:
     Config config_;
     SingletonServer singletonServer_;
     PropDb propDb_;
+    ObjAsyncCreator objAsyncCreator_;
     EditorManager editorManager_;
 };
 

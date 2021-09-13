@@ -1,5 +1,6 @@
 #include "editor_stack_widget.h"
 
+#include "core/logger.h"
 #include "gui/engine.h"
 
 
@@ -9,6 +10,8 @@ namespace gui::qt
 EditorStackWidget::EditorStackWidget(Engine &engine, QWidget *parent)
     : QTabWidget(parent)
     , engine_(engine) {
+
+    qRegisterMetaType<GuiQtEditorCreatedInfo>("GuiQtEditorCreatedInfo");
 
     setTabsClosable(true);
     setMovable(true);
@@ -21,10 +24,15 @@ EditorStackWidget::EditorStackWidget(Engine &engine, QWidget *parent)
             closeDocByTabIndex(tabIndex);
         }
     });
+
+    connect(this, &EditorStackWidget::qtSigEditorCreated, this, &EditorStackWidget::qtSlotEditorCreated);
+
+    engine_.editorManager().registerReciver(this);
 }
 
 EditorStackWidget::~EditorStackWidget()
 {
+    engine_.editorManager().removeReciver(this);
 }
 
 void EditorStackWidget::openDoc(const fs::path &file, RowN row)
@@ -38,20 +46,13 @@ void EditorStackWidget::openDoc(const fs::path &file, RowN row)
         }
     }
 
-    sptr<Editor> editor = engine_.editorManager().get(absPath);
-    if (!editor) {
-        return;
-    }
-
-    EditorWidget *editorWidget = new EditorWidget(engine_.config().textAreaConfig(), editor, row);
-
-    addTab(editorWidget, QString::fromStdU32String(absPath.filename().generic_u32string()));
-
-    setCurrentWidget(editorWidget);
-
-    editors_[absPath].push_back(uptr<EditorWidget>(editorWidget));
-
-    editorWidget = nullptr;
+    engine_.editorManager().asyncGet(this, absPath, [this, absPath, row](std::shared_ptr<Editor> editor) {
+        GuiQtEditorCreatedInfo info;
+        info.editor = editor;
+        info.absPath = absPath;
+        info.row = row;
+        emit qtSigEditorCreated(info);
+    });
 }
 
 void EditorStackWidget::closeAllDoc()
@@ -71,6 +72,19 @@ void EditorStackWidget::closeDocByTabIndex(int tabIndex)
     removeTab(tabIndex);
     const fs::path absPath = fs::absolute(editorWidget->document().path());
     editors_.erase(absPath);
+}
+
+void EditorStackWidget::qtSlotEditorCreated(GuiQtEditorCreatedInfo info)
+{
+    EditorWidget *editorWidget = new EditorWidget(engine_.config().textAreaConfig(), info.editor, info.row);
+
+    addTab(editorWidget, QString::fromStdU32String(info.absPath.filename().generic_u32string()));
+
+    setCurrentWidget(editorWidget);
+
+    editors_[info.absPath].push_back(uptr<EditorWidget>(editorWidget));
+
+    editorWidget = nullptr;
 }
 
 }

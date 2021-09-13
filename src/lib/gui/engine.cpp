@@ -8,6 +8,7 @@ namespace gui
 {
 
 Engine::Engine()
+    : editorManager_(objAsyncCreator_)
 {
 }
 
