@@ -3,6 +3,7 @@
 #include <ctime>
 #include <chrono>
 #include <mutex>
+#include <shared_mutex>
 
 #include "basetype.h"
 
@@ -56,6 +57,82 @@ public:
 private:
     mutable std::mutex mtx_;
     std::chrono::time_point<std::chrono::steady_clock> beg_;
+};
+
+template <typename ChronoClock>
+class TimeUsage {
+public:
+    TimeUsage() {}
+
+    void start() {
+        WriteLock lock(mtx_);
+        if (state_ == State::NotStarted) {
+            startTime_ = ChronoClock::now();
+            state_ = State::Started;
+        } else {
+            throw std::logic_error("already started");
+        }
+    }
+
+    void stop() {
+        WriteLock lock(mtx_);
+        if (state_ == State::Started) {
+            stopTime_ = ChronoClock::now();
+            state_ = State::Stoped;
+        } else {
+            if (state_ == State::NotStarted) {
+                throw std::logic_error("not started");
+            }
+            if (state_ == State::Stoped) {
+                throw std::logic_error("already stopped");
+            }
+            throw std::logic_error("bad state");
+        }
+    }
+
+    i64 sec() const {
+        using Seconds = std::chrono::seconds;
+        if (state_ == State::Stoped) {
+            return std::chrono::duration_cast<Seconds>(stopTime_ - startTime_).count();
+        } else {
+            throwBadStateForRead(state_);
+        }
+    }
+
+    i64 ms() const {
+        using Ms = std::chrono::milliseconds;
+        if (state_ == State::Stoped) {
+            return std::chrono::duration_cast<Ms>(stopTime_ - startTime_).count();
+        } else {
+            throwBadStateForRead(state_);
+        }
+    }
+
+private:
+
+    enum class State {
+        NotStarted, Started, Stoped
+    };
+
+    static void throwBadStateForRead(State st) {
+        if (st == State::NotStarted) {
+            throw std::logic_error("not started and not stopped");
+        }
+        if (st == State::Started) {
+            throw std::logic_error("started but not stopped");
+        }
+        throw std::logic_error("bad state for read");
+    }
+
+private:
+    using Mtx = std::shared_mutex;
+    using ReadLock = std::shared_lock<Mtx>;
+    using WriteLock = std::lock_guard<Mtx>;
+
+    mutable Mtx mtx_;
+    State state_ = State::NotStarted;
+    typename ChronoClock::time_point startTime_;
+    typename ChronoClock::time_point stopTime_;
 };
 
 namespace TimeUtil

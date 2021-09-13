@@ -75,7 +75,7 @@ private:
     Signal<void()> sigAllLoaded_;
     Signal<void(RowN nrows)> sigRowCountUpdated_;
 
-    AtomicElapsedTime openTimeusage_;
+    TimeUsage<std::chrono::steady_clock> loadTimeUsage_;
 };
 
 }
