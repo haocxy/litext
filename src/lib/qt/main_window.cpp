@@ -151,7 +151,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
     u32str fontFile;
     i64 fontFace = 0;
-    if (false && propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
+    if (propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
         config_.textAreaConfig().setFontIndex(font::FontIndex(fontFile, fontFace));
         LOGI << "got font from prop db";
     } else {
