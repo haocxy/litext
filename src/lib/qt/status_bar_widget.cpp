@@ -77,15 +77,35 @@ void StatusBarWidget::paintEvent(QPaintEvent *e)
 {
 	QPainter p(this);
     p.drawLine(0, 0, width(), 0);
-	p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), content_);
+    if (errorMsg_.isEmpty()) {
+        p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), content_);
+    } else {
+        p.save();
+        p.fillRect(rect(), qRgb(205, 51, 51));
+        p.setPen(QPen(Qt::white));
+        p.drawText(kDoubleMargin, kMargin + fontMetrics().ascent(), errorMsg_);
+        p.restore();
+    }
 }
 
 static const QString partNameCharset = "Charset: ";
 
 static const QString sep = "  |  ";
 
+void StatusBarWidget::showErrorMsg(const QString &msg)
+{
+    errorMsg_.clear();
+    errorMsg_.append("OPEN FAILED");
+    errorMsg_.append(sep);
+    errorMsg_.append(msg);
+
+    update();
+}
+
 void StatusBarWidget::updateContent()
 {
+    errorMsg_.clear();
+
     content_.clear();
     if (!status_.isEmpty()) {
         content_.append(status_);

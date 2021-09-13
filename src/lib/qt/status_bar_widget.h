@@ -20,6 +20,8 @@ public:
 
 	virtual void paintEvent(QPaintEvent *e) override;
 
+    void showErrorMsg(const QString &msg);
+
 private:
     void updateContent();
 
@@ -36,6 +38,7 @@ private slots:
 
 private:
 	TextArea &textArea_;
+    QString errorMsg_;
     QString status_;
     QString charset_;
     QString filesize_;

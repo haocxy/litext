@@ -45,8 +45,9 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
 
     setLayout(vlayout);
 
+    connect(this, &EditorWidget::qtSigDocFatalError, this, &EditorWidget::handleDocFatalError);
     sigConns_ += document.sigFatalError().connect([this](doc::DocError err) {
-        emit qtSigDocFatalError(docErrToStr(err));
+        emit qtSigDocFatalError(static_cast<int>(err));
     });
 
     connect(this, &EditorWidget::qtSigUpdateScrollBarMaximum, vScrollBar_, &TextAreaScrollBar::setMaximum);
@@ -96,9 +97,18 @@ QString EditorWidget::docErrToStr(doc::DocError err) const
     switch (err) {
     case doc::DocError::RowTooBig:
         return tr("row too big");
+    case doc::DocError::UnsupportedCharset:
+        return tr("unsupported charset");
     default:
-        return QString();
+        return tr("unknown error");
     }
+}
+
+void EditorWidget::handleDocFatalError(int err)
+{
+    doc::DocError docError = static_cast<doc::DocError>(err);
+    const QString msg = docErrToStr(docError);
+    statusBar_->showErrorMsg(msg);
 }
 
 }

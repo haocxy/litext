@@ -11,6 +11,9 @@ enum class DocError {
 
     // 段落过长
     RowTooBig,
+
+    // 不支持的字符集
+    UnsupportedCharset,
 };
 
 }

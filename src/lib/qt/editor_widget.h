@@ -31,12 +31,14 @@ public:
     void jumpTo(RowN row);
 
 signals:
-    void qtSigDocFatalError(const QString &errmsg);
+    void qtSigDocFatalError(int err);
 
     void qtSigUpdateScrollBarMaximum(int maximum);
 
 private:
     QString docErrToStr(doc::DocError err) const;
+
+    void handleDocFatalError(int err);
 
 private:
     sptr<Editor> editor_;

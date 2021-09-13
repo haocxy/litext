@@ -137,6 +137,11 @@ void TextLoader::Reader::readAll()
         readBuff.resize(gcount);
 
         const Charset charset = self_.updateCharset(readBuff);
+        if (charset == Charset::Unknown) {
+            self_.sigFatalError_(DocError::UnsupportedCharset);
+            LOGE << title << "cannot detect supported charset in doc [" << docPath_ << "]";
+            return;
+        }
 
         if (!skipRow(charset, ifs, readBuff, SkipRowBytesLimit)) {
             self_.sigFatalError_(DocError::RowTooBig);
