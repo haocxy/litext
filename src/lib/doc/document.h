@@ -24,6 +24,8 @@ public:
 
     const fs::path &path() const;
 
+    i64 loadTimeUsageMs() const;
+
     void start();
 
     Signal<void(DocError)> &sigFatalError();

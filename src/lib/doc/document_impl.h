@@ -30,6 +30,10 @@ public:
         return path_;
     }
 
+    i64 loadTimeUsageMs() const {
+        return loadTimeUsage_.ms();
+    }
+
     void start();
 
     Signal<void(DocError)> &sigFatalError() {

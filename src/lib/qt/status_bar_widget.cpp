@@ -60,7 +60,7 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
     });
 
     sigConns_ += doc.sigAllLoaded().connect([this]{
-        emit qtSigUpdateStatus("All Loaded");
+        emit qtSigUpdateStatus(QString("Loaded by %1 ms").arg(textArea_.doc().loadTimeUsageMs()));
     });
 
     sigConns_ += doc.sigRowCountUpdated().connect([this](RowN rowCount) {

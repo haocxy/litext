@@ -24,6 +24,11 @@ const fs::path &Document::path() const
     return impl_->path();
 }
 
+i64 Document::loadTimeUsageMs() const
+{
+    return impl_->loadTimeUsageMs();
+}
+
 void Document::start()
 {
     impl_->start();
