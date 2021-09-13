@@ -1,13 +1,15 @@
 #include "editor_manager.h"
 
 #include "obj_async_creator.h"
+#include "obj_async_deleter.h"
 
 
 namespace gui
 {
 
-EditorManager::EditorManager(ObjAsyncCreator &objAsyncCreator)
+EditorManager::EditorManager(ObjAsyncCreator &objAsyncCreator, ObjAsyncDeleter &objAsyncDeleter)
     : objAsyncCreator_(objAsyncCreator)
+    , objAsyncDeleter_(objAsyncDeleter)
 {
 }
 
@@ -65,9 +67,11 @@ void EditorManager::removeReciver(void *objReceiver)
 }
 
 void EditorManager::deleteEditor(Editor *p) {
-    Lock lock(mtx_);
-    editors_.erase(p->document().path());
-    delete p;
+    {
+        Lock lock(mtx_);
+        editors_.erase(p->document().path());
+    }
+    objAsyncDeleter_.asyncDelete(p);
 }
 
 }

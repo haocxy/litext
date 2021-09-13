@@ -14,6 +14,7 @@ namespace gui
 {
 
 class ObjAsyncCreator;
+class ObjAsyncDeleter;
 
 
 // 统一管理为每个文档构造的Editor对象
@@ -25,7 +26,7 @@ class ObjAsyncCreator;
 // 
 class EditorManager {
 public:
-    EditorManager(ObjAsyncCreator &objAsyncCreator);
+    EditorManager(ObjAsyncCreator &objAsyncCreator, ObjAsyncDeleter &objAsyncDeleter);
 
     ~EditorManager();
 
@@ -43,6 +44,7 @@ private:
     using Lock = std::lock_guard<Mtx>;
     mutable Mtx mtx_;
     ObjAsyncCreator &objAsyncCreator_;
+    ObjAsyncDeleter &objAsyncDeleter_;
     std::map<fs::path, std::weak_ptr<Editor>> editors_;
     std::set<void *> objReceivers_;
 };

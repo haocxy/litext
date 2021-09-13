@@ -7,6 +7,7 @@
 #include "init_info.h"
 #include "editor_manager.h"
 #include "obj_async_creator.h"
+#include "obj_async_deleter.h"
 #include "singleton_server.h"
 
 
@@ -57,6 +58,10 @@ public:
         return objAsyncCreator_;
     }
 
+    ObjAsyncDeleter &objAsyncDeleter() {
+        return objAsyncDeleter_;
+    }
+
     const EditorManager &editorManager() const {
         return editorManager_;
     }
@@ -79,6 +84,7 @@ private:
     SingletonServer singletonServer_;
     PropDb propDb_;
     ObjAsyncCreator objAsyncCreator_;
+    ObjAsyncDeleter objAsyncDeleter_;
     EditorManager editorManager_;
 };
 
