@@ -107,7 +107,7 @@ void Application::initQtApp(const InitInfo &initInfo)
     // 在首个窗口创建前调用,虽然依然会卡顿,但不会导致窗口卡顿
     // 在窗口启动前卡顿,用户只会觉得启动事件稍长,是可以接收的效果
     // 但如果在窗口启动过程中卡顿,则窗口会有明显的一段时间没有内容,体验很差
-    useDrawTextForWindows();
+    //useDrawTextForWindows();
 }
 
 void Application::initSystemTray(const InitInfo &initInfo)
