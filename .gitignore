@@ -265,5 +265,6 @@ __pycache__/
 /third/freetype_wrapper/freetype/
 /third/qt6/
 
-asset.*.h
-asset.*.cpp
+/src/**/asset.*.h
+/src/**/asset.*.cpp
+/src/**/gen.*.h
