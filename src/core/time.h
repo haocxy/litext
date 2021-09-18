@@ -114,6 +114,7 @@ private:
         NotStarted, Started, Stoped
     };
 
+    [[noreturn]]
     static void throwBadStateForRead(State st) {
         if (st == State::NotStarted) {
             throw std::logic_error("not started and not stopped");
