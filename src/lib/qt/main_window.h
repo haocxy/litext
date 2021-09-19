@@ -52,6 +52,8 @@ private slots:
 
     void viewMenuGoLineActionTriggered();
 
+    void makeBigFileActionTriggered();
+
 private:
     Engine &engine_;
     Config &config_;

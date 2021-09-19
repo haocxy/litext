@@ -19,6 +19,7 @@
 
 #include "editor_widget.h"
 #include "text_area_widget.h"
+#include "big_file_generator_widget.h"
 
 
 namespace gui::qt
@@ -232,6 +233,9 @@ void MainWindow::initMenuBar()
 
     QMenu *viewMenu = bar->addMenu(tr("&View"));
     bind(viewMenu, tr("&GoLine"), &MainWindow::viewMenuGoLineActionTriggered);
+
+    QMenu *testToolMenu = bar->addMenu(tr("&TestTool"));
+    bind(testToolMenu, tr("&MakeBigFile"), &MainWindow::makeBigFileActionTriggered);
 }
 
 void MainWindow::initToolBar()
@@ -267,6 +271,13 @@ void MainWindow::viewMenuGoLineActionTriggered()
             curEditor->jumpTo(goToLineToRowOff(goToLine));
         }
     }
+}
+
+void MainWindow::makeBigFileActionTriggered()
+{
+    BigFileGeneratorWidget *w = new BigFileGeneratorWidget;
+    w->setAttribute(Qt::WA_DeleteOnClose);
+    w->show();
 }
 
 void MainWindow::openDocument(const fs::path &file, RowN row)

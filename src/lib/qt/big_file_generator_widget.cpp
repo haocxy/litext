@@ -8,7 +8,8 @@ namespace gui::qt
 {
 
 BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
-    : QWidget(parent) {
+    : QWidget(parent)
+    , ui_(new Ui::BigFileGenerator) {
 
     ui_->setupUi(this);
 }
