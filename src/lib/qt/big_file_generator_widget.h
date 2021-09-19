@@ -18,6 +18,11 @@ public:
     virtual ~BigFileGeneratorWidget();
 
 private:
+    void openFileChooserDialog();
+
+    void updateSizeSliderRangeLabels(int min, int max);
+
+private:
     Ui::BigFileGenerator *ui_ = nullptr;
 };
 
