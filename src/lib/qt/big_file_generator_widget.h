@@ -22,8 +22,6 @@ private:
 
     void updateCharsetComboBox();
 
-    void updateSizeSliderRangeLabels(int min, int max);
-
 private:
     Ui::BigFileGenerator *ui_ = nullptr;
 };

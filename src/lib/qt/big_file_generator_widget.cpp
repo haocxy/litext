@@ -22,9 +22,6 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
 
     connect(ui_->outputPathChooseButton, &QPushButton::clicked, this, &BigFileGeneratorWidget::openFileChooserDialog);
 
-    updateSizeSliderRangeLabels(ui_->sizeSlider->minimum(), ui_->sizeSlider->maximum());
-    connect(ui_->sizeSlider, &QSlider::rangeChanged, this, &BigFileGeneratorWidget::updateSizeSliderRangeLabels);
-
     updateCharsetComboBox();
     connect(ui_->onlyShowSupportedCharsetsCheckBox, &QCheckBox::stateChanged, this, [this](int state) {
         updateCharsetComboBox();
@@ -89,12 +86,6 @@ void BigFileGeneratorWidget::updateCharsetComboBox()
     if (charsetNameSet.find(defaultCharset) != charsetNameSet.end()) {
         ui_->charsetComboBox->setCurrentText(defaultCharset);
     }
-}
-
-void BigFileGeneratorWidget::updateSizeSliderRangeLabels(int min, int max)
-{
-    ui_->labelSizeSliderMin->setText(QString::number(min));
-    ui_->labelSizeSliderMax->setText(QString::number(max));
 }
 
 }
