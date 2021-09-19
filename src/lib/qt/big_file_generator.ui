@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>287</height>
+    <width>545</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,7 +46,7 @@
        <property name="flat">
         <bool>false</bool>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QComboBox" name="charsetComboBox">
           <property name="sizePolicy">
@@ -105,6 +105,43 @@
           </property>
           <property name="checked">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="layoutAreaRowSizeRange">
+       <property name="title">
+        <string>Row Size Range</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLineEdit" name="minRowSizeLineEdit">
+          <property name="text">
+           <string>30</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelTo">
+          <property name="text">
+           <string>to</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="maxRowSizeLineEdit">
+          <property name="text">
+           <string>60</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelComment">
+          <property name="text">
+           <string>(Unit: Char Count)</string>
           </property>
          </widget>
         </item>
