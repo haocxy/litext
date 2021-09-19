@@ -50,7 +50,7 @@ static void initCharsetComboBox(QComboBox *box)
     }
 }
 
-static QIntValidator *newCharCountValidator(QObject *parent)
+static QValidator *newCharCountValidator(QObject *parent)
 {
     QIntValidator *v = new QIntValidator(parent);
     v->setBottom(0);
@@ -68,6 +68,62 @@ static int repairCharCountInSingleRow(int value)
     }
 }
 
+static void repairRangeByMinEdit(QLineEdit &minEdit, QLineEdit &maxEdit)
+{
+    const QString text = minEdit.text();
+    const int min = text.toInt();
+    const int repairedMin = repairCharCountInSingleRow(min);
+    if (min != repairedMin) {
+        minEdit.setText(QString::number(repairedMin));
+    }
+    if (maxEdit.text().toInt() < repairedMin) {
+        maxEdit.setText(QString::number(repairedMin));
+    }
+}
+
+static void setupRangeRepairLogicForMinEdit(QLineEdit *minEdit, QLineEdit *maxEdit)
+{
+    QObject::connect(minEdit, &QLineEdit::editingFinished, minEdit, [minEdit, maxEdit] {
+        repairRangeByMinEdit(*minEdit, *maxEdit);
+    });
+}
+
+static void repairRangeByMaxEdit(QLineEdit &minEdit, QLineEdit &maxEdit)
+{
+    const QString text = maxEdit.text();
+    const int max = text.toInt();
+    const int repairedMax = repairCharCountInSingleRow(max);
+    if (max != repairedMax) {
+        maxEdit.setText(QString::number(repairedMax));
+    }
+    if (minEdit.text().toInt() > repairedMax) {
+        minEdit.setText(QString::number(repairedMax));
+    }
+}
+
+static void setupRangeRepairLogicForMaxEdit(QLineEdit *minEdit, QLineEdit *maxEdit)
+{
+    QObject::connect(maxEdit, &QLineEdit::editingFinished, maxEdit, [minEdit, maxEdit] {
+        repairRangeByMaxEdit(*minEdit, *maxEdit);
+    });
+}
+
+void BigFileGeneratorWidget::setupRangeRepairLogic()
+{
+    QLineEdit *minEdit = ui_->minRowSizeLineEdit;
+    QLineEdit *maxEdit = ui_->maxRowSizeLineEdit;
+    setupRangeRepairLogicForMinEdit(minEdit, maxEdit);
+    setupRangeRepairLogicForMaxEdit(minEdit, maxEdit);
+
+    connect(minEdit, &QLineEdit::textEdited, this, [this](const QString &) {
+        lastActRangeEditor_ = ui_->minRowSizeLineEdit;
+    });
+
+    connect(maxEdit, &QLineEdit::textEdited, this, [this](const QString &) {
+        lastActRangeEditor_ = ui_->maxRowSizeLineEdit;
+    });
+}
+
 BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     : QWidget(parent)
     , ui_(new Ui::BigFileGenerator) {
@@ -81,30 +137,8 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     ui_->sizeText->setValidator(new QDoubleValidator(this));
 
     ui_->minRowSizeLineEdit->setValidator(newCharCountValidator(this));
-    connect(ui_->minRowSizeLineEdit, &QLineEdit::editingFinished, this, [this] {
-        const QString text = ui_->minRowSizeLineEdit->text();
-        const int min = text.toInt();
-        const int repairedMin = repairCharCountInSingleRow(min);
-        if (min != repairedMin) {
-            ui_->minRowSizeLineEdit->setText(QString::number(repairedMin));
-        }
-        if (ui_->maxRowSizeLineEdit->text().toInt() < repairedMin) {
-            ui_->maxRowSizeLineEdit->setText(QString::number(repairedMin));
-        }
-    });
-
     ui_->maxRowSizeLineEdit->setValidator(newCharCountValidator(this));
-    connect(ui_->maxRowSizeLineEdit, &QLineEdit::editingFinished, this, [this] {
-        const QString text = ui_->maxRowSizeLineEdit->text();
-        const int max = text.toInt();
-        const int repairedMax = repairCharCountInSingleRow(max);
-        if (max != repairedMax) {
-            ui_->maxRowSizeLineEdit->setText(QString::number(repairedMax));
-        }
-        if (ui_->minRowSizeLineEdit->text().toInt() > repairedMax) {
-            ui_->minRowSizeLineEdit->setText(QString::number(repairedMax));
-        }
-    });
+    setupRangeRepairLogic();
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
@@ -115,6 +149,8 @@ BigFileGeneratorWidget::~BigFileGeneratorWidget()
 
 void BigFileGeneratorWidget::mousePressEvent(QMouseEvent *e)
 {
+    QWidget::mousePressEvent(e);
+
     setFocus();
 }
 

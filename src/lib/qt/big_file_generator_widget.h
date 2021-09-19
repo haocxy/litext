@@ -23,8 +23,11 @@ protected:
 private:
     void openFileChooserDialog();
 
+    void setupRangeRepairLogic();
+
 private:
     Ui::BigFileGenerator *ui_ = nullptr;
+    QWidget *lastActRangeEditor_ = nullptr;
 };
 
 }
