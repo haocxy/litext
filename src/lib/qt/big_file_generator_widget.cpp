@@ -34,6 +34,11 @@ BigFileGeneratorWidget::~BigFileGeneratorWidget()
     ui_ = nullptr;
 }
 
+void BigFileGeneratorWidget::mousePressEvent(QMouseEvent *e)
+{
+    setFocus();
+}
+
 void BigFileGeneratorWidget::openFileChooserDialog()
 {
     const std::u32string userHome = SystemUtil::userHome().generic_u32string();

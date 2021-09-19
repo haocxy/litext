@@ -17,6 +17,9 @@ public:
 
     virtual ~BigFileGeneratorWidget();
 
+protected:
+    virtual void mousePressEvent(QMouseEvent *e) override;
+
 private:
     void openFileChooserDialog();
 
