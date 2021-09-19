@@ -20,6 +20,8 @@ public:
 private:
     void openFileChooserDialog();
 
+    void updateCharsetComboBox();
+
     void updateSizeSliderRangeLabels(int min, int max);
 
 private:
