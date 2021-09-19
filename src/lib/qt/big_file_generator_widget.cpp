@@ -26,6 +26,8 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     connect(ui_->onlyShowSupportedCharsetsCheckBox, &QCheckBox::stateChanged, this, [this](int state) {
         updateCharsetComboBox();
     });
+
+    ui_->sizeText->setValidator(new QDoubleValidator(this));
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
