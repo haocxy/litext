@@ -14,6 +14,42 @@
 namespace gui::qt
 {
 
+static std::set<QString> getCharsetNames()
+{
+    std::set<QString> result;
+
+    for (const Charset charset : doc::gSupportedCharsets) {
+        if (charset != Charset::Ascii) {
+            result.insert(CharsetUtil::charsetToStr(charset));
+        }
+    }
+
+    return result;
+}
+
+static QStringList toQStringList(const std::set<QString> &charsetNames)
+{
+    QStringList result;
+    for (const QString &charsetName : charsetNames) {
+        result.push_back(charsetName);
+    }
+    return result;
+}
+
+static void initCharsetComboBox(QComboBox *box)
+{
+    const std::set<QString> charsetNameSet = getCharsetNames();
+
+    const QStringList charsetNameList = toQStringList(charsetNameSet);
+
+    box->addItems(charsetNameList);
+
+    const QString defaultCharset = "UTF-8";
+    if (charsetNameSet.find(defaultCharset) != charsetNameSet.end()) {
+        box->setCurrentText(defaultCharset);
+    }
+}
+
 BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     : QWidget(parent)
     , ui_(new Ui::BigFileGenerator) {
@@ -22,10 +58,7 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
 
     connect(ui_->outputPathChooseButton, &QPushButton::clicked, this, &BigFileGeneratorWidget::openFileChooserDialog);
 
-    updateCharsetComboBox();
-    connect(ui_->onlyShowSupportedCharsetsCheckBox, &QCheckBox::stateChanged, this, [this](int state) {
-        updateCharsetComboBox();
-    });
+    initCharsetComboBox(ui_->charsetComboBox);
 
     ui_->sizeText->setValidator(new QDoubleValidator(this));
 }
@@ -50,49 +83,6 @@ void BigFileGeneratorWidget::openFileChooserDialog()
     ui_->outputPathLineEdit->setText(outpath);
 }
 
-static std::set<QString> getCharsetNames(bool onlyShowSupportedCharsets)
-{
-    std::set<QString> result;
 
-    if (onlyShowSupportedCharsets) {
-        for (const Charset charset : doc::gSupportedCharsets) {
-            result.insert(CharsetUtil::charsetToStr(charset));
-        }
-    } else {
-        const QByteArrayList codecByteArrays = QTextCodec::availableCodecs();
-        for (const QByteArray &codecByteArray : codecByteArrays) {
-            result.insert(codecByteArray);
-        }
-    }
-
-    result.erase("ASCII");
-
-    return result;
-}
-
-static QStringList toQStringList(const std::set<QString> &charsetNames)
-{
-    QStringList result;
-    for (const QString &charsetName : charsetNames) {
-        result.push_back(charsetName);
-    }
-    return result;
-}
-
-void BigFileGeneratorWidget::updateCharsetComboBox()
-{
-    ui_->charsetComboBox->clear();
-
-    const std::set<QString> charsetNameSet = getCharsetNames(ui_->onlyShowSupportedCharsetsCheckBox->isChecked());
-
-    const QStringList charsetNameList = toQStringList(charsetNameSet);
-
-    ui_->charsetComboBox->addItems(charsetNameList);
-
-    const QString defaultCharset = "UTF-8";
-    if (charsetNameSet.find(defaultCharset) != charsetNameSet.end()) {
-        ui_->charsetComboBox->setCurrentText(defaultCharset);
-    }
-}
 
 }

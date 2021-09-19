@@ -23,8 +23,6 @@ protected:
 private:
     void openFileChooserDialog();
 
-    void updateCharsetComboBox();
-
 private:
     Ui::BigFileGenerator *ui_ = nullptr;
 };
