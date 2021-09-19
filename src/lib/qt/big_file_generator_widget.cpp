@@ -1,5 +1,7 @@
 #include "big_file_generator_widget.h"
 
+#include <set>
+
 #include <QFileDialog>
 #include <QTextCodec>
 
@@ -44,25 +46,47 @@ void BigFileGeneratorWidget::openFileChooserDialog()
     ui_->outputPathLineEdit->setText(outpath);
 }
 
+static std::set<QString> getCharsetNames(bool onlyShowSupportedCharsets)
+{
+    std::set<QString> result;
+
+    if (onlyShowSupportedCharsets) {
+        for (const Charset charset : doc::gSupportedCharsets) {
+            result.insert(CharsetUtil::charsetToStr(charset));
+        }
+    } else {
+        const QByteArrayList codecByteArrays = QTextCodec::availableCodecs();
+        for (const QByteArray &codecByteArray : codecByteArrays) {
+            result.insert(codecByteArray);
+        }
+    }
+
+    result.erase("ASCII");
+
+    return result;
+}
+
+static QStringList toQStringList(const std::set<QString> &charsetNames)
+{
+    QStringList result;
+    for (const QString &charsetName : charsetNames) {
+        result.push_back(charsetName);
+    }
+    return result;
+}
+
 void BigFileGeneratorWidget::updateCharsetComboBox()
 {
     ui_->charsetComboBox->clear();
 
-    if (ui_->onlyShowSupportedCharsetsCheckBox->isChecked()) {
-        for (const Charset charset : doc::gSupportedCharsets) {
-            ui_->charsetComboBox->addItem(CharsetUtil::charsetToStr(charset));
-        }
-        const Charset defaultCharset = Charset::UTF_8;
-        if (doc::gSupportedCharsets.find(defaultCharset) != doc::gSupportedCharsets.end()) {
-            ui_->charsetComboBox->setCurrentText(CharsetUtil::charsetToStr(defaultCharset));
-        }
-    } else {
-        const QByteArrayList codecs = QTextCodec::availableCodecs();
-        for (const QByteArray &codec : codecs) {
-            QString name = codec.fromRawData(codec.constData(), codec.size());
-            ui_->charsetComboBox->addItem(name);
-        }
-        const QString defaultCharset = "UTF-8";
+    const std::set<QString> charsetNameSet = getCharsetNames(ui_->onlyShowSupportedCharsetsCheckBox->isChecked());
+
+    const QStringList charsetNameList = toQStringList(charsetNameSet);
+
+    ui_->charsetComboBox->addItems(charsetNameList);
+
+    const QString defaultCharset = "UTF-8";
+    if (charsetNameSet.find(defaultCharset) != charsetNameSet.end()) {
         ui_->charsetComboBox->setCurrentText(defaultCharset);
     }
 }
