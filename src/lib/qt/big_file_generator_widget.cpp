@@ -50,6 +50,24 @@ static void initCharsetComboBox(QComboBox *box)
     }
 }
 
+static QIntValidator *newCharCountValidator(QObject *parent)
+{
+    QIntValidator *v = new QIntValidator(parent);
+    v->setBottom(0);
+    return v;
+}
+
+static const int kMinCharCountInSingleRow = 1;
+
+static int repairCharCountInSingleRow(int value)
+{
+    if (value >= kMinCharCountInSingleRow) {
+        return value;
+    } else {
+        return kMinCharCountInSingleRow;
+    }
+}
+
 BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     : QWidget(parent)
     , ui_(new Ui::BigFileGenerator) {
@@ -61,6 +79,32 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     initCharsetComboBox(ui_->charsetComboBox);
 
     ui_->sizeText->setValidator(new QDoubleValidator(this));
+
+    ui_->minRowSizeLineEdit->setValidator(newCharCountValidator(this));
+    connect(ui_->minRowSizeLineEdit, &QLineEdit::editingFinished, this, [this] {
+        const QString text = ui_->minRowSizeLineEdit->text();
+        const int min = text.toInt();
+        const int repairedMin = repairCharCountInSingleRow(min);
+        if (min != repairedMin) {
+            ui_->minRowSizeLineEdit->setText(QString::number(repairedMin));
+        }
+        if (ui_->maxRowSizeLineEdit->text().toInt() < repairedMin) {
+            ui_->maxRowSizeLineEdit->setText(QString::number(repairedMin));
+        }
+    });
+
+    ui_->maxRowSizeLineEdit->setValidator(newCharCountValidator(this));
+    connect(ui_->maxRowSizeLineEdit, &QLineEdit::editingFinished, this, [this] {
+        const QString text = ui_->maxRowSizeLineEdit->text();
+        const int max = text.toInt();
+        const int repairedMax = repairCharCountInSingleRow(max);
+        if (max != repairedMax) {
+            ui_->maxRowSizeLineEdit->setText(QString::number(repairedMax));
+        }
+        if (ui_->minRowSizeLineEdit->text().toInt() > repairedMax) {
+            ui_->minRowSizeLineEdit->setText(QString::number(repairedMax));
+        }
+    });
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
