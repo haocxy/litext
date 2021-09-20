@@ -154,6 +154,12 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
         ui_->executeButton->setEnabled(true);
         ui_->progressBar->setValue(100);
     });
+
+    connect(this, &BigFileGeneratorWidget::generateError, this, [this] (const QString &msg) {
+        error(msg);
+        generator_ = nullptr;
+        ui_->executeButton->setEnabled(true);
+    });
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
@@ -204,6 +210,7 @@ void BigFileGeneratorWidget::executeTriggered()
 
     ui_->executeButton->setEnabled(false);
     ui_->progressBar->setValue(0);
+    setFocus();
 
     GenerateParam param;
     param.path = *outputPath;
@@ -388,6 +395,8 @@ void BigFileGeneratorWidget::Generator::generate()
 {
     std::srand(std::time(nullptr));
 
+    prepareCharPool();
+
     for (int i = 1; i <= 99; ++i) {
         if (stopping_) {
             return; // 提前结束时不报告进度,直接以当前状态结束
@@ -398,6 +407,35 @@ void BigFileGeneratorWidget::Generator::generate()
 
     emit gui_.generateProgress(100);
     emit gui_.generateDone();
+}
+
+void BigFileGeneratorWidget::Generator::prepareCharPool()
+{
+    QFile qfile(":/char_pool/chinese.txt");
+    qfile.open(QIODevice::ReadOnly);
+
+    QByteArray qbytes = qfile.readAll();
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    if (!codec) {
+        emit gui_.generateError(tr("Cannot make codec for UTF-8"));
+        return;
+    }
+
+    uptr<QTextDecoder> decoder(codec->makeDecoder());
+    if (!decoder) {
+        emit gui_.generateError(tr("Cannot make decoder for UTF-8"));
+        return;
+    }
+
+    QString qstr = decoder->toUnicode(qbytes);
+    std::u32string u32s = qstr.toStdU32String();
+
+    for (char32_t c : u32s) {
+        if (c != '\r' && c != '\n') {
+            charPool_.push_back(c);
+        }
+    }
 }
 
 }

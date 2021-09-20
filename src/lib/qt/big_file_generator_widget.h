@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <vector>
 #include <optional>
 
 #include <QWidget>
@@ -33,6 +34,8 @@ signals:
     void generateProgress(int percent);
 
     void generateDone();
+
+    void generateError(const QString &msg);
 
 private:
     void openFileChooserDialog();
@@ -74,11 +77,16 @@ private:
     private:
         void generate();
 
+        void prepareCharPool();
+
     private:
         BigFileGeneratorWidget &gui_;
         GenerateParam param_;
         std::atomic_bool stopping_;
         std::thread thread_;
+
+    private:
+        std::vector<char32_t> charPool_;
     };
 
 private:
