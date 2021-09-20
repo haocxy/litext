@@ -82,6 +82,14 @@ private:
 
         void prepareCharPool();
 
+        std::u32string randRow(i64 rowIndex);
+
+        i64 randRowSize();
+
+        i64 randChar();
+
+        std::u32string mkRowNumLabel(i64 rowIndex);
+
     private:
         BigFileGeneratorWidget &gui_;
         GenerateParam param_;

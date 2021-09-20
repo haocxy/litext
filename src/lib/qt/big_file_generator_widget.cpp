@@ -4,6 +4,7 @@
 
 #include <set>
 #include <fstream>
+#include <sstream>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -62,6 +63,9 @@ static QValidator *newCharCountValidator(QObject *parent)
 }
 
 static const int kMinCharCountInSingleRow = 1;
+
+static const int kDefaultCharCountInSingleRow = 100;
+
 
 static int repairCharCountInSingleRow(int value)
 {
@@ -400,12 +404,47 @@ void BigFileGeneratorWidget::Generator::generate()
 
     prepareCharPool();
 
-    for (int i = 1; i <= 99; ++i) {
+    std::ofstream ofs(param_.path, std::ios::binary);
+    if (!ofs) {
+        emit gui_.generateError(
+            tr("Cannot open file [ %1 ] for write.")
+            .arg(QString::fromStdU32String(param_.path.generic_u32string())));
+
+        return;
+    }
+
+    QTextCodec *outCodec = QTextCodec::codecForName(param_.charset.toStdString().c_str());
+    if (!outCodec) {
+        emit gui_.generateError(tr("Cannot make codec for charset [ %1 ].").arg(param_.charset));
+        return;
+    }
+
+    uptr<QTextEncoder> outEncoder(outCodec->makeEncoder());
+    if (!outEncoder) {
+        emit gui_.generateError(tr("Cannot make encoder for charset [ %1 ].").arg(param_.charset));
+        return;
+    }
+
+    int prevPercent = 0;
+
+    for (i64 rowIndex = 0; ; ++rowIndex) {
+        const i64 written = ofs.tellp();
+        if (written >= param_.filesize) {
+            break;
+        }
         if (stopping_) {
             return; // 提前结束时不报告进度,直接以当前状态结束
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        emit gui_.generateProgress(i);
+
+        const std::u32string row = randRow(rowIndex);
+        QByteArray qbytes = outEncoder->fromUnicode(QString::fromStdU32String(row));
+        ofs.write(qbytes.constData(), qbytes.size());
+
+        const int percent = static_cast<int>(written * 100 / param_.filesize);
+        if (percent > prevPercent) {
+            emit gui_.generateProgress(percent);
+        }
+        prevPercent = percent;
     }
 
     emit gui_.generateProgress(100);
@@ -439,6 +478,61 @@ void BigFileGeneratorWidget::Generator::prepareCharPool()
             charPool_.push_back(c);
         }
     }
+}
+
+static const std::u32string kRowEndStr = U"\r\n";
+
+std::u32string BigFileGeneratorWidget::Generator::randRow(i64 rowIndex)
+{
+    std::u32string result;
+
+    const i64 rowSize = randRowSize();
+
+    result.reserve(rowSize + kRowEndStr.size());
+
+    for (i64 i = 0; i < rowSize; ++i) {
+        result.push_back(randChar());
+    }
+
+    result.append(mkRowNumLabel(rowIndex));
+    result.append(kRowEndStr);
+
+    return result;
+}
+
+i64 BigFileGeneratorWidget::Generator::randRowSize()
+{
+
+    const i64 left = param_.rowSizeRange.left();
+    const i64 right = param_.rowSizeRange.right();
+
+    //    [left, right]
+    // => left + [0, right - left]
+    // => left + rand() % (right - left + 1)
+
+    if (kMinCharCountInSingleRow <= left && left <= right) {
+        return left + std::rand() % (right - left + 1);
+    } else {
+        return kDefaultCharCountInSingleRow;
+    }
+}
+
+i64 BigFileGeneratorWidget::Generator::randChar()
+{
+    return charPool_[rand() % charPool_.size()];
+}
+
+std::u32string BigFileGeneratorWidget::Generator::mkRowNumLabel(i64 rowIndex)
+{
+    std::ostringstream ss;
+    ss << "[" << (rowIndex + 1) << "]";
+
+    std::u32string result;
+    for (char c : ss.str()) {
+        result.push_back(c);
+    }
+
+    return result;
 }
 
 }
