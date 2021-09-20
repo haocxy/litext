@@ -1,5 +1,7 @@
 #include "big_file_generator_widget.h"
 
+#include <cstdlib>
+
 #include <set>
 
 #include <QFileDialog>
@@ -141,14 +143,20 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
     ui_->maxRowSizeLineEdit->setValidator(newCharCountValidator(this));
 
     connect(ui_->executeButton, &QPushButton::clicked, this, &BigFileGeneratorWidget::executeTriggered);
+
+    connect(this, &BigFileGeneratorWidget::generateProgress, this, [this](int percent) {
+        ui_->progressBar->setValue(percent);
+    });
+
+    connect(this, &BigFileGeneratorWidget::generateDone, this, [this] {
+        generator_ = nullptr;
+        ui_->executeButton->setEnabled(true);
+        ui_->progressBar->setValue(100);
+    });
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
 {
-    if (generateThread_.joinable()) {
-        generateThread_.join();
-    }
-
     delete ui_;
     ui_ = nullptr;
 }
@@ -191,7 +199,18 @@ void BigFileGeneratorWidget::executeTriggered()
         return;
     }
 
+    ui_->executeButton->setEnabled(false);
+    ui_->progressBar->setValue(0);
 
+    GenerateParam param;
+    param.path = *outputPath;
+    param.charset = *outputCharset;
+    param.filesize = *outputFileSize;
+    param.rowSizeRange = *outputRowSizeRange;
+
+    generator_ = std::make_unique<Generator>(*this, param);
+
+    generator_->start();
 }
 
 bool BigFileGeneratorWidget::confirm(const QString &text)
@@ -334,6 +353,37 @@ std::optional<BigFileGeneratorWidget::RowSizeRange> BigFileGeneratorWidget::getR
     }
 
     return RowSizeRange::byLeftAndRight(min, max);
+}
+
+BigFileGeneratorWidget::Generator::Generator(BigFileGeneratorWidget &gui, const GenerateParam &param)
+    : gui_(gui)
+    , param_(param) {}
+
+BigFileGeneratorWidget::Generator::~Generator()
+{
+    if (thread_.joinable()) {
+        thread_.join();
+    }
+}
+
+void BigFileGeneratorWidget::Generator::start()
+{
+    thread_ = std::thread([this] {
+        generate();
+    });
+}
+
+void BigFileGeneratorWidget::Generator::generate()
+{
+    std::srand(std::time(nullptr));
+
+    for (int i = 1; i <= 99; ++i) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        emit gui_.generateProgress(i);
+    }
+
+    emit gui_.generateProgress(100);
+    emit gui_.generateDone();
 }
 
 }

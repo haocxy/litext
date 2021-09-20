@@ -29,6 +29,12 @@ protected:
     virtual void mousePressEvent(QMouseEvent *e) override;
 
 private:
+signals:
+    void generateProgress(int percent);
+
+    void generateDone();
+
+private:
     void openFileChooserDialog();
 
     void setupRangeRepairLogic();
@@ -50,10 +56,34 @@ private:
     using RowSizeRange = Range<i64>;
     std::optional<RowSizeRange> getRowSizeRange();
 
+    struct GenerateParam {
+        fs::path path;
+        QString charset;
+        i64 filesize;
+        RowSizeRange rowSizeRange;
+    };
+
+    class Generator {
+    public:
+        Generator(BigFileGeneratorWidget &gui, const GenerateParam &param);
+
+        ~Generator();
+
+        void start();
+
+    private:
+        void generate();
+
+    private:
+        BigFileGeneratorWidget &gui_;
+        GenerateParam param_;
+        std::thread thread_;
+    };
+
 private:
     Ui::BigFileGenerator *ui_ = nullptr;
     QWidget *lastActRangeEditor_ = nullptr;
-    std::thread generateThread_;
+    uptr<Generator> generator_;
 };
 
 }
