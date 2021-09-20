@@ -1,5 +1,6 @@
 <RCC>
     <qresource>
         <file alias="tray_icon.ico">assets/icon.ico</file>
+        <file alias="common_chinese_characters.txt">assets/common_chinese_characters.txt</file>
     </qresource>
 </RCC>

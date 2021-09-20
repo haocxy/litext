@@ -3,6 +3,7 @@
 #include <set>
 
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QTextCodec>
 
 #include "core/system.h"
@@ -134,14 +135,20 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
 
     initCharsetComboBox(ui_->charsetComboBox);
 
-    ui_->sizeText->setValidator(new QDoubleValidator(this));
+    ui_->fileSizeText->setValidator(new QDoubleValidator(this));
 
     ui_->minRowSizeLineEdit->setValidator(newCharCountValidator(this));
     ui_->maxRowSizeLineEdit->setValidator(newCharCountValidator(this));
+
+    connect(ui_->executeButton, &QPushButton::clicked, this, &BigFileGeneratorWidget::executeTriggered);
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
 {
+    if (generateThread_.joinable()) {
+        generateThread_.join();
+    }
+
     delete ui_;
     ui_ = nullptr;
 }
@@ -162,6 +169,171 @@ void BigFileGeneratorWidget::openFileChooserDialog()
     ui_->outputPathLineEdit->setText(outpath);
 }
 
+void BigFileGeneratorWidget::executeTriggered()
+{
+    const std::optional<fs::path> outputPath = getOutputPath();
+    if (!outputPath) {
+        return;
+    }
 
+    const std::optional<QString> outputCharset = getOutputCharset();
+    if (!outputCharset) {
+        return;
+    }
+
+    const std::optional<i64> outputFileSize = getOutputFileSize();
+    if (!outputFileSize) {
+        return;
+    }
+
+    const std::optional<RowSizeRange> outputRowSizeRange = getRowSizeRange();
+    if (!outputRowSizeRange) {
+        return;
+    }
+
+
+}
+
+bool BigFileGeneratorWidget::confirm(const QString &text)
+{
+    const QMessageBox::StandardButtons buttons =
+        QMessageBox::Ok | QMessageBox::Cancel;
+
+    QMessageBox::StandardButton result = QMessageBox::warning(
+        this, windowTitle(), text, buttons
+    );
+
+    switch (result) {
+    case QMessageBox::Ok:
+        return true;
+    default:
+        return false;
+    }
+}
+
+void BigFileGeneratorWidget::error(const QString &text)
+{
+    QMessageBox::critical(
+        this, windowTitle(), text, QMessageBox::Ok
+    );
+}
+
+bool BigFileGeneratorWidget::confirmContinue(const QString &text)
+{
+    const QString newLine = tr("\n");
+    QString confirmText;
+    confirmText += tr("Warning! ");
+    confirmText += newLine;
+    confirmText += newLine;
+    confirmText += text;
+    confirmText += newLine;
+    confirmText += newLine;
+    confirmText += tr("Your confirm is needed.");
+    return confirm(confirmText);
+}
+
+std::optional<fs::path> BigFileGeneratorWidget::getOutputPath()
+{
+    const QString qpath = ui_->outputPathLineEdit->text();
+    if (qpath.isEmpty()) {
+        error(tr("Please specify an output file."));
+        return std::nullopt;
+    }
+
+    const fs::path path = fs::absolute(qpath.toStdU32String());
+
+    if (!fs::exists(path)) {
+        return path;
+    }
+
+    if (!confirmContinue(tr("Output file [ %1 ] already existed.\nIt's content will be deleted if you confirm.").arg(qpath))) {
+        return std::nullopt;
+    }
+    if (fs::is_directory(path)) {
+        error(tr("Output file [%1] is a directory").arg(qpath));
+        return std::nullopt;
+    }
+    if (!fs::is_regular_file(path)) {
+        error(tr("Output file [ %1 ] is not a regular file.").arg(qpath));
+        return std::nullopt;
+    }
+
+    return path;
+}
+
+std::optional<QString> BigFileGeneratorWidget::getOutputCharset()
+{
+    return ui_->charsetComboBox->currentText();
+}
+
+std::optional<i64> BigFileGeneratorWidget::getOutputFileSize()
+{
+    const QString sizeText = ui_->fileSizeText->text();
+    if (sizeText.isEmpty()) {
+        error(tr("Please specify the size of output file."));
+        return std::nullopt;
+    }
+
+    const bool gbChecked = ui_->fileSizeUnitGbButton->isChecked();
+    const bool mbChecked = ui_->fileSizeUnitMbButton->isChecked();
+
+    if (gbChecked && mbChecked) {
+        error(tr("Please check only one unit: [GB] or [MB]."));
+        return std::nullopt;
+    }
+
+    if (!gbChecked && !mbChecked) {
+        error(tr("Please check unit."));
+        return std::nullopt;
+    }
+
+    double num = sizeText.toDouble();
+
+    constexpr double KB = 1024;
+    constexpr double MB = 1024 * KB;
+    constexpr double GB = 1024 * MB;
+
+    if (gbChecked) {
+        return num * GB;
+    } else if (mbChecked) {
+        return num * MB;
+    } else {
+        return std::nullopt;
+    }
+}
+
+std::optional<BigFileGeneratorWidget::RowSizeRange> BigFileGeneratorWidget::getRowSizeRange()
+{
+    const QString minText = ui_->minRowSizeLineEdit->text();
+    if (minText.isEmpty()) {
+        error(tr("Please specify minimum value for row size"));
+        return std::nullopt;
+    }
+
+    const i64 min = minText.toInt();
+    if (min < kMinCharCountInSingleRow) {
+        error(tr("Values of row size should be at least %1").arg(kMinCharCountInSingleRow));
+        return std::nullopt;
+    }
+
+    const QString maxText = ui_->maxRowSizeLineEdit->text();
+    if (maxText.isEmpty()) {
+        error(tr("Please specify maximum value for row size"));
+        return std::nullopt;
+    }
+
+    const i64 max = maxText.toInt();
+    if (max < kMinCharCountInSingleRow) {
+        error(tr("Values of row size should be at least %1").arg(kMinCharCountInSingleRow));
+        return std::nullopt;
+    }
+
+    if (min > max) {
+        error(tr("Minimum value of row size should not be greater than maximum value"));
+        return std::nullopt;
+    }
+
+    return RowSizeRange::byLeftAndRight(min, max);
+}
 
 }
