@@ -17,8 +17,8 @@ ObjAsyncDeleter::~ObjAsyncDeleter()
 
     // 不要 调用 stop !!!
     // 已经入队的元素应该确保被删除
-    // 放入空指针做为哨兵元素表示不会有更多的元素
-    deleterQueue_.push(nullptr);
+    // 放入无效对象做为哨兵元素表示不会有更多的元素
+    deleteTasks_.push(std::function<void()>());
 
     worker_.join();
 }
@@ -26,13 +26,13 @@ ObjAsyncDeleter::~ObjAsyncDeleter()
 void ObjAsyncDeleter::loop()
 {
     while (true) {
-        std::optional<std::unique_ptr<Deleter>> deleterOpt = deleterQueue_.pop();
-        if (deleterOpt) {
-            std::unique_ptr<Deleter> &deleterPtr = *deleterOpt;
-            if (deleterPtr) {
-                deleterPtr->doDelete();
+        std::optional<std::function<void()>> taskOpt = deleteTasks_.pop();
+        if (taskOpt) {
+            std::function<void()> &task = *taskOpt;
+            if (task) {
+                task();
             } else {
-                // 空指针由析构函数放入,表示不再有更多元素
+                // 无效对象由析构函数放入,表示不再有更多元素
                 break;
             }
         }

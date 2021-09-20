@@ -9,33 +9,14 @@
 namespace doc
 {
 
-DocumentImpl::DocumentImpl(const fs::path &path)
-    : path_(path)
+DocumentImpl::DocumentImpl(AsyncDeleter &asyncDeleter, const fs::path &path)
+    : asyncDeleter_(asyncDeleter)
+    , path_(path)
     , textRepo_(dbfiles::docPathToDbPath(path))
-    , loader_(path)
     , lineManager_(textRepo_)
     , rowCache_(lineManager_, path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
-
-    loadSigConns_ += loader_.sigPartLoaded().connect([this](const DocPart &part) {
-        lineManager_.addDocPart(part);
-    });
-
-    loadSigConns_ += loader_.sigFatalError().connect([this](DocError e) {
-        sigFatalError_(e);
-    });
-
-    loadSigConns_ += loader_.sigFileSizeDetected().connect([this](i64 fileSize) {
-        fileSize_ = fileSize;
-        sigFileSizeDetected_(fileSize);
-    });
-
-    loadSigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
-        charset_ = charset;
-        rowCache_.updateCharset(charset);
-        sigCharsetDetected_(charset);
-    });
 
     lineSigConns_ += lineManager_.sigRowCountUpdated().connect([this](RowN nrows) {
         sigRowCountUpdated_(nrows);
@@ -48,6 +29,8 @@ DocumentImpl::DocumentImpl(const fs::path &path)
             const i64 usageMs = loadTimeUsage_.ms();
             LOGI << "Document [" << path_ << "] loaded by [" << usageMs << " ms]";
             sigAllLoaded_();
+
+            deleteLoader();
         }
     });
 
@@ -56,6 +39,10 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 
 DocumentImpl::~DocumentImpl()
 {
+    loadSigConns_.clear();
+    lineSigConns_.clear();
+    loader_ = nullptr;
+
     LOGD << "Document::~Document(), path: [" << path_ << "]";
 }
 
@@ -63,9 +50,15 @@ void DocumentImpl::start()
 {
     LOGI << "Document start load [" << path_ << "]";
 
+    deleteLoader();
+
+    loader_ = std::make_unique<TextLoader>(path_);
+
+    bindLoadSignals(loadSigConns_, *loader_);
+
     loadTimeUsage_.start();
 
-    loader_.loadAll();
+    loader_->loadAll();
 }
 
 sptr<Row> DocumentImpl::rowAt(RowN row) const
@@ -83,6 +76,38 @@ std::map<RowN, sptr<Row>> DocumentImpl::rowsAt(const RowRange &range) const
 {
     std::map<RowN, RowIndex> indexes = lineManager_.findRange(range);
     return rowCache_.loadRows(indexes);
+}
+
+void DocumentImpl::bindLoadSignals(SigConns &conns, TextLoader &loader)
+{
+    conns += loader.sigPartLoaded().connect([this](const DocPart &part) {
+        lineManager_.addDocPart(part);
+    });
+
+    conns += loader.sigFatalError().connect([this](DocError e) {
+        sigFatalError_(e);
+    });
+
+    conns += loader.sigFileSizeDetected().connect([this](i64 fileSize) {
+        fileSize_ = fileSize;
+        sigFileSizeDetected_(fileSize);
+    });
+
+    conns += loader.sigCharsetDetected().connect([this](Charset charset) {
+        charset_ = charset;
+        rowCache_.updateCharset(charset);
+        sigCharsetDetected_(charset);
+    });
+}
+
+void DocumentImpl::deleteLoader()
+{
+    if (loader_) {
+        loadSigConns_.clear();
+        TextLoader *loader = loader_.release();
+        asyncDeleter_.asyncDelete([loader] { delete loader; });
+        loader = nullptr;
+    }
 }
 
 }

@@ -5,56 +5,21 @@
 #include <memory>
 
 #include "core/thread.h"
+#include "core/async_deleter.h"
 
 
 namespace gui
 {
 
-class ObjAsyncDeleter {
-private:
-
-    class Deleter {
-    public:
-        virtual ~Deleter() {}
-
-        virtual void doDelete() = 0;
-    };
-
-    template <typename T>
-    class DeleterImpl : public Deleter {
-    public:
-        DeleterImpl(T *obj)
-            : obj_(obj) {}
-
-        virtual ~DeleterImpl() {
-            if (obj_) {
-                delete obj_;
-                obj_ = nullptr;
-            }
-        }
-
-        virtual void doDelete() override {
-            if (obj_) {
-                delete obj_;
-                obj_ = nullptr;
-            }
-        }
-
-    private:
-        T *obj_ = nullptr;
-    };
-
+class ObjAsyncDeleter : public AsyncDeleter {
 public:
     ObjAsyncDeleter();
 
-    ~ObjAsyncDeleter();
+    virtual ~ObjAsyncDeleter();
 
-    template <typename T>
-    void asyncDelete(T *obj) {
+    virtual void asyncDelete(std::function<void()> &&deleteTask) override {
         if (!destructing_) {
-            if (obj) {
-                deleterQueue_.push(std::make_unique<DeleterImpl<T>>(obj));
-            }
+            deleteTasks_.push(std::move(deleteTask));
         } else {
             // destructing_ 由析构函数置为 true, 显然在析构函数后就不应该继续使用了, 这是个BUG
             throw std::logic_error("ObjAsyncDeleter already destructed, logic has bug");
@@ -73,7 +38,7 @@ private:
     // 因为在正常逻辑中析构逻辑的结束是必须的
     std::thread worker_;
 
-    BlockQueue<std::unique_ptr<Deleter>> deleterQueue_;
+    TaskQueue<void()> deleteTasks_;
 };
 
 }

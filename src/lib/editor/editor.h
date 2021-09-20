@@ -13,7 +13,7 @@ class Editor
 {
 public:
 
-    Editor(const fs::path &file);
+    Editor(AsyncDeleter *asyncDeleter, const fs::path &file);
 
     void start();
 

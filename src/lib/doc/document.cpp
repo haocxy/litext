@@ -8,8 +8,8 @@ namespace doc
 
 
 
-Document::Document(const fs::path &file)
-    : impl_(new DocumentImpl(file))
+Document::Document(AsyncDeleter &asyncDeleter, const fs::path &file)
+    : impl_(new DocumentImpl(asyncDeleter, file))
 {
 }
 

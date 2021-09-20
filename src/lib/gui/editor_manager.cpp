@@ -32,7 +32,7 @@ void EditorManager::asyncGet(void *objReceiver, const fs::path &file, std::funct
         return;
     }
 
-    objAsyncCreator_.asyncCreate<Editor, fs::path>(absPath, [this, objReceiver, absPath, cb] (Editor *p) {
+    objAsyncCreator_.asyncCreate<Editor, AsyncDeleter *, fs::path>(&objAsyncDeleter_, absPath, [this, objReceiver, absPath, cb] (Editor *p) {
 
         std::shared_ptr<Editor> editor;
 
@@ -71,7 +71,8 @@ void EditorManager::deleteEditor(Editor *p) {
         Lock lock(mtx_);
         editors_.erase(p->document().path());
     }
-    objAsyncDeleter_.asyncDelete(p);
+    objAsyncDeleter_.asyncDelete([p] { delete p; });
+    p = nullptr;
 }
 
 }

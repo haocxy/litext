@@ -3,9 +3,8 @@
 #include "doc/doc_row.h"
 
 
-Editor::Editor(const fs::path &file)
-    : document_(file)
-{}
+Editor::Editor(AsyncDeleter *asyncDeleter, const fs::path &file)
+    : document_(*asyncDeleter, file) {}
 
 void Editor::start()
 {

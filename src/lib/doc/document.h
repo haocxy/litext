@@ -5,6 +5,7 @@
 #include "core/fs.h"
 #include "core/signal.h"
 #include "core/charset.h"
+#include "core/async_deleter.h"
 
 #include "doc_error.h"
 #include "doc_row.h"
@@ -18,7 +19,7 @@ class DocumentImpl;
 
 class Document {
 public:
-    Document(const fs::path &file);
+    Document(AsyncDeleter &asyncDeleter, const fs::path &file);
 
     ~Document();
 

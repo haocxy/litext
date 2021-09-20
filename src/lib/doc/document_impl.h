@@ -7,6 +7,7 @@
 #include "core/sigconns.h"
 #include "core/charset.h"
 #include "core/time.h"
+#include "core/async_deleter.h"
 
 #include "doc_error.h"
 #include "text_repo.h"
@@ -22,7 +23,7 @@ namespace doc
 
 class DocumentImpl {
 public:
-    DocumentImpl(const fs::path &file);
+    DocumentImpl(AsyncDeleter &asyncDeleter, const fs::path &file);
 
     ~DocumentImpl();
 
@@ -68,10 +69,14 @@ public:
 
     std::map<RowN, sptr<Row>> rowsAt(const RowRange &range) const;
 
+    void bindLoadSignals(SigConns &conns, TextLoader &loader);
+
+    void deleteLoader();
+
 private:
+    AsyncDeleter &asyncDeleter_;
     const fs::path path_;
     TextRepo textRepo_;
-    TextLoader loader_;
     LineManager lineManager_;
     mutable RowCache rowCache_;
     std::atomic<i64> fileSize_{ 0 };
@@ -86,6 +91,7 @@ private:
     Signal<void()> sigAllLoaded_;
     Signal<void(RowN nrows)> sigRowCountUpdated_;
 
+    uptr<TextLoader> loader_;
     TimeUsage<std::chrono::steady_clock> loadTimeUsage_;
 };
 
