@@ -76,7 +76,8 @@ private:
     mutable RowCache rowCache_;
     std::atomic<i64> fileSize_{ 0 };
     std::atomic<Charset> charset_{ Charset::Unknown };
-    SigConns sigConns_;
+    SigConns loadSigConns_;
+    SigConns lineSigConns_;
 
     Signal<void(DocError)> sigFatalError_;
     Signal<void(i64)> sigFileSizeDetected_;

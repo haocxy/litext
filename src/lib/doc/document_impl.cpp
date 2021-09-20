@@ -18,30 +18,30 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
 
-    sigConns_ += loader_.sigPartLoaded().connect([this](const DocPart &part) {
+    loadSigConns_ += loader_.sigPartLoaded().connect([this](const DocPart &part) {
         lineManager_.addDocPart(part);
     });
 
-    sigConns_ += loader_.sigFatalError().connect([this](DocError e) {
+    loadSigConns_ += loader_.sigFatalError().connect([this](DocError e) {
         sigFatalError_(e);
     });
 
-    sigConns_ += loader_.sigFileSizeDetected().connect([this](i64 fileSize) {
+    loadSigConns_ += loader_.sigFileSizeDetected().connect([this](i64 fileSize) {
         fileSize_ = fileSize;
         sigFileSizeDetected_(fileSize);
     });
 
-    sigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
+    loadSigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
         charset_ = charset;
         rowCache_.updateCharset(charset);
         sigCharsetDetected_(charset);
     });
 
-    sigConns_ += lineManager_.sigRowCountUpdated().connect([this](RowN nrows) {
+    lineSigConns_ += lineManager_.sigRowCountUpdated().connect([this](RowN nrows) {
         sigRowCountUpdated_(nrows);
     });
 
-    sigConns_ += lineManager_.sigLoadProgress().connect([this](const LoadProgress &e) {
+    lineSigConns_ += lineManager_.sigLoadProgress().connect([this](const LoadProgress &e) {
         sigLoadProgress_(e);
         if (e.done()) {
             loadTimeUsage_.stop();
@@ -56,8 +56,6 @@ DocumentImpl::DocumentImpl(const fs::path &path)
 
 DocumentImpl::~DocumentImpl()
 {
-    sigConns_.clear();
-
     LOGD << "Document::~Document(), path: [" << path_ << "]";
 }
 
