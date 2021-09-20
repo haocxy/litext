@@ -26,6 +26,9 @@ public:
 
     virtual ~BigFileGeneratorWidget();
 
+signals:
+    void shouldOpenGeneratedFile(QString path);
+
 protected:
     virtual void mousePressEvent(QMouseEvent *e) override;
 
@@ -33,7 +36,7 @@ private:
 signals:
     void generateProgress(int percent);
 
-    void generateDone();
+    void generateDone(QString path);
 
     void generateError(const QString &msg);
 

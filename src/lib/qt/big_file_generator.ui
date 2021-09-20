@@ -189,7 +189,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBox">
+      <widget class="QCheckBox" name="openAfterGeneratedCheckBox">
        <property name="text">
         <string>open after generated</string>
        </property>

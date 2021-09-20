@@ -277,6 +277,11 @@ void MainWindow::makeBigFileActionTriggered()
 {
     BigFileGeneratorWidget *w = new BigFileGeneratorWidget;
     w->setAttribute(Qt::WA_DeleteOnClose);
+
+    connect(w, &BigFileGeneratorWidget::shouldOpenGeneratedFile, this, [this](QString path) {
+        openDocument(path.toStdU32String(), 0);
+    });
+
     w->show();
 }
 

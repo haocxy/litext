@@ -149,10 +149,13 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
         ui_->progressBar->setValue(percent);
     });
 
-    connect(this, &BigFileGeneratorWidget::generateDone, this, [this] {
+    connect(this, &BigFileGeneratorWidget::generateDone, this, [this](QString path) {
         generator_ = nullptr;
         ui_->executeButton->setEnabled(true);
         ui_->progressBar->setValue(100);
+        if (ui_->openAfterGeneratedCheckBox->isChecked()) {
+            emit shouldOpenGeneratedFile(path);
+        }
     });
 
     connect(this, &BigFileGeneratorWidget::generateError, this, [this] (const QString &msg) {
@@ -406,7 +409,7 @@ void BigFileGeneratorWidget::Generator::generate()
     }
 
     emit gui_.generateProgress(100);
-    emit gui_.generateDone();
+    emit gui_.generateDone(QString::fromStdU32String(param_.path.generic_u32string()));
 }
 
 void BigFileGeneratorWidget::Generator::prepareCharPool()
