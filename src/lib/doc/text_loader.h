@@ -13,6 +13,7 @@
 
 #include "doc_error.h"
 #include "decoded_part.h"
+#include "doc_part.h"
 
 
 namespace doc
@@ -38,8 +39,8 @@ public:
         return sigCharsetDetected_;
     }
 
-    Signal<void(const DecodedPart &)> &sigPartDecoded() {
-        return sigPartDecoded_;
+    Signal<void(const DocPart &)> &sigPartLoaded() {
+        return sigPartLoaded_;
     }
 
     Signal<void()> &sigAllLoaded() {
@@ -107,7 +108,7 @@ private:
     Signal<void(DocError)> sigFatalError_;
     Signal<void(i64)> sigFileSizeDetected_;
     Signal<void(Charset)> sigCharsetDetected_;
-    Signal<void(const DecodedPart &)> sigPartDecoded_;
+    Signal<void(const DocPart &)> sigPartLoaded_;
     Signal<void()> sigAllLoaded_;
 
     using Mtx = std::recursive_mutex;

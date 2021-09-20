@@ -13,10 +13,14 @@ DocumentImpl::DocumentImpl(const fs::path &path)
     : path_(path)
     , textRepo_(dbfiles::docPathToDbPath(path))
     , loader_(path)
-    , lineManager_(textRepo_, loader_)
+    , lineManager_(textRepo_)
     , rowCache_(lineManager_, path)
 {
     LOGD << "Document::Document() start, path: [" << path_ << "]";
+
+    sigConns_ += loader_.sigPartLoaded().connect([this](const DocPart &part) {
+        lineManager_.addDocPart(part);
+    });
 
     sigConns_ += loader_.sigFatalError().connect([this](DocError e) {
         sigFatalError_(e);

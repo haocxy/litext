@@ -2,42 +2,26 @@
 
 #include <string>
 
-#include "core/thread.h"
-#include "core/system.h"
 #include "core/time.h"
 #include "core/logger.h"
 #include "core/readable.h"
-#include "text/count_rows.h"
 
 
 namespace doc
 {
 
-static int decideWorkerCount()
-{
-    return std::max(1, SystemUtil::processorCount() / 2);
-}
-
-LineManager::LineManager(TextRepo &textRepo, TextLoader &loader)
+LineManager::LineManager(TextRepo &textRepo)
     : stmtSavePart_(textRepo)
-    , taskQueue_(decideWorkerCount())
 {
-    const int workerCount = decideWorkerCount();
-
-    for (int i = 0; i < workerCount; ++i) {
-        workers_.push_back(std::make_unique<Worker>(taskQueue_));
-    }
-
-    sigConns_ += loader.sigPartDecoded().connect([this](const DecodedPart &e) {
-        onPartDecoded(e);
-    });
 }
 
 LineManager::~LineManager()
 {
-    taskQueue_.stop();
+}
 
-    workers_.clear();
+void LineManager::addDocPart(const DocPart &docPart)
+{
+    updatePartInfo(docPart);
 }
 
 std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range) const
@@ -68,20 +52,6 @@ Range<i64> LineManager::findByteRange(PartId partId) const
 {
     Lock lock(mtx_);
     return orderedInfos_[partId].byteRange();
-}
-
-void LineManager::onPartDecoded(const DecodedPart &e)
-{
-    taskQueue_.push([this, e](Worker &worker) {
-        ElapsedTime elapse;
-        elapse.start();
-        const std::u32string &s = e.utf32content();
-        DocPart info;
-        info.rowRange().setLen(text::countRows(s));
-        info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
-        info.setIsLast(e.isLast());
-        updatePartInfo(info);
-    });
 }
 
 void LineManager::updatePartInfo(const DocPart &info)
@@ -192,28 +162,6 @@ std::optional<RowIndex> LineManager::queryRowIndex(RowN row) const
     }
 
     throw std::logic_error("logic should never reach here");
-}
-
-LineManager::Worker::Worker(TaskQueue<void(Worker &worker)> &taskQueue)
-    : taskQueue_(taskQueue)
-    , thread_([this] { loop(); })
-{
-
-}
-
-LineManager::Worker::~Worker() {
-    stopping_ = true;
-    thread_.join();
-}
-
-void LineManager::Worker::loop() {
-    ThreadUtil::setNameForCurrentThread("LineManager-Worker");
-    while (!stopping_) {
-        auto f = taskQueue_.pop();
-        if (f) {
-            (*f)(*this);
-        }
-    }
 }
 
 }

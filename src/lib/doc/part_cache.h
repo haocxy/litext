@@ -8,6 +8,8 @@
 
 #include "core/fs.h"
 #include "core/memory.h"
+#include "core/charset.h"
+
 #include "text/utf16row.h"
 
 #include "doc_define.h"

@@ -9,9 +9,12 @@
 #include "core/charset.h"
 #include "core/readable.h"
 
+#include "text/count_rows.h"
+
 #include "charset/to_utf32.h"
 
 #include "skip_row.h"
+#include "doc_part.h"
 
 
 namespace doc
@@ -213,13 +216,12 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
 
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.ms() << " ms]";
 
-    DecodedPart e;
-    e.setByteOffset(p.off);
-    e.setPartSize(p.data.size());
-    e.setIsLast(p.isLast);
-    e.setContent(std::move(content));
+    DocPart info;
+    info.rowRange().setLen(text::countRows(content));
+    info.setByteRange(Ranges::byOffAndLen(p.off, p.data.size()));
+    info.setIsLast(p.isLast);
 
-    self_.sigPartDecoded_(e);
+    self_.sigPartLoaded_(info);
 }
 
 }

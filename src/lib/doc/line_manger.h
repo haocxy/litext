@@ -6,16 +6,14 @@
 #include <atomic>
 #include <memory>
 #include <mutex>
+#include <optional>
 
 #include "core/range.h"
 #include "core/signal.h"
 #include "core/sigconns.h"
-#include "core/thread.h"
-#include "core/idgen.h"
-#include "decoded_part.h"
+
 #include "load_progress.h"
 #include "text_repo.h"
-#include "text_loader.h"
 #include "row_index.h"
 #include "doc_part.h"
 
@@ -25,9 +23,11 @@ namespace doc
 
 class LineManager {
 public:
-    LineManager(TextRepo &textRepo, TextLoader &loader);
+    LineManager(TextRepo &textRepo);
 
     ~LineManager();
+
+    void addDocPart(const DocPart &docPart);
 
     Signal<void(const LoadProgress &)> &sigLoadProgress() {
         return sigLoadProgress_;
@@ -47,28 +47,6 @@ public:
     Range<i64> findByteRange(PartId partId) const;
 
 private:
-
-    class Worker {
-    public:
-        Worker(TaskQueue<void(Worker &worker)> &taskQueue);
-
-        ~Worker();
-
-        void stop() {
-            stopping_ = true;
-        }
-
-    private:
-        void loop();
-
-    private:
-        TaskQueue<void(Worker &worker)> &taskQueue_;
-        std::thread thread_;
-        std::atomic_bool stopping_{ false };
-    };
-
-    void onPartDecoded(const DecodedPart &e);
-
     void updatePartInfo(const DocPart &info);
 
     // 更新段偏移信息
@@ -84,16 +62,12 @@ private:
 
 private:
     TextRepo::SavePartStmt stmtSavePart_;
-    TaskQueue<void(Worker &worker)> taskQueue_;
-    std::vector<uptr<Worker>> workers_;
     
     SigConns sigConns_;
     Signal<void(RowN)> sigRowCountUpdated_;
     Signal<void(const LoadProgress &)> sigLoadProgress_;
 
 private:
-    IdGen<PartId> idGen_{ 1 };
-
     using Mtx = std::recursive_mutex;
     mutable Mtx mtx_;
     using Lock = std::lock_guard<Mtx>;
