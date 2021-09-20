@@ -86,7 +86,7 @@ private:
 
         i64 randRowSize();
 
-        i64 randChar();
+        char32_t randChar();
 
         std::u32string mkRowNumLabel(i64 rowIndex);
 

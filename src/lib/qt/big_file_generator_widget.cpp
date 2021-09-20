@@ -517,7 +517,7 @@ i64 BigFileGeneratorWidget::Generator::randRowSize()
     }
 }
 
-i64 BigFileGeneratorWidget::Generator::randChar()
+char32_t BigFileGeneratorWidget::Generator::randChar()
 {
     return charPool_[rand() % charPool_.size()];
 }
