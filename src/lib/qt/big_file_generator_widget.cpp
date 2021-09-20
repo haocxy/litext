@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #include <set>
+#include <fstream>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -174,7 +175,9 @@ void BigFileGeneratorWidget::openFileChooserDialog()
     const QString defaultDir = QString::fromStdU32String(userHome);
     QString outpath = QFileDialog::getSaveFileName(this, tr("Choose Output File"), defaultDir);
 
-    ui_->outputPathLineEdit->setText(outpath);
+    if (!outpath.isEmpty()) {
+        ui_->outputPathLineEdit->setText(outpath);
+    }
 }
 
 void BigFileGeneratorWidget::executeTriggered()
@@ -259,21 +262,27 @@ std::optional<fs::path> BigFileGeneratorWidget::getOutputPath()
         return std::nullopt;
     }
 
-    const fs::path path = fs::absolute(qpath.toStdU32String());
+    const fs::path path = qpath.toStdU32String();
+    if (!path.is_absolute()) {
+        error(tr("Please use absolute path for your file's safe."));
+        return std::nullopt;
+    }
 
     if (!fs::exists(path)) {
         return path;
     }
 
-    if (!confirmContinue(tr("Output file [ %1 ] already existed.\nIt's content will be deleted if you confirm.").arg(qpath))) {
-        return std::nullopt;
-    }
     if (fs::is_directory(path)) {
-        error(tr("Output file [%1] is a directory").arg(qpath));
+        error(tr("Path of output file [%1] is a directory.").arg(qpath));
         return std::nullopt;
     }
+
     if (!fs::is_regular_file(path)) {
         error(tr("Output file [ %1 ] is not a regular file.").arg(qpath));
+        return std::nullopt;
+    }
+
+    if (!confirmContinue(tr("Output file [ %1 ] already existed.\nIt's content will be deleted if you confirm.").arg(qpath))) {
         return std::nullopt;
     }
 
@@ -361,6 +370,8 @@ BigFileGeneratorWidget::Generator::Generator(BigFileGeneratorWidget &gui, const 
 
 BigFileGeneratorWidget::Generator::~Generator()
 {
+    stopping_ = true;
+
     if (thread_.joinable()) {
         thread_.join();
     }
@@ -378,6 +389,9 @@ void BigFileGeneratorWidget::Generator::generate()
     std::srand(std::time(nullptr));
 
     for (int i = 1; i <= 99; ++i) {
+        if (stopping_) {
+            return; // 提前结束时不报告进度,直接以当前状态结束
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         emit gui_.generateProgress(i);
     }

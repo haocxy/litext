@@ -77,6 +77,7 @@ private:
     private:
         BigFileGeneratorWidget &gui_;
         GenerateParam param_;
+        std::atomic_bool stopping_;
         std::thread thread_;
     };
 
