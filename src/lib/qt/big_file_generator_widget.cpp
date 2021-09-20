@@ -138,7 +138,6 @@ BigFileGeneratorWidget::BigFileGeneratorWidget(QWidget *parent)
 
     ui_->minRowSizeLineEdit->setValidator(newCharCountValidator(this));
     ui_->maxRowSizeLineEdit->setValidator(newCharCountValidator(this));
-    setupRangeRepairLogic();
 }
 
 BigFileGeneratorWidget::~BigFileGeneratorWidget()
