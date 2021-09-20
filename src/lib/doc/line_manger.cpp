@@ -80,11 +80,11 @@ void LineManager::onPartDecoded(const DecodedPart &e)
         info.rowRange().setLen(text::countRows(s));
         info.setByteRange(Ranges::byOffAndLen(e.byteOffset(), e.partSize()));
         info.setIsLast(e.isLast());
-        updatePartInfo(info, e.fileSize());
+        updatePartInfo(info);
     });
 }
 
-void LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
+void LineManager::updatePartInfo(const DocPart &info)
 {
     RowN rowCount = 0;
 
@@ -104,7 +104,7 @@ void LineManager::updatePartInfo(const DocPart &info, i64 totalByteCount)
         for (size_t i = 0; i < newlyOrderedPartCount; ++i) {
             const DocPart &part = orderedInfos_[newlyOrderedPartIds[i]];
             stmtSavePart_(part);
-            progresses[i] = LoadProgress(part.rowRange().end(), part.byteRange().end(), totalByteCount, part.isLast());
+            progresses[i] = LoadProgress(part.rowRange().end(), part.byteRange().end(), part.isLast());
         }
     }
 

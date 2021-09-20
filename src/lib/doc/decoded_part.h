@@ -15,14 +15,6 @@ public:
     DecodedPart()
         : content_(std::make_shared<std::u32string>()) {}
 
-    i64 fileSize() const {
-        return fileSize_;
-    }
-
-    void setFileSize(i64 fileSize) {
-        fileSize_ = fileSize;
-    }
-
     i64 byteOffset() const {
         return byteOffset_;
     }
@@ -56,7 +48,6 @@ public:
     }
 
 private:
-    i64 fileSize_ = 0;
     i64 byteOffset_ = 0;
     i64 partSize_ = 0;
     bool isLast_ = false;

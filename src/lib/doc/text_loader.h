@@ -30,6 +30,10 @@ public:
         return sigFatalError_;
     }
 
+    Signal<void(i64)> &sigFileSizeDetected() {
+        return sigFileSizeDetected_;
+    }
+
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
     }
@@ -46,7 +50,6 @@ private:
 
     struct LoadingPart {
         i64 off = 0;
-        i64 filesize = 0;
         Charset charset = Charset::Unknown;
         bool isLast = false;
         MemBuff data;
@@ -102,6 +105,7 @@ private:
     std::vector<uptr<Decoder>> decoders_;
 
     Signal<void(DocError)> sigFatalError_;
+    Signal<void(i64)> sigFileSizeDetected_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const DecodedPart &)> sigPartDecoded_;
     Signal<void()> sigAllLoaded_;

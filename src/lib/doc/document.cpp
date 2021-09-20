@@ -39,6 +39,11 @@ Signal<void(DocError)> &Document::sigFatalError()
     return impl_->sigFatalError();
 }
 
+Signal<void(i64)> &Document::sigFileSizeDetected()
+{
+    return impl_->sigFileSizeDetected();
+}
+
 Signal<void(Charset)> &Document::sigCharsetDetected()
 {
     return impl_->sigCharsetDetected();

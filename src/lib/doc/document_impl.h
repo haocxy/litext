@@ -40,6 +40,10 @@ public:
         return sigFatalError_;
     }
 
+    Signal<void(i64)> &sigFileSizeDetected() {
+        return sigFileSizeDetected_;
+    }
+
     Signal<void(Charset)> &sigCharsetDetected() {
         return sigCharsetDetected_;
     }
@@ -70,10 +74,12 @@ private:
     TextLoader loader_;
     LineManager lineManager_;
     mutable RowCache rowCache_;
+    std::atomic<i64> fileSize_{ 0 };
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns sigConns_;
 
     Signal<void(DocError)> sigFatalError_;
+    Signal<void(i64)> sigFileSizeDetected_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const LoadProgress &)> sigLoadProgress_;
     Signal<void()> sigAllLoaded_;

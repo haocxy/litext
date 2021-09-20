@@ -10,10 +10,9 @@ class LoadProgress {
 public:
     LoadProgress() {}
 
-    LoadProgress(RowN loadedRowCount, i64 loadedByteCount, i64 totalByteCount, bool done)
+    LoadProgress(RowN loadedRowCount, i64 loadedByteCount, bool done)
         : loadedRowCount_(loadedRowCount)
         , loadedByteCount_(loadedByteCount)
-        , totalByteCount_(totalByteCount)
         , done_(done) {}
 
     RowN loadedRowCount() const {
@@ -22,10 +21,6 @@ public:
 
     i64 loadedByteCount() const {
         return loadedByteCount_;
-    }
-
-    i64 totalByteCount() const {
-        return totalByteCount_;
     }
 
     // 是否全部加载完成
@@ -39,7 +34,6 @@ public:
 private:
     RowN loadedRowCount_ = 0;
     i64 loadedByteCount_ = 0;
-    i64 totalByteCount_ = 0;
     bool done_ = false;
 };
 

@@ -22,6 +22,11 @@ DocumentImpl::DocumentImpl(const fs::path &path)
         sigFatalError_(e);
     });
 
+    sigConns_ += loader_.sigFileSizeDetected().connect([this](i64 fileSize) {
+        fileSize_ = fileSize;
+        sigFileSizeDetected_(fileSize);
+    });
+
     sigConns_ += loader_.sigCharsetDetected().connect([this](Charset charset) {
         charset_ = charset;
         rowCache_.updateCharset(charset);

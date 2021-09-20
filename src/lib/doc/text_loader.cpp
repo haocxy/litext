@@ -120,6 +120,8 @@ void TextLoader::Reader::readAll()
     ElapsedTime elapsedTime;
     elapsedTime.start();
 
+    self_.sigFileSizeDetected_(fs::file_size(docPath_));
+
     std::ifstream ifs(docPath_, std::ios::binary);
 
     const i64 partLen = partSize();
@@ -151,7 +153,6 @@ void TextLoader::Reader::readAll()
 
         LoadingPart p;
         p.off = offset;
-        p.filesize = fs::file_size(docPath_);
         p.charset = charset;
         p.isLast = ifs.eof();
         p.data = std::move(readBuff);
@@ -213,7 +214,6 @@ void TextLoader::Decoder::decodePart(LoadingPart &&p)
     LOGD << title << "end, off[" << p.off << "], len[" << p.data.size() << "], charset[" << p.charset << "], time usage[" << elapsedTime.ms() << " ms]";
 
     DecodedPart e;
-    e.setFileSize(p.filesize);
     e.setByteOffset(p.off);
     e.setPartSize(p.data.size());
     e.setIsLast(p.isLast);

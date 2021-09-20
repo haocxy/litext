@@ -30,6 +30,8 @@ public:
 
     Signal<void(DocError)> &sigFatalError();
 
+    Signal<void(i64)> &sigFileSizeDetected();
+
     Signal<void(Charset)> &sigCharsetDetected();
 
     Signal<void(const LoadProgress &)> &sigLoadProgress();

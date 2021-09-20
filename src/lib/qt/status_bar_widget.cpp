@@ -25,19 +25,6 @@ enum {
 namespace gui::qt
 {
 
-static i64 loadPercent(const doc::LoadProgress &p) {
-    if (p.done()) {
-        return 100;
-    }
-
-    const i64 total = p.totalByteCount();
-    if (total <= 0) {
-        return 100;
-    }
-
-    return p.loadedByteCount() * 100 / total;
-}
-
 StatusBarWidget::StatusBarWidget(TextArea &textArea)
 	: textArea_(textArea)
 {
@@ -47,16 +34,22 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
 
     updateContent();
 
+    connect(this, &StatusBarWidget::qtSigFileSizeDetected, this, &StatusBarWidget::qtSlotFileSizeDetected);
+    connect(this, &StatusBarWidget::qtSigLoadProgress, this, &StatusBarWidget::qtSlotLoadProgress);
     connect(this, &StatusBarWidget::qtSigCharsetDetected, this, &StatusBarWidget::qtSlotCharsetDetect);
     connect(this, &StatusBarWidget::qtSigUpdateStatus, this, &StatusBarWidget::qtSlotUpdateStatus);
     connect(this, &StatusBarWidget::qtSigRowCountUpdated, this, &StatusBarWidget::qtSlotRowCountUpdated);
+
+    sigConns_ += doc.sigFileSizeDetected().connect([this](i64 fileSize) {
+        emit qtSigFileSizeDetected(fileSize);
+    });
 
     sigConns_ += doc.sigCharsetDetected().connect([this](Charset charset) {
         emit qtSigCharsetDetected(QString::fromUtf8(CharsetUtil::charsetToStr(charset)));
     });
 
     sigConns_ += doc.sigLoadProgress().connect([this](const doc::LoadProgress &p) {
-        emit qtSigUpdateStatus(QString::asprintf("Loading: %2d%%", static_cast<int>(loadPercent(p))));
+        emit qtSigLoadProgress(p.loadedByteCount(), p.done());
     });
 
     sigConns_ += doc.sigAllLoaded().connect([this]{
@@ -125,6 +118,31 @@ void StatusBarWidget::updateContent()
     }
 
 	update();
+}
+
+void StatusBarWidget::qtSlotFileSizeDetected(long long fileSize)
+{
+    fileSize_ = fileSize;
+}
+
+static int loadPercent(long long loadedBytes, long long fileSize, bool done)
+{
+    if (fileSize > 0) {
+        if (!done && loadedBytes < fileSize) {
+            return static_cast<int>(loadedBytes * 100 / fileSize);
+        } else {
+            return 100;
+        }
+    } else {
+        return 0;
+    }
+}
+
+void StatusBarWidget::qtSlotLoadProgress(long long loadedBytes, bool done)
+{
+    const int percent = loadPercent(loadedBytes, fileSize_, done);
+    status_ = tr("Loading: %1%").arg(percent);
+    updateContent();
 }
 
 void StatusBarWidget::qtSlotCharsetDetect(const QString &charset)
