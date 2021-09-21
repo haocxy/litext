@@ -25,6 +25,9 @@ public:
 
     virtual ~EditorStatusBarWidget();
 
+protected:
+    virtual void paintEvent(QPaintEvent *e) override;
+
 private:
     void initCharsetMenu();
 

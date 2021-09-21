@@ -1,5 +1,7 @@
 #include "editor_status_bar_widget.h"
 
+#include <QPainter>
+
 #include "gui/text_area.h"
 #include "editor/editor.h"
 
@@ -146,6 +148,14 @@ EditorStatusBarWidget::~EditorStatusBarWidget()
 {
     delete ui_;
     ui_ = nullptr;
+}
+
+void EditorStatusBarWidget::paintEvent(QPaintEvent *e)
+{
+    QWidget::paintEvent(e);
+
+    QPainter painter(this);
+    painter.drawLine(0, 0, width(), 0);
 }
 
 void EditorStatusBarWidget::initCharsetMenu()
