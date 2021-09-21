@@ -38,6 +38,10 @@ signals:
 
     void qtSigCharsetDetectFailed();
 
+    void qtSigLoadProgress(long long loadedBytes, bool done);
+
+    void qtSigLoadDone(long long timeUsageMs);
+
 private:
     TextArea &textArea_;
     Ui::EditorStatusBar *ui_ = nullptr;

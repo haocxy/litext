@@ -54,6 +54,19 @@ static QString readableRowCount(long long rowCount)
     return result;
 }
 
+static int loadPercent(long long loadedBytes, long long fileSize, bool done)
+{
+    if (fileSize > 0) {
+        if (!done && loadedBytes < fileSize) {
+            return static_cast<int>(loadedBytes * 100 / fileSize);
+        } else {
+            return 100;
+        }
+    } else {
+        return 0;
+    }
+}
+
 EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent)
     : QWidget(parent)
     , textArea_(textArea)
@@ -105,6 +118,28 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     initCharsetMenu();
 
     ui_->charsetSpecifyButton->setMenu(charsetMenu_);
+
+    sigConns_ += doc.sigLoadProgress().connect([this](const doc::LoadProgress &p) {
+        emit qtSigLoadProgress(static_cast<long long>(p.loadedByteCount()), p.done());
+    });
+
+    connect(this, &Class::qtSigLoadProgress, this, [this](long long loadedBytes, bool done) {
+        if (fileSize_) {
+            const int percent = loadPercent(loadedBytes, *fileSize_, done);
+            if (percent > ui_->progressBar->value()) {
+                ui_->progressBar->setValue(percent);
+            }
+        }
+    });
+
+    sigConns_ += doc.sigAllLoaded().connect([this] {
+        const long long timeUsageMs = static_cast<long long>(textArea_.doc().loadTimeUsageMs());
+        emit qtSigLoadDone(timeUsageMs);
+    });
+
+    connect(this, &Class::qtSigLoadDone, this, [this](long long timeUsageMs) {
+        ui_->progressLabel->setText(tr("Loaded by %1 ms").arg(timeUsageMs));
+    });
 }
 
 EditorStatusBarWidget::~EditorStatusBarWidget()
