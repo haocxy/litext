@@ -21,7 +21,8 @@ namespace gui::qt
 
 static void initCharsetComboBox(QComboBox *box)
 {
-    const std::set<QString> charsetNameSet = util::supportedCharsetSet();
+    std::set<QString> charsetNameSet = util::supportedCharsetSet();
+    charsetNameSet.erase("ASCII");
 
     const QStringList charsetNameList = util::toQList(charsetNameSet);
 

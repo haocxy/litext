@@ -21,9 +21,7 @@ std::set<QString> supportedCharsetSet()
     std::set<QString> result;
 
     for (const Charset charset : doc::gSupportedCharsets) {
-        if (charset != Charset::Ascii) {
-            result.insert(CharsetUtil::charsetToStr(charset));
-        }
+        result.insert(CharsetUtil::charsetToStr(charset));
     }
 
     return result;

@@ -3,6 +3,8 @@
 #include <optional>
 
 #include <QWidget>
+#include <QMenu>
+#include <QPointer>
 
 #include "core/sigconns.h"
 #include "gui/declare_text_area.h"
@@ -24,6 +26,9 @@ public:
     virtual ~EditorStatusBarWidget();
 
 private:
+    void initCharsetMenu();
+
+private:
 signals:
     void qtSigFileSizeDetected(long long fileSize);
 
@@ -38,6 +43,7 @@ private:
     Ui::EditorStatusBar *ui_ = nullptr;
     SigConns sigConns_;
     std::optional<long long> fileSize_;
+    QPointer<QMenu> charsetMenu_;
 };
 
 }

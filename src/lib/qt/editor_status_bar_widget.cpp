@@ -101,12 +101,27 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     connect(this, &Class::qtSigCharsetDetectFailed, this, [this] {
         ui_->charsetContent->setText(tr("Unknown"));
     });
+
+    initCharsetMenu();
+
+    ui_->charsetSpecifyButton->setMenu(charsetMenu_);
 }
 
 EditorStatusBarWidget::~EditorStatusBarWidget()
 {
     delete ui_;
     ui_ = nullptr;
+}
+
+void EditorStatusBarWidget::initCharsetMenu()
+{
+    charsetMenu_ = new QMenu(this);
+
+    const QList<QString> supportedCharsets = util::supportedCharsetList();
+
+    for (const QString &charset : supportedCharsets) {
+        QAction *action = charsetMenu_->addAction(charset);
+    }
 }
 
 }
