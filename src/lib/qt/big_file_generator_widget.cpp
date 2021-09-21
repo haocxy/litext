@@ -11,41 +11,19 @@
 #include <QTextCodec>
 
 #include "core/system.h"
-#include "doc/supported_charsets.h"
 
+#include "qtutil.h"
 #include "gen.big_file_generator.ui.h"
 
 
 namespace gui::qt
 {
 
-static std::set<QString> getCharsetNames()
-{
-    std::set<QString> result;
-
-    for (const Charset charset : doc::gSupportedCharsets) {
-        if (charset != Charset::Ascii) {
-            result.insert(CharsetUtil::charsetToStr(charset));
-        }
-    }
-
-    return result;
-}
-
-static QStringList toQStringList(const std::set<QString> &charsetNames)
-{
-    QStringList result;
-    for (const QString &charsetName : charsetNames) {
-        result.push_back(charsetName);
-    }
-    return result;
-}
-
 static void initCharsetComboBox(QComboBox *box)
 {
-    const std::set<QString> charsetNameSet = getCharsetNames();
+    const std::set<QString> charsetNameSet = util::supportedCharsetSet();
 
-    const QStringList charsetNameList = toQStringList(charsetNameSet);
+    const QStringList charsetNameList = util::toQList(charsetNameSet);
 
     box->addItems(charsetNameList);
 

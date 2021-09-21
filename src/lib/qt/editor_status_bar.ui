@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
-    <height>38</height>
+    <width>757</width>
+    <height>35</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="fileSizeArea">
      <item>
@@ -56,7 +62,39 @@
       </widget>
      </item>
      <item>
-      <widget class="Line" name="line">
+      <widget class="Line" name="rowCountAreaSep">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="charsetArea">
+     <item>
+      <widget class="QLabel" name="charsetLabel">
+       <property name="text">
+        <string>Charset:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="charsetContent">
+       <property name="text">
+        <string>Unknown</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="charsetSpecifyButton">
+       <property name="text">
+        <string>Specify</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="charsetAreaLine">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>

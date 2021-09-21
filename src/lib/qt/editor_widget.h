@@ -9,6 +9,7 @@
 #include "gui/declare_text_area_config.h"
 #include "declare_ruler_widget.h"
 #include "declare_text_area_widget.h"
+#include "declare_editor_status_bar_widget.h"
 #include "declare_status_bar_widget_old.h"
 #include "text_area_scrollbar.h"
 
@@ -47,6 +48,7 @@ private:
     TextAreaWidget *textAreaWidget_ = nullptr;
     TextAreaScrollBar *vScrollBar_ = nullptr;
     StatusBarWidgetOld *statusBar_ = nullptr;
+    EditorStatusBarWidget *statbar_ = nullptr;
     SigConns sigConns_;
 };
 
