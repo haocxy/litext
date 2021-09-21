@@ -10,7 +10,6 @@
 #include "declare_ruler_widget.h"
 #include "declare_text_area_widget.h"
 #include "declare_editor_status_bar_widget.h"
-#include "declare_status_bar_widget_old.h"
 #include "text_area_scrollbar.h"
 
 
@@ -32,14 +31,10 @@ public:
     void jumpTo(RowN row);
 
 signals:
-    void qtSigDocFatalError(int err);
-
     void qtSigUpdateScrollBarMaximum(int maximum);
 
 private:
     QString docErrToStr(doc::DocError err) const;
-
-    void handleDocFatalError(int err);
 
 private:
     sptr<Editor> editor_;
@@ -47,7 +42,6 @@ private:
     RulerWidget *ruler_ = nullptr;
     TextAreaWidget *textAreaWidget_ = nullptr;
     TextAreaScrollBar *vScrollBar_ = nullptr;
-    StatusBarWidgetOld *statusBar_ = nullptr;
     EditorStatusBarWidget *statbar_ = nullptr;
     SigConns sigConns_;
 };

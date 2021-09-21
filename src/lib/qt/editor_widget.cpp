@@ -7,7 +7,6 @@
 #include "editor/editor.h"
 #include "ruler_widget.h"
 #include "text_area_widget.h"
-#include "status_bar_widget_old.h"
 #include "editor_status_bar_widget.h"
 
 
@@ -28,8 +27,6 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
 
     vScrollBar_ = new TextAreaScrollBar;
 
-    statusBar_ = new StatusBarWidgetOld(textArea_);
-
     statbar_ = new EditorStatusBarWidget(textArea_);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
@@ -44,15 +41,9 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
     hlayout->addWidget(vScrollBar_);
 
     vlayout->addLayout(hlayout);
-    vlayout->addWidget(statusBar_);
     vlayout->addWidget(statbar_);
 
     setLayout(vlayout);
-
-    connect(this, &EditorWidget::qtSigDocFatalError, this, &EditorWidget::handleDocFatalError);
-    sigConns_ += document.sigFatalError().connect([this](doc::DocError err) {
-        emit qtSigDocFatalError(static_cast<int>(err));
-    });
 
     connect(this, &EditorWidget::qtSigUpdateScrollBarMaximum, vScrollBar_, &TextAreaScrollBar::setMaximum);
     sigConns_ += document.sigRowCountUpdated().connect([this](RowN rowCount) {
@@ -78,7 +69,7 @@ EditorWidget::~EditorWidget()
     ruler_ = nullptr;
     textAreaWidget_ = nullptr;
     vScrollBar_ = nullptr;
-    statusBar_ = nullptr;
+    statbar_ = nullptr;
 }
 
 const TextAreaWidget &EditorWidget::textAreaWidget() const
@@ -106,13 +97,6 @@ QString EditorWidget::docErrToStr(doc::DocError err) const
     default:
         return tr("unknown error");
     }
-}
-
-void EditorWidget::handleDocFatalError(int err)
-{
-    doc::DocError docError = static_cast<doc::DocError>(err);
-    const QString msg = docErrToStr(docError);
-    statusBar_->showErrorMsg(msg);
 }
 
 }
