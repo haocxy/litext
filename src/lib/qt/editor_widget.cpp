@@ -7,7 +7,7 @@
 #include "editor/editor.h"
 #include "ruler_widget.h"
 #include "text_area_widget.h"
-#include "status_bar_widget.h"
+#include "status_bar_widget_old.h"
 
 
 namespace gui::qt
@@ -27,7 +27,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
 
     vScrollBar_ = new TextAreaScrollBar;
 
-    statusBar_ = new StatusBarWidget(textArea_);
+    statusBar_ = new StatusBarWidgetOld(textArea_);
 
     QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(0);

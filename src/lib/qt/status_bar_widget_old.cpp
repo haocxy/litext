@@ -1,4 +1,4 @@
-#include "status_bar_widget.h"
+#include "status_bar_widget_old.h"
 
 #include <cassert>
 #include <algorithm>
@@ -25,7 +25,7 @@ enum {
 namespace gui::qt
 {
 
-StatusBarWidget::StatusBarWidget(TextArea &textArea)
+StatusBarWidgetOld::StatusBarWidgetOld(TextArea &textArea)
 	: textArea_(textArea)
 {
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -34,11 +34,11 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
 
     updateContent();
 
-    connect(this, &StatusBarWidget::qtSigFileSizeDetected, this, &StatusBarWidget::qtSlotFileSizeDetected);
-    connect(this, &StatusBarWidget::qtSigLoadProgress, this, &StatusBarWidget::qtSlotLoadProgress);
-    connect(this, &StatusBarWidget::qtSigCharsetDetected, this, &StatusBarWidget::qtSlotCharsetDetect);
-    connect(this, &StatusBarWidget::qtSigUpdateStatus, this, &StatusBarWidget::qtSlotUpdateStatus);
-    connect(this, &StatusBarWidget::qtSigRowCountUpdated, this, &StatusBarWidget::qtSlotRowCountUpdated);
+    connect(this, &StatusBarWidgetOld::qtSigFileSizeDetected, this, &StatusBarWidgetOld::qtSlotFileSizeDetected);
+    connect(this, &StatusBarWidgetOld::qtSigLoadProgress, this, &StatusBarWidgetOld::qtSlotLoadProgress);
+    connect(this, &StatusBarWidgetOld::qtSigCharsetDetected, this, &StatusBarWidgetOld::qtSlotCharsetDetect);
+    connect(this, &StatusBarWidgetOld::qtSigUpdateStatus, this, &StatusBarWidgetOld::qtSlotUpdateStatus);
+    connect(this, &StatusBarWidgetOld::qtSigRowCountUpdated, this, &StatusBarWidgetOld::qtSlotRowCountUpdated);
 
     sigConns_ += doc.sigFileSizeDetected().connect([this](i64 fileSize) {
         emit qtSigFileSizeDetected(fileSize);
@@ -61,12 +61,12 @@ StatusBarWidget::StatusBarWidget(TextArea &textArea)
     });
 }
 
-QSize StatusBarWidget::sizeHint() const
+QSize StatusBarWidgetOld::sizeHint() const
 {
 	return QSize(-1, fontMetrics().height() + kDoubleMargin);
 }
 
-void StatusBarWidget::paintEvent(QPaintEvent *e)
+void StatusBarWidgetOld::paintEvent(QPaintEvent *e)
 {
 	QPainter p(this);
     p.drawLine(0, 0, width(), 0);
@@ -85,7 +85,7 @@ static const QString partNameCharset = "Charset: ";
 
 static const QString sep = "  |  ";
 
-void StatusBarWidget::showErrorMsg(const QString &msg)
+void StatusBarWidgetOld::showErrorMsg(const QString &msg)
 {
     errorMsg_.clear();
     errorMsg_.append("OPEN FAILED");
@@ -95,7 +95,7 @@ void StatusBarWidget::showErrorMsg(const QString &msg)
     update();
 }
 
-void StatusBarWidget::updateContent()
+void StatusBarWidgetOld::updateContent()
 {
     errorMsg_.clear();
 
@@ -120,7 +120,7 @@ void StatusBarWidget::updateContent()
 	update();
 }
 
-void StatusBarWidget::qtSlotFileSizeDetected(long long fileSize)
+void StatusBarWidgetOld::qtSlotFileSizeDetected(long long fileSize)
 {
     fileSize_ = fileSize;
 }
@@ -138,26 +138,26 @@ static int loadPercent(long long loadedBytes, long long fileSize, bool done)
     }
 }
 
-void StatusBarWidget::qtSlotLoadProgress(long long loadedBytes, bool done)
+void StatusBarWidgetOld::qtSlotLoadProgress(long long loadedBytes, bool done)
 {
     const int percent = loadPercent(loadedBytes, fileSize_, done);
     status_ = tr("Loading: %1%").arg(percent);
     updateContent();
 }
 
-void StatusBarWidget::qtSlotCharsetDetect(const QString &charset)
+void StatusBarWidgetOld::qtSlotCharsetDetect(const QString &charset)
 {
     charset_ = charset;
     updateContent();
 }
 
-void StatusBarWidget::qtSlotUpdateStatus(const QString &status)
+void StatusBarWidgetOld::qtSlotUpdateStatus(const QString &status)
 {
     status_ = status;
     updateContent();
 }
 
-void StatusBarWidget::qtSlotRowCountUpdated(const QString &rowCount)
+void StatusBarWidgetOld::qtSlotRowCountUpdated(const QString &rowCount)
 {
     rowCount_ = rowCount;
     updateContent();

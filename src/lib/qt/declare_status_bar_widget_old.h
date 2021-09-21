@@ -4,6 +4,6 @@
 namespace gui::qt
 {
 
-class StatusBarWidget;
+class StatusBarWidgetOld;
 
 }

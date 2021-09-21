@@ -11,10 +11,10 @@ namespace gui::qt
 {
 
 
-class StatusBarWidget : public QWidget {
+class StatusBarWidgetOld : public QWidget {
 	Q_OBJECT
 public:
-	explicit StatusBarWidget(TextArea &view);
+	explicit StatusBarWidgetOld(TextArea &view);
 
 	virtual QSize sizeHint() const override;
 
