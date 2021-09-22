@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include <QWidget>
+#include <QFrame>
 #include <QMenu>
 #include <QPointer>
 
@@ -18,15 +18,12 @@ class EditorStatusBar;
 namespace gui::qt
 {
 
-class EditorStatusBarWidget : public QWidget {
+class EditorStatusBarWidget : public QFrame {
     Q_OBJECT
 public:
     explicit EditorStatusBarWidget(TextArea &textArea, QWidget *parent = nullptr);
 
     virtual ~EditorStatusBarWidget();
-
-protected:
-    virtual void paintEvent(QPaintEvent *e) override;
 
 private:
     void initCharsetMenu();

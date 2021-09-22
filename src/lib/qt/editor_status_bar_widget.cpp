@@ -70,7 +70,7 @@ static int loadPercent(long long loadedBytes, long long fileSize, bool done)
 }
 
 EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent)
-    : QWidget(parent)
+    : QFrame(parent)
     , textArea_(textArea)
     , ui_(new Ui::EditorStatusBar) {
 
@@ -142,20 +142,14 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     connect(this, &Class::qtSigLoadDone, this, [this](long long timeUsageMs) {
         ui_->progressLabel->setText(tr("Loaded by %1 ms").arg(timeUsageMs));
     });
+
+    setStyleSheet("#EditorStatusBar{border-top:1px solid black;}");
 }
 
 EditorStatusBarWidget::~EditorStatusBarWidget()
 {
     delete ui_;
     ui_ = nullptr;
-}
-
-void EditorStatusBarWidget::paintEvent(QPaintEvent *e)
-{
-    QWidget::paintEvent(e);
-
-    QPainter painter(this);
-    painter.drawLine(0, 0, width(), 0);
 }
 
 void EditorStatusBarWidget::initCharsetMenu()
