@@ -182,25 +182,22 @@ LineBound TextAreaImpl::getLineBoundByLineOffset(i32 lineOffset) const
     return LineBound(top, bottom);
 }
 
-LineBound TextAreaImpl::getLineBound(const VLineLoc & lineLoc) const
+LineBound TextAreaImpl::getLineBound(const VLineLoc &lineLoc) const
 {
-    if (lineLoc.isAfterLastRow())
-    {
+    if (lineLoc.isAfterLastRow()) {
         return getLineBoundByLineOffset(page_.lineCnt());
     }
     const i32 lineOffset = cvt_.toLineOffset(lineLoc);
     return getLineBoundByLineOffset(lineOffset);
 }
 
-RowBound TextAreaImpl::getRowBound(const VRowLoc & rowLoc) const
+RowBound TextAreaImpl::getRowBound(const VRowLoc &rowLoc) const
 {
-    if (rowLoc.isNull())
-    {
+    if (rowLoc.isNull()) {
         return RowBound();
     }
 
-    if (rowLoc.isAfterLastRow())
-    {
+    if (rowLoc.isAfterLastRow()) {
         const i32 lineOffset = page_.lineCnt();
         const i32 lineHeight = glyphCache_.face().height();
         const i32 top = lineHeight * lineOffset;
@@ -214,96 +211,81 @@ RowBound TextAreaImpl::getRowBound(const VRowLoc & rowLoc) const
     return RowBound(top, height);
 }
 
-bool TextAreaImpl::hasPrevCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::hasPrevCharAtSameLine(const VCharLoc &charLoc) const
 {
     return !noPrevCharAtSameLine(charLoc);
 }
 
-bool TextAreaImpl::noPrevCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::noPrevCharAtSameLine(const VCharLoc &charLoc) const
 {
-    if (charLoc.isAfterLastChar())
-    {
+    if (charLoc.isAfterLastChar()) {
         return page_.getLine(charLoc).size() == 0;
-    }
-    else
-    {
+    } else {
         return charLoc.col() == 0;
     }
 }
 
-bool TextAreaImpl::hasNextCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::hasNextCharAtSameLine(const VCharLoc &charLoc) const
 {
     return !noNextCharAtSameLine(charLoc);
 }
 
-bool TextAreaImpl::noNextCharAtSameLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::noNextCharAtSameLine(const VCharLoc &charLoc) const
 {
-    if (charLoc.isAfterLastChar())
-    {
+    if (charLoc.isAfterLastChar()) {
         return true;
-    }
-    else
-    {
-		const VLine & line = page_.getLine(charLoc);
+    } else {
+        const VLine &line = page_.getLine(charLoc);
         return charLoc.col() == line.size();
     }
 }
 
-bool TextAreaImpl::needEnsureHasNextLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::needEnsureHasNextLine(const VCharLoc &charLoc) const
 {
-	if (hasNextCharAtSameLine(charLoc))
-	{
-		const VRow & vrow = page_[charLoc.row()];
-		if (charLoc.line() < vrow.size() - 1)
-		{
-			const VLine & line = vrow[charLoc.line()];
-			return charLoc.col() >= line.size() - 1;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return true;
-	}
+    if (hasNextCharAtSameLine(charLoc)) {
+        const VRow &vrow = page_[charLoc.row()];
+        if (charLoc.line() < vrow.size() - 1) {
+            const VLine &line = vrow[charLoc.line()];
+            return charLoc.col() >= line.size() - 1;
+        } else {
+            return false;
+        }
+    } else {
+        return true;
+    }
 }
 
-bool TextAreaImpl::isLastLineOfRow(const VLineLoc & lineLoc) const
+bool TextAreaImpl::isLastLineOfRow(const VLineLoc &lineLoc) const
 {
     return lineLoc.line() == page_[lineLoc.row()].size() - 1;
 }
 
-bool TextAreaImpl::isEndOfVirtualLine(const VCharLoc & charLoc) const
+bool TextAreaImpl::isEndOfVirtualLine(const VCharLoc &charLoc) const
 {
     return charLoc.isAfterLastChar() && !isLastLineOfRow(charLoc);
 }
 
 // 避免出现因为定位到虚拟行尾部而使虚拟行被跳过的情况
-VCharLoc TextAreaImpl::betterLocForVerticalMove(const VCharLoc & charLoc) const
+VCharLoc TextAreaImpl::betterLocForVerticalMove(const VCharLoc &charLoc) const
 {
-    if (!isEndOfVirtualLine(charLoc))
-    {
+    if (!isEndOfVirtualLine(charLoc)) {
         return charLoc;
     }
 
-    const VLine & line = page_.getLine(charLoc);
+    const VLine &line = page_.getLine(charLoc);
     const CharN charCnt = line.size();
 
-    if (charCnt != 0)
-    {
+    if (charCnt != 0) {
         return VCharLoc(charLoc.row(), charLoc.line(), charCnt - 1);
     }
 
     return charLoc;
 }
 
-DocLoc TextAreaImpl::getNextUpLoc(const DocLoc & docLoc) const
-{   
+DocLoc TextAreaImpl::getNextUpLoc(const DocLoc &docLoc) const
+{
     const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
-    if (charLoc.isNull())
-    {
+    if (charLoc.isNull()) {
         return DocLoc();
     }
 
@@ -317,11 +299,10 @@ DocLoc TextAreaImpl::getNextUpLoc(const DocLoc & docLoc) const
     return cvt_.toDocLoc(betterLocForVerticalMove(upCharLoc));
 }
 
-DocLoc TextAreaImpl::getNextDownLoc(const DocLoc & docLoc) const
+DocLoc TextAreaImpl::getNextDownLoc(const DocLoc &docLoc) const
 {
     const VCharLoc charLoc = cvt_.toCharLoc(docLoc);
-    if (charLoc.isNull())
-    {
+    if (charLoc.isNull()) {
         return DocLoc();
     }
 
@@ -375,19 +356,14 @@ DocLoc TextAreaImpl::getNextLeftLoc(const DocLoc &docLoc) const
     }
 }
 
-bool TextAreaImpl::ensureHasPrevLine(const VLineLoc & curLineLoc)
+bool TextAreaImpl::ensureHasPrevLine(const VLineLoc &curLineLoc)
 {
-    if (curLineLoc.row() == 0 && curLineLoc.line() <= vloc_.line())
-    {
-        if (vloc_.line() > 0)
-        {
+    if (curLineLoc.row() == 0 && curLineLoc.line() <= vloc_.line()) {
+        if (vloc_.line() > 0) {
             setViewLoc(ViewLoc(vloc_.row(), vloc_.line() - 1));
             return true;
-        }
-        else
-        {
-            if (vloc_.row() > 0)
-            {
+        } else {
+            if (vloc_.row() > 0) {
                 sptr<Row> row = editor_.doc().rowAt(vloc_.row() - 1);
                 VRow vrow;
                 makeVRow(*row, vrow);
@@ -404,30 +380,28 @@ bool TextAreaImpl::ensureHasPrevLine(const VLineLoc & curLineLoc)
 
 bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
 {
-	const int rowCnt = page_.size();
+    const int rowCnt = page_.size();
 
-	// 没有内容则返回
-	if (rowCnt == 0)
-	{
-		return false;
-	}
+    // 没有内容则返回
+    if (rowCnt == 0) {
+        return false;
+    }
 
-	// 当前视图坐标不在视图最后则返回
-	if (curLineLoc.row() < rowCnt - 1)
-	{
-		return false;
-	}
+    // 当前视图坐标不在视图最后则返回
+    if (curLineLoc.row() < rowCnt - 1) {
+        return false;
+    }
 
     // 当前全局段落偏移
     const RowN curGlobalRowOff = vloc_.row() + curLineLoc.row();
 
     // 文档总段落数
-	const RowN docRowCnt = editor_.doc().rowCnt();
+    const RowN docRowCnt = editor_.doc().rowCnt();
 
     // 全局段落偏移超过了最大值,属于错误逻辑
-	if (curGlobalRowOff > docRowCnt - 1) {
-		throw std::logic_error("TextAreaImpl::ensureHasNextLine globalRowOff > docRowCnt - 1");
-	}
+    if (curGlobalRowOff > docRowCnt - 1) {
+        throw std::logic_error("TextAreaImpl::ensureHasNextLine globalRowOff > docRowCnt - 1");
+    }
 
     // 当前段落为最后一个段落
     if (curGlobalRowOff == docRowCnt - 1) {
@@ -437,25 +411,23 @@ bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
         }
     }
 
-	const VRow &lastRow = page_[rowCnt - 1];
+    const VRow &lastRow = page_[rowCnt - 1];
 
-	const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
+    const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
 
-	const int lineIndex = lineCountLimit_ - prevLineCnt - 1;
+    const int lineIndex = lineCountLimit_ - prevLineCnt - 1;
 
-	if (isLastLineOfRow(VLineLoc(rowCnt - 1, lineIndex)))
-	{
-		const RowN newDocRowIndex = vloc_.row() + rowCnt;
-		if (newDocRowIndex > docRowCnt - 1)
-		{
-			return false;
-		}
+    if (isLastLineOfRow(VLineLoc(rowCnt - 1, lineIndex))) {
+        const RowN newDocRowIndex = vloc_.row() + rowCnt;
+        if (newDocRowIndex > docRowCnt - 1) {
+            return false;
+        }
 
         sptr<Row> row = editor_.doc().rowAt(newDocRowIndex);
         VRow vrow;
         makeVRow(*row, vrow);
         page_.pushBack(std::move(vrow));
-	}
+    }
 
     const i32 lineOff = cvt_.toLineOffset(curLineLoc);
     const i32 requiredHeight = (lineOff + 1) * glyphCache_.face().height();
@@ -471,21 +443,17 @@ void TextAreaImpl::removeSpareRow()
 {
     int remainLineCnt = page_.lineCnt() - vloc_.line();
 
-    for (int r = page_.size() - 1; r >= 0; --r)
-    {
+    for (int r = page_.size() - 1; r >= 0; --r) {
         remainLineCnt -= page_[r].size();
-        if (remainLineCnt >= lineCountLimit_)
-        {
+        if (remainLineCnt >= lineCountLimit_) {
             page_.popBack();
-        }
-        else
-        {
+        } else {
             break;
         }
     }
 }
 
-void TextAreaImpl::drawChar(QPainter & p, i32 x, i32 y, char32_t unicode)
+void TextAreaImpl::drawChar(QPainter &p, i32 x, i32 y, char32_t unicode)
 {
     const font::Glyph &g = glyphCache_.glyphOf(unicode);
 
@@ -547,23 +515,22 @@ void TextAreaImpl::repaint()
 void TextAreaImpl::_moveCursorUp()
 {
 
-	// TODO !!!
-	// 如果光标位置不在视图内，则只做一件事：把文档视图滚动到恰好显示光标所在行
+    // TODO !!!
+    // 如果光标位置不在视图内，则只做一件事：把文档视图滚动到恰好显示光标所在行
 
     // 第一步：确保上一行在视图内
     // 注意，在第一步完成后，第一步依赖的视图元素位置可能已经失效，第二步需要重新获取
-    const DocLoc & oldDocLoc = editor_.normalCursor().to();
+    const DocLoc &oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
     const bool viewportMoved = ensureHasPrevLine(oldCharLoc);
 
     // 第二步：使用第一步更新后的新的视图数据取目标位置
     const DocLoc newLoc = getNextUpLoc(editor_.normalCursor().to());
-    if (!newLoc.isNull())
-    {
+    if (!newLoc.isNull()) {
         editor_.setNormalCursor(newLoc);
     }
 
-	// 第三步：移除尾部多余的行
+    // 第三步：移除尾部多余的行
     if (viewportMoved) {
         removeSpareRow();
         sigViewportChanged_();
@@ -572,24 +539,22 @@ void TextAreaImpl::_moveCursorUp()
 
 void TextAreaImpl::_moveCursorDown()
 {
-	// 第一步，确保当前位置在视图中有下一行
-	const DocLoc & oldDocLoc = editor_.normalCursor().to();
-	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
-	const bool shouldMovePageHead = ensureHasNextLine(oldCharLoc);
+    // 第一步，确保当前位置在视图中有下一行
+    const DocLoc &oldDocLoc = editor_.normalCursor().to();
+    const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
+    const bool shouldMovePageHead = ensureHasNextLine(oldCharLoc);
 
-	// 第二步，更新编辑器中的文档位置
-	const DocLoc newLoc = getNextDownLoc(editor_.normalCursor().to());
-	if (!newLoc.isNull() && !newLoc.isAfterLastRow())
-	{
+    // 第二步，更新编辑器中的文档位置
+    const DocLoc newLoc = getNextDownLoc(editor_.normalCursor().to());
+    if (!newLoc.isNull() && !newLoc.isAfterLastRow()) {
         editor_.setNormalCursor(newLoc);
-	}
+    }
 
-	// 第三步，向下移动页面头部
-	if (shouldMovePageHead)
-	{
-		movePageHeadOneLine();
+    // 第三步，向下移动页面头部
+    if (shouldMovePageHead) {
+        movePageHeadOneLine();
         sigViewportChanged_();
-	}
+    }
 }
 
 void TextAreaImpl::_moveCursorLeft()
@@ -597,17 +562,15 @@ void TextAreaImpl::_moveCursorLeft()
     const DocLoc oldDocLoc = editor_.normalCursor().to();
     const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
     bool viewportChanged = false;
-    if (noPrevCharAtSameLine(oldCharLoc))
-    {
+    if (noPrevCharAtSameLine(oldCharLoc)) {
         viewportChanged = ensureHasPrevLine(oldCharLoc);
     }
 
     const DocLoc newLoc = editor_.getNextLeftLocByChar(oldDocLoc);
-    if (!newLoc.isNull())
-    {
+    if (!newLoc.isNull()) {
         editor_.setNormalCursor(newLoc);
 
-		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
+        const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
         stableX_ = cvt_.toX(charLoc);
     }
 
@@ -619,28 +582,25 @@ void TextAreaImpl::_moveCursorLeft()
 
 void TextAreaImpl::_moveCursorRight()
 {
-	const DocLoc oldDocLoc = editor_.normalCursor().to();
-	const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
-	bool needMoveHead = false;
-	if (needEnsureHasNextLine(oldCharLoc))
-	{
-		needMoveHead = ensureHasNextLine(oldCharLoc);
-	}
+    const DocLoc oldDocLoc = editor_.normalCursor().to();
+    const VCharLoc oldCharLoc = cvt_.toCharLoc(oldDocLoc);
+    bool needMoveHead = false;
+    if (needEnsureHasNextLine(oldCharLoc)) {
+        needMoveHead = ensureHasNextLine(oldCharLoc);
+    }
 
-	const DocLoc newLoc = editor_.getNextRightLocByChar(oldDocLoc);
-	if (!newLoc.isNull())
-	{
+    const DocLoc newLoc = editor_.getNextRightLocByChar(oldDocLoc);
+    if (!newLoc.isNull()) {
         editor_.setNormalCursor(newLoc);
 
-		const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
+        const VCharLoc charLoc = cvt_.toCharLoc(newLoc);
         stableX_ = cvt_.toX(charLoc);
-	}
+    }
 
-	if (needMoveHead)
-	{
-		movePageHeadOneLine();
+    if (needMoveHead) {
+        movePageHeadOneLine();
         sigViewportChanged_();
-	}
+    }
 }
 
 void TextAreaImpl::movePageUp()
@@ -687,10 +647,9 @@ void TextAreaImpl::_scrollDown(LineN lineCount)
     }
 }
 
-void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
+void TextAreaImpl::setViewLoc(const ViewLoc &viewLoc)
 {
-    if (vloc_ == viewLoc)
-    {
+    if (vloc_ == viewLoc) {
         return;
     }
 
@@ -701,25 +660,21 @@ void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
 
 void TextAreaImpl::movePageHeadOneLine()
 {
-	if (isLastLineOfRow(VLineLoc(0, vloc_.line())))
-	{
-		setViewLoc(ViewLoc(vloc_.row() + 1, 0));
+    if (isLastLineOfRow(VLineLoc(0, vloc_.line()))) {
+        setViewLoc(ViewLoc(vloc_.row() + 1, 0));
         page_.popFront();
-	}
-	else
-	{
-		setViewLoc(ViewLoc(vloc_.row(), vloc_.line() + 1));
-	}
+    } else {
+        setViewLoc(ViewLoc(vloc_.row(), vloc_.line() + 1));
+    }
 }
 
-void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> && action) const
+void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const
 {
     const int rowCnt = page_.size();
 
     i32 offset = -vloc_.line();
 
-    for (int r = 0; r < rowCnt; ++r)
-    {
+    for (int r = 0; r < rowCnt; ++r) {
         const VRowLoc loc(r);
         const RowBound bound = getRowBound(loc);
         const RowN lineNum = vloc_.row() + r;
@@ -736,8 +691,7 @@ void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline
 void TextAreaImpl::drawEachChar(QPainter &p)
 {
     const int rowCnt = page_.size();
-    if (rowCnt == 0)
-    {
+    if (rowCnt == 0) {
         return;
     }
 
@@ -746,30 +700,25 @@ void TextAreaImpl::drawEachChar(QPainter &p)
 
     i32 lineOffset = 0;
 
-    for (int i = vloc_.line(); i < curRowSize && lineOffset < lineCountLimit_; ++i)
-    {
-        const VLine & line = curRow[i];
+    for (int i = vloc_.line(); i < curRowSize && lineOffset < lineCountLimit_; ++i) {
+        const VLine &line = curRow[i];
 
         const i32 baseline = cvt_.toBaselineY(lineOffset);
 
-        for (const VChar &c : line)
-        {
+        for (const VChar &c : line) {
             drawChar(p, c.x(), baseline, c.uchar());
         }
 
         ++lineOffset;
     }
 
-    for (int r = 1; r < rowCnt && lineOffset < lineCountLimit_; ++r)
-    {
-        const VRow & row = page_[r];
+    for (int r = 1; r < rowCnt && lineOffset < lineCountLimit_; ++r) {
+        const VRow &row = page_[r];
 
-        for (const VLine & line : row)
-        {
+        for (const VLine &line : row) {
             const i32 baseline = cvt_.toBaselineY(lineOffset);
 
-            for (const VChar & c : line)
-            {
+            for (const VChar &c : line) {
                 drawChar(p, c.x(), baseline, c.uchar());
             }
 
@@ -846,37 +795,33 @@ void TextAreaImpl::scroll(TextArea::Dir dir, LineN lineCount)
 
 bool TextAreaImpl::_moveViewportDownByOneLineWithoutSignal()
 {
-	const RowN docRowCnt = editor_.doc().rowCnt();
+    const RowN docRowCnt = editor_.doc().rowCnt();
 
-	// 文档没有内容则不能移动
-	if (docRowCnt == 0)
-	{
-		return false;
-	}
+    // 文档没有内容则不能移动
+    if (docRowCnt == 0) {
+        return false;
+    }
 
-	// 视图位于文档最后一个line
-	if (vloc_.row() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(page_.size() - 1, vloc_.line())))
-	{
-		return false;
-	}
+    // 视图位于文档最后一个line
+    if (vloc_.row() == docRowCnt - 1 && isLastLineOfRow(VLineLoc(page_.size() - 1, vloc_.line()))) {
+        return false;
+    }
 
-	// 如果最后一个可视line是row中最后一个line，则需要新解析一个row的内容
-	const VLineLoc shownLastLineLoc = getShownLastLineLoc();
-	if (isLastLineOfRow(shownLastLineLoc))
-	{
-		const RowN newDocRowIndex = vloc_.row() + page_.size();
-		if (newDocRowIndex <= docRowCnt - 1)
-		{
+    // 如果最后一个可视line是row中最后一个line，则需要新解析一个row的内容
+    const VLineLoc shownLastLineLoc = getShownLastLineLoc();
+    if (isLastLineOfRow(shownLastLineLoc)) {
+        const RowN newDocRowIndex = vloc_.row() + page_.size();
+        if (newDocRowIndex <= docRowCnt - 1) {
             sptr<Row> row = editor_.doc().rowAt(newDocRowIndex);
             VRow vrow;
             makeVRow(*row, vrow);
             page_.pushBack(std::move(vrow));
-		}
-	}
+        }
+    }
 
-	movePageHeadOneLine();
+    movePageHeadOneLine();
 
-	return true;
+    return true;
 }
 
 void TextAreaImpl::updateStableXByCurrentCursor()
@@ -958,22 +903,19 @@ void TextAreaImpl::makeVRow(const Row &row, VRow &vrow)
 
 VLineLoc TextAreaImpl::getShownLastLineLoc() const
 {
-	const int rowCnt = page_.size();
+    const int rowCnt = page_.size();
 
-	const VRow & lastRow = page_[rowCnt - 1];
+    const VRow &lastRow = page_[rowCnt - 1];
 
-	const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
+    const int prevLineCnt = page_.lineCnt() - vloc_.line() - lastRow.size();
 
-	if (page_.lineCnt() - vloc_.line() < lineCountLimit_)
-	{
-		const int lastLineIndex = page_.lineCnt() - vloc_.line() - prevLineCnt - 1;
-		return VLineLoc(page_.size() - 1, lastLineIndex);
-	}
-	else
-	{
-		const int lastLineIndex = lineCountLimit_ - prevLineCnt - 1;
-		return VLineLoc(page_.size() - 1, lastLineIndex);
-	}
+    if (page_.lineCnt() - vloc_.line() < lineCountLimit_) {
+        const int lastLineIndex = page_.lineCnt() - vloc_.line() - prevLineCnt - 1;
+        return VLineLoc(page_.size() - 1, lastLineIndex);
+    } else {
+        const int lastLineIndex = lineCountLimit_ - prevLineCnt - 1;
+        return VLineLoc(page_.size() - 1, lastLineIndex);
+    }
 }
 
 
