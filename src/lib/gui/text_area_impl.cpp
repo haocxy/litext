@@ -672,6 +672,19 @@ void TextAreaImpl::_scrollUp(LineN lineCount)
 
 void TextAreaImpl::_scrollDown(LineN lineCount)
 {
+    bool moved = false;
+
+    for (LineN i = 0; i < lineCount; ++i) {
+        if (_moveViewportDownByOneLineWithoutSignal()) {
+            moved = true;
+        } else {
+            break;
+        }
+    }
+
+    if (moved) {
+        sigViewportChanged_();
+    }
 }
 
 void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
@@ -818,13 +831,12 @@ void TextAreaImpl::scroll(TextArea::Dir dir, LineN lineCount)
 {
     if (lineCount > 0) {
         Lock lock(mtx_);
-        const LineN usedLineCount = std::min(lineCount, lineCountLimit_);
         switch (dir) {
         case TextArea::Dir::Up:
-            _scrollUp(usedLineCount);
+            _scrollUp(lineCount);
             break;
         case TextArea::Dir::Down:
-            _scrollDown(usedLineCount);
+            _scrollDown(lineCount);
             break;
         default:
             throw std::logic_error("TextAreaImpl::scroll(...) bad dir");
