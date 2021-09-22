@@ -432,7 +432,7 @@ bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
     // 当前段落为最后一个段落
     if (curGlobalRowOff == docRowCnt - 1) {
         // 当前坐标为文档最后一行则返回 false 表示不需要下移视图
-        if (curLineLoc.line() == page_.lineCnt() - 1) {
+        if (isLastLineOfRow(curLineLoc)) {
             return false;
         }
     }
