@@ -1,7 +1,10 @@
 #include "text_area_widget.h"
 
+#include <QDebug>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QWheelEvent>
+#include <QApplication>
 
 #include "gui/text_area.h"
 #include "editor/editor.h"
@@ -27,6 +30,8 @@ TextAreaWidget::TextAreaWidget(TextArea &textArea)
     sigConns_ += textArea_.sigViewportChanged().connect([this] {
         emit qtSigShouldRepaint();
     });
+
+    scrollLineCount_ = QApplication::wheelScrollLines();
 }
 
 TextAreaWidget::~TextAreaWidget()
@@ -86,6 +91,20 @@ void TextAreaWidget::mousePressEvent(QMouseEvent *e)
     if (e->button() == Qt::LeftButton) {
         textArea_.putCursor(e->x(), e->y());
         update();
+    }
+}
+
+void TextAreaWidget::wheelEvent(QWheelEvent *e)
+{
+    const QPoint point = e->angleDelta();
+    const int y = point.y();
+
+    if (y > 0) {
+        textArea_.scroll(TextArea::Dir::Up, scrollLineCount_);
+    } else if (y < 0) {
+        textArea_.scroll(TextArea::Dir::Down, scrollLineCount_);
+    } else {
+        // do nothing
     }
 }
 

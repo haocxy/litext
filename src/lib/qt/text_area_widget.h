@@ -27,6 +27,8 @@ public:
 
     virtual void mousePressEvent(QMouseEvent *e) override;
 
+    virtual void wheelEvent(QWheelEvent *e) override;
+
     RowN rowOffset() const;
 
 signals:
@@ -38,6 +40,7 @@ private slots:
 private:
     TextArea &textArea_;
     SigConns sigConns_;
+    int scrollLineCount_ = 0;
 };
 
 

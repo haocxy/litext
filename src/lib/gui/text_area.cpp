@@ -90,6 +90,12 @@ void TextArea::movePage(Dir dir)
     impl_->movePage(dir);
 }
 
+void TextArea::scroll(Dir dir, LineN lineCount)
+{
+    ReadLock lock(mtx_);
+    impl_->scroll(dir, lineCount);
+}
+
 const QImage &TextArea::widgetImg() const
 {
     ReadLock lock(mtx_);

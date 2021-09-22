@@ -666,6 +666,14 @@ void TextAreaImpl::movePageDown()
     sigViewportChanged_();
 }
 
+void TextAreaImpl::_scrollUp(LineN lineCount)
+{
+}
+
+void TextAreaImpl::_scrollDown(LineN lineCount)
+{
+}
+
 void TextAreaImpl::setViewLoc(const ViewLoc & viewLoc)
 {
     if (vloc_ == viewLoc)
@@ -803,6 +811,24 @@ void TextAreaImpl::movePage(TextArea::Dir dir)
         break;
     default:
         throw std::logic_error("unsupported dir for TextArea::movePage(...)");
+    }
+}
+
+void TextAreaImpl::scroll(TextArea::Dir dir, LineN lineCount)
+{
+    if (lineCount > 0) {
+        Lock lock(mtx_);
+        const LineN usedLineCount = std::min(lineCount, lineCountLimit_);
+        switch (dir) {
+        case TextArea::Dir::Up:
+            _scrollUp(usedLineCount);
+            break;
+        case TextArea::Dir::Down:
+            _scrollDown(usedLineCount);
+            break;
+        default:
+            throw std::logic_error("TextAreaImpl::scroll(...) bad dir");
+        }
     }
 }
 

@@ -60,6 +60,8 @@ public:
 
     void movePage(Dir dir);
 
+    void scroll(Dir dir, LineN lineCount);
+
     const QImage &widgetImg() const;
 
     int width() const;
