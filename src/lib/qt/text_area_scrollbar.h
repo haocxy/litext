@@ -26,6 +26,8 @@ protected:
 
 private:
 signals:
+    void qtSigTextAreaShouldJumpTo(int scrollPos);
+
     void qtSigUpdateValue(int value);
 
     void qtSigUpdateRange(int minimum, int maximum);

@@ -18,7 +18,10 @@ TextAreaScrollBar::TextAreaScrollBar(TextArea &textArea, QWidget *parent)
     setOrientation(Qt::Vertical);
     setRange(0, 0);
 
-    connect(this, &TextAreaScrollBar::valueChanged, this, [this](int value) {
+    // !!! 不要使用 QScrollBar::valueChanged , valueChanged 会在 setValue 时被触发,
+    //     而 setValue 会由 qtSigUpdateValue 触发, 而 qtSigUpdateValue 会在视口滚动时触发,
+    //     这一系列情况最终会导致处理视口滚动时会触发 jumpTo , 破坏滚动逻辑
+    connect(this, &TextAreaScrollBar::qtSigTextAreaShouldJumpTo, this, [this](int value) {
         textArea_.jumpTo(static_cast<RowN>(value));
     });
 
@@ -85,6 +88,8 @@ void TextAreaScrollBar::jumpToY(int y)
     const int value = QStyle::sliderValueFromPosition(min, max, pos, space, upsideDown);
 
     setValue(value);
+
+    emit qtSigTextAreaShouldJumpTo(value);
 }
 
 }
