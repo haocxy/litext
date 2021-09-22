@@ -54,6 +54,7 @@ EditorWidget::~EditorWidget()
 
     ruler_ = nullptr;
     textAreaWidget_ = nullptr;
+    vScrollBar_->disconnectAllSignals();
     vScrollBar_ = nullptr;
     statbar_ = nullptr;
 }

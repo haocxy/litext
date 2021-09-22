@@ -44,6 +44,11 @@ TextAreaScrollBar::~TextAreaScrollBar()
 {
 }
 
+void TextAreaScrollBar::disconnectAllSignals()
+{
+    sigConns_.clear();
+}
+
 void TextAreaScrollBar::mousePressEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton || e->button() == Qt::RightButton) {

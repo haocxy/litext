@@ -17,6 +17,8 @@ public:
 
     virtual ~TextAreaScrollBar();
 
+    void disconnectAllSignals();
+
 protected:
     virtual void mousePressEvent(QMouseEvent *e) override;
 
