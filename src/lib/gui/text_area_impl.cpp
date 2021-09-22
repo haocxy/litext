@@ -326,6 +326,10 @@ DocLoc TextAreaImpl::getNextDownLoc(const DocLoc & docLoc) const
     }
 
     const VLineLoc downLineLoc = page_.getNextDownLineLoc(charLoc);
+    if (downLineLoc.isNull()) {
+        return DocLoc();
+    }
+
     const VCharLoc downCharLoc = cvt_.toCharLoc(downLineLoc, stableX_);
 
     return cvt_.toDocLoc(betterLocForVerticalMove(downCharLoc));
@@ -414,12 +418,24 @@ bool TextAreaImpl::ensureHasNextLine(const VLineLoc &curLineLoc)
 		return false;
 	}
 
-	// 当前坐标为文档最后一行则返回
+    // 当前全局段落偏移
+    const RowN curGlobalRowOff = vloc_.row() + curLineLoc.row();
+
+    // 文档总段落数
 	const RowN docRowCnt = editor_.doc().rowCnt();
-	if (vloc_.row() + curLineLoc.row() >= docRowCnt - 1)
-	{
-		return false;
+
+    // 全局段落偏移超过了最大值,属于错误逻辑
+	if (curGlobalRowOff > docRowCnt - 1) {
+		throw std::logic_error("TextAreaImpl::ensureHasNextLine globalRowOff > docRowCnt - 1");
 	}
+
+    // 当前段落为最后一个段落
+    if (curGlobalRowOff == docRowCnt - 1) {
+        // 当前坐标为文档最后一行则返回 false 表示不需要下移视图
+        if (curLineLoc.line() == page_.lineCnt() - 1) {
+            return false;
+        }
+    }
 
 	const VRow &lastRow = page_[rowCnt - 1];
 
