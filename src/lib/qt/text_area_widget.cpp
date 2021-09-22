@@ -70,10 +70,6 @@ void TextAreaWidget::keyPressEvent(QKeyEvent *e)
         textArea_.moveCursor(TextArea::Dir::Right);
         update();
         break;
-    case Qt::Key_S:
-        textArea_.moveDownByOneLine();
-        update();
-        break;
     case Qt::Key_PageUp:
         textArea_.movePage(TextArea::Dir::Up);
         break;

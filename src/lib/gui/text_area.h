@@ -60,10 +60,6 @@ public:
 
     void movePage(Dir dir);
 
-    // 向后移动一个line，移动成功则返回true，移动失败则返回false
-    // 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
-    bool moveDownByOneLine();
-
     const QImage &widgetImg() const;
 
     int width() const;

@@ -90,12 +90,6 @@ void TextArea::movePage(Dir dir)
     impl_->movePage(dir);
 }
 
-bool TextArea::moveDownByOneLine()
-{
-    ReadLock lock(mtx_);
-    return impl_->moveDownByOneLine();
-}
-
 const QImage &TextArea::widgetImg() const
 {
     ReadLock lock(mtx_);
