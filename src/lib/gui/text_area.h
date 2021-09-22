@@ -48,6 +48,8 @@ public:
 
     RowN rowOff() const;
 
+    RowN scrollPos() const;
+
     ScrollRatio scrollRatio() const;
 
     LineN lineCountLimit() const;

@@ -68,6 +68,11 @@ public:
         return vloc_.row();
     }
 
+    RowN scrollPos() const {
+        Lock lock(mtx_);
+        return vloc_.row();
+    }
+
     // TODO 应该返回一个和文档大小无关的固定的滚动范围，并在滚动范围和段落偏移之间转换，这样的好处有：
     // 1：对底层的缓存更友好，因为总是能取到某些相对固定的位置
     // 2：简化逻辑，不需要经常更改GUI中记录的范围，只需要在初始化时设置一次即可

@@ -2,6 +2,10 @@
 
 #include <QScrollBar>
 
+#include "core/sigconns.h"
+
+#include "gui/declare_text_area.h"
+
 
 namespace gui::qt
 {
@@ -9,12 +13,9 @@ namespace gui::qt
 class TextAreaScrollBar : public QScrollBar {
     Q_OBJECT
 public:
-    TextAreaScrollBar(QWidget *parent = nullptr);
+    TextAreaScrollBar(TextArea &textArea, QWidget *parent = nullptr);
 
     virtual ~TextAreaScrollBar();
-
-signals:
-    void jumpValueChanged(int value);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *e) override;
@@ -24,9 +25,20 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *e) override;
 
 private:
+signals:
+    void qtSigUpdateValue(int value);
+
+    void qtSigUpdateRange(int minimum, int maximum);
+
+private:
     void jumpToY(int y);
 
+private:
+    TextArea &textArea_;
+
     bool jumping_ = false;
+
+    SigConns sigConns_;
 };
 
 }

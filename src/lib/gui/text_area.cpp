@@ -60,6 +60,12 @@ RowN TextArea::rowOff() const
     return impl_->rowOff();
 }
 
+RowN TextArea::scrollPos() const
+{
+    ReadLock lock(mtx_);
+    return impl_->scrollPos();
+}
+
 ScrollRatio TextArea::scrollRatio() const
 {
     ReadLock lock(mtx_);

@@ -25,7 +25,7 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
 
     textAreaWidget_ = new TextAreaWidget(textArea_);
 
-    vScrollBar_ = new TextAreaScrollBar;
+    vScrollBar_ = new TextAreaScrollBar(textArea_);
 
     statbar_ = new EditorStatusBarWidget(textArea_);
 
@@ -44,20 +44,6 @@ EditorWidget::EditorWidget(const TextAreaConfig &textAreaConfig, sptr<Editor> ed
     vlayout->addWidget(statbar_);
 
     setLayout(vlayout);
-
-    connect(this, &EditorWidget::qtSigUpdateScrollBarMaximum, vScrollBar_, &TextAreaScrollBar::setMaximum);
-    sigConns_ += document.sigRowCountUpdated().connect([this](RowN rowCount) {
-        RowN newValue = textArea_.scrollRatio().total();
-        if (newValue <= static_cast<RowN>(std::numeric_limits<decltype(vScrollBar_->maximum())>::max())) {
-            emit qtSigUpdateScrollBarMaximum(static_cast<int>(newValue));
-        } else {
-            throw std::logic_error("document row count overflow max value supported by Qt");
-        }
-    });
-
-    connect(vScrollBar_, &TextAreaScrollBar::jumpValueChanged, this, [this] (int value) {
-        textArea_.jumpTo(static_cast<RowN>(vScrollBar_->value()));
-    });
 
     textArea_.open(Size(textAreaWidget_->width(), textAreaWidget_->height()), row);
 }

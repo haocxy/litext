@@ -4,17 +4,37 @@
 #include <QStyleOptionSlider>
 #include <QMouseEvent>
 
+#include "gui/text_area.h"
+
 
 namespace gui::qt
 {
 
-TextAreaScrollBar::TextAreaScrollBar(QWidget *parent)
+TextAreaScrollBar::TextAreaScrollBar(TextArea &textArea, QWidget *parent)
     : QScrollBar(parent)
+    , textArea_(textArea)
 {
     setContextMenuPolicy(Qt::NoContextMenu);
     setOrientation(Qt::Vertical);
     setRange(0, 0);
-    connect(this, &TextAreaScrollBar::valueChanged, this, &TextAreaScrollBar::jumpValueChanged);
+
+    connect(this, &TextAreaScrollBar::valueChanged, this, [this](int value) {
+        textArea_.jumpTo(static_cast<RowN>(value));
+    });
+
+    connect(this, &TextAreaScrollBar::qtSigUpdateValue, this, &TextAreaScrollBar::setValue);
+    sigConns_ += textArea.sigViewportChanged().connect([this] {
+        const RowN scrollPos = textArea_.scrollPos();
+        emit qtSigUpdateValue(static_cast<int>(scrollPos)); // TODO
+    });
+
+    connect(this, &TextAreaScrollBar::qtSigUpdateRange, this, &TextAreaScrollBar::setRange);
+    sigConns_ += textArea.doc().sigRowCountUpdated().connect([this](RowN rowCount) {
+        const ScrollRatio ratio = textArea_.scrollRatio();
+        const RowN min = ratio.off();
+        const RowN max = min + ratio.total();
+        emit qtSigUpdateRange(static_cast<int>(min), static_cast<int>(max));
+    });
 }
 
 TextAreaScrollBar::~TextAreaScrollBar()
