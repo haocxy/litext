@@ -806,10 +806,8 @@ void TextAreaImpl::movePage(TextArea::Dir dir)
     }
 }
 
-bool TextAreaImpl::moveDownByOneLine()
+bool TextAreaImpl::_moveViewportDownByOneLineWithoutSignal()
 {
-    Lock lock(mtx_);
-
 	const RowN docRowCnt = editor_.doc().rowCnt();
 
 	// 文档没有内容则不能移动

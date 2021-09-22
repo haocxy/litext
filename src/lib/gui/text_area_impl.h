@@ -135,8 +135,8 @@ private:
     void movePageDown();
 
     // 向后移动一个line，移动成功则返回true，移动失败则返回false
-    // 仅当视图中只显示文档最后一个line或文档没有内容时，返回false
-    bool moveDownByOneLine();
+    // 这个函数可能会连续调用多次,所以这个函数不触发信号,需要由上层逻辑触发信号
+    bool _moveViewportDownByOneLineWithoutSignal();
 
     void setSize(const Size &size);
 
