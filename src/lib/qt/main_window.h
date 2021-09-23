@@ -29,6 +29,7 @@ public:
     void openDocument(const fs::path &file, RowN row);
 
 protected:
+    virtual void keyPressEvent(QKeyEvent *e) override;
 
 private:
     void saveGeometry();
@@ -46,12 +47,16 @@ private:
         connect(action, &QAction::triggered, this, f);
     }
 
-private slots:
+private:
     void fileMenuOpenActionTriggered();
 
     void viewMenuGoLineActionTriggered();
 
     void makeBigFileActionTriggered();
+
+    void curEditorPageUp();
+
+    void curEditorPageDown();
 
 private:
     Engine &engine_;

@@ -276,9 +276,41 @@ void MainWindow::makeBigFileActionTriggered()
     w->show();
 }
 
+void MainWindow::curEditorPageUp()
+{
+    EditorWidget *curEditor = editorStack_->currentEditor();
+    if (curEditor) {
+        curEditor->pageUp();
+    }
+}
+
+void MainWindow::curEditorPageDown()
+{
+    EditorWidget *curEditor = editorStack_->currentEditor();
+    if (curEditor) {
+        curEditor->pageDown();
+    }
+}
+
 void MainWindow::openDocument(const fs::path &file, RowN row)
 {
     editorStack_->openDoc(file, row);
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    QMainWindow::keyPressEvent(e);
+
+    switch (e->key()) {
+    case Qt::Key_PageUp:
+        curEditorPageUp();
+        break;
+    case Qt::Key_PageDown:
+        curEditorPageDown();
+        break;
+    default:
+        break;
+    }
 }
 
 void MainWindow::fileMenuOpenActionTriggered()

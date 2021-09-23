@@ -30,6 +30,10 @@ public:
     
     void jumpTo(RowN row);
 
+    void pageUp();
+
+    void pageDown();
+
 signals:
     void qtSigUpdateScrollBarMaximum(int maximum);
 

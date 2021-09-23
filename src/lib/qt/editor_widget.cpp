@@ -74,6 +74,16 @@ void EditorWidget::jumpTo(RowN row)
     textArea_.jumpTo(row);
 }
 
+void EditorWidget::pageUp()
+{
+    textArea_.movePage(TextArea::Dir::Up);
+}
+
+void EditorWidget::pageDown()
+{
+    textArea_.movePage(TextArea::Dir::Down);
+}
+
 QString EditorWidget::docErrToStr(doc::DocError err) const
 {
     switch (err) {
