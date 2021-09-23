@@ -143,6 +143,8 @@ private:
 
     void _scrollDown(LineN lineCount);
 
+    bool _moveViewportUpByOneLineWithoutSignal();
+
     // 向后移动一个line，移动成功则返回true，移动失败则返回false
     // 这个函数可能会连续调用多次,所以这个函数不触发信号,需要由上层逻辑触发信号
     bool _moveViewportDownByOneLineWithoutSignal();

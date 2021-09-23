@@ -628,6 +628,19 @@ void TextAreaImpl::movePageDown()
 
 void TextAreaImpl::_scrollUp(LineN lineCount)
 {
+    bool moved = false;
+
+    for (LineN i = 0; i < lineCount; ++i) {
+        if (_moveViewportUpByOneLineWithoutSignal()) {
+            moved = true;
+        } else {
+            break;
+        }
+    }
+
+    if (moved) {
+        sigViewportChanged_();
+    }
 }
 
 void TextAreaImpl::_scrollDown(LineN lineCount)
@@ -645,6 +658,32 @@ void TextAreaImpl::_scrollDown(LineN lineCount)
     if (moved) {
         sigViewportChanged_();
     }
+}
+
+bool TextAreaImpl::_moveViewportUpByOneLineWithoutSignal()
+{
+    bool moved = false;
+
+    if (vloc_.line() > 0) {
+        setViewLoc(vloc_.row(), vloc_.line() - 1);
+        moved = true;
+    } else {
+        if (vloc_.row() > 0) {
+            sptr<Row> row = doc().rowAt(vloc_.row() - 1);
+            VRow vrow;
+            makeVRow(*row, vrow);
+            const LineN lineCount = vrow.size();
+            page_.pushFront(std::move(vrow));
+            setViewLoc(vloc_.row() - 1, lineCount - 1);
+            moved = true;
+        }
+    }
+
+    if (moved) {
+        removeSpareRow();
+    }
+
+    return moved;
 }
 
 void TextAreaImpl::setViewLoc(const ViewLoc &viewLoc)
