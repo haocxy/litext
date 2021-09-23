@@ -617,7 +617,9 @@ void TextAreaImpl::movePageUp()
         }
     }
 
-    _putCursorByLineOffset(0);
+    if (false) {
+        _putCursorByLineOffset(0);
+    }
 
     if (viewPortMoved) {
         sigViewportChanged_();
@@ -638,7 +640,9 @@ void TextAreaImpl::movePageDown()
 
     remakePage();
 
-    _putCursorByLineOffset(0);
+    if (false) {
+        _putCursorByLineOffset(0);
+    }
 
     sigViewportChanged_();
 }
