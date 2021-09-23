@@ -29,7 +29,6 @@ public:
     void openDocument(const fs::path &file, RowN row);
 
 protected:
-    virtual void keyReleaseEvent(QKeyEvent *e) override;
 
 private:
     void saveGeometry();

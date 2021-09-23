@@ -177,15 +177,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
     e->accept();
 }
 
-void MainWindow::keyReleaseEvent(QKeyEvent *e)
-{
-    if (e->key() == Qt::Key_Escape) {
-        close();
-    } else {
-        QMainWindow::keyReleaseEvent(e);
-    }
-}
-
 void MainWindow::saveGeometry()
 {
     if (isMaximized()) {
