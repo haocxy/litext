@@ -605,6 +605,23 @@ void TextAreaImpl::_moveCursorRight()
 
 void TextAreaImpl::movePageUp()
 {
+    const LineN scrollLineCount = lineCountLimit_ - 1;
+
+    bool viewPortMoved = false;
+
+    for (LineN i = 0; i < scrollLineCount; ++i) {
+        if (_moveViewportUpByOneLineWithoutSignal()) {
+            viewPortMoved = true;
+        } else {
+            break;
+        }
+    }
+
+    _putCursorByLineOffset(0);
+
+    if (viewPortMoved) {
+        sigViewportChanged_();
+    }
 }
 
 void TextAreaImpl::movePageDown()
