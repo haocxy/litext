@@ -1,6 +1,7 @@
 #include "application.h"
 
-
+#include <QFile>
+#include <QDebug>
 #include <QPixmap>
 #include <QPainter>
 
@@ -93,11 +94,60 @@ int Application::exec()
     }
 }
 
+static QString findTransResourcePath(const QLocale &locale, const QString &base)
+{
+    const char *logTitle = "findTransResourcePath";
 
+    const QString suffix = ".qm";
+
+    const QString fullName = locale.name();
+
+    
+    qDebug() << logTitle << "locale:" << fullName << ", base:" << base;
+
+    const QString choose1 = base + "." + fullName + suffix;
+    qDebug() << logTitle << "choose1:" << choose1;
+    if (QFile(choose1).exists()) {
+        return choose1;
+    }
+
+    const QStringList parts = fullName.split('_');
+    qDebug() << logTitle << "parts:" << parts;
+    if (parts.size() == 2) {
+        const QString choose2 = base + "." + parts[0] + suffix;
+        qDebug() << logTitle << "choose2:" << choose2;
+        if (QFile(choose2).exists()) {
+            return choose2;
+        }
+    }
+
+    const QString choose3 = base + suffix;
+    qDebug() << logTitle << "choose3:" << choose3;
+    if (QFile(choose3).exists()) {
+        return choose3;
+    }
+
+    qDebug() << logTitle << "cannot find translation file by base name:" << base;
+    return QString();
+}
 
 void Application::initQtApp(const InitInfo &initInfo)
 {
     qtApp_ = std::make_unique<QApplication>(gFakeArgc, gFakeArgv);
+
+    qtTranslator_ = std::make_unique<QTranslator>();
+
+    const QLocale locale = QLocale::system();
+    qDebug() << "Current System Locale: " << locale << "," << locale.name();
+
+    const QString transPath = findTransResourcePath(locale, ":/trans");
+    qDebug() << "initQtApp" << "transPath:" << transPath;
+
+    if (!transPath.isEmpty()) {
+        if (qtTranslator_->load(transPath)) {
+            qtApp_->installTranslator(qtTranslator_.get());
+        }
+    }
 
     if (initInfo.shouldStartAsServer()) {
         QGuiApplication::setQuitOnLastWindowClosed(false);

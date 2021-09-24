@@ -4,6 +4,7 @@
 
 #include <QVector>
 #include <QPair>
+#include <QTranslator>
 #include <QApplication>
 #include <QSystemTrayIcon>
 
@@ -61,6 +62,7 @@ private:
     Engine engine_;
     uptr<TrayMenu> trayMenu_;
     uptr<QApplication> qtApp_;
+    uptr<QTranslator> qtTranslator_;
     MainWindow *mainWindow_ = nullptr;
     QSystemTrayIcon *trayIcon_ = nullptr;
     SigConns sigConns_;
