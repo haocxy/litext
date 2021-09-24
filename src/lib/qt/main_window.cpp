@@ -219,14 +219,14 @@ void MainWindow::initMenuBar()
     QMenuBar *bar = menuBar();
 
     QMenu *fileMenu = bar->addMenu(tr("&File"));
-    bind(fileMenu, tr("&Open"), &MainWindow::fileMenuOpenActionTriggered);
+    bind(fileMenu, tr("&Open"), &MainWindow::fileOpenAction);
     bind(fileMenu, tr("&Quit"), &MainWindow::close);
 
     QMenu *viewMenu = bar->addMenu(tr("&View"));
-    bind(viewMenu, tr("&GoLine"), &MainWindow::viewMenuGoLineActionTriggered);
+    bind(viewMenu, tr("&Jump"), &MainWindow::viewJumpAction);
 
     QMenu *testToolMenu = bar->addMenu(tr("&TestTool"));
-    bind(testToolMenu, tr("&MakeBigFile"), &MainWindow::makeBigFileActionTriggered);
+    bind(testToolMenu, tr("&MakeBigFile"), &MainWindow::makeBigFileAction);
 }
 
 void MainWindow::initToolBar()
@@ -244,7 +244,7 @@ static RowN goToLineToRowOff(int goToLine)
     }
 }
 
-void MainWindow::viewMenuGoLineActionTriggered()
+void MainWindow::viewJumpAction()
 {
     EditorWidget *curEditor = editorStack_->currentEditor();
 
@@ -253,7 +253,7 @@ void MainWindow::viewMenuGoLineActionTriggered()
         bool ok = false;
 
         const int goToLine = QInputDialog::getInt(
-            this, tr("GoLine"), tr("Jump to line in doument"),
+            this, tr("Jump"), tr("Jump to line in doument"),
             curEditor->textAreaWidget().rowOffset() + 1,
             std::numeric_limits<int>::min(), std::numeric_limits<int>::max(),
             1, &ok);
@@ -264,7 +264,7 @@ void MainWindow::viewMenuGoLineActionTriggered()
     }
 }
 
-void MainWindow::makeBigFileActionTriggered()
+void MainWindow::makeBigFileAction()
 {
     BigFileGeneratorWidget *w = new BigFileGeneratorWidget;
     w->setAttribute(Qt::WA_DeleteOnClose);
@@ -313,7 +313,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     }
 }
 
-void MainWindow::fileMenuOpenActionTriggered()
+void MainWindow::fileOpenAction()
 {
     const std::u32string userHome = SystemUtil::userHome().generic_u32string();
     const QString defaultDir = QString::fromStdU32String(userHome);

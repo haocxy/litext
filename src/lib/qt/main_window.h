@@ -48,11 +48,11 @@ private:
     }
 
 private:
-    void fileMenuOpenActionTriggered();
+    void fileOpenAction();
 
-    void viewMenuGoLineActionTriggered();
+    void viewJumpAction();
 
-    void makeBigFileActionTriggered();
+    void makeBigFileAction();
 
     void curEditorPageUp();
 
