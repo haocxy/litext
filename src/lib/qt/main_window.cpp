@@ -237,7 +237,7 @@ void MainWindow::initToolBar()
     bind(fileBar, tr("Open"), &Class::fileOpenAction);
 
     QToolBar *viewBar = addToolBar(tr("View"));
-    bind(viewBar, tr("View"), &Class::viewJumpAction);
+    bind(viewBar, tr("Jump"), &Class::viewJumpAction);
 
     QToolBar *testToolsBar = addToolBar("TestTool");
     bind(testToolsBar, tr("MakeBigFile"), &Class::makeBigFileAction);
