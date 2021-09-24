@@ -220,15 +220,17 @@ void MainWindow::initMenuBar()
 {
     QMenuBar *bar = menuBar();
 
-    QMenu *fileMenu = bar->addMenu(tr("&File"));
-    bind(fileMenu, tr("&Open"), &MainWindow::fileOpenAction);
-    bind(fileMenu, tr("&CloseWindow"), &MainWindow::close);
+    QMenu *fileMenu = bar->addMenu(tr("File"));
+    bind(fileMenu, tr("Open"), &Class::fileOpenAction, QKeySequence::StandardKey::Open);
 
-    QMenu *viewMenu = bar->addMenu(tr("&View"));
-    bind(viewMenu, tr("&Jump"), &MainWindow::viewJumpAction);
+    QMenu *windowMenu = bar->addMenu(tr("Window"));
+    bind(windowMenu, tr("CloseWindow"), &Class::windowCloseAction);
 
-    QMenu *testToolMenu = bar->addMenu(tr("&TestTool"));
-    bind(testToolMenu, tr("&MakeBigFile"), &MainWindow::makeBigFileAction);
+    QMenu *viewMenu = bar->addMenu(tr("View"));
+    bind(viewMenu, tr("Jump"), &Class::viewJumpAction);
+
+    QMenu *testToolMenu = bar->addMenu(tr("TestTool"));
+    bind(testToolMenu, tr("MakeBigFile"), &Class::makeBigFileAction);
 }
 
 void MainWindow::initToolBar()
@@ -241,6 +243,25 @@ void MainWindow::initToolBar()
 
     QToolBar *testToolsBar = addToolBar("TestTool");
     bind(testToolsBar, tr("MakeBigFile"), &Class::makeBigFileAction);
+}
+
+void MainWindow::bind(QMenu *menu, const QString &name, void(MainWindow:: *f)())
+{
+    QAction *action = menu->addAction(name);
+    connect(action, &QAction::triggered, this, f);
+}
+
+void MainWindow::bind(QMenu *menu, const QString &name, void(MainWindow:: *f)(), const QKeySequence &shortcut)
+{
+    QAction *action = menu->addAction(name);
+    action->setShortcut(shortcut);
+    connect(action, &QAction::triggered, this, f);
+}
+
+void MainWindow::bind(QToolBar *toolBar, const QString &name, void(MainWindow:: *f)())
+{
+    QAction *action = toolBar->addAction(name);
+    connect(action, &QAction::triggered, this, f);
 }
 
 static RowN goToLineToRowOff(int goToLine)
@@ -328,6 +349,11 @@ QToolBar *MainWindow::addToolBar(const QString &title)
     QToolBar *toolBar = QMainWindow::addToolBar(title);
     toolBar->setMovable(false);
     return toolBar;
+}
+
+void MainWindow::windowCloseAction()
+{
+    close();
 }
 
 void MainWindow::fileOpenAction()

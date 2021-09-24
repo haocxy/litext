@@ -41,19 +41,11 @@ private:
 
     void initToolBar();
 
-    template <typename T, typename R>
-    void bind(QMenu *menu, const QString &name, R(T:: *f)())
-    {
-        QAction *action = menu->addAction(name);
-        connect(action, &QAction::triggered, this, f);
-    }
+    void bind(QMenu *menu, const QString &name, void(MainWindow:: *f)());
 
-    template <typename T, typename R>
-    void bind(QToolBar *toolBar, const QString &name, R(T:: *f)())
-    {
-        QAction *action = toolBar->addAction(name);
-        connect(action, &QAction::triggered, this, f);
-    }
+    void bind(QMenu *menu, const QString &name, void(MainWindow:: *f)(), const QKeySequence &shortcut);
+
+    void bind(QToolBar *toolBar, const QString &name, void(MainWindow:: *f)());
 
     QToolBar *addToolBar(const QString &title);
 
@@ -66,6 +58,8 @@ private: // Action 统一放在这里
     // 就会让人产生 "为什么没有用参数指明要打开哪个文件" 之类的疑问
     //
     // 以 Action 为后缀, 就表明这只是一个 GUI 动作, 并不执行实际的逻辑
+
+    void windowCloseAction();
 
     void fileOpenAction();
 
