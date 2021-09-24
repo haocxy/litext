@@ -222,7 +222,7 @@ void MainWindow::initMenuBar()
 
     QMenu *fileMenu = bar->addMenu(tr("&File"));
     bind(fileMenu, tr("&Open"), &MainWindow::fileOpenAction);
-    bind(fileMenu, tr("&Quit"), &MainWindow::close);
+    bind(fileMenu, tr("&CloseWindow"), &MainWindow::close);
 
     QMenu *viewMenu = bar->addMenu(tr("&View"));
     bind(viewMenu, tr("&Jump"), &MainWindow::viewJumpAction);

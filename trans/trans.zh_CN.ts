@@ -299,7 +299,7 @@ It&apos;s content will be deleted if you confirm.</source>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="225"/>
-        <source>&amp;Quit</source>
+        <source>&amp;CloseWindow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -364,12 +364,12 @@ It&apos;s content will be deleted if you confirm.</source>
     <message>
         <location filename="../src/lib/qt/tray_menu.cpp" line="11"/>
         <source>Activate UI</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复界面</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/tray_menu.cpp" line="14"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">退出程序</translation>
     </message>
 </context>
 </TS>
