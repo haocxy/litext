@@ -112,7 +112,7 @@
         <location filename="../src/lib/qt/editor_status_bar.ui" line="28"/>
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="151"/>
         <source>File Size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文档大小：</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="35"/>
@@ -122,25 +122,25 @@
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="154"/>
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="156"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>未知</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="53"/>
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="153"/>
         <source>Row Count:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">行数：</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="78"/>
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="155"/>
         <source>Charset:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">字符集：</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="116"/>
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="158"/>
         <source>Loading</source>
-        <translation type="unfinished"></translation>
+        <translation>加载中</translation>
     </message>
 </context>
 <context>
@@ -300,63 +300,63 @@ It&apos;s content will be deleted if you confirm.</source>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="225"/>
         <source>&amp;CloseWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>关闭窗口</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="227"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>视图</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="228"/>
         <source>&amp;Jump</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="230"/>
         <source>&amp;TestTool</source>
-        <translation type="unfinished"></translation>
+        <translation>测试工具</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="231"/>
         <source>&amp;MakeBigFile</source>
-        <translation type="unfinished"></translation>
+        <translation>生成大文件</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="236"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="237"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>打开</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="239"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>视图</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="240"/>
         <location filename="../src/lib/qt/main_window.cpp" line="266"/>
         <source>Jump</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="243"/>
         <source>MakeBigFile</source>
-        <translation type="unfinished"></translation>
+        <translation>生成大文件</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="266"/>
         <source>Jump to line in doument</source>
-        <translation type="unfinished"></translation>
+        <translation>跳转到文档中的某行</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="337"/>
         <source>Open Document</source>
-        <translation type="unfinished"></translation>
+        <translation>打开文档</translation>
     </message>
 </context>
 <context>
