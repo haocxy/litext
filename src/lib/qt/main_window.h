@@ -29,6 +29,9 @@ public:
 
     void openDocument(const fs::path &file, RowN row);
 
+signals:
+    void qtSigShouldReloadStyleSheetFile(QString styleSheetFilePath);
+
 protected:
     virtual void keyPressEvent(QKeyEvent *e) override;
 
@@ -66,6 +69,8 @@ private: // Action 统一放在这里
     void viewJumpAction();
 
     void makeBigFileAction();
+
+    void reloadStyleSheetFileAction();
 
 private:
 

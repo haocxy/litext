@@ -74,6 +74,8 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     , textArea_(textArea)
     , ui_(new Ui::EditorStatusBar) {
 
+    setObjectName("EditorStatusBarWidget");
+
     ui_->setupUi(this);
 
     doc::Document &doc = textArea.editor().document();
@@ -142,8 +144,6 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     connect(this, &Class::qtSigLoadDone, this, [this](long long timeUsageMs) {
         ui_->progressLabel->setText(tr("Loaded by %1 ms").arg(timeUsageMs));
     });
-
-    setStyleSheet("#EditorStatusBar{border-top:1px solid black;}");
 }
 
 EditorStatusBarWidget::~EditorStatusBarWidget()

@@ -32,6 +32,8 @@ public:
 
     int exec();
 
+    void reloadStyleSheetFromFile(const QString &filePath);
+
 private:
 
     void initQtApp(const InitInfo &initInfo);
@@ -66,6 +68,7 @@ private:
     MainWindow *mainWindow_ = nullptr;
     QSystemTrayIcon *trayIcon_ = nullptr;
     SigConns sigConns_;
+    QString styleSheetFilePath_;
 };
 
 }

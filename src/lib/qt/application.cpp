@@ -94,6 +94,22 @@ int Application::exec()
     }
 }
 
+void Application::reloadStyleSheetFromFile(const QString &filePath)
+{
+    if (!filePath.isEmpty()) {
+        styleSheetFilePath_ = filePath;
+    }
+
+    if (styleSheetFilePath_.isEmpty()) {
+        return;
+    }
+
+    QFile file(styleSheetFilePath_);
+    file.open(QIODevice::ReadOnly);
+    QString content = QString::fromUtf8(file.readAll());
+    qtApp_->setStyleSheet(content);
+}
+
 static QString findTransResourcePath(const QLocale &locale, const QString &base)
 {
     const char *logTitle = "findTransResourcePath";
@@ -149,6 +165,17 @@ void Application::initQtApp(const InitInfo &initInfo)
         }
     }
 
+    // 加载程序自带的样式表
+    QFile defaultStyleFile(":/style/default.qss");
+    defaultStyleFile.open(QIODevice::ReadOnly);
+    qtApp_->setStyleSheet(QString::fromUtf8(defaultStyleFile.readAll()));
+
+    // 加载由命令行指定的外部样式表(主要用于测试,通过这一机制可以在运行时重新加载外部样式表以查看效果)
+    const std::optional<fs::path> styleSheetFile = initInfo.styleSheetFile();
+    if (styleSheetFile) {
+        reloadStyleSheetFromFile(QString::fromStdU32String(styleSheetFile->generic_u32string()));
+    }
+
     if (initInfo.shouldStartAsServer()) {
         QGuiApplication::setQuitOnLastWindowClosed(false);
     }
@@ -187,6 +214,10 @@ void Application::initSystemTray(const InitInfo &initInfo)
 void Application::initMainWindow()
 {
     mainWindow_ = new MainWindow(engine_, engine_.config());
+
+    connect(mainWindow_, &MainWindow::qtSigShouldReloadStyleSheetFile, this, [this](QString styleSheetFilePath) {
+        reloadStyleSheetFromFile(styleSheetFilePath);
+    });
 }
 
 void Application::openFile(const doc::OpenInfo &openInfo)

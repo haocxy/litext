@@ -1,5 +1,6 @@
 <RCC>
     <qresource>
+        <file alias="style/default.qss">style/default.qss</file>
         <file alias="tray_icon.ico">assets/icon.ico</file>
         <file alias="char_pool/chinese.txt">assets/common_chinese_characters.txt</file>
         <file alias="trans.zh_CN.qm">trans/trans.zh_CN.qm</file>

@@ -63,6 +63,12 @@ LITEXT_API_FUNC_IMPL(initAddOpenFileWithUtf8FilePathAndRowNum)
     asLitext(p)->initInfo.addOpenInfo(path, row);
 }
 
+LITEXT_API_FUNC_IMPL(initSetStyleSheetFilePathByUtf8)
+{
+    const fs::path path = static_cast<std::u32string &&>(u32str(u8str(file)));
+    asLitext(p)->initInfo.setStyleSheetFile(path);
+}
+
 LITEXT_API_FUNC_IMPL(init)
 {
     LitextApi *api = asLitext(p);

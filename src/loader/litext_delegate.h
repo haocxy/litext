@@ -5,6 +5,7 @@
 
 #include <boost/dll/shared_library.hpp>
 
+#include "core/fs.h"
 #include "api/dynamic_api.h"
 
 
@@ -26,6 +27,7 @@ public:
         using InitSetShouldStartAsServer = LITEXT_API_FN_TYPE(initSetShouldStartAsServer);
         using InitSetLogLevel = LITEXT_API_FN_TYPE(initSetLogLevel);
         using InitAddOpenFileWithUtf8FilePathAndRowNum = LITEXT_API_FN_TYPE(initAddOpenFileWithUtf8FilePathAndRowNum);
+        using InitSetStyleSheetFilePathByUtf8 = LITEXT_API_FN_TYPE(initSetStyleSheetFilePathByUtf8);
         using Init = LITEXT_API_FN_TYPE(init);
         using Exec = LITEXT_API_FN_TYPE(exec);
 
@@ -34,6 +36,7 @@ public:
         InitSetShouldStartAsServer *initSetShouldStartAsServer = nullptr;
         InitSetLogLevel *initSetLogLevel = nullptr;
         InitAddOpenFileWithUtf8FilePathAndRowNum *initAddOpenFileWithUtf8FilePathAndRowNum = nullptr;
+        InitSetStyleSheetFilePathByUtf8 *initSetStyleSheetFilePathByUtf8 = nullptr;
         Init *init = nullptr;
         Exec *exec = nullptr;
 
@@ -43,6 +46,7 @@ public:
             initSetShouldStartAsServer = dll.get<InitSetShouldStartAsServer>(LITEXT_API_FN_NAME(initSetShouldStartAsServer));
             initSetLogLevel = dll.get<InitSetLogLevel>(LITEXT_API_FN_NAME(initSetLogLevel));
             initAddOpenFileWithUtf8FilePathAndRowNum = dll.get<InitAddOpenFileWithUtf8FilePathAndRowNum>(LITEXT_API_FN_NAME(initAddOpenFileWithUtf8FilePathAndRowNum));
+            initSetStyleSheetFilePathByUtf8 = dll.get<InitSetStyleSheetFilePathByUtf8>(LITEXT_API_FN_NAME(initSetStyleSheetFilePathByUtf8));
             init = dll.get<Init>(LITEXT_API_FN_NAME(init));
             exec = dll.get<Exec>(LITEXT_API_FN_NAME(exec));
         }
@@ -93,6 +97,10 @@ public:
 
     void initAddOpenInfo(const std::filesystem::path &file, int64_t row) {
         fnTable_.initAddOpenFileWithUtf8FilePathAndRowNum(handle_, file.generic_u8string().c_str(), row);
+    }
+
+    void initSetStyleSheetFile(const fs::path &file) {
+        fnTable_.initSetStyleSheetFilePathByUtf8(handle_, file.generic_u8string().c_str());
     }
 
     void init() {

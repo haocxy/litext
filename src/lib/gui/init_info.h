@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 
 #include "doc/open_info.h"
 
@@ -42,9 +43,18 @@ public:
         return openInfos_;
     }
 
+    const std::optional<fs::path> &styleSheetFile() const {
+        return styleSheetFile_;
+    }
+
+    void setStyleSheetFile(const fs::path &file) {
+        styleSheetFile_ = file;
+    }
+
 private:
     std::string logLevel_;
     bool shouldLogToStd_ = false;
     bool shouldStartAsServer_ = false;
     std::vector<doc::OpenInfo> openInfos_;
+    std::optional<fs::path> styleSheetFile_;
 };

@@ -1,8 +1,9 @@
 #pragma once
 
-#include <vector>
 #include <tuple>
+#include <vector>
 #include <string>
+#include <optional>
 #include <filesystem>
 
 #include "doc/open_info.h"
@@ -27,6 +28,8 @@ public:
     bool shouldLogToStdout() const;
 
     bool hasNonSingle() const;
+
+    std::optional<fs::path> styleSheetFile() const;
 
 private:
     CmdOptImpl *impl_ = nullptr;

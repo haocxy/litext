@@ -198,6 +198,11 @@ static int load(int argc, char *argv[])
         litext.initAddOpenInfo(pair.first, pair.second);
     }
 
+    const std::optional<fs::path> styleSheetFile = opt.styleSheetFile();
+    if (styleSheetFile) {
+        litext.initSetStyleSheetFile(*styleSheetFile);
+    }
+
     // 实际执行Application的初始化逻辑,
     // 其它的以init开头的函数只是设置了初始化信息,
     // 只有init()才是把这些信息实际用于Application初始化

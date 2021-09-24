@@ -257,12 +257,12 @@ It&apos;s content will be deleted if you confirm.</source>
 <context>
     <name>gui::qt::EditorStatusBarWidget</name>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="117"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="119"/>
         <source>Unknown</source>
         <translation type="unfinished">未知</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="143"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="145"/>
         <source>Loaded by %1 ms</source>
         <translation type="unfinished">已加载，用时%1毫秒</translation>
     </message>
@@ -317,13 +317,13 @@ It&apos;s content will be deleted if you confirm.</source>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="223"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="238"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="239"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="224"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="239"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="240"/>
         <source>Open</source>
         <translation>打开文档</translation>
     </message>
@@ -339,35 +339,41 @@ It&apos;s content will be deleted if you confirm.</source>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="229"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="241"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="242"/>
         <source>View</source>
         <translation>视图</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="230"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="242"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="287"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="243"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="288"/>
         <source>Jump</source>
         <translation>跳转到行</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="232"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="245"/>
         <source>TestTool</source>
         <translation>测试工具</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="233"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="245"/>
         <source>MakeBigFile</source>
         <translation>生成大文件</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="287"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="234"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="246"/>
+        <source>ReloadStyleSheet</source>
+        <translation>刷新外部样式表</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/main_window.cpp" line="288"/>
         <source>Jump to line in doument</source>
         <translation>跳转到文档中的某行</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="363"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="369"/>
         <source>Open Document</source>
         <translation>打开文档</translation>
     </message>

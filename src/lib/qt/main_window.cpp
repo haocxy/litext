@@ -231,6 +231,7 @@ void MainWindow::initMenuBar()
 
     QMenu *testToolMenu = bar->addMenu(tr("TestTool"));
     bind(testToolMenu, tr("MakeBigFile"), &Class::makeBigFileAction);
+    bind(testToolMenu, tr("ReloadStyleSheet"), &Class::reloadStyleSheetFileAction);
 }
 
 void MainWindow::initToolBar()
@@ -240,6 +241,9 @@ void MainWindow::initToolBar()
 
     QToolBar *viewBar = addToolBar(tr("View"));
     bind(viewBar, tr("Jump"), &Class::viewJumpAction);
+
+    QToolBar *testToolBar = addToolBar(tr("TestTool"));
+    bind(testToolBar, tr("ReloadStyleSheet"), &Class::reloadStyleSheetFileAction);
 }
 
 void MainWindow::bind(QMenu *menu, const QString &name, void(MainWindow:: *f)())
@@ -302,6 +306,11 @@ void MainWindow::makeBigFileAction()
     });
 
     w->show();
+}
+
+void MainWindow::reloadStyleSheetFileAction()
+{
+    emit qtSigShouldReloadStyleSheetFile(QString());
 }
 
 void MainWindow::curEditorPageUp()

@@ -28,6 +28,7 @@ public:
         po::options_description_easy_init add = desc_.add_options();
         addOptions(add);
         add("file,f", po::value<strvec>(&posArgs), "Path(s) of text file to open");
+        add("stylefile,s", po::value<std::string>(&stylefile_), "Path of style sheet file");
 
         po::positional_options_description posdesc_;
         posdesc_.add("file", -1);
@@ -92,6 +93,10 @@ public:
 
     bool hasNonSingle() const {
         return varmap_.count("nonsingleton") != 0;
+    }
+
+    const std::string &stylefile() const {
+        return stylefile_;
     }
 
 private:
@@ -161,6 +166,7 @@ private:
     boost::program_options::variables_map varmap_;
     bool hasError_ = false;
     std::vector<std::pair<std::filesystem::path, int64_t>> files_;
+    std::string stylefile_;
 };
 
 CmdOpt::CmdOpt(int argc, char *argv[])
@@ -202,4 +208,14 @@ bool CmdOpt::shouldLogToStdout() const
 bool CmdOpt::hasNonSingle() const
 {
     return impl_->hasNonSingle();
+}
+
+std::optional<fs::path> CmdOpt::styleSheetFile() const
+{
+    std::string stylefile = impl_->stylefile();
+    if (stylefile.empty()) {
+        return std::nullopt;
+    } else {
+        return fs::path(stylefile);
+    }
 }

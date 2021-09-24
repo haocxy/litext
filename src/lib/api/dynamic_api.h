@@ -33,6 +33,10 @@
 #define LITEXT_API_FP_initAddOpenFileWithUtf8FilePathAndRowNum() (void *p, const char *file, long long row)
 #define LITEXT_API_FR_initAddOpenFileWithUtf8FilePathAndRowNum() void
 
+#define LITEXT_API_FN_initSetStyleSheetFilePathByUtf8() initSetStyleSheetFilePathByUtf8
+#define LITEXT_API_FP_initSetStyleSheetFilePathByUtf8() (void *p, const char *file)
+#define LITEXT_API_FR_initSetStyleSheetFilePathByUtf8() void
+
 #define LITEXT_API_FN_init() init
 #define LITEXT_API_FP_init() (void *p)
 #define LITEXT_API_FR_init() void
