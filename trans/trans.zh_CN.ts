@@ -259,12 +259,12 @@ It&apos;s content will be deleted if you confirm.</source>
     <message>
         <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="117"/>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">未知</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="143"/>
         <source>Loaded by %1 ms</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">已加载，用时%1毫秒</translation>
     </message>
 </context>
 <context>
