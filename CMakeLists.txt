@@ -39,9 +39,13 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 
-# 生成Qt翻译发布文件(.qm文件)
+# 更新Qt翻译文件(.ts)和发布文件(.qm文件)
 execute_process(
     COMMAND "lupdate" "src/lib/qt" "-ts" "trans/trans.zh_CN.ts"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+execute_process(
+    COMMAND "lrelease" "trans/trans.zh_CN.ts" "-qm" "trans/trans.zh_CN.qm"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
