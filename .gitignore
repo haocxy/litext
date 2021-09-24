@@ -268,3 +268,5 @@ __pycache__/
 /src/**/asset.*.h
 /src/**/asset.*.cpp
 /src/**/gen.*.h
+
+/trans/*.qm
