@@ -365,7 +365,7 @@ It&apos;s content will be deleted if you confirm.</source>
         <location filename="../src/lib/qt/main_window.cpp" line="234"/>
         <location filename="../src/lib/qt/main_window.cpp" line="246"/>
         <source>ReloadStyleSheet</source>
-        <translation>刷新外部样式表</translation>
+        <translation>重载样式表</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/main_window.cpp" line="288"/>

@@ -105,9 +105,11 @@ void Application::reloadStyleSheetFromFile(const QString &filePath)
     }
 
     QFile file(styleSheetFilePath_);
-    file.open(QIODevice::ReadOnly);
-    QString content = QString::fromUtf8(file.readAll());
-    qtApp_->setStyleSheet(content);
+    if (file.exists()) {
+        file.open(QIODevice::ReadOnly);
+        QString content = QString::fromUtf8(file.readAll());
+        qtApp_->setStyleSheet(content);
+    }
 }
 
 static QString findTransResourcePath(const QLocale &locale, const QString &base)
