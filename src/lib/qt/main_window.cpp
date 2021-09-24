@@ -240,9 +240,6 @@ void MainWindow::initToolBar()
 
     QToolBar *viewBar = addToolBar(tr("View"));
     bind(viewBar, tr("Jump"), &Class::viewJumpAction);
-
-    QToolBar *testToolsBar = addToolBar("TestTool");
-    bind(testToolsBar, tr("MakeBigFile"), &Class::makeBigFileAction);
 }
 
 void MainWindow::bind(QMenu *menu, const QString &name, void(MainWindow:: *f)())
