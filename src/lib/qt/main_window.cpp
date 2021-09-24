@@ -134,6 +134,8 @@ static const u8str fontFile = "fontFile";
 static const u8str fontFace = "fontFace";
 }
 
+using Class = MainWindow;
+
 MainWindow::MainWindow(Engine &engine, Config &config)
     : engine_(engine)
     , config_(config)
@@ -231,6 +233,14 @@ void MainWindow::initMenuBar()
 
 void MainWindow::initToolBar()
 {
+    QToolBar *fileBar = addToolBar(tr("File"));
+    bind(fileBar, tr("Open"), &Class::fileOpenAction);
+
+    QToolBar *viewBar = addToolBar(tr("View"));
+    bind(viewBar, tr("View"), &Class::viewJumpAction);
+
+    QToolBar *testToolsBar = addToolBar("TestTool");
+    bind(testToolsBar, tr("MakeBigFile"), &Class::makeBigFileAction);
 }
 
 static RowN goToLineToRowOff(int goToLine)
@@ -311,6 +321,13 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     default:
         break;
     }
+}
+
+QToolBar *MainWindow::addToolBar(const QString &title)
+{
+    QToolBar *toolBar = QMainWindow::addToolBar(title);
+    toolBar->setMovable(false);
+    return toolBar;
 }
 
 void MainWindow::fileOpenAction()

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMenu>
+#include <QToolBar>
 #include <QAction>
 #include <QPointer>
 #include <QMainWindow>
@@ -46,6 +47,15 @@ private:
         QAction *action = menu->addAction(name);
         connect(action, &QAction::triggered, this, f);
     }
+
+    template <typename T, typename R>
+    void bind(QToolBar *toolBar, const QString &name, R(T:: *f)())
+    {
+        QAction *action = toolBar->addAction(name);
+        connect(action, &QAction::triggered, this, f);
+    }
+
+    QToolBar *addToolBar(const QString &title);
 
 private: // Action 统一放在这里
 
