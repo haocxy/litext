@@ -15,6 +15,8 @@ public:
 
     ~FontRepo();
 
+    void test();
+
 private:
     void loadFromDb();
 

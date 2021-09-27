@@ -22,6 +22,8 @@ void Engine::init(const InitInfo &initInfo)
     if (initInfo.shouldStartAsServer()) {
         initSingletonServer();
     }
+
+    fontRepo_.test(); // TODO test code
 }
 
 void Engine::initLogger(const InitInfo &initInfo)

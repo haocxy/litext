@@ -1,10 +1,15 @@
-CREATE TABLE IF NOT EXISTS fonts
+CREATE TABLE IF NOT EXISTS font_files
 (
-	file_path BLOB NOT NULL,
+	file_path BLOB PRIMARY KEY,
+	last_write_time NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS font_faces
+(
+	file_path BLOB PRIMARY KEY REFERENCES font_files(file_path),
 	face_id INTEGER NOT NULL,
-	last_write_time NOT NULL,
 	family BLOB NOT NULL,
 	is_scalable BOOLEAN NOT NULL,
 	is_bold BOOLEAN NOT NULL,
 	is_italic BOOLEAN NOT NULL
-);
+)
