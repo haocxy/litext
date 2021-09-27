@@ -18,6 +18,8 @@ public:
 private:
     void loadFromDb();
 
+    void updateDb();
+
 private:
     const fs::path dbFile_;
     uptr<FontDb> fontDb_;

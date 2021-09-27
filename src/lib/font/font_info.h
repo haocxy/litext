@@ -19,6 +19,14 @@ public:
         filePath_ = filePath;
     }
 
+    i64 faceId() const {
+        return faceId_;
+    }
+
+    void setFaceId(i64 faceId) {
+        faceId_ = faceId;
+    }
+
     i64 lastWriteTime() const {
         return lastWriteTime_;
     }
@@ -27,11 +35,11 @@ public:
         lastWriteTime_ = lastWriteTime;
     }
 
-    const std::string &family() const {
+    const u8str &family() const {
         return family_;
     }
 
-    void setFamily(const std::string &family) {
+    void setFamily(const u8str &family) {
         family_ = family;
     }
 
@@ -61,8 +69,9 @@ public:
 
 private:
     fs::path filePath_;
+    i64 faceId_ = 0;
     i64 lastWriteTime_ = 0;
-    std::string family_;
+    u8str family_;
     bool isScalable_ = false;
     bool isBold_ = false;
     bool isItalic_ = false;
