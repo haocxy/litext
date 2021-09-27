@@ -15,11 +15,51 @@ public:
 
     ~FontDb();
 
+    class StmtLastWriteTimeOf {
+    public:
+        StmtLastWriteTimeOf(FontDb &db);
+
+        opt<i64> operator()(const fs::path &fontFile);
+
+    private:
+        sqlite::Statement stmt_;
+    };
+
     opt<i64> lastWriteTimeOf(const fs::path &fontFile);
+
+    class StmtInsertFile {
+    public:
+        StmtInsertFile(FontDb &db);
+
+        void operator()(const fs::path &fontFile, i64 writeTime);
+
+    private:
+        sqlite::Statement stmt_;
+    };
 
     void insertFile(const fs::path &fontFile, i64 writeTime);
 
+    class StmtInsertFace {
+    public:
+        StmtInsertFace(FontDb &db);
+
+        void operator()(const FaceInfo &info);
+
+    private:
+        sqlite::Statement stmt_;
+    };
+
     void insertFace(const FaceInfo &info);
+
+    class StmtDeleteFaceAndFile {
+    public:
+        StmtDeleteFaceAndFile(FontDb &db);
+
+        void operator()(const fs::path &fontFile);
+
+    private:
+        sqlite::Statement stmt_;
+    };
 
     void removeFile(const fs::path &fontFile);
 

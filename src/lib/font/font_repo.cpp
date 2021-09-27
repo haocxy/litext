@@ -5,7 +5,6 @@
 #include "core/time.h"
 #include "core/logger.h"
 
-
 namespace font
 {
 
@@ -26,15 +25,8 @@ void FontRepo::test()
 
 void FontRepo::loadFromDb()
 {
-    ElapsedTime elapse;
-
-    elapse.start();
-
     fontDb_ = std::make_unique<FontDb>(dbFile_);
-
-    updateDb();
-
-    LOGI << "FontRepo::loadFromDb() use [" << elapse.ms() << " ms]";
+    fontUpdater_ = std::make_unique<FontUpdater>(*fontDb_);
 }
 
 static i64 lastWriteTimeOf(const fs::path &path)

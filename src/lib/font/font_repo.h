@@ -4,6 +4,7 @@
 #include "core/fs.h"
 
 #include "font_db.h"
+#include "font_updater.h"
 
 
 namespace font
@@ -27,6 +28,7 @@ private:
 private:
     const fs::path dbFile_;
     uptr<FontDb> fontDb_;
+    uptr<FontUpdater> fontUpdater_;
 };
 
 }
