@@ -34,7 +34,7 @@ void FontRepo::loadFromDb()
 
     updateDb();
 
-    LOGE << "FontRepo::loadFromDb() use [" << elapse.ms() << " ms]";
+    LOGI << "FontRepo::loadFromDb() use [" << elapse.ms() << " ms]";
 }
 
 static i64 lastWriteTimeOf(const fs::path &path)
@@ -74,7 +74,7 @@ void FontRepo::updateByFontFile(const fs::path &fontFilePath)
             LOGD << title << "font file [" << fontFilePath << "] is not changed, skip it";
             return;
         } else {
-            LOGD << title << "font file [" << fontFilePath << "] is changed, remove db info for it";
+            LOGI << title << "font file [" << fontFilePath << "] is changed";
 
             // font_faces 表的 file_path 为引用了 font_file 中 file_path 的外键,
             // 所以必须先删除 font_faces 表中的对应数据
@@ -82,7 +82,7 @@ void FontRepo::updateByFontFile(const fs::path &fontFilePath)
             fontDb_->removeFile(fontFilePath);
         }
     } else {
-        LOGD << title << "font file [" << fontFilePath << "] is new";
+        LOGI << title << "font file [" << fontFilePath << "] is new";
     }
 
     FontContext context;
