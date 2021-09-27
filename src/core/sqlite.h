@@ -104,6 +104,8 @@ public:
 
     void bind(int pos, long long value);
 
+    void bind(int pos, const fs::path &path);
+
     template <typename T>
     Statement &arg(T &&obj) {
         bind(argBindIndex_++, std::forward<T>(obj));
@@ -127,6 +129,8 @@ public:
     void getValue(int col, u8str &to);
 
     void getValue(int col, std::u32string &to);
+
+    void getValue(int col, fs::path &to);
 
     int64_t lastInsertRowId() const;
 

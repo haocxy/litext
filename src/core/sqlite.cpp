@@ -284,6 +284,11 @@ void Statement::bind(int pos, long long value)
     }
 }
 
+void Statement::bind(int pos, const fs::path &path)
+{
+    bind(pos, u8str(path.generic_u8string()));
+}
+
 void Statement::step()
 {
     argBindIndex_ = 1;
@@ -313,7 +318,7 @@ void Statement::getValue(int col, int &to)
 
 void Statement::getValue(int col, long &to)
 {
-    to = sqlite3_column_int64(stmt_, col);
+    to = static_cast<long>(sqlite3_column_int64(stmt_, col));
 }
 
 void Statement::getValue(int col, long long &to)
@@ -346,6 +351,14 @@ void Statement::getValue(int col, std::u32string &to)
     size_t nbytes = sqlite3_column_bytes(stmt_, col);
     to.resize(nbytes / sizeof(std::u32string::value_type));
     std::memcpy(to.data(), sqlite3_column_blob(stmt_, col), nbytes);
+}
+
+void Statement::getValue(int col, fs::path &to)
+{
+    u8str str;
+    getValue(col, str);
+    const u32str u32s = u32str(str);
+    to = static_cast<const std::u32string &>(u32s);
 }
 
 int64_t Statement::lastInsertRowId() const
