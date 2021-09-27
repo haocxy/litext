@@ -7,9 +7,9 @@
 namespace font
 {
 
-class FontInfo {
+class FaceInfo {
 public:
-    FontInfo() {}
+    FaceInfo() {}
 
     const fs::path &filePath() const {
         return filePath_;
@@ -25,14 +25,6 @@ public:
 
     void setFaceId(i64 faceId) {
         faceId_ = faceId;
-    }
-
-    i64 lastWriteTime() const {
-        return lastWriteTime_;
-    }
-
-    void setLastWriteTime(i64 lastWriteTime) {
-        lastWriteTime_ = lastWriteTime;
     }
 
     const u8str &family() const {
@@ -70,7 +62,6 @@ public:
 private:
     fs::path filePath_;
     i64 faceId_ = 0;
-    i64 lastWriteTime_ = 0;
     u8str family_;
     bool isScalable_ = false;
     bool isBold_ = false;

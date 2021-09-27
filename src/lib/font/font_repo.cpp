@@ -37,17 +37,16 @@ void FontRepo::loadFromDb()
     LOGE << "FontRepo::loadFromDb() use [" << elapse.ms() << " ms]";
 }
 
-static i64 lastWriteTime(const fs::path &path)
+static i64 lastWriteTimeOf(const fs::path &path)
 {
     return fs::last_write_time(path).time_since_epoch().count();
 }
 
-static FontInfo mkInfo(const FontFile &fontFile, const FontFace &fontFace)
+static FaceInfo mkFaceInfo(const fs::path & fontFilePath, const FontFace &fontFace)
 {
-    FontInfo info;
-    info.setFilePath(fontFile.path());
+    FaceInfo info;
+    info.setFilePath(fontFilePath);
     info.setFaceId(fontFace.faceIndex());
-    info.setLastWriteTime(lastWriteTime(fontFile.path()));
     info.setFamily(fontFace.familyName());
     info.setIsScalable(fontFace.isScalable());
     info.setIsBold(fontFace.isBold());
@@ -57,7 +56,56 @@ static FontInfo mkInfo(const FontFile &fontFile, const FontFace &fontFace)
 
 void FontRepo::updateDb()
 {
+    const std::vector<fs::path> fileVec = SystemUtil::fonts();
 
+    for (const fs::path &file : fileVec) {
+        updateByFontFile(file);
+    }
+}
+
+void FontRepo::updateByFontFile(const fs::path &fontFilePath)
+{
+    const char *title = "FontRepo::updateByFontFile ";
+
+    const opt<i64> writeTimeInDb = fontDb_->lastWriteTimeOf(fontFilePath);
+    const i64 writeTimeInFs = lastWriteTimeOf(fontFilePath);
+    if (writeTimeInDb) {
+        if (*writeTimeInDb == writeTimeInFs) {
+            LOGD << title << "font file [" << fontFilePath << "] is not changed, skip it";
+            return;
+        } else {
+            LOGD << title << "font file [" << fontFilePath << "] is changed, remove db info for it";
+
+            // font_faces 表的 file_path 为引用了 font_file 中 file_path 的外键,
+            // 所以必须先删除 font_faces 表中的对应数据
+            fontDb_->removeFaces(fontFilePath);
+            fontDb_->removeFile(fontFilePath);
+        }
+    } else {
+        LOGD << title << "font file [" << fontFilePath << "] is new";
+    }
+
+    FontContext context;
+
+    FontFile fontFile(context, fontFilePath);
+    if (!fontFile.isValid()) {
+        return;
+    }
+
+    const i64 faceCount = fontFile.faceCount();
+    if (faceCount <= 0) {
+        return;
+    }
+
+    fontDb_->insertFile(fontFilePath, writeTimeInFs);
+
+    for (i64 faceIndex = 0; faceIndex < faceCount; ++faceIndex) {
+        const FontFace fontFace(fontFile, faceIndex);
+        if (fontFace.isValid()) {
+            FaceInfo info = mkFaceInfo(fontFilePath, fontFace);
+            fontDb_->insertFace(info);
+        }
+    }
 }
 
 }
