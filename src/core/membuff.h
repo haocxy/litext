@@ -83,6 +83,11 @@ public:
 
     void append(const void *from, i64 len);
 
+    void assign(const void *data, i64 nbytes) {
+        clear();
+        append(data, nbytes);
+    }
+
 private:
     using byte = unsigned char;
 

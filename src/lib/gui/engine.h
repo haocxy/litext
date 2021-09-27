@@ -9,6 +9,7 @@
 #include "obj_async_creator.h"
 #include "obj_async_deleter.h"
 #include "singleton_server.h"
+#include "font/font_repo.h"
 
 
 namespace gui
@@ -86,6 +87,7 @@ private:
     ObjAsyncCreator objAsyncCreator_;
     ObjAsyncDeleter objAsyncDeleter_;
     EditorManager editorManager_;
+    font::FontRepo fontRepo_;
 };
 
 }

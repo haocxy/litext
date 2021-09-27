@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string>
 #include <memory>
+#include <optional>
 
 #include "scoped_container.h"
 #include "ustr.h"
@@ -33,3 +34,6 @@ using uptr = std::unique_ptr<T>;
 
 template <typename T>
 using sptr = std::shared_ptr<T>;
+
+template <typename T>
+using opt = std::optional<T>;

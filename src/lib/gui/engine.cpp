@@ -9,6 +9,7 @@ namespace gui
 
 Engine::Engine()
     : editorManager_(objAsyncCreator_, objAsyncDeleter_)
+    , fontRepo_(dirManager_.fontDbFile())
 {
 }
 

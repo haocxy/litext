@@ -53,3 +53,10 @@ fs::path DirManager::singletonServerInfoFile() const
     ensureFileExsit(f);
     return f;
 }
+
+fs::path DirManager::fontDbFile() const
+{
+    const fs::path f = workDir_ / "font.fontdb";
+    ensureFileExsit(f);
+    return f;
+}

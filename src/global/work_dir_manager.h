@@ -61,6 +61,9 @@ public:
     // TODO 未来应该自己通过直接调用操作系统API实现对文件本身加锁
     fs::path singletonServerInfoFile() const;
 
+    // 字体数据库文件的路径
+    fs::path fontDbFile() const;
+
 private:
     fs::path workDir_;
 };

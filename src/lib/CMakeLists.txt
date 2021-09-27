@@ -21,6 +21,7 @@ execute_process(
 )
 message(STATUS "Qt UIC updated")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 file(GLOB_RECURSE src_files
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
