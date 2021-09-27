@@ -1,22 +1,22 @@
 #pragma once
 
+#include "core/fs.h"
 #include "core/basetype.h"
-#include "core/membuff.h"
 
 
 namespace font
 {
 
-class FontDbItem {
+class FontInfo {
 public:
-    FontDbItem() {}
+    FontInfo() {}
 
-    const MemBuff &filePath() const {
+    const fs::path &filePath() const {
         return filePath_;
     }
 
-    void setFilePath(const void *data, i64 nbytes) {
-        filePath_.assign(data, nbytes);
+    void setFilePath(const fs::path &filePath) {
+        filePath_ = filePath;
     }
 
     i64 lastWriteTime() const {
@@ -60,7 +60,7 @@ public:
     }
 
 private:
-    MemBuff filePath_;
+    fs::path filePath_;
     i64 lastWriteTime_ = 0;
     std::string family_;
     bool isScalable_ = false;
