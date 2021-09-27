@@ -114,17 +114,13 @@ void FontDb::insertFace(const FaceInfo &info)
     stmtInsertFontFace_.step();
 }
 
-static const char *const kSqlDeleteFaceAndFile = ""
-    "DELETE FROM font_faces WHERE file_path = ?;"
-    "DELETE FROM font_files WHERE file_path = ?;";
-
-FontDb::StmtDeleteFaceAndFile::StmtDeleteFaceAndFile(FontDb &db)
-    : stmt_(db.db_, kSqlDeleteFaceAndFile)
+FontDb::StmtDeleteFile::StmtDeleteFile(FontDb &db)
+    : stmt_(db.db_, "DELETE FROM font_files WHERE file_path = ?;")
 {
 
 }
 
-void FontDb::StmtDeleteFaceAndFile::operator()(const fs::path &fontFile)
+void FontDb::StmtDeleteFile::operator()(const fs::path &fontFile)
 {
     stmt_.reset();
     stmt_.arg(fontFile);
@@ -136,6 +132,18 @@ void FontDb::removeFile(const fs::path &fontFile)
     stmtDeleteFontFile_.reset();
     stmtDeleteFontFile_.arg(fontFile);
     stmtDeleteFontFile_.step();
+}
+
+FontDb::StmtDeleteFaces::StmtDeleteFaces(FontDb &db)
+    : stmt_(db.db_, "DELETE FROM font_faces WHERE file_path = ?;")
+{
+}
+
+void FontDb::StmtDeleteFaces::operator()(const fs::path &fontFile)
+{
+    stmt_.reset();
+    stmt_.arg(fontFile);
+    stmt_.step();
 }
 
 void FontDb::removeFaces(const fs::path &fontFile)

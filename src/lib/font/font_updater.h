@@ -35,7 +35,8 @@ private:
         std::atomic_bool &stopping_;
         BlockQueue<fs::path> &foundFilePaths_;
         FontDb::StmtLastWriteTimeOf stmtLastWriteTimeOf_;
-        FontDb::StmtDeleteFaceAndFile stmtDeleteFaceAndFiles_;
+        FontDb::StmtDeleteFile stmtDeleteFile_;
+        FontDb::StmtDeleteFaces stmtDeleteFaces_;
         FontDb::StmtInsertFile stmtInsertFile_;
         FontDb::StmtInsertFace stmtInsertFace_;
         FontContext context_;

@@ -44,7 +44,8 @@ FontUpdater::UpdateWorker::UpdateWorker(FontUpdater &outer, FontDb &db)
     : stopping_(outer.stopping_)
     , foundFilePaths_(outer.foundFilePaths_)
     , stmtLastWriteTimeOf_(db)
-    , stmtDeleteFaceAndFiles_(db)
+    , stmtDeleteFile_(db)
+    , stmtDeleteFaces_(db)
     , stmtInsertFile_(db)
     , stmtInsertFace_(db)
 {
@@ -97,7 +98,8 @@ void FontUpdater::UpdateWorker::updateFont(const fs::path &p)
             return;
         } else {
             LOGI << title << "font file [" << p << "] is changed";
-            stmtDeleteFaceAndFiles_(p);
+            stmtDeleteFaces_(p);
+            stmtDeleteFile_(p);
         }
     } else {
         LOGI << title << "font file [" << p << "] is new";

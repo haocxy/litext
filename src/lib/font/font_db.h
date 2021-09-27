@@ -51,9 +51,9 @@ public:
 
     void insertFace(const FaceInfo &info);
 
-    class StmtDeleteFaceAndFile {
+    class StmtDeleteFile {
     public:
-        StmtDeleteFaceAndFile(FontDb &db);
+        StmtDeleteFile(FontDb &db);
 
         void operator()(const fs::path &fontFile);
 
@@ -62,6 +62,16 @@ public:
     };
 
     void removeFile(const fs::path &fontFile);
+
+    class StmtDeleteFaces {
+    public:
+        StmtDeleteFaces(FontDb &db);
+
+        void operator()(const fs::path &fontFile);
+
+    private:
+        sqlite::Statement stmt_;
+    };
 
     void removeFaces(const fs::path &fontFile);
 
