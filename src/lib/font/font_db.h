@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "core/fs.h"
 #include "core/sqlite.h"
 
@@ -14,6 +16,16 @@ public:
     FontDb(const fs::path &dbFile);
 
     ~FontDb();
+
+    class StmtForEachFontFile {
+    public:
+        StmtForEachFontFile(FontDb &db);
+
+        void operator()(std::function<void(const fs::path &p)> &&action);
+
+    private:
+        sqlite::Statement stmt_;
+    };
 
     class StmtLastWriteTimeOf {
     public:

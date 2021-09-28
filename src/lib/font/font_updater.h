@@ -18,6 +18,8 @@ public:
     ~FontUpdater();
 
 private:
+    void removeUselessData(FontDb &db);
+
     void loop();
 
     class UpdateWorker {

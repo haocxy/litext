@@ -14,7 +14,10 @@ static i64 decideUpdateThreadCount()
 
 FontUpdater::FontUpdater(FontDb &db)
 {
-    scanThread_ = std::thread([this] { loop(); });
+    scanThread_ = std::thread([this, &db] {
+        removeUselessData(db);
+        loop();
+    });
 
     const i64 updateThreadCount = decideUpdateThreadCount();
 
@@ -29,6 +32,21 @@ FontUpdater::~FontUpdater()
     foundFilePaths_.stop();
     scanThread_.join();
     updateWorkers_.clear();
+}
+
+void FontUpdater::removeUselessData(FontDb &db)
+{
+    FontDb::StmtDeleteFaces stmtDeleteFaces(db);
+    FontDb::StmtDeleteFile stmtDeleteFile(db);
+    FontDb::StmtForEachFontFile stmtForEachFontFile(db);
+
+    stmtForEachFontFile([&stmtDeleteFaces, &stmtDeleteFile](const fs::path &p) {
+        if (!fs::exists(p) || !fs::is_regular_file(p)) {
+            stmtDeleteFaces(p);
+            stmtDeleteFile(p);
+            LOGI << "FontUpdater::removeUselessData() data for file [" << p << "] deleted";
+        }
+    });
 }
 
 void FontUpdater::loop()

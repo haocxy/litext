@@ -18,6 +18,22 @@ FontDb::~FontDb()
 {
 }
 
+FontDb::StmtForEachFontFile::StmtForEachFontFile(FontDb &db)
+    : stmt_(db.db_, "SELECT file_path FROM font_files;")
+{
+}
+
+void FontDb::StmtForEachFontFile::operator()(std::function<void(const fs::path &p)> &&action)
+{
+    stmt_.reset();
+
+    while (stmt_.nextRow()) {
+        fs::path p;
+        stmt_.getValue(0, p);
+        action(p);
+    }
+}
+
 FontDb::StmtLastWriteTimeOf::StmtLastWriteTimeOf(FontDb &db)
     : stmt_(db.db_, "SELECT last_write_time FROM font_files WHERE file_path = ?;")
 {}
