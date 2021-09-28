@@ -21,10 +21,6 @@ public:
 private:
     void loadFromDb();
 
-    void updateDb();
-
-    void updateByFontFile(const fs::path &fontFile);
-
 private:
     const fs::path dbFile_;
     uptr<FontDb> fontDb_;
