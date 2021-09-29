@@ -43,12 +43,12 @@ void Engine::cleanUseless()
 
 void Engine::initSingletonServer()
 {
-    SingletonServer::StartInfo info;
+    SingletonServerOld::StartInfo info;
     info.serverRunningLock = dirManager_.singletonServerRunningLockFile();
     info.infoFile = dirManager_.singletonServerInfoFile();
     info.infoFileLock = dirManager_.singletonServerInfoFileLock();
 
-    singletonServer_.start(info);
+    singletonServerOld_.start(info);
 }
 
 }

@@ -15,7 +15,7 @@ class SingletonServerImpl;
 // 负责管理程序以单例模式执行时的服务端逻辑
 // 主要是接收由客户端发来的打开文件的请求
 // 还会定期向锁文件中写入服务端监听的端口
-class SingletonServer {
+class SingletonServerOld {
 public:
     using OpenInfos = std::vector<doc::OpenInfo>;
 
@@ -25,9 +25,9 @@ public:
         fs::path infoFileLock;
     };
 
-    SingletonServer();
+    SingletonServerOld();
 
-    ~SingletonServer();
+    ~SingletonServerOld();
 
     Signal<void()> &sigActivateUI();
 

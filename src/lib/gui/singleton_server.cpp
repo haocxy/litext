@@ -101,9 +101,9 @@ public:
         std::string sendData_;
     };
 
-    using OpenInfos = gui::SingletonServer::OpenInfos;
+    using OpenInfos = gui::SingletonServerOld::OpenInfos;
 
-    using StartInfo = gui::SingletonServer::StartInfo;
+    using StartInfo = gui::SingletonServerOld::StartInfo;
 
     SingletonServerShareThis()
         : acceptor_(context_, endpoint(tcp::v4(), 0))
@@ -283,7 +283,7 @@ public:
     SingletonServerImpl()
         : impl_(std::make_shared<SingletonServerShareThis>()) {}
 
-    Signal<void(const SingletonServer::OpenInfos &)> &sigRecvOpenInfos() {
+    Signal<void(const SingletonServerOld::OpenInfos &)> &sigRecvOpenInfos() {
         return impl_->sigRecvOpenInfos();
     }
 
@@ -291,7 +291,7 @@ public:
         return impl_->sigActivateUI();
     }
 
-    void start(const SingletonServer::StartInfo &info) {
+    void start(const SingletonServerOld::StartInfo &info) {
         impl_->start(info);
     }
 
@@ -299,28 +299,28 @@ private:
     std::shared_ptr<SingletonServerShareThis> impl_;
 };
 
-SingletonServer::SingletonServer()
+SingletonServerOld::SingletonServerOld()
     : impl_(new SingletonServerImpl)
 {
 }
 
-SingletonServer::~SingletonServer()
+SingletonServerOld::~SingletonServerOld()
 {
     delete impl_;
     impl_ = nullptr;
 }
 
-Signal<void()> &SingletonServer::sigActivateUI()
+Signal<void()> &SingletonServerOld::sigActivateUI()
 {
     return impl_->sigActivateUI();
 }
 
-Signal<void(const SingletonServer::OpenInfos &)> &SingletonServer::sigRecvOpenInfos()
+Signal<void(const SingletonServerOld::OpenInfos &)> &SingletonServerOld::sigRecvOpenInfos()
 {
     return impl_->sigRecvOpenInfos();
 }
 
-void SingletonServer::start(const StartInfo &info)
+void SingletonServerOld::start(const StartInfo &info)
 {
     return impl_->start(info);
 }

@@ -39,12 +39,12 @@ public:
         return config_;
     }
 
-    const SingletonServer &singletonServer() const {
-        return singletonServer_;
+    const SingletonServerOld &singletonServerOld() const {
+        return singletonServerOld_;
     }
 
-    SingletonServer &singletonServer() {
-        return singletonServer_;
+    SingletonServerOld &singletonServerOld() {
+        return singletonServerOld_;
     }
 
     const PropDb &propDb() const {
@@ -82,7 +82,7 @@ private:
 private:
     DirManager dirManager_;
     Config config_;
-    SingletonServer singletonServer_;
+    SingletonServerOld singletonServerOld_;
     PropDb propDb_;
     ObjAsyncCreator objAsyncCreator_;
     ObjAsyncDeleter objAsyncDeleter_;
