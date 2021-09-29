@@ -8,7 +8,7 @@
 #include "editor_manager.h"
 #include "obj_async_creator.h"
 #include "obj_async_deleter.h"
-#include "singleton_server.h"
+#include "singleton_server_old.h"
 #include "font/font_repo.h"
 
 
