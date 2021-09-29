@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <queue>
+#include <atomic>
 #include <string>
 #include <limits>
 #include <optional>
