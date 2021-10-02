@@ -19,6 +19,8 @@ public:
 
     void read(void *dest, i64 nbytes);
 
+    void write(const void *data, i64 nbytes);
+
 protected:
     ObjHandle handle_;
 };

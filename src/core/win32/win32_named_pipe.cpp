@@ -84,7 +84,29 @@ void NamedPipe::read(void *dest, i64 nbytes) {
             } else if (got < remain) {
                 output += got;
             } else {
-                throw std::runtime_error("win32::NamedPipeServer::read() bad logic(1)");
+                throw std::runtime_error("win32::NamedPipe::read() bad logic(1)");
+            }
+        } else {
+            throw Win32LogicError(ErrorCode::last());
+        }
+    }
+}
+
+void NamedPipe::write(const void *data, i64 nbytes)
+{
+    const unsigned char *input = reinterpret_cast<const unsigned char *>(data);
+    const unsigned char *end = input + nbytes;
+    while (input < end) {
+        const ::DWORD remain = static_cast<::DWORD>(end - input);
+        ::DWORD put = 0;
+        const ::BOOL result = ::WriteFile(handle_.get(), input, remain, &put, nullptr);
+        if (result != 0) {
+            if (put == remain) {
+                return;
+            } else if (put < remain) {
+                input += put;
+            } else {
+                throw std::runtime_error("win32::NamedPipe::write() bad logic(1)");
             }
         } else {
             throw Win32LogicError(ErrorCode::last());
