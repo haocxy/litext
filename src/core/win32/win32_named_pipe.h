@@ -1,5 +1,7 @@
 #pragma once
 
+#include <variant>
+
 #include "win32_core.h"
 
 #include "core/basetype.h"
@@ -97,9 +99,56 @@ public:
     };
 
     ConnectResult waitConnect();
+};
+
+class NamedPipeClient : public NamedPipe {
+public:
+
+    enum class StartWaitPolicy { Default, Forever };
+
+    NamedPipeClient() {}
+
+    NamedPipeClient(const std::string &name) {
+        start(name);
+    }
+
+    NamedPipeClient(const std::string &name, StartWaitPolicy waitPolicy) {
+        start(name, waitPolicy);
+    }
+
+    NamedPipeClient(const std::string &name, i64 timeoutMs) {
+        start(name, timeoutMs);
+    }
+
+    virtual ~NamedPipeClient() {}
+
+    void start(const std::string &name) {
+        doStart(name, NMPWAIT_USE_DEFAULT_WAIT);
+    }
+
+    void start(const std::string &name, StartWaitPolicy waitPolicy) {
+        switch (waitPolicy) {
+        case StartWaitPolicy::Default:
+            doStart(name, NMPWAIT_USE_DEFAULT_WAIT);
+            break;
+        case StartWaitPolicy::Forever:
+            doStart(name, NMPWAIT_WAIT_FOREVER);
+            break;
+        default:
+            break;
+        }
+    }
+
+    void start(const std::string &name, i64 timeoutMs) {
+        if (timeoutMs > NMPWAIT_USE_DEFAULT_WAIT && timeoutMs < NMPWAIT_WAIT_FOREVER) {
+            doStart(name, static_cast<::DWORD>(timeoutMs));
+        } else {
+            throw Win32LogicError("NamedPipeClient::start() bad arg (timeoutMs)");
+        }
+    }
 
 private:
-    ObjHandle handle_;
+    void doStart(const std::string &name, ::DWORD timeoutMs);
 };
 
 }

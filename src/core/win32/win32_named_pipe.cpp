@@ -147,4 +147,27 @@ void NamedPipe::flush()
 }
 
 
+void NamedPipeClient::doStart(const std::string &name, ::DWORD timeoutMs)
+{
+    while (true) {
+
+        handle_ = ::CreateFileA(
+            name.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
+            OPEN_EXISTING, 0, nullptr);
+
+        if (handle_.isValid()) {
+            return;
+        }
+
+        const ErrorCode ec = ErrorCode::last();
+        if (ec.raw() != ERROR_PIPE_BUSY) {
+            throw Win32LogicError(ec);
+        }
+
+        if (!::WaitNamedPipeA(name.c_str(), timeoutMs)) {
+            throw Win32RuntimeError("NamedPipeClient::start() timeout");
+        }
+    }
+}
+
 }
