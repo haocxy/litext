@@ -1,5 +1,6 @@
 file(GLOB_RECURSE src_files
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.txt"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
