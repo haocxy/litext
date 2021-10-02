@@ -1,6 +1,7 @@
-#include "win32api.h"
+#include "win32_core.h"
 
-namespace win32api
+
+namespace win32
 {
 
 std::string ErrorCode::message() const {
@@ -11,7 +12,7 @@ std::string ErrorCode::message() const {
         nullptr, n_, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPSTR)&msgBuffer, 0, nullptr);
 
     if (!msgBuffer) {
-        throw std::runtime_error("win32api::ErrorCode::message() failed because ::FormatMessageA() failed");
+        throw std::runtime_error("win32::ErrorCode::message() failed because ::FormatMessageA() failed");
     }
 
     std::unique_ptr<void, std::function<void(void *)>> deleter(msgBuffer, [](void *p) {
@@ -113,11 +114,15 @@ void NamedPipeServer::read(void *dest, i64 nbytes) {
             } else if (got < remain) {
                 output += got;
             } else {
-                throw std::runtime_error("win32api::NamedPipeServer::read() bad logic(1)");
+                throw std::runtime_error("win32::NamedPipeServer::read() bad logic(1)");
             }
         } else {
             throw Win32LogicError(ErrorCode::last());
         }
     }
 }
+
+
+
+
 }

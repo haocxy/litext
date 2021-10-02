@@ -16,7 +16,7 @@
 #include "core/basetype.h"
 
 
-namespace win32api
+namespace win32
 {
 
 class ErrorCode {
