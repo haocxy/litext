@@ -6,32 +6,64 @@
 
 #include <Windows.h>
 
+#include <mutex>
+#include <memory>
 #include <string>
 #include <sstream>
-#include <memory>
 #include <stdexcept>
+#include <functional>
 
 
 namespace win32api
 {
 
+
+
+class ErrorCode {
+public:
+	ErrorCode() {}
+
+	ErrorCode(::DWORD n) : n_(n) {}
+
+	static ErrorCode last() {
+		return ErrorCode(::GetLastError());
+	}
+
+	std::string message() const {
+		char *msgBuffer = nullptr;
+
+		::FormatMessageA(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			nullptr, n_, MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), (LPSTR) &msgBuffer, 0, nullptr);
+
+		if (!msgBuffer) {
+			throw std::runtime_error("win32api::ErrorCode::message() failed because ::FormatMessageA() failed");
+		}
+
+		std::unique_ptr<void, std::function<void(void *)>> deleter(msgBuffer, [](void *p) {
+			::LocalFree(p);
+		});
+
+		return std::string(msgBuffer);
+	}
+
+private:
+	::DWORD n_ = 0;
+};
+
 class Win32LogicError : public std::logic_error {
 public:
 	Win32LogicError(const std::string &msg) : std::logic_error(msg) {}
+
+	Win32LogicError(const ErrorCode &ec) : std::logic_error(ec.message()) {}
 };
 
 class Win32RuntimeError : public std::runtime_error {
 public:
 	Win32RuntimeError(const std::string &msg) : std::runtime_error(msg) {}
-};
 
-inline std::string lastErrMsg()
-{
-	std::ostringstream ss;
-	const DWORD code = ::GetLastError();
-	ss << "Windows API Error: [" << code << "]";
-	return ss.str();
-}
+	Win32RuntimeError(const ErrorCode &ec) : std::runtime_error(ec.message()) {}
+};
 
 class ObjHandle {
 public:
@@ -43,11 +75,13 @@ public:
 	ObjHandle(const ObjHandle &) = delete;
 
 	ObjHandle(ObjHandle &&other) noexcept {
-		move(*this, other);
+		Lock lockOther(other.mtx_);
+		_move(*this, other);
 	}
 
 	ObjHandle &operator=(::HANDLE handle) {
-		close();
+		Lock lockThis(mtx_);
+		_close();
 		handle_ = handle;
 		return *this;
 	}
@@ -55,45 +89,60 @@ public:
 	ObjHandle &operator=(const ObjHandle &) = delete;
 
 	ObjHandle &operator=(ObjHandle &&other) noexcept {
-		move(*this, other);
+		Lock lockThis(mtx_);
+		Lock lockOther(other.mtx_);
+		_move(*this, other);
 		return *this;
 	}
 
 	~ObjHandle() {
-		close();
+		_close();
 	}
 
 	void close() {
-		if (handle_ != INVALID_HANDLE_VALUE) {
-			::CloseHandle(handle_);
-			handle_ = INVALID_HANDLE_VALUE;
-		}
+		Lock lock(mtx_);
+		_close();
 	}
 
 	bool isValid() const {
+		Lock lock(mtx_);
 		return handle_ != INVALID_HANDLE_VALUE;
 	}
 
 	::HANDLE get() const {
+		Lock lock(mtx_);
 		return handle_;
 	}
 
 	::HANDLE take() {
+		Lock lock(mtx_);
 		::HANDLE handle = handle_;
 		handle_ = INVALID_HANDLE_VALUE;
 		return handle;
 	}
 
 private:
-	static void move(ObjHandle &to, ObjHandle &from) {
+	void _close() {
+		if (handle_ != INVALID_HANDLE_VALUE) {
+			::CloseHandle(handle_);
+			handle_ = INVALID_HANDLE_VALUE;
+		}
+	}
+
+private:
+	static void _move(ObjHandle &to, ObjHandle &from) {
 		if (&to != &from) {
-			to.close();
+			to._close();
 			to.handle_ = from.handle_;
 			from.handle_ = INVALID_HANDLE_VALUE;
 		}
 	}
 
 private:
+	using Mtx = std::mutex;
+	using Lock = std::lock_guard<Mtx>;
+
+	mutable Mtx mtx_;
 	::HANDLE handle_ = INVALID_HANDLE_VALUE;
 };
 
@@ -196,8 +245,30 @@ public:
 			info.lpSecurityAttributes_);
 
 		if (!handle_.isValid()) {
-			throw Win32LogicError(lastErrMsg());
+			throw Win32LogicError(ErrorCode::last());
 		}
+	}
+
+	enum class ConnectResult {
+		Connected, ClientDisconnected,
+	};
+
+	ConnectResult waitConnect() {
+		const ::BOOL result = ::ConnectNamedPipe(handle_.get(), nullptr);
+		if (result != 0) {
+			return ConnectResult::Connected;
+		}
+
+		const DWORD ec = ::GetLastError();
+		if (ec == ERROR_PIPE_CONNECTED) {
+			return ConnectResult::Connected;
+		}
+
+		if (ec == ERROR_NO_DATA) {
+			return ConnectResult::ClientDisconnected;
+		}
+
+		throw Win32LogicError(ErrorCode::last());
 	}
 
 	void close() {
