@@ -1,10 +1,27 @@
-file(GLOB_RECURSE src_files
+file(GLOB common_src_files
     "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.txt"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
 )
+
+file(GLOB win32_src_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/win32/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/win32/*.cpp"
+)
+
+file(GLOB unix_src_files
+    "${CMAKE_CURRENT_SOURCE_DIR}/unix/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/unix/*.cpp"
+)
+
+set(src_files ${common_src_files})
+if(MSVC)
+    set(src_files "${src_files};${win32_src_files}")
+else()
+    set(src_files "${src_files};${unix_src_files}")
+endif()
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
 
