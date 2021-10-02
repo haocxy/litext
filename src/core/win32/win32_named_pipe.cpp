@@ -65,6 +65,7 @@ NamedPipeServer::ConnectResult NamedPipeServer::waitConnect() {
     }
 
     if (ec == ERROR_NO_DATA) {
+        disconnected_ = true;
         return ConnectResult::ClientDisconnected;
     }
 
@@ -94,7 +95,8 @@ void NamedPipe::read(void *dest, i64 nbytes) {
                 throw std::runtime_error("win32::NamedPipe::read() bad logic(1)");
             }
         } else {
-            if (::GetLastError() == ERROR_BROKEN_PIPE) {
+            const ::DWORD ec = ::GetLastError();
+            if (ec == ERROR_BROKEN_PIPE) {
                 disconnected_ = true;
                 return;
             }
@@ -127,7 +129,8 @@ void NamedPipe::write(const void *data, i64 nbytes)
                 throw std::runtime_error("win32::NamedPipe::write() bad logic(1)");
             }
         } else {
-            if (::GetLastError() == ERROR_BROKEN_PIPE) {
+            const ::DWORD ec = ::GetLastError();
+            if (ec == ERROR_BROKEN_PIPE || ec == ERROR_NO_DATA) {
                 disconnected_ = true;
                 return;
             }

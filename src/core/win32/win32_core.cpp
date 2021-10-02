@@ -28,6 +28,8 @@ std::string ErrorCode::message() const {
     while (!msg.empty()) {
         const char ch = msg.back();
         if (ch != '\r' && ch != '\n') {
+            break;
+        } else {
             msg.pop_back();
         }
     }
