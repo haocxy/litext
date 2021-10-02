@@ -72,6 +72,10 @@ NamedPipeServer::ConnectResult NamedPipeServer::waitConnect() {
 }
 
 void NamedPipe::read(void *dest, i64 nbytes) {
+    if (!good()) {
+        return;
+    }
+
     unsigned char *output = reinterpret_cast<unsigned char *>(dest);
     unsigned char *end = output + nbytes;
     while (output < end) {
@@ -81,12 +85,19 @@ void NamedPipe::read(void *dest, i64 nbytes) {
         if (result != 0 || result == ERROR_MORE_DATA) {
             if (got == remain) {
                 return;
+            } else if (got == 0) {
+                disconnected_ = true;
+                return;
             } else if (got < remain) {
                 output += got;
             } else {
                 throw std::runtime_error("win32::NamedPipe::read() bad logic(1)");
             }
         } else {
+            if (::GetLastError() == ERROR_BROKEN_PIPE) {
+                disconnected_ = true;
+                return;
+            }
             throw Win32LogicError(ErrorCode::last());
         }
     }
@@ -94,6 +105,10 @@ void NamedPipe::read(void *dest, i64 nbytes) {
 
 void NamedPipe::write(const void *data, i64 nbytes)
 {
+    if (!good()) {
+        return;
+    }
+
     const unsigned char *input = reinterpret_cast<const unsigned char *>(data);
     const unsigned char *end = input + nbytes;
     while (input < end) {
@@ -103,12 +118,19 @@ void NamedPipe::write(const void *data, i64 nbytes)
         if (result != 0) {
             if (put == remain) {
                 return;
+            } else if (put == 0) {
+                disconnected_ = true;
+                return;
             } else if (put < remain) {
                 input += put;
             } else {
                 throw std::runtime_error("win32::NamedPipe::write() bad logic(1)");
             }
         } else {
+            if (::GetLastError() == ERROR_BROKEN_PIPE) {
+                disconnected_ = true;
+                return;
+            }
             throw Win32LogicError(ErrorCode::last());
         }
     }

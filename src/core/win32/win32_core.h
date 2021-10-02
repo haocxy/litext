@@ -25,6 +25,10 @@ public:
 
     std::string message() const;
 
+    ::DWORD raw() const {
+        return n_;
+    }
+
 private:
     ::DWORD n_ = 0;
 };

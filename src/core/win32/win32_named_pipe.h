@@ -23,8 +23,13 @@ public:
 
     void flush();
 
+    bool good() const {
+        return !disconnected_;
+    }
+
 protected:
     ObjHandle handle_;
+    bool disconnected_ = false;
 };
 
 class NamedPipeServer : public NamedPipe {
