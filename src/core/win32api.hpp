@@ -44,7 +44,16 @@ public:
 			::LocalFree(p);
 		});
 
-		return std::string(msgBuffer);
+		std::string result(msgBuffer);
+
+		for (int64_t i = result.size() - 1; i >= 0; --i) {
+			const char ch = result[i];
+			if (ch != '\r' && ch != '\n') {
+				return result.substr(0, i);
+			}
+		}
+
+		return result;
 	}
 
 private:
