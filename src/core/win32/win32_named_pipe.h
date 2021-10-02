@@ -21,6 +21,8 @@ public:
 
     void write(const void *data, i64 nbytes);
 
+    void flush();
+
 protected:
     ObjHandle handle_;
 };

@@ -114,5 +114,15 @@ void NamedPipe::write(const void *data, i64 nbytes)
     }
 }
 
+void NamedPipe::flush()
+{
+    const ::BOOL result = ::FlushFileBuffers(handle_.get());
+    if (result != 0) {
+        return;
+    } else {
+        throw Win32LogicError(ErrorCode::last());
+    }
+}
+
 
 }
