@@ -13,6 +13,8 @@
 #include <stdexcept>
 #include <functional>
 
+#include "core/basetype.h"
+
 
 namespace win32api
 {
@@ -44,16 +46,19 @@ public:
             ::LocalFree(p);
         });
 
-        std::string result(msgBuffer);
+        std::string msg(msgBuffer);
 
-        for (int64_t i = result.size() - 1; i >= 0; --i) {
-            const char ch = result[i];
+        while (!msg.empty()) {
+            const char ch = msg.back();
             if (ch != '\r' && ch != '\n') {
-                return result.substr(0, i);
+                msg.pop_back();
             }
         }
 
-        return result;
+        std::ostringstream ss;
+        ss << '(' << n_ << ')' << msg;
+
+        return ss.str();
     }
 
 private:
@@ -282,6 +287,27 @@ public:
 
     void close() {
         handle_.close();
+    }
+
+    void read(void *dest, i64 nbytes) {
+        unsigned char *output = reinterpret_cast<unsigned char *>(dest);
+        unsigned char *end = output + nbytes;
+        while (output < end) {
+            const ::DWORD remain = static_cast<::DWORD>(end - output);
+            ::DWORD got = 0;
+            const ::BOOL result = ::ReadFile(handle_.get(), output, remain, &got, nullptr);
+            if (result != 0 || result == ERROR_MORE_DATA) {
+                if (got == remain) {
+                    return;
+                } else if (got < remain) {
+                    output += got;
+                } else {
+                    throw std::runtime_error("win32api::NamedPipeServer::read() bad logic(1)");
+                }
+            } else {
+                throw Win32LogicError(ErrorCode::last());
+            }
+        }
     }
 
     ::HANDLE getHANDLE() const {
