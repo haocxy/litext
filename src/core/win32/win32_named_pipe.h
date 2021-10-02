@@ -2,11 +2,28 @@
 
 #include "win32_core.h"
 
+#include "core/basetype.h"
+
 
 namespace win32
 {
 
-class NamedPipeServer {
+class NamedPipe {
+public:
+
+    virtual ~NamedPipe() {}
+
+    void close() {
+        handle_.close();
+    }
+
+    void read(void *dest, i64 nbytes);
+
+protected:
+    ObjHandle handle_;
+};
+
+class NamedPipeServer : public NamedPipe {
 public:
 
     enum class DataDirection {
@@ -61,7 +78,7 @@ public:
         start(info);
     }
 
-    ~NamedPipeServer() {
+    virtual ~NamedPipeServer() {
     }
 
     void start(const Info &info);
@@ -71,20 +88,6 @@ public:
     };
 
     ConnectResult waitConnect();
-
-    void close() {
-        handle_.close();
-    }
-
-    void read(void *dest, i64 nbytes);
-
-    ::HANDLE getHANDLE() const {
-        return handle_.get();
-    }
-
-    ::HANDLE takeHANDLE() {
-        return handle_.take();
-    }
 
 private:
     ObjHandle handle_;

@@ -1,5 +1,9 @@
 #include "win32_core.h"
 
+#include <memory>
+#include <sstream>
+#include <functional>
+
 
 namespace win32
 {

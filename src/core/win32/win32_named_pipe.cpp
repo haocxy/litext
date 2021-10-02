@@ -71,7 +71,7 @@ NamedPipeServer::ConnectResult NamedPipeServer::waitConnect() {
     throw Win32LogicError(ErrorCode::last());
 }
 
-void NamedPipeServer::read(void *dest, i64 nbytes) {
+void NamedPipe::read(void *dest, i64 nbytes) {
     unsigned char *output = reinterpret_cast<unsigned char *>(dest);
     unsigned char *end = output + nbytes;
     while (output < end) {

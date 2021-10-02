@@ -3,17 +3,15 @@
 #include <Windows.h>
 
 #include <mutex>
-#include <memory>
 #include <string>
-#include <sstream>
 #include <stdexcept>
-#include <functional>
-
-#include "core/basetype.h"
 
 
 namespace win32
 {
+
+using RawHandle = ::HANDLE;
+
 
 class ErrorCode {
 public:
@@ -49,7 +47,7 @@ class ObjHandle {
 public:
     ObjHandle() {}
 
-    ObjHandle(::HANDLE handle)
+    ObjHandle(RawHandle handle)
         : handle_(handle) {}
 
     ObjHandle(const ObjHandle &) = delete;
@@ -59,7 +57,7 @@ public:
         _move(*this, other);
     }
 
-    ObjHandle &operator=(::HANDLE handle) {
+    ObjHandle &operator=(RawHandle handle) {
         Lock lockThis(mtx_);
         _close();
         handle_ = handle;
@@ -89,12 +87,12 @@ public:
         return handle_ != INVALID_HANDLE_VALUE;
     }
 
-    ::HANDLE get() const {
+    RawHandle get() const {
         Lock lock(mtx_);
         return handle_;
     }
 
-    ::HANDLE take() {
+    RawHandle take() {
         Lock lock(mtx_);
         ::HANDLE handle = handle_;
         handle_ = INVALID_HANDLE_VALUE;
@@ -123,9 +121,8 @@ private:
     using Lock = std::lock_guard<Mtx>;
 
     mutable Mtx mtx_;
-    ::HANDLE handle_ = INVALID_HANDLE_VALUE;
+    RawHandle handle_ = INVALID_HANDLE_VALUE;
 };
-
 
 
 }
