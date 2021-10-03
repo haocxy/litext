@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.14.0 FATAL_ERROR)
 project(litext)
 
+# 自己实现的 CMake 工具
+include(CMake/find_source_files.cmake)
+
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
@@ -48,6 +51,7 @@ execute_process(
     COMMAND "lrelease" "trans/trans.zh_CN.ts" "-qm" "trans/trans.zh_CN.qm"
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
+
 
 
 add_subdirectory(src)

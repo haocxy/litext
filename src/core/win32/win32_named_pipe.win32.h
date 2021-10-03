@@ -2,7 +2,7 @@
 
 #include <variant>
 
-#include "win32_core.h"
+#include "win32_core.win32.h"
 
 #include "core/basetype.h"
 
