@@ -11,7 +11,6 @@
 #include "obj_async_creator.h"
 #include "obj_async_deleter.h"
 #include "singleton_server.h"
-#include "singleton_server_old.h"
 #include "font/font_repo.h"
 
 
@@ -50,14 +49,6 @@ public:
         return *singletonServer_;
     }
 
-    const SingletonServerOld &singletonServerOld() const {
-        return singletonServerOld_;
-    }
-
-    SingletonServerOld &singletonServerOld() {
-        return singletonServerOld_;
-    }
-
     const PropDb &propDb() const {
         return propDb_;
     }
@@ -94,7 +85,6 @@ private:
     DirManager dirManager_;
     Config config_;
     std::unique_ptr<SingletonServer> singletonServer_;
-    SingletonServerOld singletonServerOld_;
     PropDb propDb_;
     ObjAsyncCreator objAsyncCreator_;
     ObjAsyncDeleter objAsyncDeleter_;

@@ -24,7 +24,7 @@ void Engine::init(const InitInfo &initInfo)
         initSingletonServer();
     }
 
-    fontRepo_.test(); // TODO test code
+    //fontRepo_.test(); // TODO test code
 }
 
 void Engine::initLogger(const InitInfo &initInfo)
@@ -50,9 +50,6 @@ void Engine::initSingletonServer()
     info.infoFileLock = dirManager_.singletonServerInfoFileLock();
 
     singletonServer_->start(info);
-    return;
-
-    singletonServerOld_.start(info);
 }
 
 }
