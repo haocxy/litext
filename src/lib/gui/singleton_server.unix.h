@@ -8,17 +8,17 @@
 namespace gui
 {
 
-class SingletonServerImpl;
+class SingletonServerUnixImpl;
 
 
 // 负责管理程序以单例模式执行时的服务端逻辑
 // 主要是接收由客户端发来的打开文件的请求
 // 还会定期向锁文件中写入服务端监听的端口
-class SingletonServerOld : public SingletonServer {
+class SingletonServerUnix : public SingletonServer {
 public:
-    SingletonServerOld();
+    SingletonServerUnix();
 
-    virtual ~SingletonServerOld();
+    virtual ~SingletonServerUnix();
 
     virtual Signal<void()> &sigActivateUI() override;
 
@@ -27,7 +27,7 @@ public:
     virtual void start(const StartInfo &info) override;
 
 private:
-    SingletonServerImpl *impl_ = nullptr;
+    SingletonServerUnixImpl *impl_ = nullptr;
 };
 
 }
