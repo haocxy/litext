@@ -23,16 +23,7 @@ message(STATUS "Qt UIC updated")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB_RECURSE src_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.txt"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.sql"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
-)
-
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
+findSourceFiles(src_files)
 
 add_library(litext_body SHARED ${src_files} ${CMAKE_SOURCE_DIR}/litext_resources.qrc)
 
