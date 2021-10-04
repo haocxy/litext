@@ -24,10 +24,10 @@ function(isSrcForCurPlat out_var file_path)
     endif()
 endfunction()
 
-function(findSourceFiles output_files root_dir)
+function(findSourceFiles output_files)
     file(GLOB_RECURSE cpp_files
-        "${root_dir}/*.h"
-        "${root_dir}/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     )
     set(result "")
     foreach(cpp_file ${cpp_files})
@@ -37,10 +37,11 @@ function(findSourceFiles output_files root_dir)
         endif()
     endforeach()
     file(GLOB_RECURSE other_files
-        "${root_dir}/*.txt"
-        "${root_dir}/*.cmake"
-        "${root_dir}/*.sql"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*.txt"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
+        "${CMAKE_CURRENT_SOURCE_DIR}/*.sql"
     )
     list(APPEND result ${other_files})
+    source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${result})
     set(${output_files} ${result} PARENT_SCOPE)
 endfunction()

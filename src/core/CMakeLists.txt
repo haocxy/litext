@@ -1,6 +1,4 @@
-findSourceFiles(src_files ${CMAKE_CURRENT_SOURCE_DIR})
-
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/.." FILES ${src_files})
+findSourceFiles(src_files)
 
 add_library(litext_core STATIC ${src_files})
 
