@@ -2,8 +2,7 @@
 
 #include <vector>
 
-#include "core/signal.h"
-#include "doc/open_info.h"
+#include "singleton_server.h"
 
 
 namespace gui
@@ -15,10 +14,8 @@ class SingletonServerImpl;
 // 负责管理程序以单例模式执行时的服务端逻辑
 // 主要是接收由客户端发来的打开文件的请求
 // 还会定期向锁文件中写入服务端监听的端口
-class SingletonServerOld {
+class SingletonServerOld : public SingletonServer {
 public:
-    using OpenInfos = std::vector<doc::OpenInfo>;
-
     struct StartInfo {
         fs::path serverRunningLock;
         fs::path infoFile;
@@ -27,11 +24,11 @@ public:
 
     SingletonServerOld();
 
-    ~SingletonServerOld();
+    virtual ~SingletonServerOld();
 
-    Signal<void()> &sigActivateUI();
+    virtual Signal<void()> &sigActivateUI() override;
 
-    Signal<void(const OpenInfos &)> &sigRecvOpenInfos();
+    virtual Signal<void(const OpenInfos &)> &sigRecvOpenInfos() override;
 
     void start(const StartInfo &info);
 
