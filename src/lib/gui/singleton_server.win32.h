@@ -21,8 +21,12 @@ public:
     void start();
 
 private:
+    void pipeServerLoop();
+
+private:
     Signal<void()> sigActivateUI_;
     Signal<void(const OpenInfos &)> sigRecvOpenInfos_;
+    std::thread pipeServerThread_;
 };
 
 }
