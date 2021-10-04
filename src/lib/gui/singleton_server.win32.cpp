@@ -18,7 +18,22 @@ SingletonServerWin32::SingletonServerWin32()
 
 SingletonServerWin32::~SingletonServerWin32()
 {
-    pipeServerThread_.detach();
+    const char *title = "SingletonServerWin32::~SingletonServerWin32() ";
+
+    try {
+        if (pipeServerThread_.joinable()) {
+            pipeServerThread_.detach();
+            LOGI << title << "thread detached";
+        } else {
+            LOGI << title << "thread not joinable";
+        }
+    } catch (const std::exception &e) {
+        // 忽略所有异常
+        LOGE << title << "meet exception: [" << e.what() << "]";
+    } catch (...) {
+        // 忽略所有异常
+        LOGE << title << "meet unknown exception";
+    }
 }
 
 Signal<void()> &SingletonServerWin32::sigActivateUI()
