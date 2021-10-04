@@ -1,8 +1,4 @@
-file(GLOB_RECURSE src_files
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.cmake"
-)
+findSourceFiles(src_files)
 
 add_library(litext_loader STATIC ${src_files})
 
