@@ -82,6 +82,8 @@ static int load(int argc, char *argv[])
     }
 
     litext.initSetLogLevel(opt.logLevel());
+
+    litext.initSetShouldLogToStd(opt.shouldLogToStdout());
     
     for (const auto &pair : opt.files()) {
         litext.initAddOpenInfo(pair.first, pair.second);

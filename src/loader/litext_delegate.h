@@ -26,6 +26,7 @@ public:
         using Destroy = LITEXT_API_FN_TYPE(destroy);
         using InitSetShouldStartAsServer = LITEXT_API_FN_TYPE(initSetShouldStartAsServer);
         using InitSetLogLevel = LITEXT_API_FN_TYPE(initSetLogLevel);
+        using InitSetShouldLogToStd = LITEXT_API_FN_TYPE(initSetShouldLogToStd);
         using InitAddOpenFileWithUtf8FilePathAndRowNum = LITEXT_API_FN_TYPE(initAddOpenFileWithUtf8FilePathAndRowNum);
         using InitSetStyleSheetFilePathByUtf8 = LITEXT_API_FN_TYPE(initSetStyleSheetFilePathByUtf8);
         using Init = LITEXT_API_FN_TYPE(init);
@@ -35,6 +36,7 @@ public:
         Destroy *destroy = nullptr;
         InitSetShouldStartAsServer *initSetShouldStartAsServer = nullptr;
         InitSetLogLevel *initSetLogLevel = nullptr;
+        InitSetShouldLogToStd *initSetShouldLogToStd = nullptr;
         InitAddOpenFileWithUtf8FilePathAndRowNum *initAddOpenFileWithUtf8FilePathAndRowNum = nullptr;
         InitSetStyleSheetFilePathByUtf8 *initSetStyleSheetFilePathByUtf8 = nullptr;
         Init *init = nullptr;
@@ -45,6 +47,7 @@ public:
             destroy = dll.get<Destroy>(LITEXT_API_FN_NAME(destroy));
             initSetShouldStartAsServer = dll.get<InitSetShouldStartAsServer>(LITEXT_API_FN_NAME(initSetShouldStartAsServer));
             initSetLogLevel = dll.get<InitSetLogLevel>(LITEXT_API_FN_NAME(initSetLogLevel));
+            initSetShouldLogToStd = dll.get<InitSetShouldLogToStd>(LITEXT_API_FN_NAME(initSetShouldLogToStd));
             initAddOpenFileWithUtf8FilePathAndRowNum = dll.get<InitAddOpenFileWithUtf8FilePathAndRowNum>(LITEXT_API_FN_NAME(initAddOpenFileWithUtf8FilePathAndRowNum));
             initSetStyleSheetFilePathByUtf8 = dll.get<InitSetStyleSheetFilePathByUtf8>(LITEXT_API_FN_NAME(initSetStyleSheetFilePathByUtf8));
             init = dll.get<Init>(LITEXT_API_FN_NAME(init));
@@ -93,6 +96,10 @@ public:
 
     void initSetLogLevel(const char *level) {
         fnTable_.initSetLogLevel(handle_, level);
+    }
+
+    void initSetShouldLogToStd(bool b) {
+        fnTable_.initSetShouldLogToStd(handle_, b);
     }
 
     void initAddOpenInfo(const std::filesystem::path &file, int64_t row) {
