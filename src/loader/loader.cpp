@@ -10,7 +10,6 @@
 #include "core/filelock.h"
 #include "core/system.h"
 #include "core/endian.h"
-#include "core/win32/win32_named_pipe.win32.h"
 #include "global/msg.h"
 #include "global/constants.h"
 #include "global/server_info.h"
