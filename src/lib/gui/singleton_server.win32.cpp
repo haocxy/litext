@@ -1,9 +1,11 @@
 #include "singleton_server.win32.h"
 
 #include "core/thread.h"
+#include "core/logger.h"
 #include "core/win32/win32_named_pipe.win32.h"
 
 #include "global/msg.h"
+#include "global/constants.h"
 
 
 namespace gui
@@ -11,14 +13,12 @@ namespace gui
 
 SingletonServerWin32::SingletonServerWin32()
 {
-    pipeServerThread_ = std::thread([this] {
-        pipeServerLoop();
-    });
+
 }
 
 SingletonServerWin32::~SingletonServerWin32()
 {
-    pipeServerThread_.join();
+    pipeServerThread_.detach();
 }
 
 Signal<void()> &SingletonServerWin32::sigActivateUI()
@@ -31,8 +31,20 @@ Signal<void(const SingletonServerWin32::OpenInfos &)> &SingletonServerWin32::sig
     return sigRecvOpenInfos_;
 }
 
-void SingletonServerWin32::start()
+void SingletonServerWin32::start(const StartInfo &info)
 {
+    if (started_) {
+        return;
+    }
+
+    started_ = true;
+
+    serverRunningLock_ = FileLock(info.serverRunningLock);
+    serverRunningLockGuard_ = FileLockGuard(serverRunningLock_);
+
+    pipeServerThread_ = std::thread([this] {
+        pipeServerLoop();
+    });
 }
 
 static SingletonServerWin32::OpenInfos toOpenInfos(const msg::Pack &pack) {
@@ -47,12 +59,14 @@ static SingletonServerWin32::OpenInfos toOpenInfos(const msg::Pack &pack) {
 
 void SingletonServerWin32::pipeServerLoop()
 {
+    const char *title = "SingletonServerWin32::pipeServerLoop() ";
+
     ThreadUtil::setNameForCurrentThread("SingletonServerWin32-pipeServerLoop");
     while (true) {
         using Server = win32::NamedPipeServer;
         using ConnRes = Server::ConnectResult;
         Server::Info info;
-        info.setName("\\\\.\\pipe\\LitextNamedPipe");
+        info.setName(constants::SingletonPipeNameWin32);
         Server server;
         server.start(info);
         ConnRes result = server.waitConnect();
@@ -77,9 +91,11 @@ void SingletonServerWin32::pipeServerLoop()
 
         msg::Pack pack = msg::Pack::deserialize(msgData);
         if (pack.is<msg::ActivateUI>()) {
+            LOGI << title << "recv ActiveUI";
             sigActivateUI_();
             resp = msg::Ok();
         } else if (pack.is<msg::OpenFiles>()) {
+            LOGI << title << "recv OpenFiles";
             sigRecvOpenInfos_(toOpenInfos(pack));
             resp = msg::Ok();
         } else {

@@ -11,4 +11,6 @@ namespace constants
 // 这样做的目的是确保信息完整
 static const int ServerInfoRepeatCount = 3;
 
+static const char *const SingletonPipeNameWin32 = "\\\\.\\pipe\\LitextNamedPipe";
+
 }

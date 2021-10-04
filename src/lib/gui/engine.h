@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "global/work_dir_manager.h"
 
 #include "config.h"
@@ -8,6 +10,7 @@
 #include "editor_manager.h"
 #include "obj_async_creator.h"
 #include "obj_async_deleter.h"
+#include "singleton_server.h"
 #include "singleton_server_old.h"
 #include "font/font_repo.h"
 
@@ -37,6 +40,14 @@ public:
 
     Config &config() {
         return config_;
+    }
+
+    const SingletonServer &singletonServer() const {
+        return *singletonServer_;
+    }
+
+    SingletonServer &singletonServer() {
+        return *singletonServer_;
     }
 
     const SingletonServerOld &singletonServerOld() const {
@@ -82,6 +93,7 @@ private:
 private:
     DirManager dirManager_;
     Config config_;
+    std::unique_ptr<SingletonServer> singletonServer_;
     SingletonServerOld singletonServerOld_;
     PropDb propDb_;
     ObjAsyncCreator objAsyncCreator_;

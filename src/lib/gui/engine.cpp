@@ -8,7 +8,8 @@ namespace gui
 {
 
 Engine::Engine()
-    : editorManager_(objAsyncCreator_, objAsyncDeleter_)
+    : singletonServer_(SingletonServer::newObj())
+    , editorManager_(objAsyncCreator_, objAsyncDeleter_)
     , fontRepo_(dirManager_.fontDbFile())
 {
 }
@@ -43,10 +44,13 @@ void Engine::cleanUseless()
 
 void Engine::initSingletonServer()
 {
-    SingletonServerOld::StartInfo info;
+    SingletonServer::StartInfo info;
     info.serverRunningLock = dirManager_.singletonServerRunningLockFile();
     info.infoFile = dirManager_.singletonServerInfoFile();
     info.infoFileLock = dirManager_.singletonServerInfoFileLock();
+
+    singletonServer_->start(info);
+    return;
 
     singletonServerOld_.start(info);
 }

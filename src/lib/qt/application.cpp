@@ -243,7 +243,7 @@ void Application::bindSignals(const InitInfo &initInfo)
 
 void Application::bindSignalsForSingletonServer()
 {
-    SingletonServerOld &server = engine_.singletonServerOld();
+    SingletonServer &server = engine_.singletonServer();
 
     connect(this, &Application::qtSigActivateUI, this, &Application::activateUI);
     sigConns_ += server.sigActivateUI().connect([this] {
