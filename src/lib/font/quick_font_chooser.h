@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/font_index.h"
+#include "core/font.h"
 
 
 namespace font
@@ -18,7 +19,12 @@ public:
     opt<FontIndex> choose();
 
 private:
+    opt<FontIndex> chooseForWindows();
 
+    opt<FontIndex> chooseByScanAllFoundFont();
+
+private:
+    FontContext context_;
 };
 
 }
