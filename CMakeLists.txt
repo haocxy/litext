@@ -7,9 +7,6 @@ include(CMake/find_source_files.cmake)
 # 全局项目构建配置
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
-#set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
-
 
 # VS专用全局设置
 if(MSVC)
@@ -52,11 +49,9 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-
-
 add_subdirectory(src)
 add_subdirectory(third EXCLUDE_FROM_ALL)
-#add_subdirectory(third)
+
 
 set_target_properties(
     litext_body litext
@@ -82,5 +77,6 @@ message(STATUS "Release Version: [${release_version}]")
 
 if(MSVC)
     file(COPY "${CMAKE_SOURCE_DIR}/tools/win32/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
+    file(COPY "${CMAKE_SOURCE_DIR}/tools/win32/repack.bat" DESTINATION ${CMAKE_BINARY_DIR})
     include(install_for_windows.cmake)
 endif()
