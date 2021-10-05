@@ -81,6 +81,6 @@ set(LITEXT_RELEASE_VERSION ${release_version})
 message(STATUS "Release Version: [${release_version}]")
 
 if(MSVC)
-    file(COPY "${CMAKE_SOURCE_DIR}/scripts/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
+    file(COPY "${CMAKE_SOURCE_DIR}/tools/win32/pack.bat" DESTINATION ${CMAKE_BINARY_DIR})
     include(install_for_windows.cmake)
 endif()
