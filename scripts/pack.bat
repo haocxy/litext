@@ -1,2 +1,2 @@
-msbuild litext.sln -t:rebuild -p:configuration=Release -p:platform=x64 
+msbuild litext.sln -t:build -p:configuration=Release -p:platform=x64 
 cpack
