@@ -3,6 +3,9 @@
 template <typename T>
 class Range {
 public:
+
+    using value_type = T;
+
     Range() {}
 
     template <typename U>
