@@ -31,6 +31,8 @@ public:
 
     Signal<void(DocError)> &sigFatalError();
 
+    Signal<void()> &sigStartLoad();
+
     Signal<void(i64)> &sigFileSizeDetected();
 
     Signal<void(Charset)> &sigCharsetDetected();

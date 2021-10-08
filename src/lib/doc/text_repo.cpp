@@ -41,6 +41,17 @@ void TextRepo::clearDb()
     std::ofstream ofs(dbFile_, std::ios::binary);
 }
 
+void TextRepo::ClearPartsStmt::operator()()
+{
+    stmt_.reset();
+    stmt_.step();
+}
+
+TextRepo::ClearPartsStmt::ClearPartsStmt(TextRepo &repo)
+{
+    stmt_.open(repo.db_, "DELETE FROM doc;");
+}
+
 void TextRepo::SavePartStmt::operator()(const DocPart &docPart)
 {
     stmt_.reset();

@@ -16,6 +16,16 @@ public:
 
     ~TextRepo();
 
+    class ClearPartsStmt {
+    public:
+        ClearPartsStmt(TextRepo &repo);
+
+        void operator()();
+
+    private:
+        sqlite::Statement stmt_;
+    };
+
     // 保存一段文本
     class SavePartStmt {
     public:

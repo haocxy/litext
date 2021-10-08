@@ -28,8 +28,12 @@ public:
 private:
     void initCharsetMenu();
 
+    void onStartLoad();
+
 private:
 signals:
+    void qtSigStartLoad();
+
     void qtSigFileSizeDetected(long long fileSize);
 
     void qtSigRowCountUpdated(long long rowCount);

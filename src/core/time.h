@@ -66,12 +66,9 @@ public:
 
     void start() {
         WriteLock lock(mtx_);
-        if (state_ == State::NotStarted) {
-            startTime_ = ChronoClock::now();
-            state_ = State::Started;
-        } else {
-            throw std::logic_error("already started");
-        }
+        startTime_ = ChronoClock::now();
+        stopTime_ = TimePoint();
+        state_ = State::Started;
     }
 
     void stop() {
@@ -132,8 +129,10 @@ private:
 
     mutable Mtx mtx_;
     State state_ = State::NotStarted;
-    typename ChronoClock::time_point startTime_;
-    typename ChronoClock::time_point stopTime_;
+
+    using TimePoint = typename ChronoClock::time_point;
+    TimePoint startTime_{};
+    TimePoint stopTime_{};
 };
 
 namespace TimeUtil

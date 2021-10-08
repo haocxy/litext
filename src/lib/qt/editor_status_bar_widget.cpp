@@ -82,6 +82,12 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
 
     using Class = EditorStatusBarWidget;
 
+    sigConns_ += doc.sigStartLoad().connect([this] {
+        emit qtSigStartLoad();
+    });
+
+    connect(this, &Class::qtSigStartLoad, this, &Class::onStartLoad);
+
     sigConns_ += doc.sigFileSizeDetected().connect([this](i64 fileSize) {
         emit qtSigFileSizeDetected(static_cast<long long>(fileSize));
     });
@@ -158,9 +164,23 @@ void EditorStatusBarWidget::initCharsetMenu()
 
     const QList<QString> supportedCharsets = util::supportedCharsetList();
 
-    for (const QString &charset : supportedCharsets) {
-        QAction *action = charsetMenu_->addAction(charset);
+    for (const QString &charsetStr : supportedCharsets) {
+        QAction *action = charsetMenu_->addAction(charsetStr);
+        connect(action, &QAction::triggered, this, [this, charsetStr] {
+            const Charset charset = CharsetUtil::strToCharset(charsetStr.toStdString().c_str());
+            textArea_.editor().reload(charset);
+        });
     }
+}
+
+void EditorStatusBarWidget::onStartLoad()
+{
+    fileSize_ = std::nullopt;
+    ui_->fileSizeContent->setText(tr("Unknown"));
+    ui_->rowCountContent->setText(tr("Unknown"));
+    ui_->charsetContent->setText(tr("Unknown"));
+    ui_->progressLabel->setText(tr("Loading"));
+    ui_->progressBar->setValue(0);
 }
 
 }

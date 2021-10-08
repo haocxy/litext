@@ -126,6 +126,9 @@ public:
     }
 
 private:
+    void _initViewport();
+
+    void _onDocStartLoad();
 
     void _moveCursorUp();
 
@@ -265,7 +268,7 @@ private:
     Signal<void()> sigViewportChanged_;
 
 private:
-    SigConns editorSigConns_;
+    SigConns sigConns_;
     SigConn sigConnForWaitingRange_;
 };
 

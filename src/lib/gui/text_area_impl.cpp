@@ -24,9 +24,15 @@ TextAreaImpl::TextAreaImpl(Editor &editor, const TextAreaConfig &config)
     , config_(config)
     , cvt_(editor_, size_, page_, vloc_, config_, glyphCache_)
 {
-    editorSigConns_ += editor_.sigLastActRowUpdated().connect([this] {
+    sigConns_ += editor_.sigLastActRowUpdated().connect([this] {
         sigShouldRepaint_();
     });
+
+    sigConns_ += editor_.doc().sigStartLoad().connect([this] {
+        Lock lock(mtx_);
+        _onDocStartLoad();
+    });
+
 
     glyphCache_.setFont(config_.fontIndex(), config_.font().size());
 
@@ -42,41 +48,16 @@ TextAreaImpl::~TextAreaImpl()
 
 void TextAreaImpl::open(const Size &size, RowN row)
 {
-    editor_.start();
+    
+    {
+        Lock lock(mtx_);
 
-    Lock lock(mtx_);
+        setViewLoc(ViewLoc(row, 0));
 
-    vloc_ = ViewLoc(row, 0);
-
-    setSize(size);
-
-    const RowRange docRange = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_ - vloc_.line());
-    if (editor_.doc().rowCnt() >= docRange.end()) {
-        remakePage();
-        updateStableXByCurrentCursor();
-        sigViewportChanged_();
-        sigShouldRepaint_();
-        sigConnForWaitingRange_.disconnect();
-        opened_ = true;
-    } else {
-        sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this](const doc::LoadProgress &p) {
-            // 在加载过程中视口尺寸可能被改变，所以每次都要获取当前的可以显式的行数
-            RowRange curRange = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_ - vloc_.line());
-            if (p.done() && p.loadedRowCount() < curRange.end()) {
-                curRange.setEnd(p.loadedRowCount());
-            }
-            if (p.loadedRowCount() >= curRange.end()) {
-                Lock lock(mtx_);
-                remakePage();
-                updateStableXByCurrentCursor();
-                sigViewportChanged_();
-                sigShouldRepaint_();
-                sigConnForWaitingRange_.disconnect();
-                opened_ = true;
-            }
-            // TODO 没有处理文档段落数超过了需求段落数的情况
-        });
+        setSize(size);
     }
+
+    editor_.start();
 }
 
 void TextAreaImpl::resize(const Size &size)
@@ -510,6 +491,49 @@ void TextAreaImpl::repaint()
             }
         }
     }
+}
+
+void TextAreaImpl::_initViewport()
+{
+    const RowRange docRange = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_ - vloc_.line());
+    if (editor_.doc().rowCnt() >= docRange.end()) {
+        remakePage();
+        updateStableXByCurrentCursor();
+        sigViewportChanged_();
+        sigShouldRepaint_();
+        sigConnForWaitingRange_.disconnect();
+        opened_ = true;
+    } else {
+        sigConnForWaitingRange_ = editor_.doc().sigLoadProgress().connect([this](const doc::LoadProgress &p) {
+            // 在加载过程中视口尺寸可能被改变，所以每次都要获取当前的可以显式的行数
+            RowRange curRange = RowRange::byOffAndLen(vloc_.row(), lineCountLimit_ - vloc_.line());
+            if (p.done() && p.loadedRowCount() < curRange.end()) {
+                curRange.setEnd(p.loadedRowCount());
+            }
+            if (p.loadedRowCount() >= curRange.end()) {
+                Lock lock(mtx_);
+                remakePage();
+                updateStableXByCurrentCursor();
+                sigViewportChanged_();
+                sigShouldRepaint_();
+                sigConnForWaitingRange_.disconnect();
+                opened_ = true;
+            }
+            // TODO 没有处理文档段落数超过了需求段落数的情况
+        });
+    }
+}
+
+void TextAreaImpl::_onDocStartLoad()
+{
+    sigConnForWaitingRange_.disconnect();
+
+    opened_ = false;
+    page_.clear();
+    stableX_ = 0;
+    isTextImgDirty_ = true;
+
+    _initViewport();
 }
 
 void TextAreaImpl::_moveCursorUp()

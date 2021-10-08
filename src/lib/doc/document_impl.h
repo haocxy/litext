@@ -41,6 +41,10 @@ public:
         return sigFatalError_;
     }
 
+    Signal<void()> &sigStartLoad() {
+        return sigStartLoad_;
+    }
+
     Signal<void(i64)> &sigFileSizeDetected() {
         return sigFileSizeDetected_;
     }
@@ -62,7 +66,7 @@ public:
     }
 
     RowN rowCnt() const {
-        return lineManager_.rowCnt();
+        return lineManager_->rowCnt();
     }
 
     sptr<Row> rowAt(RowN row) const;
@@ -77,14 +81,15 @@ private:
     AsyncDeleter &asyncDeleter_;
     const fs::path path_;
     TextRepo textRepo_;
-    LineManager lineManager_;
-    mutable RowCache rowCache_;
+    uptr<LineManager> lineManager_;
+    mutable uptr<RowCache> rowCache_;
     std::atomic<i64> fileSize_{ 0 };
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns loadSigConns_;
     SigConns lineSigConns_;
 
     Signal<void(DocError)> sigFatalError_;
+    Signal<void()> sigStartLoad_;
     Signal<void(i64)> sigFileSizeDetected_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const LoadProgress &)> sigLoadProgress_;
