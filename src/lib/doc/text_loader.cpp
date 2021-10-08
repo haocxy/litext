@@ -154,6 +154,8 @@ void TextLoader::Reader::readAll()
             return;
         }
 
+        partLenSum += readBuff.size();
+
         LoadingPart p;
         p.off = offset;
         p.charset = charset;
@@ -162,12 +164,10 @@ void TextLoader::Reader::readAll()
 
         loadingParts_.push(std::move(p));
 
-        partLenSum += readBuff.size();
-
         readBuff.clear();
     }
 
-    LOGD << title << "part len sum : [" << partLenSum << "](" << ReadableSizeUtil::convert(partLenSum, 2) << ")";
+    LOGD << title << "part len sum : [" << partLenSum << "](" << Readable::fileSize(partLenSum, 2) << ")";
     LOGD << title << "time usage : " << elapsedTime.ms() << "ms";
 }
 

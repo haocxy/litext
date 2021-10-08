@@ -4,15 +4,15 @@
 #include <string>
 
 
-// 把计算机中的长度在人类可读的形式和以字节为单位的整数间转换
-namespace ReadableSizeUtil
+// 把计算机中的数值转换为更为可读的字符串
+namespace Readable
 {
 
 namespace detail
 {
 
 template <typename N, typename U>
-inline std::string convert(N n, U unit, int prec, const char *suffix) {
+inline std::string fileSizeImpl(N n, U unit, int prec, const char *suffix) {
     assert(suffix);
     std::ostringstream ss;
     if (prec > 0) {
@@ -52,20 +52,20 @@ inline std::string convert(N n, U unit, int prec, const char *suffix) {
 }
 
 template <typename N>
-inline std::string convert(N n, int prec = 1) {
+inline std::string fileSize(N n, int prec = 1) {
     constexpr N kb = 1024;
     constexpr N mb = kb * 1024;
     constexpr N gb = mb * 1024;
     if (n > gb) {
-        return detail::convert(n, gb, prec, "GB");
+        return detail::fileSizeImpl(n, gb, prec, "GB");
     }
     if (n > mb) {
-        return detail::convert(n, mb, prec, "MB");
+        return detail::fileSizeImpl(n, mb, prec, "MB");
     }
     if (n > kb) {
-        return detail::convert(n, kb, prec, "KB");
+        return detail::fileSizeImpl(n, kb, prec, "KB");
     }
-    return detail::convert(n, 1, 0, "B");
+    return detail::fileSizeImpl(n, 1, 0, "B");
 }
 
 }
