@@ -1,6 +1,7 @@
 #include "default_font_chooser.h"
 
 #include <vector>
+#include <algorithm>
 
 #include "core/font.h"
 #include "core/logger.h"
