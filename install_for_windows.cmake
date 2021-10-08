@@ -1,6 +1,11 @@
 #file(GLOB_RECURSE asset_files "assets/*")
 #install(FILES ${asset_files} DESTINATION "assets")
 
+set(google_noto_font_files "")
+list(APPEND google_noto_font_files "assets/fonts/google_noto/NotoSansSC-Regular.otf")
+list(APPEND google_noto_font_files "assets/fonts/google_noto/OFL.txt")
+install(FILES ${google_noto_font_files} DESTINATION "assets/fonts/google_noto")
+
 install(TARGETS litext litextcmd litext_body
     CONFIGURATIONS Release
     RUNTIME DESTINATION ".")
