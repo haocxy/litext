@@ -153,7 +153,7 @@ opt<FontIndex> DefaultFontChooser::chooseByScanAllFoundFont() {
                 continue;
             }
 
-            auto it = std::find(GoodFontFamilies.begin(), GoodFontFamilies.end(), face.familyName());
+            auto it = std::find(GoodFontFamilies.begin(), GoodFontFamilies.end(), std::string(face.familyName()));
             if ((it != GoodFontFamilies.end())) {
                 if (bestIt == GoodFontFamilies.end() || it < bestIt) {
                     bestIt = it;
