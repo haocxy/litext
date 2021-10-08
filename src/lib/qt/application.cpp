@@ -191,26 +191,36 @@ void Application::initQtApp(const InitInfo &initInfo)
 
 void Application::initSystemTray(const InitInfo &initInfo)
 {
-    if (initInfo.shouldStartAsServer()) {
-        trayMenu_ = std::make_unique<TrayMenu>();
-        trayIcon_ = new QSystemTrayIcon(QIcon(":/tray_icon.ico"));
-        trayIcon_->setContextMenu(trayMenu_.get());
+    const char *title = "Application::initSystemTray() ";
 
-        connect(trayMenu_.get(), &TrayMenu::qtSigActivateUI, this, &Application::activateUI);
-
-        connect(trayMenu_.get(), &TrayMenu::qtSigQuit, this, [this] {
-            trayIcon_->hide();
-            QApplication::quit();
-        });
-
-        connect(trayIcon_, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
-            if (reason == QSystemTrayIcon::DoubleClick) {
-                activateUI();
-            }
-        });
-
-        trayIcon_->show();
+    if (!initInfo.shouldStartAsServer()) {
+        LOGD << title << "not in singleton mode";
+        return;
     }
+
+    if (!QSystemTrayIcon::isSystemTrayAvailable()) {
+        LOGD << title << "system tray not supported";
+        return;
+    }
+
+    trayMenu_ = std::make_unique<TrayMenu>();
+    trayIcon_ = new QSystemTrayIcon(QIcon(":/tray_icon.ico"));
+    trayIcon_->setContextMenu(trayMenu_.get());
+
+    connect(trayMenu_.get(), &TrayMenu::qtSigActivateUI, this, &Application::activateUI);
+
+    connect(trayMenu_.get(), &TrayMenu::qtSigQuit, this, [this] {
+        trayIcon_->hide();
+        QApplication::quit();
+    });
+
+    connect(trayIcon_, &QSystemTrayIcon::activated, this, [this](QSystemTrayIcon::ActivationReason reason) {
+        if (reason == QSystemTrayIcon::DoubleClick) {
+            activateUI();
+        }
+    });
+
+    trayIcon_->show();
 }
 
 void Application::initMainWindow()
