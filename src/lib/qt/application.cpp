@@ -203,6 +203,8 @@ void Application::initSystemTray(const InitInfo &initInfo)
         return;
     }
 
+    LOGD << title << "initing";
+
     trayMenu_ = std::make_unique<TrayMenu>();
     trayIcon_ = new QSystemTrayIcon(QIcon(":/tray_icon.ico"));
     trayIcon_->setContextMenu(trayMenu_.get());
@@ -221,6 +223,8 @@ void Application::initSystemTray(const InitInfo &initInfo)
     });
 
     trayIcon_->show();
+
+    LOGD << title << "inited";
 }
 
 void Application::initMainWindow()
