@@ -8,7 +8,17 @@ Editor::Editor(AsyncDeleter *asyncDeleter, const fs::path &file)
 
 void Editor::start()
 {
-    document_.load();
+    document_.load(Charset::Unknown);
+}
+
+void Editor::reload()
+{
+    document_.load(Charset::Unknown);
+}
+
+void Editor::reload(Charset charset)
+{
+    document_.load(charset);
 }
 
 void Editor::setNormalCursor(const DocLoc &loc)

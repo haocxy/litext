@@ -46,7 +46,7 @@ DocumentImpl::~DocumentImpl()
     LOGD << "Document::~Document(), path: [" << path_ << "]";
 }
 
-void DocumentImpl::load()
+void DocumentImpl::load(Charset charset)
 {
     LOGI << "Document start load [" << path_ << "]";
 
@@ -58,7 +58,7 @@ void DocumentImpl::load()
 
     loadTimeUsage_.start();
 
-    loader_->loadAll();
+    loader_->loadAll(charset);
 }
 
 sptr<Row> DocumentImpl::rowAt(RowN row) const

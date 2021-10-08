@@ -25,7 +25,7 @@ public:
 
     ~TextLoader();
 
-    void loadAll();
+    void loadAll(Charset charset);
 
     Signal<void(DocError)> &sigFatalError() {
         return sigFatalError_;
@@ -64,7 +64,7 @@ private:
 
         ~Reader();
 
-        void readAll();
+        void readAll(Charset charset);
 
     private:
         void loop();
@@ -99,6 +99,8 @@ private:
 
     Charset updateCharset(const MemBuff &data);
 
+    void specifyCharsetIfValid(Charset charset);
+
 private:
     TaskQueue<void(Reader &)> readerTasks_;
     LoadingParts loadingParts_;
@@ -114,7 +116,8 @@ private:
     using Mtx = std::recursive_mutex;
     using Lock = std::unique_lock<Mtx>;
     mutable Mtx mtx_;
-    Charset charset_{Charset::Unknown};
+    Charset detectedCharset_{Charset::Unknown};
+    opt<Charset> specifiedCharset_;
 };
 
 }

@@ -29,9 +29,9 @@ i64 Document::loadTimeUsageMs() const
     return impl_->loadTimeUsageMs();
 }
 
-void Document::load()
+void Document::load(Charset charset)
 {
-    impl_->load();
+    impl_->load(charset);
 }
 
 Signal<void(DocError)> &Document::sigFatalError()

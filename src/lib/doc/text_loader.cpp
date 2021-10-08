@@ -53,10 +53,10 @@ static i64 partSize() {
 #endif
 }
 
-void TextLoader::loadAll()
+void TextLoader::loadAll(Charset charset)
 {
-    readerTasks_.push([](Reader &reader) {
-        reader.readAll();
+    readerTasks_.push([charset](Reader &reader) {
+        reader.readAll(charset);
     });
 }
 
@@ -76,8 +76,12 @@ Charset TextLoader::updateCharset(const MemBuff &data)
     {
         Lock lock(mtx_);
 
-        if (!shouldDetectCharset(charset_)) {
-            return charset_;
+        if (specifiedCharset_) {
+            return *specifiedCharset_;
+        }
+
+        if (!shouldDetectCharset(detectedCharset_)) {
+            return detectedCharset_;
         }
     }
 
@@ -91,11 +95,30 @@ Charset TextLoader::updateCharset(const MemBuff &data)
 
     {
         Lock lock(mtx_);
-        charset_ = detectedCharset;
+        detectedCharset_ = detectedCharset;
     }
 
     sigCharsetDetected_(detectedCharset);
     return detectedCharset;
+}
+
+void TextLoader::specifyCharsetIfValid(Charset charset)
+{
+    if (charset == Charset::Unknown) {
+        return;
+    }
+
+    {
+        Lock lock(mtx_);
+
+        if (!specifiedCharset_) {
+            specifiedCharset_ = charset;
+        } else {
+            throw std::logic_error("TextLoader::specifyCharsetIfValid() already specified");
+        }
+    }
+
+    sigCharsetDetected_(charset);
 }
 
 TextLoader::Reader::Reader(TextLoader &self, const fs::path &docPath, TaskQueue<void(Reader &)> &tasks, LoadingParts &loadingParts)
@@ -114,7 +137,7 @@ TextLoader::Reader::~Reader()
     th_.join();
 }
 
-void TextLoader::Reader::readAll()
+void TextLoader::Reader::readAll(Charset charset)
 {
     constexpr i32 SkipRowBytesLimit = 100 * 1024 * 1024;
 
@@ -122,6 +145,8 @@ void TextLoader::Reader::readAll()
 
     ElapsedTime elapsedTime;
     elapsedTime.start();
+
+    self_.specifyCharsetIfValid(charset);
 
     self_.sigFileSizeDetected_(fs::file_size(docPath_));
 

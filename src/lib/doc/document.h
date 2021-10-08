@@ -27,7 +27,7 @@ public:
 
     i64 loadTimeUsageMs() const;
 
-    void load();
+    void load(Charset charset);
 
     Signal<void(DocError)> &sigFatalError();
 

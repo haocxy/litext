@@ -17,6 +17,10 @@ public:
 
     void start();
 
+    void reload();
+
+    void reload(Charset charset);
+
     const doc::Document &doc() const { return document_; }
 
     doc::Document &doc() { return document_; }

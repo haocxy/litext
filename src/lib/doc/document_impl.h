@@ -35,7 +35,7 @@ public:
         return loadTimeUsage_.ms();
     }
 
-    void load();
+    void load(Charset charset);
 
     Signal<void(DocError)> &sigFatalError() {
         return sigFatalError_;
