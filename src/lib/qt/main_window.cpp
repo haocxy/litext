@@ -13,7 +13,7 @@
 #include "core/logger.h"
 #include "core/system.h"
 #include "editor/editor.h"
-#include "font/quick_font_chooser.h"
+#include "font/default_font_chooser.h"
 #include "gui/text_area.h"
 #include "gui/config.h"
 #include "gui/text_area_config.h"
@@ -86,7 +86,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
         config_.textAreaConfig().setFontIndex(font::FontIndex(fontFile, fontFace));
         LOGI << "got font from prop db";
     } else {
-        const opt<font::FontIndex> fontIndexOpt = font::QuickFountChooser().choose();
+        const opt<font::FontIndex> fontIndexOpt = font::DefaultFontChooser().choose();
         if (fontIndexOpt) {
             const font::FontIndex &fontIndex = *fontIndexOpt;
             config_.textAreaConfig().setFontIndex(fontIndex);

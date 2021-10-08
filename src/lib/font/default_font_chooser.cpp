@@ -1,4 +1,4 @@
-#include "quick_font_chooser.h"
+#include "default_font_chooser.h"
 
 #include <vector>
 
@@ -21,15 +21,15 @@ static bool isWindows()
 namespace font
 {
 
-QuickFountChooser::QuickFountChooser()
+DefaultFontChooser::DefaultFontChooser()
 {
 }
 
-QuickFountChooser::~QuickFountChooser()
+DefaultFontChooser::~DefaultFontChooser()
 {
 }
 
-opt<FontIndex> QuickFountChooser::choose()
+opt<FontIndex> DefaultFontChooser::choose()
 {
     if (isWindows()) {
         const opt<FontIndex> fontIndex = chooseForWindows();
@@ -48,7 +48,7 @@ opt<FontIndex> QuickFountChooser::choose()
     return std::nullopt;
 }
 
-opt<FontIndex> QuickFountChooser::chooseForWindows()
+opt<FontIndex> DefaultFontChooser::chooseForWindows()
 {
     // 这段代码极少执行,通常只在部署后首次启动时执行一次,所以不需要做为static局部变量
     const std::vector<FontIndex> goodChoices{
@@ -71,7 +71,7 @@ opt<FontIndex> QuickFountChooser::chooseForWindows()
     return std::nullopt;
 }
 
-opt<FontIndex> QuickFountChooser::chooseByScanAllFoundFont() {
+opt<FontIndex> DefaultFontChooser::chooseByScanAllFoundFont() {
 
     const std::vector<std::string> GoodFontFamilies{
         "Noto Sans SC",
