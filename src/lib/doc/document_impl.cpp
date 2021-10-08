@@ -46,7 +46,7 @@ DocumentImpl::~DocumentImpl()
     LOGD << "Document::~Document(), path: [" << path_ << "]";
 }
 
-void DocumentImpl::start()
+void DocumentImpl::load()
 {
     LOGI << "Document start load [" << path_ << "]";
 

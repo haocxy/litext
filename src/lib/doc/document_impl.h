@@ -35,7 +35,7 @@ public:
         return loadTimeUsage_.ms();
     }
 
-    void start();
+    void load();
 
     Signal<void(DocError)> &sigFatalError() {
         return sigFatalError_;

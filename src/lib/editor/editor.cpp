@@ -8,7 +8,7 @@ Editor::Editor(AsyncDeleter *asyncDeleter, const fs::path &file)
 
 void Editor::start()
 {
-    document_.start();
+    document_.load();
 }
 
 void Editor::setNormalCursor(const DocLoc &loc)

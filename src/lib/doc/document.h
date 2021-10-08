@@ -27,7 +27,7 @@ public:
 
     i64 loadTimeUsageMs() const;
 
-    void start();
+    void load();
 
     Signal<void(DocError)> &sigFatalError();
 

@@ -29,9 +29,9 @@ i64 Document::loadTimeUsageMs() const
     return impl_->loadTimeUsageMs();
 }
 
-void Document::start()
+void Document::load()
 {
-    impl_->start();
+    impl_->load();
 }
 
 Signal<void(DocError)> &Document::sigFatalError()
