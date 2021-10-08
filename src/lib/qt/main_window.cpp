@@ -62,6 +62,20 @@ static const u8str fontFile = "fontFile";
 static const u8str fontFace = "fontFace";
 }
 
+static bool isFontValid(const fs::path &file, i64 faceIndex)
+{
+    font::FontContext context;
+    font::FontFile fontFile(context, file);
+    if (!fontFile) {
+        return false;
+    }
+    font::FontFace fontFace(fontFile, faceIndex);
+    if (!fontFace) {
+        return false;
+    }
+    return true;
+}
+
 using Class = MainWindow;
 
 MainWindow::MainWindow(Engine &engine, Config &config)
@@ -82,7 +96,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
 
     u32str fontFile;
     i64 fontFace = 0;
-    if (propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace)) {
+    if (propRepo_.get(prop::fontFile, fontFile) && propRepo_.get(prop::fontFace, fontFace) && isFontValid(static_cast<const std::u32string &>(fontFile), fontFace)) {
         config_.textAreaConfig().setFontIndex(font::FontIndex(fontFile, fontFace));
         LOGI << "got font from prop db";
     } else {

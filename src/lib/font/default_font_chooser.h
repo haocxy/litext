@@ -19,6 +19,8 @@ public:
     opt<FontIndex> choose();
 
 private:
+    opt<FontIndex> chooseInPack();
+
     opt<FontIndex> chooseForWindows();
 
     opt<FontIndex> chooseByScanAllFoundFont();

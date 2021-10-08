@@ -5,6 +5,7 @@
 #include "core/font.h"
 #include "core/logger.h"
 #include "core/time.h"
+#include "core/system.h"
 
 
 // 不同操作系统的代码只有使用的字体文件等差异,没有和编译相关的差异
@@ -31,6 +32,14 @@ DefaultFontChooser::~DefaultFontChooser()
 
 opt<FontIndex> DefaultFontChooser::choose()
 {
+    {
+        // 最优先使用发布时打包的字体
+        const opt<FontIndex> fontIndex = chooseInPack();
+        if (fontIndex) {
+            return fontIndex;
+        }
+    }
+
     if (isWindows()) {
         const opt<FontIndex> fontIndex = chooseForWindows();
         if (fontIndex) {
@@ -42,6 +51,48 @@ opt<FontIndex> DefaultFontChooser::choose()
         const opt<FontIndex> fontIndex = chooseByScanAllFoundFont();
         if (fontIndex) {
             return fontIndex;
+        }
+    }
+
+    return std::nullopt;
+}
+
+opt<FontIndex> DefaultFontChooser::chooseInPack()
+{
+    const std::string fileName = "NotoSansSC-Regular.otf";
+
+    const fs::path exePath = SystemUtil::exePath();
+
+    const fs::path exeDir = exePath.parent_path();
+
+    // 打包程序时,会把字体从开发的目录复制到包中的某个目录,
+    // 所以当程序处于开发阶段和已经打包的阶段时,字体所在的位置不同,
+    // 为了程序逻辑简单,此处逻辑不区分程序处于哪一阶段,到两处分别寻找即可
+    // 考虑到打包的阶段时最终使用的阶段,所以优先根据打包目录查找
+
+    {
+        const fs::path path = fs::absolute(exeDir / "assets/fonts/google_noto" / fileName);
+        if (fs::exists(path)) {
+            FontFile fontFile(context_, path);
+            if (fontFile) {
+                const i64 faceCount = fontFile.faceCount();
+                if (faceCount > 0) {
+                    return FontIndex(path, 0);
+                }
+            }
+        }
+    }
+
+    {
+        const fs::path path = fs::absolute(exeDir / "../../assets/fonts/google_noto" / fileName);
+        if (fs::exists(path)) {
+            FontFile fontFile(context_, path);
+            if (fontFile) {
+                const i64 faceCount = fontFile.faceCount();
+                if (faceCount > 0) {
+                    return FontIndex(path, 0);
+                }
+            }
         }
     }
 
