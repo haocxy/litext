@@ -134,7 +134,13 @@
         <location filename="../src/lib/qt/editor_status_bar.ui" line="78"/>
         <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="155"/>
         <source>Charset:</source>
-        <translation type="unfinished">字符集：</translation>
+        <translation type="unfinished">编码：</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/editor_status_bar.ui" line="92"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="157"/>
+        <source>Specify Charset</source>
+        <translation type="unfinished">指定编码</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="116"/>

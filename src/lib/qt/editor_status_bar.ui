@@ -89,7 +89,7 @@
      <item>
       <widget class="QPushButton" name="charsetSpecifyButton">
        <property name="text">
-        <string/>
+        <string>Specify Charset</string>
        </property>
       </widget>
      </item>
