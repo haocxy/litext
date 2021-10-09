@@ -30,6 +30,14 @@ private:
 
     void onStartLoad();
 
+    void showStatusMessage(const QString &statusType, const QString &message);
+
+    void setStatusType(const QString &statusType);
+
+    void setStatus(const QString &statusType);
+
+    void clearStatusMessage();
+
 private:
 signals:
     void qtSigStartLoad();

@@ -11,6 +11,16 @@
 namespace gui::qt
 {
 
+namespace prop_name
+{
+static const char *const statusType = "statusType";
+}
+
+namespace status_type {
+static const QString normal = "normal";
+static const QString error = "error";
+}
+
 static QString readableFileSizeHelp(double fileSize, double unitValue, QString unitText)
 {
     return QString("%1 %2").arg(fileSize / unitValue, 0, 'f', 2).arg(unitText);
@@ -76,6 +86,8 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
 
     setObjectName("EditorStatusBarWidget");
 
+    setStatusType(status_type::normal);
+
     ui_->setupUi(this);
 
     doc::Document &doc = textArea.editor().document();
@@ -127,6 +139,7 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
 
     connect(this, &Class::qtSigCharsetDetectFailed, this, [this] {
         ui_->charsetContent->setText(tr("Unknown"));
+        showStatusMessage(status_type::error, tr("Detect charset failed, please specify charset."));
     });
 
     initCharsetMenu();
@@ -173,6 +186,8 @@ void EditorStatusBarWidget::initCharsetMenu()
         connect(action, &QAction::triggered, this, [this, charsetStr] {
             const Charset charset = CharsetUtil::strToCharset(charsetStr.toStdString().c_str());
             maxRowCount_ = 0;
+            setStatusType(status_type::normal);
+            clearStatusMessage();
             textArea_.editor().reload(charset);
         });
     }
@@ -187,6 +202,27 @@ void EditorStatusBarWidget::onStartLoad()
     ui_->charsetContent->setText(tr("Unknown"));
     ui_->progressLabel->setText(tr("Loading"));
     ui_->progressBar->setValue(0);
+}
+
+void EditorStatusBarWidget::showStatusMessage(const QString &statusType, const QString &message)
+{
+    setProperty(prop_name::statusType, statusType);
+    ui_->statusMessage->setText(message);
+}
+
+void EditorStatusBarWidget::setStatusType(const QString &statusType)
+{
+    setProperty(prop_name::statusType, statusType);
+}
+
+void EditorStatusBarWidget::setStatus(const QString &statusType)
+{
+    setProperty(prop_name::statusType, statusType);
+}
+
+void EditorStatusBarWidget::clearStatusMessage()
+{
+    ui_->statusMessage->clear();
 }
 
 }
