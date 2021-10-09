@@ -754,6 +754,8 @@ void TextAreaImpl::movePageHeadOneLine()
 
 void TextAreaImpl::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const
 {
+    Lock lock(mtx_);
+
     const int rowCnt = page_.size();
 
     i32 offset = -vloc_.line();

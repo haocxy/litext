@@ -24,6 +24,14 @@ void LineManager::addDocPart(const DocPart &docPart)
     updatePartInfo(docPart);
 }
 
+void LineManager::clear()
+{
+    Lock lock(mtx_);
+    orderedInfos_.clear();
+    pendingInfos_.clear();
+    rowCount_ = 0;
+}
+
 std::map<RowN, RowIndex> LineManager::findRange(const RowRange &range) const
 {
     Lock lock(mtx_);

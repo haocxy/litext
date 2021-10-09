@@ -24,6 +24,8 @@ class RowCache {
 public:
     RowCache(LineManager &lineManager, const fs::path &file);
 
+    void clear();
+
     void updateCharset(Charset charset);
 
     std::map<RowN, sptr<Row>> loadRows(const std::map<RowN, RowIndex> &rowIndexes);

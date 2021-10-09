@@ -1,7 +1,7 @@
 #pragma once
 
 #include <atomic>
-#include <mutex>
+#include <shared_mutex>
 
 #include "core/signal.h"
 #include "core/sigconns.h"
@@ -66,23 +66,37 @@ public:
     }
 
     RowN rowCnt() const {
-        return lineManager_->rowCnt();
+        return lineManager_.rowCnt();
     }
 
     sptr<Row> rowAt(RowN row) const;
 
     std::map<RowN, sptr<Row>> rowsAt(const RowRange &range) const;
 
-    void bindLoadSignals(SigConns &conns, TextLoader &loader);
+private:
 
-    void deleteLoader();
+    std::map<RowN, sptr<Row>> _rowsAt(const RowRange &range) const;
+
+private:
+    void _bindLoadSignals(SigConns &conns, TextLoader &loader);
+
+    void _deleteLoader();
+
+    void _asyncDeleteLoader();
 
 private:
     AsyncDeleter &asyncDeleter_;
     const fs::path path_;
     TextRepo textRepo_;
-    uptr<LineManager> lineManager_;
-    mutable uptr<RowCache> rowCache_;
+    LineManager lineManager_;
+    mutable RowCache rowCache_;
+
+    using Mtx = std::shared_mutex;
+    using ReadLock = std::shared_lock<Mtx>;
+    using WriteLock = std::lock_guard<Mtx>;
+    mutable Mtx mtxForLoad_;
+    uptr<TextLoader> loader_;
+
     std::atomic<i64> fileSize_{ 0 };
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns loadSigConns_;
@@ -96,7 +110,6 @@ private:
     Signal<void()> sigAllLoaded_;
     Signal<void(RowN nrows)> sigRowCountUpdated_;
 
-    uptr<TextLoader> loader_;
     TimeUsage<std::chrono::steady_clock> loadTimeUsage_;
 };
 

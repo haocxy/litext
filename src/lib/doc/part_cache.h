@@ -60,6 +60,12 @@ public:
         return charset_;
     }
 
+    void clear() {
+        Lock lock(mtx_);
+        charset_ = Charset::Unknown;
+        parts_.clear();
+    }
+
     void updateCharset(Charset charset) {
         Lock lock(mtx_);
         if (charset_ == charset) {

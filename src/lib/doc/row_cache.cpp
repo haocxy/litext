@@ -17,6 +17,14 @@ RowCache::RowCache(LineManager &lineManager, const fs::path &file)
 
 }
 
+void RowCache::clear()
+{
+    Lock lock(mtx_);
+
+    partCache_.clear();
+    rows_.clear();
+}
+
 void RowCache::updateCharset(Charset charset)
 {
     Lock lock(mtx_);

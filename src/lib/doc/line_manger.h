@@ -37,6 +37,8 @@ public:
         return sigRowCountUpdated_;
     }
 
+    void clear();
+
     RowN rowCnt() const {
         Lock lock(mtx_);
         return rowCount_;

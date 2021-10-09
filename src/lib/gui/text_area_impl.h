@@ -80,7 +80,6 @@ public:
     // 答1：这样可以在运行时设置滚动的精度
     ScrollRatio scrollRatio() const
     {
-        Lock lock(mtx_);
         return ScrollRatio(0, doc().rowCnt() - 1);
     }
 

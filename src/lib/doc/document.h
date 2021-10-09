@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <shared_mutex>
 
 #include "core/fs.h"
 #include "core/signal.h"
@@ -50,6 +51,10 @@ public:
     std::map<RowN, sptr<Row>> rowsAt(const RowRange &range) const;
 
 private:
+    using Mtx = std::shared_mutex;
+    using ReadLock = std::shared_lock<Mtx>;
+    using WriteLock = std::lock_guard<Mtx>;
+    mutable Mtx mtx_;
     doc::DocumentImpl *impl_ = nullptr;
 };
 
