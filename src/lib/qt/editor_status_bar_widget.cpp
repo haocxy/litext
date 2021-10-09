@@ -102,7 +102,11 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     });
 
     connect(this, &Class::qtSigRowCountUpdated, this, [this](long long rowCount) {
-        ui_->rowCountContent->setText(readableRowCount(rowCount));
+        // Document::sigRowCountUpdated() 是由不同线程触发的,可能乱序
+        if (rowCount > maxRowCount_) {
+            ui_->rowCountContent->setText(readableRowCount(rowCount));
+            maxRowCount_ = rowCount;
+        }
     });
 
     sigConns_ += doc.sigCharsetDetected().connect([this](Charset charset) {
@@ -168,6 +172,7 @@ void EditorStatusBarWidget::initCharsetMenu()
         QAction *action = charsetMenu_->addAction(charsetStr);
         connect(action, &QAction::triggered, this, [this, charsetStr] {
             const Charset charset = CharsetUtil::strToCharset(charsetStr.toStdString().c_str());
+            maxRowCount_ = 0;
             textArea_.editor().reload(charset);
         });
     }
@@ -176,6 +181,7 @@ void EditorStatusBarWidget::initCharsetMenu()
 void EditorStatusBarWidget::onStartLoad()
 {
     fileSize_ = std::nullopt;
+    maxRowCount_ = 0;
     ui_->fileSizeContent->setText(tr("Unknown"));
     ui_->rowCountContent->setText(tr("Unknown"));
     ui_->charsetContent->setText(tr("Unknown"));

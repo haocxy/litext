@@ -51,6 +51,7 @@ private:
     Ui::EditorStatusBar *ui_ = nullptr;
     SigConns sigConns_;
     std::optional<long long> fileSize_;
+    long long maxRowCount_ = 0;
     QPointer<QMenu> charsetMenu_;
 };
 
