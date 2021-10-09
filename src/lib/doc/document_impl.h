@@ -17,6 +17,8 @@
 #include "doc_define.h"
 #include "doc_row.h"
 
+#include "document.h"
+
 
 namespace doc
 {
@@ -41,7 +43,7 @@ public:
         return sigFatalError_;
     }
 
-    Signal<void()> &sigStartLoad() {
+    Signal<void(const Document::StartLoadEvent &)> &sigStartLoad() {
         return sigStartLoad_;
     }
 
@@ -97,13 +99,14 @@ private:
     mutable Mtx mtxForLoad_;
     uptr<TextLoader> loader_;
 
+    std::atomic_bool isInitLoad_{ true };
     std::atomic<i64> fileSize_{ 0 };
     std::atomic<Charset> charset_{ Charset::Unknown };
     SigConns loadSigConns_;
     SigConns lineSigConns_;
 
     Signal<void(DocError)> sigFatalError_;
-    Signal<void()> sigStartLoad_;
+    Signal<void(const Document::StartLoadEvent &)> sigStartLoad_;
     Signal<void(i64)> sigFileSizeDetected_;
     Signal<void(Charset)> sigCharsetDetected_;
     Signal<void(const LoadProgress &)> sigLoadProgress_;

@@ -32,7 +32,22 @@ public:
 
     Signal<void(DocError)> &sigFatalError();
 
-    Signal<void()> &sigStartLoad();
+    class StartLoadEvent {
+    public:
+        StartLoadEvent() {}
+
+        explicit StartLoadEvent(bool isInitLoad)
+            : isInitLoad_(isInitLoad) {}
+
+        bool isInitLoad() const {
+            return isInitLoad_;
+        }
+
+    private:
+        bool isInitLoad_ = false;
+    };
+
+    Signal<void(const StartLoadEvent &)> &sigStartLoad();
 
     Signal<void(i64)> &sigFileSizeDetected();
 

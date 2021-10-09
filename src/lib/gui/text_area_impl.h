@@ -127,7 +127,7 @@ public:
 private:
     void _initViewport();
 
-    void _onDocStartLoad();
+    void _onDocStartLoad(bool isInitLoad);
 
     void _moveCursorUp();
 

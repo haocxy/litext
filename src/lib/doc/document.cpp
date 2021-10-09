@@ -44,7 +44,7 @@ Signal<void(DocError)> &Document::sigFatalError()
     return impl_->sigFatalError();
 }
 
-Signal<void()> &Document::sigStartLoad()
+Signal<void(const Document::StartLoadEvent &)> &Document::sigStartLoad()
 {
     ReadLock lock(mtx_);
     return impl_->sigStartLoad();

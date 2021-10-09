@@ -52,6 +52,10 @@ DocumentImpl::~DocumentImpl()
 
 void DocumentImpl::load(Charset charset)
 {
+    const bool isInitLoad = isInitLoad_;
+
+    isInitLoad_ = false;
+
     loadSigConns_.clear();
 
     {
@@ -76,7 +80,7 @@ void DocumentImpl::load(Charset charset)
         loader_->loadAll(charset);
     }
 
-    sigStartLoad_();
+    sigStartLoad_(Document::StartLoadEvent(isInitLoad));
 }
 
 sptr<Row> DocumentImpl::rowAt(RowN row) const

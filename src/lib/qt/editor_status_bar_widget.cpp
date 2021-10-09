@@ -82,7 +82,7 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
 
     using Class = EditorStatusBarWidget;
 
-    sigConns_ += doc.sigStartLoad().connect([this] {
+    sigConns_ += doc.sigStartLoad().connect([this](const doc::Document::StartLoadEvent &e) {
         emit qtSigStartLoad();
     });
 
@@ -102,7 +102,7 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     });
 
     connect(this, &Class::qtSigRowCountUpdated, this, [this](long long rowCount) {
-        // Document::sigRowCountUpdated() ÊÇÓÉ²»Í¬Ïß³Ì´¥·¢µÄ,¿ÉÄÜÂÒÐò
+        // Document::sigRowCountUpdated() æ˜¯ç”±ä¸åŒçº¿ç¨‹è§¦å‘çš„,å¯èƒ½ä¹±åº
         if (rowCount > maxRowCount_) {
             ui_->rowCountContent->setText(readableRowCount(rowCount));
             maxRowCount_ = rowCount;

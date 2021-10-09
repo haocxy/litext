@@ -28,9 +28,9 @@ TextAreaImpl::TextAreaImpl(Editor &editor, const TextAreaConfig &config)
         sigShouldRepaint_();
     });
 
-    sigConns_ += editor_.doc().sigStartLoad().connect([this] {
+    sigConns_ += editor_.doc().sigStartLoad().connect([this](const doc::Document::StartLoadEvent &e) {
         Lock lock(mtx_);
-        _onDocStartLoad();
+        _onDocStartLoad(e.isInitLoad());
     });
 
 
@@ -524,7 +524,7 @@ void TextAreaImpl::_initViewport()
     }
 }
 
-void TextAreaImpl::_onDocStartLoad()
+void TextAreaImpl::_onDocStartLoad(bool isInitLoad)
 {
     sigConnForWaitingRange_.disconnect();
 
@@ -532,6 +532,10 @@ void TextAreaImpl::_onDocStartLoad()
     page_.clear();
     stableX_ = 0;
     isTextImgDirty_ = true;
+
+    if (!isInitLoad) {
+        setViewLoc(ViewLoc(0, 0));
+    }
 
     _initViewport();
 }
