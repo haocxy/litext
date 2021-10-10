@@ -29,13 +29,21 @@ private:
 
     void setRulerWidth(int digitCount);
 
+private:
 signals:
     void qtSigUpdateContent();
+
     void qtSigUpdateWidth(int digitCount);
+
+    void qtSigFontSizeUpdated(int pt);
 
 private slots:
     void qtSlotUpdateContent();
+
     void qtSlotUpdateWidth(int digitCount);
+
+private:
+    void adjustRulerWidth();
 
 private:
     TextArea &textArea_;

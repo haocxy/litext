@@ -52,6 +52,17 @@ RulerWidget::RulerWidget(TextArea &textArea)
     textAreaSigConns_ += textArea_.editor().doc().sigRowCountUpdated().connect([this](RowN row) {
         emit qtSigUpdateWidth(digitCount(row));
     });
+
+    textAreaSigConns_ += textArea_.sigFontSizeUpdated().connect([this](int pt) {
+        emit qtSigFontSizeUpdated(pt);
+    });
+
+    connect(this, &RulerWidget::qtSigFontSizeUpdated, this, [this](int pt) {
+        QFont f = font();
+        f.setPointSize(pt);
+        setFont(f);
+        adjustRulerWidth();
+    });
 }
 
 RulerWidget::~RulerWidget()
@@ -95,8 +106,7 @@ void RulerWidget::paintLineNum(QPainter &p)
 void RulerWidget::setRulerWidth(int digitCount)
 {
     maxDigitCount_ = digitCount;
-    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * digitCount;
-    setFixedWidth(w);
+    adjustRulerWidth();
 }
 
 void RulerWidget::qtSlotUpdateContent()
@@ -113,6 +123,12 @@ void RulerWidget::qtSlotUpdateWidth(int digitCount)
     setRulerWidth(digitCount);
 
     update();
+}
+
+void RulerWidget::adjustRulerWidth()
+{
+    const int w = Margin * 2 + fontMetrics().horizontalAdvance('9') * maxDigitCount_;
+    setFixedWidth(w);
 }
 
 }
