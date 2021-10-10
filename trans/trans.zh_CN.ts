@@ -168,6 +168,45 @@
     </message>
 </context>
 <context>
+    <name>FontSizeChooser</name>
+    <message>
+        <location filename="../src/lib/qt/font_size_chooser_popup.ui" line="14"/>
+        <location filename="../src/lib/qt/gen.font_size_chooser_popup.ui.h" line="130"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/font_size_chooser_popup.ui" line="22"/>
+        <location filename="../src/lib/qt/gen.font_size_chooser_popup.ui.h" line="131"/>
+        <source>Please Choose Font Size</source>
+        <translation type="unfinished">请选择字号</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/font_size_chooser_popup.ui" line="46"/>
+        <location filename="../src/lib/qt/gen.font_size_chooser_popup.ui.h" line="132"/>
+        <source>0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/font_size_chooser_popup.ui" line="60"/>
+        <location filename="../src/lib/qt/gen.font_size_chooser_popup.ui.h" line="133"/>
+        <source>144</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/font_size_chooser_popup.ui" line="78"/>
+        <location filename="../src/lib/qt/gen.font_size_chooser_popup.ui.h" line="134"/>
+        <source>Unit: Point</source>
+        <translation type="unfinished">单位：点</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/font_size_chooser_popup.ui" line="108"/>
+        <location filename="../src/lib/qt/gen.font_size_chooser_popup.ui.h" line="135"/>
+        <source>OK</source>
+        <translation type="unfinished">确定</translation>
+    </message>
+</context>
+<context>
     <name>gui::qt::BigFileGeneratorWidget</name>
     <message>
         <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="168"/>

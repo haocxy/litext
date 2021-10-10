@@ -5,7 +5,7 @@ namespace gui::qt
 {
 
 PopupWidget::PopupWidget(QWidget *parent)
-    : QWidget(parent) {
+    : QFrame(parent) {
 
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlag(Qt::FramelessWindowHint);
@@ -34,7 +34,7 @@ void PopupWidget::locate(QWidget *base)
 void PopupWidget::mousePressEvent(QMouseEvent *e)
 {
     setAttribute(Qt::WA_NoMouseReplay);
-    QWidget::mousePressEvent(e);
+    QFrame::mousePressEvent(e);
 }
 
 void PopupWidget::locateWithoutParent()

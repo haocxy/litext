@@ -1,12 +1,12 @@
 #pragma once
 
-#include <QWidget>
+#include <QFrame>
 
 
 namespace gui::qt
 {
 
-class PopupWidget : public QWidget {
+class PopupWidget : public QFrame {
     Q_OBJECT
 public:
     explicit PopupWidget(QWidget *parent = nullptr);
