@@ -93,6 +93,24 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="Line" name="charsetAreaSep">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="fontSizeArea">
+     <item>
+      <widget class="QPushButton" name="fontSizeButton">
+       <property name="text">
+        <string>Font Size</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>

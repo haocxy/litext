@@ -104,13 +104,13 @@
     <name>EditorStatusBar</name>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="14"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="156"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="176"/>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="28"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="157"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="177"/>
         <source>File Size:</source>
         <translation type="unfinished">文档大小：</translation>
     </message>
@@ -118,33 +118,39 @@
         <location filename="../src/lib/qt/editor_status_bar.ui" line="35"/>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="60"/>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="85"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="158"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="160"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="162"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="178"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="180"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="182"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="53"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="159"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="179"/>
         <source>Row Count:</source>
         <translation type="unfinished">行数：</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="78"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="161"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="181"/>
         <source>Charset:</source>
         <translation type="unfinished">编码：</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/editor_status_bar.ui" line="92"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="163"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="183"/>
         <source>Specify Charset</source>
         <translation type="unfinished">指定编码</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar.ui" line="123"/>
-        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="165"/>
+        <location filename="../src/lib/qt/editor_status_bar.ui" line="110"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="184"/>
+        <source>Font Size</source>
+        <translation type="unfinished">字号</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/editor_status_bar.ui" line="141"/>
+        <location filename="../src/lib/qt/gen.editor_status_bar.ui.h" line="186"/>
         <source>Loading</source>
         <translation>加载中</translation>
     </message>
