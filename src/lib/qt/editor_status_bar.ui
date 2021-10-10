@@ -105,9 +105,23 @@
    <item>
     <layout class="QHBoxLayout" name="fontSizeArea">
      <item>
+      <widget class="QLabel" name="fontSizeLabel">
+       <property name="text">
+        <string>Font Size:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="fontSizeContent">
+       <property name="text">
+        <string>Unknown</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="fontSizeButton">
        <property name="text">
-        <string>Font Size</string>
+        <string>Change Font Size</string>
        </property>
       </widget>
      </item>

@@ -15,6 +15,9 @@ public:
 
     void locate(QWidget *base);
 
+protected:
+    virtual void mousePressEvent(QMouseEvent *e) override;
+
 private:
     void locateRelativeTo(QWidget *parent);
 

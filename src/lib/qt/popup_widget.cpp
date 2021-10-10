@@ -31,6 +31,12 @@ void PopupWidget::locate(QWidget *base)
     move(x, y);
 }
 
+void PopupWidget::mousePressEvent(QMouseEvent *e)
+{
+    setAttribute(Qt::WA_NoMouseReplay);
+    QWidget::mousePressEvent(e);
+}
+
 void PopupWidget::locateWithoutParent()
 {
     // TODO
