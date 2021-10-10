@@ -38,6 +38,8 @@ private:
 
     void clearStatusMessage();
 
+    void chooseFontSizeAction();
+
 private:
 signals:
     void qtSigStartLoad();

@@ -5,14 +5,14 @@ namespace gui::qt
 {
 
 FontSizeChooserWidget::FontSizeChooserWidget(QWidget *parent)
-    : QWidget(parent)
+    : PopupWidget(parent)
 {
 
 }
 
 FontSizeChooserWidget::~FontSizeChooserWidget()
 {
-
+    int n = 0;
 }
 
 }

@@ -6,7 +6,9 @@
 #include "editor/editor.h"
 
 #include "qtutil.h"
+#include "font_size_chooser_widget.h"
 #include "gen.editor_status_bar.ui.h"
+
 
 namespace gui::qt
 {
@@ -167,6 +169,8 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     connect(this, &Class::qtSigLoadDone, this, [this](long long timeUsageMs) {
         ui_->progressLabel->setText(tr("Loaded by %1 ms").arg(timeUsageMs));
     });
+
+    connect(ui_->fontSizeButton, &QPushButton::clicked, this, &Class::chooseFontSizeAction);
 }
 
 EditorStatusBarWidget::~EditorStatusBarWidget()
@@ -223,6 +227,13 @@ void EditorStatusBarWidget::setStatus(const QString &statusType)
 void EditorStatusBarWidget::clearStatusMessage()
 {
     ui_->statusMessage->clear();
+}
+
+void EditorStatusBarWidget::chooseFontSizeAction()
+{
+    FontSizeChooserWidget *w = new FontSizeChooserWidget(this);
+    w->locate(ui_->fontSizeButton);
+    w->show();
 }
 
 }

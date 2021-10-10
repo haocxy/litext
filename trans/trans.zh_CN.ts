@@ -269,25 +269,25 @@ It&apos;s content will be deleted if you confirm.</source>
 <context>
     <name>gui::qt::EditorStatusBarWidget</name>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="141"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="200"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="201"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="202"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="143"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="204"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="205"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="206"/>
         <source>Unknown</source>
         <translation type="unfinished">未知</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="142"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="144"/>
         <source>Detect charset failed, please specify charset.</source>
         <translation type="unfinished">检测编码失败,请指定编码</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="168"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="170"/>
         <source>Loaded by %1 ms</source>
         <translation type="unfinished">已加载，用时%1毫秒</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="203"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="207"/>
         <source>Loading</source>
         <translation type="unfinished">加载中</translation>
     </message>

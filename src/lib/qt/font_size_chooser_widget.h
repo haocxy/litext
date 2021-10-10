@@ -1,11 +1,12 @@
 #pragma once
 
-#include <QWidget>
+#include "popup_widget.h"
+
 
 namespace gui::qt
 {
 
-class FontSizeChooserWidget : public QWidget {
+class FontSizeChooserWidget : public PopupWidget {
     Q_OBJECT
 public:
     explicit FontSizeChooserWidget(QWidget *parent = nullptr);
