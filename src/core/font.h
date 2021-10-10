@@ -206,6 +206,10 @@ public:
         return hasFlag(ftFace_->style_flags, FT_STYLE_FLAG_BOLD);
     }
 
+    int pointSize() const {
+        return pointSize_;
+    }
+
     void setPointSize(int pt, i32 hDpi, i32 vDpi);
 
     int64_t mapUnicodeToGlyphIndex(char32_t unicode) const;
@@ -281,6 +285,7 @@ private:
 private:
     const FontFile *file_ = nullptr;
     FT_Face ftFace_ = nullptr;
+    int pointSize_ = 0;
 
     friend class Bitmap;
     friend class Glyph;

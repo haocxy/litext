@@ -116,6 +116,14 @@ public:
 
     void drawEachChar(QPainter &p);
 
+    int fontSizeByPoint() const;
+
+    void setFontSizeByPoint(int pt);
+
+    Signal<void(int)> &sigFontSizeUpdated() {
+        return sigFontSizeUpdated_;
+    }
+
     Signal<void()> &sigShouldRepaint() {
         return sigShouldRepaint_;
     }
@@ -263,6 +271,7 @@ private:
     GlyphCache glyphCache_;
 
 private:
+    Signal<void(int)> sigFontSizeUpdated_;
     Signal<void()> sigShouldRepaint_;
     Signal<void()> sigViewportChanged_;
 

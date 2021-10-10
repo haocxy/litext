@@ -93,6 +93,8 @@ FontFace::FontFace(const FontFile &file, long faceIndex)
 
 void FontFace::setPointSize(int pt, i32 hDpi, i32 vDpi)
 {
+    pointSize_ = pt;
+
     const i32 ftSize = pt << 6;
     const FT_Error error = FT_Set_Char_Size(ftFace_, 0, ftSize, hDpi, vDpi);
     if (error != 0) {

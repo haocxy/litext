@@ -321,9 +321,9 @@ It&apos;s content will be deleted if you confirm.</source>
     <name>gui::qt::EditorStatusBarWidget</name>
     <message>
         <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="143"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="204"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="205"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="206"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="217"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="218"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="219"/>
         <source>Unknown</source>
         <translation type="unfinished">未知</translation>
     </message>
@@ -338,7 +338,7 @@ It&apos;s content will be deleted if you confirm.</source>
         <translation type="unfinished">已加载，用时%1毫秒</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="207"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="220"/>
         <source>Loading</source>
         <translation type="unfinished">加载中</translation>
     </message>

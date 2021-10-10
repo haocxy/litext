@@ -18,6 +18,8 @@ class EditorStatusBar;
 namespace gui::qt
 {
 
+class FontSizeChooserWidget;
+
 class EditorStatusBarWidget : public QFrame {
     Q_OBJECT
 public:
@@ -56,6 +58,8 @@ signals:
 
     void qtSigLoadDone(long long timeUsageMs);
 
+    void qtSigFontSizeUpdated(int pt);
+
 private:
     TextArea &textArea_;
     Ui::EditorStatusBar *ui_ = nullptr;
@@ -63,6 +67,7 @@ private:
     std::optional<long long> fileSize_;
     long long maxRowCount_ = 0;
     QPointer<QMenu> charsetMenu_;
+    FontSizeChooserWidget *fontSizeChooser_ = nullptr;
 };
 
 }

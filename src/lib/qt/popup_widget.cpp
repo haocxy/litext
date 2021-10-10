@@ -7,7 +7,6 @@ namespace gui::qt
 PopupWidget::PopupWidget(QWidget *parent)
     : QFrame(parent) {
 
-    setAttribute(Qt::WA_DeleteOnClose);
     setWindowFlag(Qt::FramelessWindowHint);
     setWindowFlag(Qt::Popup);
 }

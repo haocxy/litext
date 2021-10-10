@@ -171,10 +171,25 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     });
 
     connect(ui_->fontSizeButton, &QPushButton::clicked, this, &Class::chooseFontSizeAction);
+
+    sigConns_ += textArea_.sigFontSizeUpdated().connect([this](int pt) {
+        emit qtSigFontSizeUpdated(pt);
+    });
+
+    connect(this, &Class::qtSigFontSizeUpdated, this, [this](int pt) {
+        ui_->fontSizeContent->setText(QString::number(pt));
+    });
+
+    ui_->fontSizeContent->setText(QString::number(textArea_.fontSizeByPoint()));
+
+    fontSizeChooser_ = new FontSizeChooserWidget(textArea_, this);
 }
 
 EditorStatusBarWidget::~EditorStatusBarWidget()
 {
+    delete fontSizeChooser_;
+    fontSizeChooser_ = nullptr;
+
     delete ui_;
     ui_ = nullptr;
 }
@@ -231,9 +246,8 @@ void EditorStatusBarWidget::clearStatusMessage()
 
 void EditorStatusBarWidget::chooseFontSizeAction()
 {
-    FontSizeChooserWidget *w = new FontSizeChooserWidget(this);
-    w->locate(ui_->fontSizeButton);
-    w->show();
+    fontSizeChooser_->locate(ui_->fontSizeButton);
+    fontSizeChooser_->show();
 }
 
 }

@@ -76,6 +76,12 @@ public:
 
     void drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, const RowBound &bound, bool isLastAct)> &&action) const;
 
+    int fontSizeByPoint() const;
+
+    void setFontSizeByPoint(int pt);
+
+    Signal<void(int)> &sigFontSizeUpdated();
+
     Signal<void()> &sigShouldRepaint();
 
     Signal<void()> &sigViewportChanged();

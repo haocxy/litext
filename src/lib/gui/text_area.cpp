@@ -138,6 +138,24 @@ void TextArea::drawEachLineNum(std::function<void(RowN lineNum, i32 baseline, co
     return impl_->drawEachLineNum(std::move(action));
 }
 
+int TextArea::fontSizeByPoint() const
+{
+    ReadLock lock(mtx_);
+    return impl_->fontSizeByPoint();
+}
+
+void TextArea::setFontSizeByPoint(int pt)
+{
+    ReadLock lock(mtx_);
+    impl_->setFontSizeByPoint(pt);
+}
+
+Signal<void(int)> &TextArea::sigFontSizeUpdated()
+{
+    ReadLock lock(mtx_);
+    return impl_->sigFontSizeUpdated();
+}
+
 Signal<void()> &TextArea::sigShouldRepaint()
 {
     ReadLock lock(mtx_);

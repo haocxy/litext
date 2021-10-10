@@ -30,6 +30,9 @@ TextAreaWidget::TextAreaWidget(TextArea &textArea)
     sigConns_ += textArea_.sigViewportChanged().connect([this] {
         emit qtSigShouldRepaint();
     });
+    sigConns_ += textArea_.sigFontSizeUpdated().connect([this](int pt) {
+        emit qtSigShouldRepaint();
+    });
 
     scrollLineCount_ = QApplication::wheelScrollLines();
 }

@@ -33,12 +33,11 @@ TextAreaImpl::TextAreaImpl(Editor &editor, const TextAreaConfig &config)
         _onDocStartLoad(e.isInitLoad());
     });
 
-
-    glyphCache_.setFont(config_.fontIndex(), config_.font().size());
-
     for (int i = 0; i < 256; ++i) {
         colorTable_ << qRgba(0, 0, 0, i);
     }
+
+    glyphCache_.setFont(config_.fontIndex(), config_.font().size());
 }
 
 TextAreaImpl::~TextAreaImpl()
@@ -814,6 +813,39 @@ void TextAreaImpl::drawEachChar(QPainter &p)
 
             ++lineOffset;
         }
+    }
+}
+
+int TextAreaImpl::fontSizeByPoint() const
+{
+    Lock lock(mtx_);
+
+    return glyphCache_.face().pointSize();
+}
+
+void TextAreaImpl::setFontSizeByPoint(int pt)
+{
+    bool updated = false;
+
+    {
+        Lock lock(mtx_);
+
+        const int oldPt = glyphCache_.face().pointSize();
+
+        if (oldPt != pt) {
+
+            glyphCache_.setFontSizeByPoint(pt);
+
+            updated = true;
+
+            lineCountLimit_ = calcMaxShownLineCnt();
+
+            remakePage();
+        }
+    }
+
+    if (updated) {
+        sigFontSizeUpdated_(pt);
     }
 }
 

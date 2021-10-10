@@ -15,12 +15,28 @@ class GlyphCache {
 public:
     GlyphCache() {}
 
+    font::FontFace &face() {
+        return face_;
+    }
+
     const font::FontFace &face() const {
         return face_;
     }
 
+    void setFontSizeByPoint(i32 pointSize) {
+        if (pointSize == face_.pointSize()) {
+            return;
+        }
+
+        glyphs_.clear();
+
+        const i32 hDpi = SystemUtil::screenHorizontalDpi();
+        const i32 vDpi = SystemUtil::screenVerticalDpi();
+        face_.setPointSize(pointSize, hDpi, vDpi);
+    }
+
     void setFont(const font::FontIndex &index, i32 pointSize) {
-        if (index.file() == file_.path() && index.faceIndex() == face_.faceIndex()) {
+        if (index.file() == file_.path() && index.faceIndex() == face_.faceIndex() && pointSize == face_.pointSize()) {
             return;
         }
 
