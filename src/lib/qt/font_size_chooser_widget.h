@@ -32,6 +32,9 @@ signals:
     void qtSigFontSizeUpdated(int pt);
 
 private:
+    void setFontSizeByText(const QString &text);
+
+private:
     TextArea &area_;
     Ui::FontSizeChooser *ui_ = nullptr;
     SigConns sigConns_;
