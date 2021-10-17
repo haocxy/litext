@@ -209,110 +209,110 @@
 <context>
     <name>gui::qt::BigFileGeneratorWidget</name>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="168"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="169"/>
         <source>Choose Output File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="238"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="239"/>
         <source>
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="240"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="241"/>
         <source>Warning! </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="246"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="247"/>
         <source>Your confirm is needed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="254"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="255"/>
         <source>Please specify an output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="260"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="261"/>
         <source>Please use absolute path for your file&apos;s safe.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="269"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="270"/>
         <source>Path of output file [%1] is a directory.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="274"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="275"/>
         <source>Output file [ %1 ] is not a regular file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="278"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="279"/>
         <source>Output file [ %1 ] already existed.
 It&apos;s content will be deleted if you confirm.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="294"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="295"/>
         <source>Please specify the size of output file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="302"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="303"/>
         <source>Please check only one unit: [GB] or [MB].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="307"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="308"/>
         <source>Please check unit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="330"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="331"/>
         <source>Please specify minimum value for row size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="336"/>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="348"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="337"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="349"/>
         <source>Values of row size should be at least %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="342"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="343"/>
         <source>Please specify maximum value for row size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="353"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="354"/>
         <source>Minimum value of row size should not be greater than maximum value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="389"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="390"/>
         <source>Cannot open file [ %1 ] for write.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="397"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="398"/>
         <source>Cannot make codec for charset [ %1 ].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="403"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="404"/>
         <source>Cannot make encoder for charset [ %1 ].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="442"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="443"/>
         <source>Cannot make codec for UTF-8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="448"/>
+        <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="449"/>
         <source>Cannot make decoder for UTF-8</source>
         <translation type="unfinished"></translation>
     </message>
