@@ -24,7 +24,8 @@ static void initCharsetComboBox(QComboBox *box)
     std::set<QString> charsetNameSet = util::supportedCharsetSet();
     charsetNameSet.erase("ASCII");
 
-    const QStringList charsetNameList = util::toQList(charsetNameSet);
+    //const QStringList charsetNameList = util::toQList(charsetNameSet);
+    const QStringList charsetNameList = { "UTF-8" };
 
     box->addItems(charsetNameList);
 
