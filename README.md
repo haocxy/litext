@@ -27,7 +27,7 @@
 
 ## 构建完成的包
 
-[v0.0.1](../../releases/v0.0.1)
+[v0.0.1](https://gitee.com/haocxy/litext/releases/v0.0.1)
 
 ## 开发环境搭建
 
