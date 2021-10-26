@@ -1,5 +1,6 @@
 #include "engine.h"
 
+#include "core/system.h"
 #include "core/logger.h"
 #include "doc/dbfiles.h"
 
@@ -7,9 +8,15 @@
 namespace gui
 {
 
+static i32 decideDocumentStrandPoolSize()
+{
+    return std::max(2, SystemUtil::processorCount() / 2);
+}
+
 Engine::Engine()
     : singletonServer_(SingletonServer::newObj())
-    , editorManager_(objAsyncCreator_, objAsyncDeleter_)
+    , documentStrandPool_("DocumentStrandPool", decideDocumentStrandPoolSize())
+    , editorManager_(documentStrandPool_,objAsyncCreator_, objAsyncDeleter_)
     , fontRepo_(dirManager_.fontDbFile())
 {
 }

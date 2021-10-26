@@ -26,7 +26,7 @@ class ObjAsyncDeleter;
 // 
 class EditorManager {
 public:
-    EditorManager(ObjAsyncCreator &objAsyncCreator, ObjAsyncDeleter &objAsyncDeleter);
+    EditorManager(StrandAllocator &documentStrandAllocator, ObjAsyncCreator &objAsyncCreator, ObjAsyncDeleter &objAsyncDeleter);
 
     ~EditorManager();
 
@@ -43,6 +43,7 @@ private:
     using Mtx = std::mutex;
     using Lock = std::lock_guard<Mtx>;
     mutable Mtx mtx_;
+    StrandAllocator &documentStrandAllocator_;
     ObjAsyncCreator &objAsyncCreator_;
     ObjAsyncDeleter &objAsyncDeleter_;
     std::map<fs::path, std::weak_ptr<Editor>> editors_;

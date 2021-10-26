@@ -7,8 +7,9 @@
 namespace gui
 {
 
-EditorManager::EditorManager(ObjAsyncCreator &objAsyncCreator, ObjAsyncDeleter &objAsyncDeleter)
-    : objAsyncCreator_(objAsyncCreator)
+EditorManager::EditorManager(StrandAllocator &documentStrandAllocator, ObjAsyncCreator &objAsyncCreator, ObjAsyncDeleter &objAsyncDeleter)
+    : documentStrandAllocator_(documentStrandAllocator)
+    , objAsyncCreator_(objAsyncCreator)
     , objAsyncDeleter_(objAsyncDeleter)
 {
 }
@@ -32,7 +33,7 @@ void EditorManager::asyncGet(void *objReceiver, const fs::path &file, std::funct
         return;
     }
 
-    objAsyncCreator_.asyncCreate<Editor, AsyncDeleter *, fs::path>(&objAsyncDeleter_, absPath, [this, objReceiver, absPath, cb] (Editor *p) {
+    objAsyncCreator_.asyncCreate<Editor, StrandAllocator *, AsyncDeleter *, fs::path>(&documentStrandAllocator_, &objAsyncDeleter_, absPath, [this, objReceiver, absPath, cb] (Editor *p) {
 
         std::shared_ptr<Editor> editor;
 

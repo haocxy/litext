@@ -1,6 +1,8 @@
 #pragma once
 
+#include <set>
 #include <mutex>
+#include <shared_mutex>
 #include <queue>
 #include <thread>
 #include <atomic>
@@ -9,6 +11,8 @@
 #include <optional>
 #include <functional>
 #include <condition_variable>
+
+#include "basetype.h"
 
 
 namespace ThreadUtil
@@ -60,6 +64,11 @@ public:
             b.limit_ = kDefaultLimit;
         }
         return *this;
+    }
+
+    i32 size() const {
+        Lock lock(mtx_);
+        return static_cast<i32>(q_.size());
     }
 
     void stop() {
@@ -129,3 +138,182 @@ private:
 
 template <typename F>
 using TaskQueue = BlockQueue<std::function<F>>;
+
+
+class StrandEntry {
+public:
+    using Task = std::function<void()>;
+
+    virtual ~StrandEntry() {}
+
+    virtual void exec(Task &&task) {
+        if (inThread()) {
+            task();
+        } else {
+            post(std::move(task));
+        }
+    }
+
+    virtual void post(Task &&task) = 0;
+
+protected:
+    virtual bool inThread() const = 0;
+};
+
+
+class StrandAllocator {
+public:
+    virtual ~StrandAllocator() {}
+
+    virtual StrandEntry *allocate() = 0;
+};
+
+
+class Strand {
+public:
+    using Task = StrandEntry::Task;
+
+    Strand(StrandAllocator &strandAllocator)
+        : entry_(strandAllocator.allocate()) {}
+
+    void stop() {
+        entry_ = nullptr;
+    }
+
+    void exec(Task &&task) {
+        entry_->exec(std::move(task));
+    }
+
+    void post(Task &&task) {
+        entry_->post(std::move(task));
+    }
+
+private:
+    uptr<StrandEntry> entry_;
+};
+
+
+class StrandPool : public StrandAllocator {
+private:
+
+    class TaskPack {
+    public:
+        TaskPack(void *delegatePointer, StrandEntry::Task &&task)
+            : delegatePointer_(delegatePointer), task_(std::move(task)) {}
+
+        void *delegatePointer() {
+            return delegatePointer_;
+        }
+
+        StrandEntry::Task &task() {
+            return task_;
+        }
+
+    private:
+        void *delegatePointer_;
+        StrandEntry::Task task_;
+    };
+
+    class Worker {
+    public:
+        Worker(const std::string &name, StrandPool &strandPool);
+
+        ~Worker();
+
+        i32 queueSize() const {
+            return taskQueue_.size();
+        }
+
+        bool inThread() const {
+            return std::this_thread::get_id() == thread_.get_id();
+        }
+
+        void post(void *delegatePointer, StrandEntry::Task &&task) {
+            taskQueue_.push(TaskPack(delegatePointer, std::move(task)));
+        }
+
+    private:
+        void threadBody();
+
+    private:
+        StrandPool &strandPool_;
+        std::atomic_bool &stopping_;
+        
+        BlockQueue<TaskPack> taskQueue_;
+        std::thread thread_;
+    };
+
+public:
+    StrandPool(const std::string &name, i32 threadCount);
+
+    virtual ~StrandPool();
+
+    virtual StrandEntry *allocate();
+
+    class DelegateStrand : public StrandEntry {
+    public:
+        DelegateStrand(StrandPool &strandPool, Worker &worker);
+
+        virtual ~DelegateStrand();
+
+        virtual void post(StrandEntry::Task &&task) {
+            worker_.post(this, std::move(task));
+        }
+
+    protected:
+        virtual bool inThread() const {
+            return worker_.inThread();
+        }
+
+    private:
+        StrandPool &strandPool_;
+        Worker &worker_;
+    };
+
+private:
+    void initWorkers(const std::string &name, i32 threadCount);
+
+    Worker &chooseWorker();
+
+    bool isStrandLiving(DelegateStrand *delegateStrand);
+
+    void insertLivingDelegate(DelegateStrand *delegateStrand);
+
+    void removeLivingDelegate(DelegateStrand *delegateStrand);
+
+private:
+    using MtxForLivingDelegates = std::shared_mutex;
+    using WriteLockForLivingDelegates = std::lock_guard<MtxForLivingDelegates>;
+    using ReadLockForLivingDelegates = std::shared_lock<MtxForLivingDelegates>;
+    mutable MtxForLivingDelegates mtxForLivingDelegates_;
+    std::set<DelegateStrand *> livingDelegates_;
+
+    std::atomic_bool stopping_{ false };
+
+    using MtxForWorkers = std::mutex;
+    using LockForWorkers = std::lock_guard<MtxForWorkers>;
+    mutable MtxForWorkers mtxForWorkers_;
+
+    std::vector<uptr<Worker>> workers_;
+};
+
+
+class SingleThreadStrand : public StrandEntry {
+public:
+    SingleThreadStrand(const std::string &name);
+
+    virtual ~SingleThreadStrand();
+
+protected:
+    virtual bool inThread() const override;
+
+    virtual void post(Task &&task) override;
+
+private:
+    void threadBody();
+
+private:
+    std::atomic_bool stopping_{ false };
+    std::thread thread_;
+    BlockQueue<Task> queue_;
+};

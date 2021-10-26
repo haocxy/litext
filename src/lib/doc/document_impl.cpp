@@ -9,8 +9,9 @@
 namespace doc
 {
 
-DocumentImpl::DocumentImpl(AsyncDeleter &asyncDeleter, const fs::path &path)
-    : asyncDeleter_(asyncDeleter)
+DocumentImpl::DocumentImpl(StrandAllocator &strandAllocator, AsyncDeleter &asyncDeleter, const fs::path &path)
+    : strand_(strandAllocator)
+    , asyncDeleter_(asyncDeleter)
     , path_(path)
     , textRepo_(dbfiles::docPathToDbPath(path))
     , lineManager_(textRepo_)
@@ -19,23 +20,28 @@ DocumentImpl::DocumentImpl(AsyncDeleter &asyncDeleter, const fs::path &path)
     LOGD << "Document::Document() constructing, path: [" << path_ << "]";
 
     lineSigConns_ += lineManager_.sigRowCountUpdated().connect([this](RowN nrows) {
-        sigRowCountUpdated_(nrows);
+        strand_.exec([this, nrows] {
+            sigRowCountUpdated_(nrows);
+        });
     });
 
     lineSigConns_ += lineManager_.sigLoadProgress().connect([this](const LoadProgress &e) {
-        sigLoadProgress_(e);
+        strand_.exec([this, e] {
 
-        if (e.done()) {
-            {
-                WriteLock lock(mtxForLoad_);
-                _asyncDeleteLoader();
-                loadTimeUsage_.stop();
-                const i64 usageMs = loadTimeUsage_.ms();
-                LOGI << "Document [" << path_ << "] loaded by [" << usageMs << " ms]";
+            sigLoadProgress_(e);
+
+            if (e.done()) {
+                {
+                    //WriteLock lock(mtxForLoad_);
+                    _asyncDeleteLoader();
+                    loadTimeUsage_.stop();
+                    const i64 usageMs = loadTimeUsage_.ms();
+                    LOGI << "Document [" << path_ << "] loaded by [" << usageMs << " ms]";
+                }
+
+                sigAllLoaded_();
             }
-
-            sigAllLoaded_();
-        }
+        });
     });
 
     LOGD << "Document::Document() constructed, path: [" << path_ << "]";
@@ -43,6 +49,8 @@ DocumentImpl::DocumentImpl(AsyncDeleter &asyncDeleter, const fs::path &path)
 
 DocumentImpl::~DocumentImpl()
 {
+    strand_.stop();
+
     loadSigConns_.clear();
     lineSigConns_.clear();
     loader_ = nullptr;
@@ -50,20 +58,19 @@ DocumentImpl::~DocumentImpl()
     LOGD << "Document::~Document() path: [" << path_ << "]";
 }
 
-void DocumentImpl::load(Charset charset)
+void DocumentImpl::asyncLoad(Charset charset)
 {
-    const bool isInitLoad = isInitLoad_;
+    strand_.exec([this, charset] {
 
-    isInitLoad_ = false;
+        const bool isInitLoad = isInitLoad_;
 
-    loadSigConns_.clear();
+        isInitLoad_ = false;
 
-    {
-        WriteLock lockLoad(mtxForLoad_);
+        loadSigConns_.clear();
 
         LOGI << "Document start load [" << path_ << "]";
 
-        _deleteLoader();
+        _asyncDeleteLoader();
 
         TextRepo::ClearPartsStmt clearPartsStmt(textRepo_);
         clearPartsStmt();
@@ -78,9 +85,10 @@ void DocumentImpl::load(Charset charset)
         loadTimeUsage_.start();
 
         loader_->loadAll(charset);
-    }
 
-    sigStartLoad_(Document::StartLoadEvent(isInitLoad));
+
+        sigStartLoad_(Document::StartLoadEvent(isInitLoad));
+    });
 }
 
 sptr<Row> DocumentImpl::rowAt(RowN row) const
@@ -108,22 +116,30 @@ std::map<RowN, sptr<Row>> DocumentImpl::_rowsAt(const RowRange &range) const
 void DocumentImpl::_bindLoadSignals(SigConns &conns, TextLoader &loader)
 {
     conns += loader.sigPartLoaded().connect([this](const DocPart &part) {
-        lineManager_.addDocPart(part);
+        strand_.exec([this, part] {
+            lineManager_.addDocPart(part);
+        });
     });
 
     conns += loader.sigFatalError().connect([this](DocError e) {
-        sigFatalError_(e);
+        strand_.exec([this, e] {
+            sigFatalError_(e);
+        });
     });
 
     conns += loader.sigFileSizeDetected().connect([this](i64 fileSize) {
-        fileSize_ = fileSize;
-        sigFileSizeDetected_(fileSize);
+        strand_.exec([this, fileSize] {
+            fileSize_ = fileSize;
+            sigFileSizeDetected_(fileSize);
+        });
     });
 
     conns += loader.sigCharsetDetected().connect([this](Charset charset) {
-        charset_ = charset;
-        rowCache_.updateCharset(charset);
-        sigCharsetDetected_(charset);
+        strand_.exec([this, charset] {
+            charset_ = charset;
+            rowCache_.updateCharset(charset);
+            sigCharsetDetected_(charset);
+        });
     });
 }
 

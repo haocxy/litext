@@ -89,6 +89,7 @@ public:
 
     i64 sec() const {
         using Seconds = std::chrono::seconds;
+        ReadLock lock(mtx_);
         if (state_ == State::Stoped) {
             return std::chrono::duration_cast<Seconds>(stopTime_ - startTime_).count();
         } else {
@@ -98,6 +99,7 @@ public:
 
     i64 ms() const {
         using Ms = std::chrono::milliseconds;
+        ReadLock lock(mtx_);
         if (state_ == State::Stoped) {
             return std::chrono::duration_cast<Ms>(stopTime_ - startTime_).count();
         } else {

@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "core/thread.h"
+
 #include "global/work_dir_manager.h"
 
 #include "config.h"
@@ -73,6 +75,10 @@ public:
         return editorManager_;
     }
 
+    StrandPool &documentStrandPool() {
+        return documentStrandPool_;
+    }
+
 private:
     void initLogger(const InitInfo &initInfo);
 
@@ -86,10 +92,12 @@ private:
     Config config_;
     std::unique_ptr<SingletonServer> singletonServer_;
     PropDb propDb_;
+    StrandPool documentStrandPool_;
     ObjAsyncCreator objAsyncCreator_;
     ObjAsyncDeleter objAsyncDeleter_;
     EditorManager editorManager_;
     font::FontRepo fontRepo_;
+    
 };
 
 }

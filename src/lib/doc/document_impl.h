@@ -25,19 +25,13 @@ namespace doc
 
 class DocumentImpl {
 public:
-    DocumentImpl(AsyncDeleter &asyncDeleter, const fs::path &file);
+    DocumentImpl(StrandAllocator &strandAllocator, AsyncDeleter &asyncDeleter, const fs::path &file);
 
     ~DocumentImpl();
 
     const fs::path &path() const {
         return path_;
     }
-
-    i64 loadTimeUsageMs() const {
-        return loadTimeUsage_.ms();
-    }
-
-    void load(Charset charset);
 
     Signal<void(DocError)> &sigFatalError() {
         return sigFatalError_;
@@ -75,6 +69,14 @@ public:
 
     std::map<RowN, sptr<Row>> rowsAt(const RowRange &range) const;
 
+    void asyncGetLoadTimeUsageMs(std::function<void(i64 ms)> &&cb) {
+        strand_.exec([this, cb] {
+            cb(loadTimeUsage_.ms());
+        });
+    }
+
+    void asyncLoad(Charset charset);
+
 private:
 
     std::map<RowN, sptr<Row>> _rowsAt(const RowRange &range) const;
@@ -87,16 +89,13 @@ private:
     void _asyncDeleteLoader();
 
 private:
+    Strand strand_;
     AsyncDeleter &asyncDeleter_;
     const fs::path path_;
     TextRepo textRepo_;
     LineManager lineManager_;
     mutable RowCache rowCache_;
 
-    using Mtx = std::shared_mutex;
-    using ReadLock = std::shared_lock<Mtx>;
-    using WriteLock = std::lock_guard<Mtx>;
-    mutable Mtx mtxForLoad_;
     uptr<TextLoader> loader_;
 
     std::atomic_bool isInitLoad_{ true };

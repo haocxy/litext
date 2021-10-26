@@ -8,8 +8,8 @@ namespace doc
 
 
 
-Document::Document(AsyncDeleter &asyncDeleter, const fs::path &file)
-    : impl_(new DocumentImpl(asyncDeleter, file))
+Document::Document(StrandAllocator &strandAllocator, AsyncDeleter &asyncDeleter, const fs::path &file)
+    : impl_(new DocumentImpl(strandAllocator, asyncDeleter, file))
 {
 }
 
@@ -26,16 +26,16 @@ const fs::path &Document::path() const
     return impl_->path();
 }
 
-i64 Document::loadTimeUsageMs() const
+void Document::asyncGetLoadTimeUsageMs(std::function<void(i64 ms)> &&cb)
 {
     ReadLock lock(mtx_);
-    return impl_->loadTimeUsageMs();
+    impl_->asyncGetLoadTimeUsageMs(std::move(cb));
 }
 
-void Document::load(Charset charset)
+void Document::asyncLoad(Charset charset)
 {
     ReadLock lock(mtx_);
-    impl_->load(charset);
+    impl_->asyncLoad(charset);
 }
 
 Signal<void(DocError)> &Document::sigFatalError()

@@ -3,22 +3,22 @@
 #include "doc/doc_row.h"
 
 
-Editor::Editor(AsyncDeleter *asyncDeleter, const fs::path &file)
-    : document_(*asyncDeleter, file) {}
+Editor::Editor(StrandAllocator *strandAllocator, AsyncDeleter *asyncDeleter, const fs::path &file)
+    : document_(*strandAllocator, *asyncDeleter, file) {}
 
 void Editor::start()
 {
-    document_.load(Charset::Unknown);
+    document_.asyncLoad(Charset::Unknown);
 }
 
 void Editor::reload()
 {
-    document_.load(Charset::Unknown);
+    document_.asyncLoad(Charset::Unknown);
 }
 
 void Editor::reload(Charset charset)
 {
-    document_.load(charset);
+    document_.asyncLoad(charset);
 }
 
 void Editor::setNormalCursor(const DocLoc &loc)

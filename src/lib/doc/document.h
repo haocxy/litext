@@ -4,6 +4,7 @@
 #include <shared_mutex>
 
 #include "core/fs.h"
+#include "core/thread.h"
 #include "core/signal.h"
 #include "core/charset.h"
 #include "core/async_deleter.h"
@@ -20,15 +21,15 @@ class DocumentImpl;
 
 class Document {
 public:
-    Document(AsyncDeleter &asyncDeleter, const fs::path &file);
+    Document(StrandAllocator &strandAllocator, AsyncDeleter &asyncDeleter, const fs::path &file);
 
     ~Document();
 
     const fs::path &path() const;
 
-    i64 loadTimeUsageMs() const;
+    void asyncGetLoadTimeUsageMs(std::function<void(i64 ms)> &&cb);
 
-    void load(Charset charset);
+    void asyncLoad(Charset charset);
 
     Signal<void(DocError)> &sigFatalError();
 

@@ -162,8 +162,9 @@ EditorStatusBarWidget::EditorStatusBarWidget(TextArea &textArea, QWidget *parent
     });
 
     sigConns_ += doc.sigAllLoaded().connect([this] {
-        const long long timeUsageMs = static_cast<long long>(textArea_.doc().loadTimeUsageMs());
-        emit qtSigLoadDone(timeUsageMs);
+        textArea_.doc().asyncGetLoadTimeUsageMs([this](i64 ms) {
+            emit qtSigLoadDone(ms);
+        });
     });
 
     connect(this, &Class::qtSigLoadDone, this, [this](long long timeUsageMs) {
