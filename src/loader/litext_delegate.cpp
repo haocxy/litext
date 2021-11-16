@@ -9,11 +9,6 @@
 #define LITEXT_DLIB_NAME "liblitext_body.so"
 #endif
 
-namespace
-{
-using FillTable = void(*)(BodyApiTable *);
-}
-
 
 LitextDelegate::Factory::Factory() {
     const auto exePath = boost::dll::program_location();
