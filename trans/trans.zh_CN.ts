@@ -321,9 +321,9 @@ It&apos;s content will be deleted if you confirm.</source>
     <name>gui::qt::EditorStatusBarWidget</name>
     <message>
         <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="143"/>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="219"/>
         <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="220"/>
         <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="221"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="222"/>
         <source>Unknown</source>
         <translation type="unfinished">未知</translation>
     </message>
@@ -333,12 +333,12 @@ It&apos;s content will be deleted if you confirm.</source>
         <translation type="unfinished">检测编码失败,请指定编码</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="170"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="171"/>
         <source>Loaded by %1 ms</source>
         <translation type="unfinished">已加载，用时%1毫秒</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="222"/>
+        <location filename="../src/lib/qt/editor_status_bar_widget.cpp" line="223"/>
         <source>Loading</source>
         <translation type="unfinished">加载中</translation>
     </message>
