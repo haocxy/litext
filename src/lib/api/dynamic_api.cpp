@@ -3,18 +3,9 @@
 #include <cstring>
 #include <string>
 #include <boost/dll.hpp>
-#include <boost/preprocessor/cat.hpp>
 
 #include "charset/to_utf32.h"
 #include "qt/application.h"
-
-
-#define LITEXT_API_EXPORT extern "C" BOOST_SYMBOL_EXPORT
-
-#define LITEXT_API_FUNC_IMPL(f) \
-LITEXT_API_EXPORT BOOST_PP_CAT(LITEXT_API_FR_, f)() \
-BOOST_PP_CAT(LITEXT_API_FN_, f)() \
-BOOST_PP_CAT(LITEXT_API_FP_, f)() \
 
 
 namespace
@@ -29,53 +20,71 @@ inline LitextApi *asLitext(void *p) {
     return reinterpret_cast<LitextApi *>(p);
 }
 
-}
-
-
-LITEXT_API_FUNC_IMPL(create)
+void *create()
 {
     return new LitextApi;
 }
 
-LITEXT_API_FUNC_IMPL(destroy)
+void destroy(void *p)
 {
     delete asLitext(p);
 }
 
-LITEXT_API_FUNC_IMPL(initSetShouldStartAsServer)
+void initSetShouldStartAsServer(void *p, int b)
 {
     asLitext(p)->initInfo.setShouldStartAsServer(b);
 }
 
-LITEXT_API_FUNC_IMPL(initSetLogLevel)
+void initSetLogLevel(void *p, const char *level)
 {
     asLitext(p)->initInfo.setLogLevel(level);
 }
 
-LITEXT_API_FUNC_IMPL(initSetShouldLogToStd)
+void initSetShouldLogToStd(void *p, int b)
 {
     asLitext(p)->initInfo.setShouldLogToStd(b);
 }
 
-LITEXT_API_FUNC_IMPL(initAddOpenFileWithUtf8FilePathAndRowNum)
+void initAddOpenFileWithUtf8FilePathAndRowNum(void *p, const char *file, long long row)
 {
     const fs::path path = static_cast<std::u32string &&>(u32str(u8str(file)));
     asLitext(p)->initInfo.addOpenInfo(path, row);
 }
 
-LITEXT_API_FUNC_IMPL(initSetStyleSheetFilePathByUtf8)
+void initSetStyleSheetFilePathByUtf8(void *p, const char *file)
 {
     const fs::path path = static_cast<std::u32string &&>(u32str(u8str(file)));
     asLitext(p)->initInfo.setStyleSheetFile(path);
 }
 
-LITEXT_API_FUNC_IMPL(init)
+void init(void *p)
 {
     LitextApi *api = asLitext(p);
     api->application.init(api->initInfo);
 }
 
-LITEXT_API_FUNC_IMPL(exec)
+int exec(void *p)
 {
     return asLitext(p)->application.exec();
+}
+
+}
+
+
+extern "C" BOOST_SYMBOL_EXPORT
+void fillBodyApiTable(BodyApiTable *table)
+{
+    if (!table) {
+        return;
+    }
+
+    table->create = create;
+    table->destroy = destroy;
+    table->initSetShouldStartAsServer = initSetShouldStartAsServer;
+    table->initSetLogLevel = initSetLogLevel;
+    table->initSetShouldLogToStd = initSetShouldLogToStd;
+    table->initAddOpenFileWithUtf8FilePathAndRowNum = initAddOpenFileWithUtf8FilePathAndRowNum;
+    table->initSetStyleSheetFilePathByUtf8 = initSetStyleSheetFilePathByUtf8;
+    table->init = init;
+    table->exec = exec;
 }

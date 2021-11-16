@@ -9,51 +9,9 @@
 #include "api/dynamic_api.h"
 
 
-// 获得C字符串形式的实际函数名
-#define LITEXT_API_FN_NAME(f) BOOST_PP_STRINGIZE(BOOST_PP_CAT(LITEXT_API_FN_,f)())
-
-
-// 获得函数类型
-#define LITEXT_API_FN_TYPE(f) BOOST_PP_CAT(LITEXT_API_FR_, f)() BOOST_PP_CAT(LITEXT_API_FP_, f)()
-
-
-
 class LitextDelegate {
 public:
-
-    struct FnTable {
-        using Create = LITEXT_API_FN_TYPE(create);
-        using Destroy = LITEXT_API_FN_TYPE(destroy);
-        using InitSetShouldStartAsServer = LITEXT_API_FN_TYPE(initSetShouldStartAsServer);
-        using InitSetLogLevel = LITEXT_API_FN_TYPE(initSetLogLevel);
-        using InitSetShouldLogToStd = LITEXT_API_FN_TYPE(initSetShouldLogToStd);
-        using InitAddOpenFileWithUtf8FilePathAndRowNum = LITEXT_API_FN_TYPE(initAddOpenFileWithUtf8FilePathAndRowNum);
-        using InitSetStyleSheetFilePathByUtf8 = LITEXT_API_FN_TYPE(initSetStyleSheetFilePathByUtf8);
-        using Init = LITEXT_API_FN_TYPE(init);
-        using Exec = LITEXT_API_FN_TYPE(exec);
-
-        Create *create = nullptr;
-        Destroy *destroy = nullptr;
-        InitSetShouldStartAsServer *initSetShouldStartAsServer = nullptr;
-        InitSetLogLevel *initSetLogLevel = nullptr;
-        InitSetShouldLogToStd *initSetShouldLogToStd = nullptr;
-        InitAddOpenFileWithUtf8FilePathAndRowNum *initAddOpenFileWithUtf8FilePathAndRowNum = nullptr;
-        InitSetStyleSheetFilePathByUtf8 *initSetStyleSheetFilePathByUtf8 = nullptr;
-        Init *init = nullptr;
-        Exec *exec = nullptr;
-
-        void load(boost::dll::shared_library &dll) {
-            create = dll.get<Create>(LITEXT_API_FN_NAME(create));
-            destroy = dll.get<Destroy>(LITEXT_API_FN_NAME(destroy));
-            initSetShouldStartAsServer = dll.get<InitSetShouldStartAsServer>(LITEXT_API_FN_NAME(initSetShouldStartAsServer));
-            initSetLogLevel = dll.get<InitSetLogLevel>(LITEXT_API_FN_NAME(initSetLogLevel));
-            initSetShouldLogToStd = dll.get<InitSetShouldLogToStd>(LITEXT_API_FN_NAME(initSetShouldLogToStd));
-            initAddOpenFileWithUtf8FilePathAndRowNum = dll.get<InitAddOpenFileWithUtf8FilePathAndRowNum>(LITEXT_API_FN_NAME(initAddOpenFileWithUtf8FilePathAndRowNum));
-            initSetStyleSheetFilePathByUtf8 = dll.get<InitSetStyleSheetFilePathByUtf8>(LITEXT_API_FN_NAME(initSetStyleSheetFilePathByUtf8));
-            init = dll.get<Init>(LITEXT_API_FN_NAME(init));
-            exec = dll.get<Exec>(LITEXT_API_FN_NAME(exec));
-        }
-    };
+    using FnTable = BodyApiTable;
 
 public:
     class Factory {

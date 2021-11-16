@@ -9,9 +9,16 @@
 #define LITEXT_DLIB_NAME "liblitext_body.so"
 #endif
 
+namespace
+{
+using FillTable = void(*)(BodyApiTable *);
+}
+
+
 LitextDelegate::Factory::Factory() {
     const auto exePath = boost::dll::program_location();
     const auto dlibPath = exePath.parent_path() / LITEXT_DLIB_NAME;
     dll_ = boost::dll::shared_library(dlibPath);
-    fnTable_.load(dll_);
+    auto fillTable = dll_.get<void(BodyApiTable*)> ("fillBodyApiTable");
+    (*fillTable)(&fnTable_);
 }
