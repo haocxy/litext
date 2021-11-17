@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QWidget>
+#include <QMainWindow>
 
 namespace Ui
 {
@@ -10,13 +10,13 @@ class StyleEditor;
 namespace gui::qt
 {
 
-class StyleEditorWidget : public QWidget {
+class StyleEditorWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    StyleEditorWidget(QWidget *parent = nullptr);
+    StyleEditorWindow();
 
-    virtual ~StyleEditorWidget();
+    virtual ~StyleEditorWindow();
 
 private:
     Ui::StyleEditor *ui_ = nullptr;

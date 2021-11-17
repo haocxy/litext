@@ -20,7 +20,7 @@
 #include "editor_widget.h"
 #include "text_area_widget.h"
 #include "big_file_generator_widget.h"
-#include "style_editor_widget.h"
+#include "style_editor_window.h"
 
 
 namespace gui::qt
@@ -260,7 +260,7 @@ void MainWindow::makeBigFileAction()
 
 void MainWindow::openStyleEditorAction()
 {
-    StyleEditorWidget *w = new StyleEditorWidget;
+    StyleEditorWindow *w = new StyleEditorWindow;
     w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
 }
