@@ -20,6 +20,7 @@
 #include "editor_widget.h"
 #include "text_area_widget.h"
 #include "big_file_generator_widget.h"
+#include "style_editor_widget.h"
 
 
 namespace gui::qt
@@ -178,6 +179,7 @@ void MainWindow::initMenuBar()
 
     QMenu *testToolMenu = bar->addMenu(tr("TestTool"));
     bind(testToolMenu, tr("MakeBigFile"), &Class::makeBigFileAction);
+    bind(testToolMenu, tr("OpenStyleEditor"), &Class::openStyleEditorAction);
     bind(testToolMenu, tr("ReloadStyleSheet"), &Class::reloadStyleSheetFileAction);
 }
 
@@ -190,6 +192,7 @@ void MainWindow::initToolBar()
     bind(viewBar, tr("Jump"), &Class::viewJumpAction);
 
     QToolBar *testToolBar = addToolBar(tr("TestTool"));
+    bind(testToolBar, tr("OpenStyleEditor"), &Class::openStyleEditorAction);
     bind(testToolBar, tr("ReloadStyleSheet"), &Class::reloadStyleSheetFileAction);
 }
 
@@ -252,6 +255,13 @@ void MainWindow::makeBigFileAction()
         openDocument(path.toStdU32String(), 0);
     });
 
+    w->show();
+}
+
+void MainWindow::openStyleEditorAction()
+{
+    StyleEditorWidget *w = new StyleEditorWidget;
+    w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
 }
 

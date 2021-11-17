@@ -207,6 +207,15 @@
     </message>
 </context>
 <context>
+    <name>StyleEditor</name>
+    <message>
+        <location filename="../src/lib/qt/style_editor.ui" line="14"/>
+        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="35"/>
+        <source>StyleEditor</source>
+        <translation type="unfinished">样式编辑器</translation>
+    </message>
+</context>
+<context>
     <name>gui::qt::BigFileGeneratorWidget</name>
     <message>
         <location filename="../src/lib/qt/big_file_generator_widget.cpp" line="169"/>
@@ -392,64 +401,70 @@ It&apos;s content will be deleted if you confirm.</source>
         <translation type="vanished">生成大文件</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="170"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="186"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="171"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="188"/>
         <source>File</source>
         <translation>文件</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="171"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="187"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="172"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="189"/>
         <source>Open</source>
         <translation>打开文档</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="173"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="174"/>
         <source>Window</source>
         <translation>窗口</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="174"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="175"/>
         <source>CloseWindow</source>
         <translation>关闭窗口</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="176"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="189"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="177"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="191"/>
         <source>View</source>
         <translation>视图</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="177"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="190"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="235"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="178"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="192"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="238"/>
         <source>Jump</source>
         <translation>跳转到行</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="179"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="192"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="180"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="194"/>
         <source>TestTool</source>
         <translation>测试工具</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="180"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="181"/>
         <source>MakeBigFile</source>
         <translation>生成大文件</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="181"/>
-        <location filename="../src/lib/qt/main_window.cpp" line="193"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="182"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="195"/>
+        <source>OpenStyleEditor</source>
+        <translation type="unfinished">样式编辑器</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/main_window.cpp" line="183"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="196"/>
         <source>ReloadStyleSheet</source>
         <translation>重载样式表</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="235"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="238"/>
         <source>Jump to line in doument</source>
         <translation>跳转到文档中的某行</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/main_window.cpp" line="316"/>
+        <location filename="../src/lib/qt/main_window.cpp" line="326"/>
         <source>Open Document</source>
         <translation>打开文档</translation>
     </message>

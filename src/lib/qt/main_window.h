@@ -70,6 +70,8 @@ private: // Action 统一放在这里
 
     void makeBigFileAction();
 
+    void openStyleEditorAction();
+
     void reloadStyleSheetFileAction();
 
 private:
