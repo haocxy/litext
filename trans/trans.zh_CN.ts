@@ -209,13 +209,15 @@
 <context>
     <name>StyleEditor</name>
     <message>
+        <location filename="../src/lib/qt/style_editor.ui" line="14"/>
+        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="66"/>
         <source>StyleEditor</source>
-        <translation type="obsolete">样式编辑器</translation>
+        <translation type="unfinished">样式编辑器</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/style_editor.ui" line="14"/>
-        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="51"/>
-        <source>MainWindow</source>
+        <location filename="../src/lib/qt/style_editor.ui" line="42"/>
+        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="67"/>
+        <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
