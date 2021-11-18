@@ -210,13 +210,19 @@
     <name>StyleEditor</name>
     <message>
         <location filename="../src/lib/qt/style_editor.ui" line="14"/>
-        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="66"/>
+        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="89"/>
         <source>StyleEditor</source>
         <translation type="unfinished">样式编辑器</translation>
     </message>
     <message>
-        <location filename="../src/lib/qt/style_editor.ui" line="42"/>
-        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="67"/>
+        <location filename="../src/lib/qt/style_editor.ui" line="46"/>
+        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="90"/>
+        <source>Apply</source>
+        <translation type="unfinished">应用</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor.ui" line="66"/>
+        <location filename="../src/lib/qt/gen.style_editor.ui.h" line="91"/>
         <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
@@ -473,6 +479,44 @@ It&apos;s content will be deleted if you confirm.</source>
         <location filename="../src/lib/qt/main_window.cpp" line="326"/>
         <source>Open Document</source>
         <translation>打开文档</translation>
+    </message>
+</context>
+<context>
+    <name>gui::qt::StyleEditorWindow</name>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="44"/>
+        <source>New</source>
+        <translation type="unfinished">打开</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="46"/>
+        <source>Open</source>
+        <translation type="unfinished">打开</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="48"/>
+        <source>Save</source>
+        <translation type="unfinished">保存</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="50"/>
+        <source>SaveAs</source>
+        <translation type="unfinished">另存为</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="54"/>
+        <source>Undo</source>
+        <translation type="unfinished">撤销</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="56"/>
+        <source>Redo</source>
+        <translation type="unfinished">重做</translation>
+    </message>
+    <message>
+        <location filename="../src/lib/qt/style_editor_window.cpp" line="60"/>
+        <source>Reset</source>
+        <translation type="unfinished">重置</translation>
     </message>
 </context>
 <context>

@@ -19,7 +19,15 @@ public:
     virtual ~StyleEditorWindow();
 
 private:
+    void initToolBar();
+
+private:
+    void openFileAction();
+
+private:
     Ui::StyleEditor *ui_ = nullptr;
+
+    
 };
 
 }
