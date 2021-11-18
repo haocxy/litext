@@ -486,7 +486,7 @@ It&apos;s content will be deleted if you confirm.</source>
     <message>
         <location filename="../src/lib/qt/style_editor_window.cpp" line="44"/>
         <source>New</source>
-        <translation type="unfinished">打开</translation>
+        <translation type="unfinished">新建</translation>
     </message>
     <message>
         <location filename="../src/lib/qt/style_editor_window.cpp" line="46"/>
