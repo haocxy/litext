@@ -229,7 +229,7 @@ void Application::initSystemTray(const InitInfo &initInfo)
 
 void Application::initMainWindow()
 {
-    mainWindow_ = new MainWindow(engine_, engine_.config());
+    mainWindow_ = new MainWindow(*this);
 
     connect(mainWindow_, &MainWindow::qtSigShouldReloadStyleSheetFile, this, [this](QString styleSheetFilePath) {
         reloadStyleSheetFromFile(styleSheetFilePath);

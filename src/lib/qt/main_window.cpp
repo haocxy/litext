@@ -21,6 +21,7 @@
 #include "text_area_widget.h"
 #include "big_file_generator_widget.h"
 #include "style_editor_window.h"
+#include "application.h"
 
 
 namespace gui::qt
@@ -79,10 +80,10 @@ static bool isFontValid(const fs::path &file, i64 faceIndex)
 
 using Class = MainWindow;
 
-MainWindow::MainWindow(Engine &engine, Config &config)
-    : engine_(engine)
-    , config_(config)
-    , propRepo_(engine_.propDb(), "MainWindow")
+MainWindow::MainWindow(Application &application)
+    : application_(application)
+    , config_(application_.engine().config())
+    , propRepo_(application_.engine().propDb(), "MainWindow")
 {
     // 关闭后不删除
     setAttribute(Qt::WA_DeleteOnClose, false);
@@ -112,7 +113,7 @@ MainWindow::MainWindow(Engine &engine, Config &config)
         }
     }
 
-    editorStack_ = new EditorStackWidget(engine_, this);
+    editorStack_ = new EditorStackWidget(application_.engine(), this);
     setCentralWidget(editorStack_);
 }
 

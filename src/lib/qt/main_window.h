@@ -17,11 +17,13 @@
 namespace gui::qt
 {
 
+class Application;
+
 class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(Engine &engine, Config &config);
+    MainWindow(Application &application);
 
     virtual ~MainWindow();
 
@@ -81,7 +83,7 @@ private:
     void curEditorPageDown();
 
 private:
-    Engine &engine_;
+    Application &application_;
     Config &config_;
     PropRepo propRepo_;
     QPointer<EditorStackWidget> editorStack_;

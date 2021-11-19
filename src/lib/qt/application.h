@@ -28,6 +28,14 @@ public:
 
     virtual ~Application();
 
+    const Engine &engine() const {
+        return engine_;
+    }
+
+    Engine &engine() {
+        return engine_;
+    }
+
     void init(const InitInfo &initInfo);
 
     int exec();
