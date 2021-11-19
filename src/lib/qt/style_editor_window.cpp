@@ -9,8 +9,10 @@
 namespace gui::qt
 {
 
-StyleEditorWindow::StyleEditorWindow() {
-    ui_ = new Ui::StyleEditor;
+StyleEditorWindow::StyleEditorWindow(Application &application)
+    : ui_(new Ui::StyleEditor)
+    , application_(application) {
+
     ui_->setupUi(this);
 
     initToolBar();

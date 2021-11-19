@@ -10,11 +10,13 @@ class StyleEditor;
 namespace gui::qt
 {
 
+class Application;
+
 class StyleEditorWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    StyleEditorWindow();
+    StyleEditorWindow(Application &application);
 
     virtual ~StyleEditorWindow();
 
@@ -26,8 +28,7 @@ private:
 
 private:
     Ui::StyleEditor *ui_ = nullptr;
-
-    
+    Application &application_;
 };
 
 }

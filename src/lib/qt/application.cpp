@@ -94,6 +94,11 @@ int Application::exec()
     }
 }
 
+QString Application::styleSheet() const
+{
+    return qtApp_->styleSheet();
+}
+
 void Application::reloadStyleSheetFromFile(const QString &filePath)
 {
     if (!filePath.isEmpty()) {

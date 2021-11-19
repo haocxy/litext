@@ -40,6 +40,8 @@ public:
 
     int exec();
 
+    QString styleSheet() const;
+
     void reloadStyleSheetFromFile(const QString &filePath);
 
 private:

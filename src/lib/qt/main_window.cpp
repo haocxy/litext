@@ -261,7 +261,7 @@ void MainWindow::makeBigFileAction()
 
 void MainWindow::openStyleEditorAction()
 {
-    StyleEditorWindow *w = new StyleEditorWindow;
+    StyleEditorWindow *w = new StyleEditorWindow(application_);
     w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
 }
