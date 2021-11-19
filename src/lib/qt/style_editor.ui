@@ -13,20 +13,10 @@
   <property name="windowTitle">
    <string>StyleEditor</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+  <widget class="QWidget" name="centralArea">
+   <layout class="QVBoxLayout" name="centralAreaLayout">
     <item>
-     <widget class="QTextEdit" name="textEdit">
-      <property name="font">
-       <font>
-        <family>Consolas</family>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="bottomArea">
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">

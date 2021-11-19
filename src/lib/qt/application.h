@@ -42,6 +42,8 @@ public:
 
     QString styleSheet() const;
 
+    void setStyleSheet(const QString &s);
+
     void reloadStyleSheetFromFile(const QString &filePath);
 
 private:

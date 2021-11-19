@@ -12,11 +12,13 @@ namespace gui::qt
 
 class Application;
 
+class StyleEditWidget;
+
 class StyleEditorWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    StyleEditorWindow(Application &application);
+    explicit StyleEditorWindow(Application &application);
 
     virtual ~StyleEditorWindow();
 
@@ -24,11 +26,16 @@ private:
     void initToolBar();
 
 private:
+    void noAction() {}
+
     void openFileAction();
 
+    void applyAction();
+
 private:
-    Ui::StyleEditor *ui_ = nullptr;
     Application &application_;
+    Ui::StyleEditor *ui_ = nullptr;
+    StyleEditWidget *styleEdit_ = nullptr;
 };
 
 }

@@ -99,6 +99,11 @@ QString Application::styleSheet() const
     return qtApp_->styleSheet();
 }
 
+void Application::setStyleSheet(const QString &s)
+{
+    qtApp_->setStyleSheet(s);
+}
+
 void Application::reloadStyleSheetFromFile(const QString &filePath)
 {
     if (!filePath.isEmpty()) {
