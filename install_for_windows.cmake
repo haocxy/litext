@@ -19,10 +19,10 @@ install(FILES ${dlib_qt5gui} DESTINATION ".")
 find_file(dlib_qt5widgets "Qt5Widgets.dll")
 install(FILES ${dlib_qt5widgets} DESTINATION ".")
 
-find_file(dlib_zlibd "zlibd.dll")
-install(FILES ${dlib_zlibd} DESTINATION ".")
+find_file(dlib_zlib "zlib.dll")
+install(FILES ${dlib_zlib} DESTINATION ".")
 
-find_file(dlib_png "libpng16d.dll")
+find_file(dlib_png "libpng16.dll")
 install(FILES ${dlib_png} DESTINATION ".")
 
 find_file(dlib_msvcp140 "MSVCP140.dll")
