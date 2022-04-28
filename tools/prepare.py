@@ -4,6 +4,7 @@ from pathlib import Path
 from third_lib_tool import lib_boost
 from third_lib_tool import lib_openssl
 from third_lib_tool import lib_protobuf
+from third_lib_tool import lib_freetype
 from third_lib_tool import repo_thirdlibs
 
 if sys.platform == 'win32':
@@ -14,6 +15,7 @@ NEED_BOOST: bool = True
 NEED_PROTOBUF: bool = True
 NEED_NASM: bool = (sys.platform == 'win32')
 NEED_OPENSSL: bool = True
+NEED_FREETYPE: bool = True
 
 
 def main():
@@ -44,6 +46,11 @@ def main():
             thirdlibs_repo_dir=thirdlib_repo_dir,
             base_dir=cmake_source_dir / 'prepare' / 'openssl',
             nasm_exe_dir=nasm_exe_path
+        )
+    if NEED_FREETYPE:
+        lib_freetype.prepare(
+            thirdlibs_repo_dir=thirdlib_repo_dir,
+            base_dir=cmake_source_dir / 'prepare' / 'freetype'
         )
 
 
