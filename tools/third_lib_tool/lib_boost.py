@@ -11,7 +11,9 @@ BOOST_LIB_NAME: str = 'boost_1_78_0'
 REQUIRED_BOOST_MODULES = [
     'thread',
     'filesystem',
-    'iostreams'
+    'iostreams',
+    'serialization',
+    'program_options'
 ]
 
 
@@ -46,6 +48,10 @@ def make_boost_b2_install_cmd_line(install_dir: Path, modules: list, zlib_source
     cmdline += f' -sZLIB_INCLUDE=\"{zlib_source_dir}\"'
     for module in modules:
         cmdline += f' --with-{module}'
+    cmdline += ' variant=release'
+    if sys.platform == 'win32':
+        cmdline += ' link=static'
+        cmdline += ' runtime-link=static'
     cmdline += ' install'
     return cmdline
 
