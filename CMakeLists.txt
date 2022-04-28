@@ -8,6 +8,15 @@ include(CMake/find_source_files.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_FIND_LIBRARY_PREFIXES "lib;")
 
+find_package(Python3 REQUIRED)
+message(STATUS "Python3 Executable: [${Python3_EXECUTABLE}]")
+
+message(STATUS "Preparing third libs")
+execute_process(
+    COMMAND ${Python3_EXECUTABLE} tools/prepare.py ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+)
+
 # VS专用全局设置
 if(MSVC)
     # 关闭有关源代码字符集的警告
