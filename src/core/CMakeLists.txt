@@ -15,10 +15,11 @@ endif()
 target_link_libraries(litext_core libsqlite3_static)
 
 # dep freetype
-target_link_libraries(litext_core freetype)
+find_library(lib_freetype freetype)
+target_link_libraries(litext_core ${lib_freetype})
 
 # dep Boost
-find_package(Boost 1.76 REQUIRED COMPONENTS filesystem)
+find_package(Boost ${MY_BOOST_VER} REQUIRED COMPONENTS filesystem HINTS ${MY_BOOST_ROOT})
 target_link_libraries(litext_core ${Boost_LIBRARIES})
 
 

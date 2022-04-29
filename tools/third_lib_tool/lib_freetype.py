@@ -20,7 +20,8 @@ def install(source_dir: Path, build_dir: Path, install_dir: Path):
         source_dir=source_dir,
         build_dir=build_dir,
         install_dir=install_dir,
-        build_config='Release'
+        build_config='Release',
+        other_params='-DBUILD_SHARED_LIBS=ON'
     )
 
 

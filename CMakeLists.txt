@@ -17,8 +17,6 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
-set(BOOST_ROOT "${CMAKE_SOURCE_DIR}/prepare/boost/install")
-
 # VS专用全局设置
 if(MSVC)
     # 关闭有关源代码字符集的警告
