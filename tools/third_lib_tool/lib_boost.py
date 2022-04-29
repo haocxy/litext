@@ -2,7 +2,6 @@ import os
 import sys
 from pathlib import Path
 
-from third_lib_tool import lib_zlib
 from third_lib_tool import logs
 from third_lib_tool.util.compress_util import smart_unpack
 
@@ -39,13 +38,11 @@ def get_boost_b2_cmd_name() -> str:
         return './b2'
 
 
-def make_boost_b2_install_cmd_line(install_dir: Path, modules: list, zlib_source_dir: Path) -> str:
+def make_boost_b2_install_cmd_line(install_dir: Path, modules: list) -> str:
     b2_cmd_name: str = get_boost_b2_cmd_name()
     cmdline: str = ''
     cmdline += b2_cmd_name
     cmdline += f' --prefix=\"{install_dir}\"'
-    cmdline += f' -sZLIB_SOURCE=\"{zlib_source_dir}\"'
-    cmdline += f' -sZLIB_INCLUDE=\"{zlib_source_dir}\"'
     for module in modules:
         cmdline += f' --with-{module}'
     cmdline += ' variant=release'
@@ -56,12 +53,11 @@ def make_boost_b2_install_cmd_line(install_dir: Path, modules: list, zlib_source
     return cmdline
 
 
-def install(source_dir: Path, install_dir: Path, zlib_source_dir: Path):
+def install(source_dir: Path, install_dir: Path):
     bootstrap_cmd_name: str = get_boost_booststrap_cmd_name()
     install_cmdline: str = make_boost_b2_install_cmd_line(
         install_dir=install_dir,
-        modules=REQUIRED_BOOST_MODULES,
-        zlib_source_dir=zlib_source_dir)
+        modules=REQUIRED_BOOST_MODULES)
     print(f'Boost b2 cmd: {install_cmdline}')
     old_dir: str = os.getcwd()
     os.chdir(source_dir)
@@ -78,16 +74,10 @@ def prepare(thirdlibs_repo_dir: Path, base_dir: Path):
         unpack_dir=base_dir / 'src.boost',
         archive_dir=thirdlibs_repo_dir / 'boost'
     )
-    zlib_source_dir = base_dir / 'src.zlib'
-    lib_zlib.unpack(
-        archive_file_path=thirdlibs_repo_dir / 'zlib' / f'{lib_zlib.ZLIB_LIB_NAME}.tar.gz',
-        unpack_dir=zlib_source_dir
-    )
     boost_install_dir = base_dir / 'install'
     install(
         source_dir=boost_source_dir,
-        install_dir=boost_install_dir,
-        zlib_source_dir=zlib_source_dir
+        install_dir=boost_install_dir
     )
 
 
