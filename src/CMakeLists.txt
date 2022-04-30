@@ -9,9 +9,7 @@ endif()
 
 set(MY_BOOST_ROOT ${CMAKE_SOURCE_DIR}/prepare/boost/install)
 set(MY_BOOST_VER "1.78")
-set(MY_FREETYPE_ROOT ${CMAKE_SOURCE_DIR}/prepare/freetype/install)
 
-list(APPEND CMAKE_PREFIX_PATH ${MY_FREETYPE_ROOT})
 
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src)

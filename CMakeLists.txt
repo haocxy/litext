@@ -17,6 +17,13 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
+set(PREPARE_DIR ${CMAKE_SOURCE_DIR}/prepare)
+set(MY_FREETYPE_ROOT ${CMAKE_SOURCE_DIR}/prepare/freetype/install)
+
+list(APPEND CMAKE_PREFIX_PATH ${PREPARE_DIR}/zlib/install/bin)
+list(APPEND CMAKE_PREFIX_PATH ${PREPARE_DIR}/libpng/install/bin)
+list(APPEND CMAKE_PREFIX_PATH ${PREPARE_DIR}/freetype/install/bin)
+
 # VS专用全局设置
 if(MSVC)
     # 关闭有关源代码字符集的警告
