@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+from third_lib_tool import lib_zlib
 from third_lib_tool import lib_boost
 from third_lib_tool import lib_openssl
 from third_lib_tool import lib_protobuf
@@ -11,6 +12,7 @@ if sys.platform == 'win32':
     from third_lib_tool import lib_nasm
 
 
+NEED_ZLIB: bool = True
 NEED_BOOST: bool = True
 NEED_PROTOBUF: bool = True
 NEED_NASM: bool = (sys.platform == 'win32')
@@ -23,6 +25,11 @@ def main():
     print(f'Preparing libs, cmake_source_dir: [{cmake_source_dir}]')
     thirdlib_repo_dir = cmake_source_dir / 'prepare' / 'thirdlibs_repo'
     repo_thirdlibs.download(clone_dir=thirdlib_repo_dir)
+    if NEED_ZLIB:
+        lib_zlib.prepare(
+            thirdlibs_repo_dir=thirdlib_repo_dir,
+            base_dir=cmake_source_dir / 'prepare' / 'zlib'
+        )
     if NEED_BOOST:
         lib_boost.prepare(
             thirdlibs_repo_dir=thirdlib_repo_dir,
