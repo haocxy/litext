@@ -27,15 +27,17 @@ def main():
     print(f'Preparing libs, cmake_source_dir: [{cmake_source_dir}]')
     thirdlib_repo_dir = cmake_source_dir / 'prepare' / 'thirdlibs_repo'
     repo_thirdlibs.download(clone_dir=thirdlib_repo_dir)
+    zlib_base_dir: Path = cmake_source_dir / 'prepare' / 'zlib'
     if NEED_ZLIB:
         lib_zlib.prepare(
             thirdlibs_repo_dir=thirdlib_repo_dir,
-            base_dir=cmake_source_dir / 'prepare' / 'zlib'
+            base_dir=zlib_base_dir
         )
     if NEED_LIBPNG:
         lib_libpng.prepare(
             thirdlibs_repo_dir=thirdlib_repo_dir,
-            base_dir=cmake_source_dir / 'prepare' / 'libpng'
+            base_dir=cmake_source_dir / 'prepare' / 'libpng',
+            zlib_base_dir=zlib_base_dir
         )
     if NEED_BOOST:
         lib_boost.prepare(

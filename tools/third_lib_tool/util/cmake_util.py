@@ -1,5 +1,23 @@
 import os
 from pathlib import Path
+from typing import Optional
+
+
+def empty_str(s: Optional[str]) -> bool:
+    return s is None or len(s) == 0
+
+
+def mk_cmake_prefix_path_str(cmake_prefix_path: Optional[list[str]]) -> str:
+    if cmake_prefix_path is None or len(cmake_prefix_path) == 0:
+        return ''
+    result: str = ''
+    is_first: bool = True
+    for path in cmake_prefix_path:
+        if not is_first:
+            result += ':'
+        result += path
+        is_first = False
+    return result
 
 
 def cmake_build_and_install(
@@ -8,15 +26,25 @@ def cmake_build_and_install(
         install_dir: Path,
         build_config: str = 'Release',
         other_params: str = '',
-        install_retry_times: int = 1):
+        install_retry_times: int = 1,
+        cmake_prefix_path: Optional[list[str]] = None):
 
     if not build_dir.exists():
         os.makedirs(build_dir)
 
-    generate_cmd: str = f'cmake -S {source_dir} -B {build_dir}' \
-                        + f' -DCMAKE_BUILD_TYPE={build_config}'\
-                        + f' -DCMAKE_INSTALL_PREFIX={install_dir}'\
-                        + f' {other_params}'
+    generate_cmd: str = ''
+    generate_cmd += f'cmake -S {source_dir} -B {build_dir}'
+    generate_cmd += f' -DCMAKE_BUILD_TYPE={build_config}'
+    generate_cmd += f' -DCMAKE_INSTALL_PREFIX={install_dir}'
+
+    cmake_prefix_path_str: str = mk_cmake_prefix_path_str(cmake_prefix_path)
+    if not empty_str(cmake_prefix_path_str):
+        generate_cmd += f' -DCMAKE_PREFIX_PATH={cmake_prefix_path_str}'
+
+    if not empty_str(other_params):
+        generate_cmd += f' {other_params}'
+
+
     print(f'Executing CMD: {generate_cmd}', flush=True)
     os.system(generate_cmd)
 

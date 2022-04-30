@@ -15,16 +15,17 @@ def unpack(archive_file_dir: Path, extract_dir: Path) -> Path:
     )
 
 
-def install(source_dir: Path, build_dir: Path, install_dir: Path):
+def install(source_dir: Path, build_dir: Path, install_dir: Path, zlib_base_dir: Path):
     cmake_build_and_install(
         source_dir=source_dir,
         build_dir=build_dir,
         install_dir=install_dir,
-        build_config='Release'
+        build_config='Release',
+        cmake_prefix_path=[str(zlib_base_dir)]
     )
 
 
-def prepare(thirdlibs_repo_dir: Path, base_dir: Path):
+def prepare(thirdlibs_repo_dir: Path, base_dir: Path, zlib_base_dir: Path):
     if base_dir.exists():
         logs.log_skip('libpng', base_dir)
         return
@@ -35,5 +36,6 @@ def prepare(thirdlibs_repo_dir: Path, base_dir: Path):
     install(
         source_dir=source_dir,
         build_dir=source_dir / 'build-release',
-        install_dir=base_dir / 'install'
+        install_dir=base_dir / 'install',
+        zlib_base_dir=zlib_base_dir
     )
