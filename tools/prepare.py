@@ -16,9 +16,9 @@ if sys.platform == 'win32':
 NEED_ZLIB: bool = True
 NEED_LIBPNG: bool = True
 NEED_BOOST: bool = True
-NEED_PROTOBUF: bool = True
-NEED_NASM: bool = (sys.platform == 'win32')
-NEED_OPENSSL: bool = True
+NEED_PROTOBUF: bool = False
+NEED_NASM: bool = False and (sys.platform == 'win32')
+NEED_OPENSSL: bool = False
 NEED_FREETYPE: bool = True
 
 
