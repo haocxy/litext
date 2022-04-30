@@ -16,6 +16,10 @@ add_executable(litext
 
 target_link_libraries(litext litext_loader)
 
+add_custom_command(TARGET litext POST_BUILD
+    COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/update_output_dir.py ${CMAKE_SOURCE_DIR}/prepare $<TARGET_FILE_DIR:litext>
+)
+
 if(MSVC)
     target_link_options(litext
         # windows平台的入口为WinMain，默认的main是带命令行的
@@ -28,6 +32,9 @@ if(MSVC)
     add_executable(litextcmd ${src_files})
     target_compile_definitions(litextcmd PRIVATE NOTESHARP_WINDOWS_CONSOLE)
     target_link_libraries(litextcmd litext_loader)
+    add_custom_command(TARGET litextcmd POST_BUILD
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tools/update_output_dir.py ${CMAKE_SOURCE_DIR}/prepare $<TARGET_FILE_DIR:litextcmd>
+)
 endif()
 
 
