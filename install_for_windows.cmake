@@ -20,10 +20,16 @@ find_file(dlib_qt5widgets "Qt5Widgets.dll")
 install(FILES ${dlib_qt5widgets} DESTINATION ".")
 
 find_file(dlib_zlib "zlib.dll")
+message("Found dll for pack [${dlib_zlib}]")
 install(FILES ${dlib_zlib} DESTINATION ".")
 
 find_file(dlib_png "libpng16.dll")
+message("Found dll for pack [${dlib_png}]")
 install(FILES ${dlib_png} DESTINATION ".")
+
+find_file(dlib_freetype "freetype.dll")
+message("Found dll for pack [${dlib_freetype}]")
+install(FILES ${dlib_freetype} DESTINATION ".")
 
 find_file(dlib_msvcp140 "MSVCP140.dll")
 install(FILES ${dlib_msvcp140} DESTINATION ".")
